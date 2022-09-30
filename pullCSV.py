@@ -1,6 +1,8 @@
 
 def pullCSV() :
 
+#"roomname","roomid","area","locid","plmtypeid","plmparam","xy","plmtypename","state","alternateroomid","alternateroomlocids"
+
     return [
 "IMPACT CRATER","7b820","0","3fff64,3fff9c,3fffda","f87e","0n0","[3e,38]","0xf87e","allstates","",""
 ,

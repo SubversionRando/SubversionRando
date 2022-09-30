@@ -5,7 +5,7 @@ contact randorandy (ironrusty) or strotlog with questions
 simple readme for now
 
 1.download this repository
-2.place a copy of the Subversion 1.1 rom in the roms folder - it must be named Subversion.smc
+2.place a copy of the Subversion 1.1 rom in the roms folder - it must be named Subversion11.sfc
 3.run Main.py in console
 
 This should create a randomized rom with the given name in the roms folder and a spoiler log (.txt) in the spoilers folder.
