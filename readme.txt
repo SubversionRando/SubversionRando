@@ -1,6 +1,6 @@
 README
 
-contact ironrusty or strotlog with questions
+contact randorandy (ironrusty) or strotlog with questions
 
 simple readme for now
 
