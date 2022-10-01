@@ -1,0 +1,4 @@
+*.spoiler.txt
+*.sfc
+__pycache__/
+*.swp

@@ -8,24 +8,39 @@ import io
 import pullCSV
 import logicCasual
 
-#"roomname","roomid","area","locid","plmtypeid","plmparam","xy","plmtypename","state","alternateroomid","alternateroomlocids"
-
 g_rom : io.BufferedIOBase
 
 def createWorkingFileCopy(origFile, newFile) -> io.BufferedIOBase:
+    global g_rom
     if not os.path.exists(origFile):
         raise Exception(f'origFile not found: {origFile}')
-    g = open(newFile, 'wb') # wb = write, binary
-    shutil.copyfile(origFile, newFile)
-    return g
+    with open(origFile, 'rb') as orig:
+        g_rom = open(newFile, 'wb') # wb = write, binary
+        # copy original to new before we edit new
+        while True:
+            chunk = orig.read(16384) # or any amount
+            if chunk == b"":
+                break
+            g_rom.write(chunk)
 
 def writeItem(address : int, plmid, ammoAmount = b"\x00"):
+    global g_rom
     if len(plmid) != 2 or len(ammoAmount) != 1:
         raise Exception(f'plmid length ({len(plmid)}) must be 2 and ammoAmount length ({len(ammoAmount)}) must be 1')
     g_rom.seek(address)
     g_rom.write(plmid)
     g_rom.seek(address+5)
     g_rom.write(ammoAmount)
+
+def writeBytes(address : int, data):
+    global g_rom
+    g_rom.seek(address)
+    g_rom.write(data)
+
+def finalizeRom():
+    global g_rom
+    g_rom.close()
+    g_rom = None
 
 def commasToList(entry) :
     #takes a commaed string entry as input, returns a list of the items in the same order without commas
@@ -47,8 +62,8 @@ def itemPlace(locRow,itemArray) :
 if __name__ == "__main__":
     seeeed=random.randint(1000000,9999999)
     random.seed(seeeed)
-    rom1_path = "../SubversionRando/roms/Sub"+str(seeeed)+"a3.smc"
-    rom_clean_path = "../SubversionRando/roms/Subversion.smc"
+    rom1_path = "../SubversionRando/roms/Sub"+str(seeeed)+"a3.sfc"
+    rom_clean_path = "../SubversionRando/roms/Subversion11.sfc"
     #you must include Subversion 1.1 in your roms folder with this name^
     
     csvraw= pullCSV.pullCSV()
@@ -256,7 +271,7 @@ if __name__ == "__main__":
                    LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,
                    LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,
                    LargeAmmo,LargeAmmo,LargeAmmo]
-    g_rom = createWorkingFileCopy(rom_clean_path, rom1_path)
+    createWorkingFileCopy(rom_clean_path, rom1_path)
     
     #parse csvraw
     locArray=[[]] #in the form [y][x]
@@ -450,16 +465,15 @@ if __name__ == "__main__":
 
 
     # Suit animation skip patch
-    g_rom.seek(0x27017)
-    g_rom.write(b"\xea\xea\xea\xea")
-    g_rom.close()
+    writeBytes(0x27017, b"\xea\xea\xea\xea")
+    finalizeRom()
     print("Done!")
-    print("Filename is "+"Sub"+str(seeeed)+"a3.smc")
-    spoiler_file = open("../SubversionRando/spoilers/aSub"+str(seeeed)+"a3.smc.spoiler.txt", "w")
+    print("Filename is "+"Sub"+str(seeeed)+"a3.sfc")
+    spoiler_file = open("../SubversionRando/spoilers/aSub"+str(seeeed)+"a3.sfc.spoiler.txt", "w")
     spoiler_file.write("RNG Seed: {}\n".format(str(seeeed))+"\n")
     spoiler_file.write("\n Spoiler \n\n Spoiler \n\n Spoiler \n\n Spoiler \n\n")
     spoiler_file.write(spoilerSave)    
-    print("Spoiler file is "+"Sub"+str(seeeed)+"a3.smc.spoiler.txt")
+    print("Spoiler file is "+"Sub"+str(seeeed)+"a3.sfc.spoiler.txt")
 
 
 
