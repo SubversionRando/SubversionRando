@@ -392,8 +392,9 @@ if __name__ == "__main__":
     writeBytes(0x27017, b"\xea\xea\xea\xea")
     # Flickering hud removal patch
     if hudFlicker == "Y" :
-        writeBytes(0x547a, b"\x02")
-        writeBytes(0x547f, b"\x00")
+        #writeBytes(0x547a, b"\x02")
+        #writeBytes(0x547f, b"\x00")
+        uu=0
     finalizeRom()
     print("Done!")
     print("Filename is "+"Sub"+logicChoice+str(seeeed)+".sfc")
