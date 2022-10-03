@@ -7,6 +7,7 @@ import os
 import io
 import pullCSV
 import logicCasual
+import fillSpeedrun
 
 g_rom : io.BufferedIOBase
 
@@ -60,12 +61,22 @@ def itemPlace(locRow,itemArray) :
 
 #main program
 if __name__ == "__main__":
+    #logicChoice=""
+    #while logicChoice != "C" and logicChoice != "E" :
+    #    logicChoice= input("Enter C for Casual or E for Expert logic:")
+    #    logicChoice = logicChoice.title()
+    #hudFlicker=""
+    #while hudFlicker != "Y" and hudFlicker != "N" :
+    #    hudFlicker= input("Enter Y to patch HUD flicker on emulator, or N to decline:")
+    #    hudFlicker = hudFlicker.title()
+    hudFlicker = "Y" #for now
     seeeed=random.randint(1000000,9999999)
     random.seed(seeeed)
-    rom1_path = "../SubversionRando/roms/Sub"+str(seeeed)+"a3.sfc"
+    rom1_path = "../SubversionRando/roms/Sub"+logicChoice+str(seeeed)+".sfc"
     rom_clean_path = "../SubversionRando/roms/Subversion11.sfc"
     #you must include Subversion 1.1 in your roms folder with this name^
-    
+    spoiler_file = open("../SubversionRando/spoilers/aSub"+logicChoice+str(seeeed)+".sfc.spoiler.txt", "w")
+
     csvraw= pullCSV.pullCSV()
     #Item = Name, Visible, Chozo, Hidden
     Missile = ["Missile",
@@ -219,58 +230,36 @@ if __name__ == "__main__":
                       b"\xc0\xfc",
                       b"\x00"]
     allItemList=[Missile,
-                 Super,
-                 PowerBomb,
-                 Morph,
-                 GravityBoots,
-                 Speedball,
-                 Bombs,
-                 HiJump,
-                 GravitySuit,
-                 DarkVisor,
-                 Wave,
-                 SpeedBooster,
-                 Spazer,
-                 Varia,
-                 Ice,
-                 Grapple,
-                 MetroidSuit,
-                 Plasma,
-                 Screw,
-                 Hypercharge,
-                 Charge,
-                 Xray,
-                 SpaceJump,
-                 Energy,
-                 Refuel,
-                 SmallAmmo,
-                 LargeAmmo,
-                 DamageAmp,
-                 ChargeAmp,
-                 SpaceJumpBoost]
-    #the first 3 items to place. First item should be morph or missile
-    #extra items can be placed in order
-    extraItemList=[Hypercharge,
-                   Xray,
-                   DamageAmp,DamageAmp,DamageAmp,DamageAmp,DamageAmp,DamageAmp,
-                   ChargeAmp,ChargeAmp,ChargeAmp,ChargeAmp,ChargeAmp,ChargeAmp,
-                   Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy,
-                   Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy,
-                   Refuel,Refuel,Refuel,Refuel,Refuel,Refuel,Refuel,
-                   SpaceJumpBoost,SpaceJumpBoost,SpaceJumpBoost,SpaceJumpBoost,
-                   SpaceJumpBoost,SpaceJumpBoost,SpaceJumpBoost,SpaceJumpBoost,
-                   SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
-                   SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
-                   SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
-                   SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
-                   SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
-                   SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
-                   SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
-                   SmallAmmo,SmallAmmo,SmallAmmo,
-                   LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,
-                   LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,
-                   LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,
-                   LargeAmmo,LargeAmmo,LargeAmmo]
+             Super,
+             PowerBomb,
+             Morph,
+             GravityBoots,
+             Speedball,
+             Bombs,
+             HiJump,
+             GravitySuit,
+             DarkVisor,
+             Wave,
+             SpeedBooster,
+             Spazer,
+             Varia,
+             Ice,
+             Grapple,
+             MetroidSuit,
+             Plasma,
+             Screw,
+             Hypercharge,
+             Charge,
+             Xray,
+             SpaceJump,
+             Energy,
+             Refuel,
+             SmallAmmo,
+             LargeAmmo,
+             DamageAmp,
+             ChargeAmp,
+             SpaceJumpBoost]
+    
     createWorkingFileCopy(rom_clean_path, rom1_path)
     
     #parse csvraw
@@ -335,27 +324,8 @@ if __name__ == "__main__":
         availableLocations=[]
         visitedLocations=[]
         loadout=[]
-        earlyItemList=[Missile,
-                       Morph,
-                       GravityBoots]
-        progressionItemList=[Super,
-                         Grapple,
-                         PowerBomb,
-                         Speedball,
-                         Bombs,
-                         HiJump,
-                         GravitySuit,
-                         DarkVisor,
-                         Wave,
-                         SpeedBooster,
-                         Spazer,
-                         Varia,
-                         Ice,
-                         MetroidSuit,
-                         Plasma,
-                         Screw,
-                         SpaceJump,
-                         Charge]
+        #can split this to have different fill algorithms
+        itemLists=fillSpeedrun.initItemLists()
         while unusedLocations is not [] and availableLocations is not [] :
             #print("loadout contains:")
             #print(loadout)
@@ -401,79 +371,35 @@ if __name__ == "__main__":
                 spoilerSave+="Item placement was not successful. "+str(len(unusedLocations))+" locations remaining.\n"
                 break
 
-            if availableLocations[0][0] == "TORPEDO BAY" :
-                randomIndex = random.randint(0,1)
-                firstItems = [Missile, Morph]
-                placeItem = firstItems[randomIndex]
-                #print(availableLocations[0][0]," - - - ",placeItem[0])
-                spoilerSave += availableLocations[0][0]+" - - - "+placeItem[0]+"\n"
-                earlyItemList.pop(randomIndex)
-                itemPlace(availableLocations[0],placeItem)
-                availableLocations.pop()
-                loadout.append(placeItem)
-                
-            if earlyItemList != [] and availableLocations != []:
-                randomIndex=0
-                if len(earlyItemList) > 1 :
-                    randomIndex = random.randint(0,len(earlyItemList)-1)
-                placeItem = earlyItemList[randomIndex]
-                earlyItemList.pop(randomIndex)
-                randomIndex=0
-                if len(availableLocations) > 1 :
-                    randomIndex = random.randint(0,len(availableLocations)-1)
-                placeLocation = availableLocations[randomIndex]
-                visitedLocations.append(availableLocations[randomIndex])
-                availableLocations.pop(randomIndex)
-                #print(placeLocation[0]," - - - ",placeItem[0])
-                spoilerSave+=placeLocation[0]+" - - - "+placeItem[0]+"\n"
-                itemPlace(placeLocation,placeItem)
-                loadout.append(placeItem)
-            if earlyItemList == [] and progressionItemList != [] and availableLocations != [] :
-                randomIndex=0
-                if len(progressionItemList) > 1 :
-                    randomIndex = random.randint(0,len(progressionItemList)-1)
-                placeItem = progressionItemList[randomIndex]
-                progressionItemList.pop(randomIndex)
-                randomIndex=0
-                if len(availableLocations) > 1 :
-                    randomIndex = random.randint(0,len(availableLocations)-1)
-                placeLocation = availableLocations[randomIndex]
-                visitedLocations.append(availableLocations[randomIndex])
-                availableLocations.pop(randomIndex)
-                #print(placeLocation[0]," - - - ",placeItem[0])
-                spoilerSave+=placeLocation[0]+" - - - "+placeItem[0]+"\n"
-                itemPlace(placeLocation,placeItem)
-                loadout.append(placeItem)
-            if earlyItemList == [] and progressionItemList == [] and availableLocations != []:
-                randomIndex=0
-                if len(extraItemList) > 1 :
-                    randomIndex = random.randint(0,len(extraItemList)-1)
-                if extraItemList[randomIndex] in loadout :
-                    randomIndex = 50 #rather than duplicate Xray or Hypercharge, small ammo
-                placeItem = extraItemList[randomIndex]
-                randomIndex=0
-                if len(availableLocations) > 1 :
-                    randomIndex = random.randint(0,len(availableLocations)-1)
-                placeLocation = availableLocations[randomIndex]
-                visitedLocations.append(availableLocations[randomIndex])
-                availableLocations.pop(randomIndex)
-                #print(placeLocation[0]," - - - ",placeItem[0])
-                spoilerSave+=placeLocation[0]+" - - - "+placeItem[0]+"\n"
-                itemPlace(placeLocation,placeItem)
-                if placeItem[0] == "Xray" or placeItem[0] == "Hypercharge" :
-                    loadout.append(placeItem)
+            #can split here for different fill algorithms
+            placePair=fillSpeedrun.placementAlg(availableLocations, locArray, loadout, itemLists)
+            #it returns your location and item, which are handled here
+            placeLocation=placePair[0]
+            placeItem=placePair[1]
+            itemPlace(placeLocation,placeItem)
+            availableLocations.remove(placeLocation)
+            for bank in itemLists :
+                if placeItem in bank :
+                    bank.remove(placeItem)
+            loadout.append(placeItem)
+            spoilerSave+=placeLocation[0]+" - - - "+placeItem[0]+"\n"
+            
+            
 
 
     # Suit animation skip patch
     writeBytes(0x27017, b"\xea\xea\xea\xea")
+    # Flickering hud removal patch
+    if hudFlicker == "Y" :
+        writeBytes(0x547a, b"\x02")
+        writeBytes(0x547f, b"\x00")
     finalizeRom()
     print("Done!")
-    print("Filename is "+"Sub"+str(seeeed)+"a3.sfc")
-    spoiler_file = open("../SubversionRando/spoilers/aSub"+str(seeeed)+"a3.sfc.spoiler.txt", "w")
+    print("Filename is "+"Sub"+logicChoice+str(seeeed)+".sfc")
     spoiler_file.write("RNG Seed: {}\n".format(str(seeeed))+"\n")
     spoiler_file.write("\n Spoiler \n\n Spoiler \n\n Spoiler \n\n Spoiler \n\n")
     spoiler_file.write(spoilerSave)    
-    print("Spoiler file is "+"Sub"+str(seeeed)+"a3.sfc.spoiler.txt")
+    print("Spoiler file is "+"Sub"+logicChoice+str(seeeed)+".sfc.spoiler.txt")
 
 
 
