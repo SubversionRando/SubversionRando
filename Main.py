@@ -65,6 +65,7 @@ if __name__ == "__main__":
     #while logicChoice != "C" and logicChoice != "E" :
     #    logicChoice= input("Enter C for Casual or E for Expert logic:")
     #    logicChoice = logicChoice.title()
+    logicChoice="C"
     #hudFlicker=""
     #while hudFlicker != "Y" and hudFlicker != "N" :
     #    hudFlicker= input("Enter Y to patch HUD flicker on emulator, or N to decline:")
