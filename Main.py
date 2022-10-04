@@ -170,7 +170,7 @@ if __name__ == "__main__":
               b"\x67\xef",
               b"\xbb\xef",
               b"\x00"]
-    Screw = ["Screw Atttack",
+    Screw = ["Screw Attack",
              b"\x1f\xef",
              b"\x73\xef",
              b"\xc7\xef",
@@ -389,7 +389,7 @@ if __name__ == "__main__":
 
 
     # Suit animation skip patch
-    writeBytes(0x27017, b"\xea\xea\xea\xea")
+    writeBytes(0x20717, b"\xea\xea\xea\xea")
     # Flickering hud removal patch
     if hudFlicker == "Y" :
         #writeBytes(0x547a, b"\x02")
