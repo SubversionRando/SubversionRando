@@ -92,7 +92,7 @@ def updateLogic (unusedLocations, locArray, loadout) :
               b"\x67\xef",
               b"\xbb\xef",
               b"\x00"]
-    Screw = ["Screw Atttack",
+    Screw = ["Screw Attack",
              b"\x1f\xef",
              b"\x73\xef",
              b"\xc7\xef",
