@@ -1,4 +1,5 @@
 *.spoiler.txt
 *.sfc
+*.smc
 __pycache__/
 *.swp
