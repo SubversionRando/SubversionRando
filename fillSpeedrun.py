@@ -25,8 +25,8 @@ PowerBomb = ["Power Bomb",
              b"\x00"]
 Morph = ["Morph Ball",
          b"\x23\xef",
-         b"\x23\xef",
-         b"\x23\xef",
+         b"\x77\xef",
+         b"\xcb\xef",
          b"\x00"]
 GravityBoots = ["Gravity Boots",
                 b"\x40\xfd",
@@ -208,7 +208,7 @@ def placementAlg(availableLocations, locArray, loadout, itemLists) :
     earlyItemList=itemLists[0]
     progressionItemList=itemLists[1]
     extraItemList=itemLists[2]
-    if availableLocations[0][0] == "TORPEDO BAY" :
+    if availableLocations[0]['fullitemname'] == "TORPEDO BAY" :
         randomIndex = random.randint(0,1)
         firstItems = [Missile, Morph]
         placeItem = firstItems[randomIndex]

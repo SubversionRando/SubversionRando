@@ -19,8 +19,8 @@ def updateLogic (unusedLocations, locArray, loadout) :
                  b"\x00"]
     Morph = ["Morph Ball",
              b"\x23\xef",
-             b"\x23\xef",
-             b"\x23\xef",
+             b"\x77\xef",
+             b"\xcb\xef",
              b"\x00"]
     GravityBoots = ["Gravity Boots",
                     b"\x40\xfd",
@@ -169,250 +169,250 @@ def updateLogic (unusedLocations, locArray, loadout) :
     oceanDepths = underwater and ((pinkDoor and (Morph in loadout) and (DarkVisor in loadout)) or (Super in loadout))
     #print("Updating logic...")
     for thisLoc in unusedLocations :
-        #thisLoc is a row. thisLoc[4] is the logic
+        #thisLoc is a row. thisLoc['inlogic'] is the logic
         #for each location, check that location names match
-        if thisLoc[0] == locArray[0][0] : #IMPACT CRATER
-            thisLoc[4] = exitSpacePort and (Morph in loadout) and (Spazer in loadout) and ((HiJump in loadout) or (SpeedBooster in loadout) or (SpaceJump in loadout))
-        if thisLoc[0] == locArray[1][0] : #SUBTERRANEAN BURROW
-            thisLoc[4] = exitSpacePort and ((Morph in loadout) or (GravityBoots in loadout))
-        if thisLoc[0] == locArray[2][0] : #SANDY CACHE
-            thisLoc[4] = jumpAble and (Missile in loadout)
-        if thisLoc[0] == locArray[3][0] : #SUBMARINE NEST
-            thisLoc[4] = underwater and pinkDoor
-        if thisLoc[0] == (locArray[4][0]) : #SHRINE OF THE PENUMBRA
-            thisLoc[4] = jumpAble and pinkDoor and (GravitySuit in loadout) and (canUsePB or (canUseBombs and (DarkVisor in loadout)))
-        if thisLoc[0] == locArray[5][0] : #BENTHIC CACHE ACCESS
-            thisLoc[4] = jumpAble and underwater and canUseBombs and (Super in loadout) and (PowerBomb in loadout)
-        if thisLoc[0] == locArray[6][0] : #BENTHIC CACHE
-            thisLoc[4] = jumpAble and underwater and canUseBombs and (Super in loadout) and (PowerBomb in loadout)
-        if thisLoc[0] == locArray[7][0] : #OCEAN VENT SUPPLY DEPOT
-            thisLoc[4] = jumpAble and underwater and (Morph in loadout) and ((Super in loadout) or (Screw in loadout))
-        if thisLoc[0] == locArray[8][0] : #SEDIMENT FLOW
-            thisLoc[4] = jumpAble and underwater and (Super in loadout)
-        if thisLoc[0] == locArray[9][0] : #HARMONIC GROWTH ENHANCER
-            thisLoc[4] = jumpAble and pinkDoor and canUseBombs and ((Wave in loadout) or (DarkVisor in loadout))
-        if thisLoc[0] == locArray[10][0] : #UPPER VULNAR POWER NODE
-            thisLoc[4] = jumpAble and canUsePB and (Screw in loadout) and (MetroidSuit in loadout)
-        if thisLoc[0] == locArray[11][0] : #GRAND VAULT
-            thisLoc[4] = jumpAble and (Grapple in loadout)
-        if thisLoc[0] == locArray[12][0] : #CISTERN
-            thisLoc[4] = vulnar and canUseBombs
-        if thisLoc[0] == locArray[13][0] : #WARRIOR SHRINE MID
-            thisLoc[4] = vulnar and canUsePB
-        if thisLoc[0] == locArray[14][0] : #VULNAR CAVES ENTRANCE
-            thisLoc[4] = vulnar
-        if thisLoc[0] == locArray[15][0] : #CRYPT
-            thisLoc[4] = vulnar and canUseBombs and (Speedball in loadout)
-        if thisLoc[0] == locArray[16][0] : #ARCHIVES FRONT
-            thisLoc[4] = vulnar and canUseBombs and (Speedball in loadout)
-        if thisLoc[0] == locArray[17][0] : #ARCHIVES BACK
-            thisLoc[4] = vulnar and canUseBombs and (Speedball in loadout) and (SpeedBooster in loadout)
-        if thisLoc[0] == locArray[18][0] : #SENSOR MAINTENANCE FRONT
-            thisLoc[4] = vulnar and canUseBombs and (Speedball in loadout)
-        if thisLoc[0] == locArray[19][0] : #ERIBIUM APPARATUS ROOM
-            thisLoc[4] = vulnar and canUseBombs and (DarkVisor in loadout)
-        if thisLoc[0] == locArray[20][0] : #HOT SPRING
-            thisLoc[4] = vulnar and canUseBombs and (Wave in loadout)
-        if thisLoc[0] == locArray[21][0] : #EPIPHREATIC CRAG
-            thisLoc[4] = vulnar and canUseBombs and (GravitySuit in loadout) and ((DarkVisor in loadout) or (pirateLab and canUsePB))
-        if thisLoc[0] == locArray[22][0] : #MEZZANINE CONCOURSE
-            thisLoc[4] = upperVulnar
-        if thisLoc[0] == locArray[23][0] : #GREATER INFERNO
-            thisLoc[4] = depthsL and canUsePB and (Super in loadout) and (MetroidSuit in loadout)
-        if thisLoc[0] == locArray[24][0] : #BURNING DEPTHS CACHE
-            thisLoc[4] = depthsL and canUsePB and (Super in loadout) and (MetroidSuit in loadout) and ((Spazer in loadout) or (Wave in loadout))
-        if thisLoc[0] == locArray[25][0] : #MINING CACHE
-            thisLoc[4] = depthsL and canUseBombs
-        if thisLoc[0] == locArray[26][0] : #INFESTED PASSAGE
-            thisLoc[4] = hive
-        if thisLoc[0] == locArray[27][0] : #FIRE'S BOON SHRINE
-            thisLoc[4] = hive and (Wave in loadout) and ((Ice in loadout) or (SpeedBooster in loadout))
-        if thisLoc[0] == locArray[28][0] : #FIRE'S BANE SHRINE
-            thisLoc[4] = hive and ((Ice in loadout) or (SpeedBooster in loadout))
-        if thisLoc[0] == locArray[29][0] : #ANCIENT SHAFT
-            thisLoc[4] = hive and (MetroidSuit in loadout) and ((Ice in loadout) or (SpeedBooster in loadout))
-        if thisLoc[0] == locArray[30][0] : #GYMNASIUM
-            thisLoc[4] = hive and (Grapple in loadout) and canUsePB and ((Ice in loadout) or (SpeedBooster in loadout))
-        if thisLoc[0] == locArray[31][0] : #ELECTROMECHANICAL ENGINE
-            thisLoc[4] = geothermal
-        if thisLoc[0] == locArray[32][0] : #DEPRESSURIZATION VALVE
-            thisLoc[4] = geothermal and (Grapple in loadout) and (Screw in loadout)
-        if thisLoc[0] == locArray[33][0] : #LOADING DOCK STORAGE AREA
-            thisLoc[4] = pirateLab
-        if thisLoc[0] == locArray[34][0] : #CONTAINMENT AREA
-            thisLoc[4] = pirateLab and (GravitySuit in loadout) and ((MetroidSuit in loadout) or (Screw in loadout))
-        if thisLoc[0] == locArray[35][0] : #BRIAR TOP
-            thisLoc[4] = eastLomyr and canUsePB
-        if thisLoc[0] == locArray[36][0] : #SHRINE OF FERVOR
-            thisLoc[4] = eastLomyr
-        if thisLoc[0] == locArray[37][0] : #CHAMBER OF WIND
-            thisLoc[4] = eastLomyr and pinkDoor and (SpeedBooster in loadout)
-        if thisLoc[0] == locArray[38][0] : #WATER GARDEN
-            thisLoc[4] = eastLomyr and pinkDoor and (SpeedBooster in loadout)
-        if thisLoc[0] == locArray[39][0] : #CROCOMIRE'S ENERGY STATION
-            thisLoc[4] = eastLomyr and (Super in loadout) and (SpeedBooster in loadout)
-        if thisLoc[0] == locArray[40][0] : #WELLSPRING CACHE
-            thisLoc[4] = eastLomyr and (Super in loadout) and (SpeedBooster in loadout)
-        if thisLoc[0] == locArray[41][0] : #FROZEN LAKE WALL
-            thisLoc[4] = upperVulnar and canFly and (Plasma in loadout)
-        if thisLoc[0] == locArray[42][0] : #GRAND PROMENADE
-            thisLoc[4] = upperVulnar
-        if thisLoc[0] == locArray[43][0] : #SUMMIT LANDING
-            thisLoc[4] = upperVulnar and canUseBombs and (Speedball in loadout)
-        if thisLoc[0] == locArray[44][0] : #SNOW CACHE
-            thisLoc[4] = upperVulnar and canUseBombs and (Plasma in loadout)
-        if thisLoc[0] == locArray[45][0] : #RELIQUARY ACCESS
-            thisLoc[4] = upperVulnar and canUseBombs and (Super in loadout) and (DarkVisor in loadout)
-        if thisLoc[0] == locArray[46][0] : #SYZYGY OBSERVATORIUM
-            thisLoc[4] = upperVulnar and (((Super in loadout) and (Varia in loadout) and ((MetroidSuit in loadout) or (Hypercharge in loadout))) or (Screw in loadout))
-        if thisLoc[0] == locArray[47][0] : #ARMORY CACHE 2
-            thisLoc[4] = upperVulnar and ((canUseBombs and (Super in loadout) and (DarkVisor in loadout)) or (Screw in loadout))
-        if thisLoc[0] == locArray[48][0] : #ARMORY CACHE 3
-            thisLoc[4] = upperVulnar and ((canUseBombs and (Super in loadout) and (DarkVisor in loadout)) or (Screw in loadout))
-        if thisLoc[0] == locArray[49][0] : #DRAWING ROOM
-            thisLoc[4] = upperVulnar and (Super in loadout) and (SpaceJump in loadout)
-        if thisLoc[0] == locArray[50][0] : #IMPACT CRATER OVERLOOK
-            thisLoc[4] = canFly and canUseBombs and (canUsePB or (Super in loadout))
-        if thisLoc[0] == locArray[51][0] : #MAGMA LAKE CACHE
-            thisLoc[4] = depthsL
-        if thisLoc[0] == locArray[52][0] : #SHRINE OF THE ANIMATE SPARK
-            thisLoc[4] = hive and (GravitySuit in loadout) and (Grapple in loadout) and (Screw in loadout) and (SpaceJump in loadout) and (SpeedBooster in loadout) and (Charge in loadout)
-        if thisLoc[0] == locArray[53][0] : #DOCKING PORT OMEGA
-            thisLoc[4] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
-        if thisLoc[0] == locArray[54][0] : #READY ROOM
-            thisLoc[4] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
-        if thisLoc[0] == locArray[55][0] : #TORPEDO BAY
-            thisLoc[4] = True
-        if thisLoc[0] == locArray[56][0] : #EXTRACT STORAGE
-            thisLoc[4] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
-        if thisLoc[0] == locArray[57][0] : #IMPACT CRATER ALCOVE
-            thisLoc[4] = jumpAble and canFly and canUseBombs
-        if thisLoc[0] == locArray[58][0] : #OCEAN SHORE BOTTOM
-            thisLoc[4] = exitSpacePort
-        if thisLoc[0] == locArray[59][0] : #OCEAN SHORE TOP
-            thisLoc[4] = jumpAble and (canFly or (HiJump in loadout) or ((SpeedBooster in loadout) and (GravitySuit in loadout))) 
-        if thisLoc[0] == locArray[60][0] : #SANDY BURROW TOP
-            thisLoc[4] = underwater and canUseBombs
-        if thisLoc[0] == locArray[61][0] : #SUBMARINE ALCOVE 
-            thisLoc[4] = underwater and (Morph in loadout) and (DarkVisor in loadout) and pinkDoor
-        if thisLoc[0] == locArray[62][0] : #SEDIMENT FLOOR
-            thisLoc[4] = underwater and (Super in loadout) and (Morph in loadout)
-        if thisLoc[0] == locArray[63][0] : #SANDY GULLY
-            thisLoc[4] = underwater and (Super in loadout)
-        if thisLoc[0] == locArray[64][0] : #HALL OF THE ELDERS
-            thisLoc[4] = vulnar and (Morph in loadout) and ((Missile in loadout) or (GravitySuit in loadout))
-        if thisLoc[0] == locArray[65][0] : #WARRIOR SHRINE LOW RIGHT
-            thisLoc[4] = vulnar and (Morph in loadout) and (Missile in loadout) and ((Bombs in loadout) or (Wave in loadout))
-        if thisLoc[0] == locArray[66][0] : #WARRIOR SHRINE TOP LEFT
-            thisLoc[4] = vulnar and canUseBombs and ((Missile in loadout) or (GravitySuit in loadout)) and ((Bombs in loadout) or (Wave in loadout))
-        if thisLoc[0] == locArray[67][0] : #PATH OF SWORDS
-            thisLoc[4] = vulnar and canUseBombs
-        if thisLoc[0] == locArray[68][0] : #AUXILIARY PUMP ROOM
-            thisLoc[4] = vulnar and canUseBombs
-        if thisLoc[0] == locArray[69][0] : #MONITORING STATION
-            thisLoc[4] = vulnar and (Morph in loadout) and (Speedball in loadout)
-        if thisLoc[0] == locArray[70][0] : #SENSOR MAINTENANCE BACK
-            thisLoc[4] = vulnar and canUseBombs and (Speedball in loadout) and (Missile in loadout)
-        if thisLoc[0] == locArray[71][0] : #CAUSEWAY OVERLOOK
-            thisLoc[4] = vulnar and canUseBombs
-        if thisLoc[0] == locArray[72][0] : #PLACID POOL
-            thisLoc[4] = vulnar and canUsePB and (Ice in loadout) and ((Varia in loadout) or ((DarkVisor in loadout) and (Wave in loadout)) or ((DarkVisor in loadout) and (Speedball in loadout) or (SpeedBooster in loadout)))
-        if thisLoc[0] == locArray[73][0] : #BLAZING CHASM
-            thisLoc[4] = depthsL and canUsePB and (Super in loadout) and (MetroidSuit in loadout)                  
-        if thisLoc[0] == locArray[74][0] : #GENERATOR MANIFOLD
-            thisLoc[4] = depthsL and canUsePB and (Super in loadout) and (MetroidSuit in loadout)                  
-        if thisLoc[0] == locArray[75][0] : #FIERY CROSSING CACHE
-            thisLoc[4] = depthsL and canUsePB and (Super in loadout)
-        if thisLoc[0] == locArray[76][0] : #DARK CREVICE CACHE
-            thisLoc[4] = depthsL and canUseBombs
-        if thisLoc[0] == locArray[77][0] : #ANCIENT BASIN
-            thisLoc[4] = hive
-        if thisLoc[0] == locArray[78][0] : #CENTRAL CORRIDOR RIGHT
-            thisLoc[4] = vulnar and canUseBombs and (GravitySuit in loadout) and ((DarkVisor in loadout) or (pirateLab and canUsePB))
-        if thisLoc[0] == locArray[79][0] : #BRIAR BOTTOM
-            thisLoc[4] = eastLomyr and (Morph in loadout)
-        if thisLoc[0] == locArray[80][0] : #ICY FLOW
-            thisLoc[4] = upperVulnar and (SpeedBooster in loadout) and (Plasma in loadout)
-        if thisLoc[0] == locArray[81][0] : #ICE CAVE
-            thisLoc[4] = upperVulnar and (Plasma in loadout)
-        if thisLoc[0] == locArray[82][0] : #ANTECHAMBER
-            thisLoc[4] = upperVulnar and canUsePB
-        if thisLoc[0] == locArray[83][0] : #EDDY CHANNELS
-            thisLoc[4] = underwater and (Speedball in loadout) and ((pinkDoor and (DarkVisor in loadout)) or (Super in loadout))
-        if thisLoc[0] == locArray[84][0] : #TRAM TO SUZI ISLAND
-            thisLoc[4] = underwater and canUsePB and (Super in loadout) and (SpeedBooster in loadout) and (Spazer in loadout)
-        if thisLoc[0] == locArray[85][0] : #PORTICO (idk Suzi)
-            thisLoc[4] = hive and canUsePB and (GravitySuit in loadout) and (Grapple in loadout) and (Screw in loadout) and (SpaceJump in loadout) and (SpeedBooster in loadout) and (Charge in loadout)
-        if thisLoc[0] == locArray[86][0] : #TOWER ROCK LOOKOUT (suzi)
-            thisLoc[4] = hive and canUsePB and (GravitySuit in loadout) and (Grapple in loadout) and (Screw in loadout) and (SpaceJump in loadout) and (SpeedBooster in loadout) and (Charge in loadout)
-        if thisLoc[0] == locArray[87][0] : #REEF NOOK (suzi)
-            thisLoc[4] = hive and canUsePB and (GravitySuit in loadout) and (Grapple in loadout) and (Screw in loadout) and (SpaceJump in loadout) and (SpeedBooster in loadout) and (Charge in loadout)
-        if thisLoc[0] == locArray[88][0] : #SALINE CACHE (suzi)
-            thisLoc[4] = hive and canUsePB and (GravitySuit in loadout) and (Grapple in loadout) and (Screw in loadout) and (SpaceJump in loadout) and (SpeedBooster in loadout) and (Charge in loadout)
-        if thisLoc[0] == locArray[89][0] : #ENERVATION CHAMBER (SUZI)
-            thisLoc[4] = hive and canUsePB and (GravitySuit in loadout) and (Grapple in loadout) and (Screw in loadout) and (SpaceJump in loadout) and (SpeedBooster in loadout) and (Charge in loadout)
-        if thisLoc[0] == locArray[90][0] : #WEAPON LOCKER (cautious logic)
-            thisLoc[4] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
-        if thisLoc[0] == locArray[91][0] : #AFT BATTERY (cautious logic)
-            thisLoc[4] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
-        if thisLoc[0] == locArray[92][0] : #FORWARD BATTERY (cautious logic)
-            thisLoc[4] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
-        if thisLoc[0] == locArray[93][0] : #GANTRY (cautious logic)
-            thisLoc[4] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
-        if thisLoc[0] == locArray[94][0] : #GARDEN CANAL (cautious logic)
-            thisLoc[4] = eastLomyr and canUsePB and (Spazer in loadout)
-        if thisLoc[0] == locArray[95][0] : #SANDY BURROW BOTTOM
-            thisLoc[4] = underwater and (Morph in loadout)
-        if thisLoc[0] == locArray[96][0] : #TROPHOBIOTIC CHAMBER
-            thisLoc[4] = vulnar and (Morph in loadout) and (Speedball in loadout)
-        if thisLoc[0] == locArray[97][0] : #WASTE PROCESSING
-            thisLoc[4] = pirateLab and (SpeedBooster in loadout) and ((Wave in loadout) or canUsePB)
-        if thisLoc[0] == locArray[98][0] : #GRAND CHASM
-            thisLoc[4] = upperVulnar and canUseBombs and (Screw in loadout) and (SpaceJump in loadout)
-        if thisLoc[0] == locArray[99][0] : #MINING SITE 1 (ALPHA)
-            thisLoc[4] = canUseBombs and ((vulnar and (Wave in loadout)) or depthsL)
-        if thisLoc[0] == locArray[100][0] : #COLOSSEUM (GT)
-            thisLoc[4] = depthsL and (Charge in loadout)
-        if thisLoc[0] == locArray[101][0] : #LAVA POOL
-            thisLoc[4] = depthsL and (MetroidSuit in loadout)
-        if thisLoc[0] == locArray[102][0] : #HIVE MAIN CHAMBER
-            thisLoc[4] = hive
-        if thisLoc[0] == locArray[103][0] : #CROSSWAY CACHE
-            thisLoc[4] = hive and ((Ice in loadout) or (SpeedBooster in loadout))
-        if thisLoc[0] == locArray[104][0] : #SLAG HEAP
-            thisLoc[4] = hive and (MetroidSuit in loadout) and ((Ice in loadout) or (SpeedBooster in loadout))
-        if thisLoc[0] == locArray[105][0] : #HYDRODYNAMIC CHAMBER
-            thisLoc[4] = pirateLab and (Spazer in loadout) and ((HiJump in loadout) or (GravitySuit in loadout))
-        if thisLoc[0] == locArray[106][0] : #CENTRAL CORRIDOR LEFT
-            thisLoc[4] = vulnar and canUseBombs and (Speedball in loadout) and (SpeedBooster in loadout) and (GravitySuit in loadout) and ((DarkVisor in loadout) or (pirateLab and canUsePB))
-        if thisLoc[0] == locArray[107][0] : #RESTRICTED AREA
-            thisLoc[4] = vulnar and canUseBombs and (MetroidSuit in loadout) and (GravitySuit in loadout) and ((DarkVisor in loadout) or (pirateLab and canUsePB))
-        if thisLoc[0] == locArray[108][0] : #FOUNDRY
-            thisLoc[4] = vulnar and canUseBombs and (GravitySuit in loadout) and ((DarkVisor in loadout) or (pirateLab and canUsePB))
-        if thisLoc[0] == locArray[109][0] : #NORAK ESCARPMENT
-            thisLoc[4] = eastLomyr and (canFly or (SpeedBooster in loadout))
-        if thisLoc[0] == locArray[110][0] : #GLACIER'S REACH
-            thisLoc[4] = upperVulnar and canUseBombs and (Plasma in loadout)
-        if thisLoc[0] == locArray[111][0] : #SITTING ROOM
-            thisLoc[4] = upperVulnar and canUsePB and (Speedball in loadout)
-        if thisLoc[0] == locArray[112][0] : #SUZI RUINS MAP STATION ACCESS
-            thisLoc[4] = hive and (GravitySuit in loadout) and (Grapple in loadout) and (Screw in loadout) and (SpaceJump in loadout) and (SpeedBooster in loadout) and (Charge in loadout)
-        if thisLoc[0] == locArray[113][0] : #OBSCURED VESTIBULE (SUZI)
-            thisLoc[4] = hive and (GravitySuit in loadout) and (Grapple in loadout) and (Screw in loadout) and (SpaceJump in loadout) and (SpeedBooster in loadout) and (Charge in loadout)
-        if thisLoc[0] == locArray[114][0] : #DOCKING PORT 3 (UPSILON)
-            thisLoc[4] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
-        if thisLoc[0] == locArray[115][0] : #ARENA
-            thisLoc[4] = vulnar and (Morph in loadout) and (Missile in loadout) and ((Bombs in loadout) or (Wave in loadout))
-        if thisLoc[0] == locArray[116][0] : #WEST SPORE FIELD
-            thisLoc[4] = vulnar and canUseBombs and (Super in loadout) and (Wave in loadout) and (Speedball in loadout)
-        if thisLoc[0] == locArray[117][0] : #MAGMA CHAMBER
-            thisLoc[4] = depthsL and ((Charge in loadout) or (MetroidSuit in loadout))
-        if thisLoc[0] == locArray[118][0] : #EQUIPMENT LOCKER
-            thisLoc[4] = pirateLab and canUseBombs
-        if thisLoc[0] == locArray[119][0] : #ANTILIER
-            thisLoc[4] = pirateLab and ((HiJump in loadout) or (GravitySuit in loadout))
-        if thisLoc[0] == locArray[120][0] : #WEAPON RESEARCH
-            thisLoc[4] = vulnar and canUseBombs and (Wave in loadout) and (GravitySuit in loadout) and ((DarkVisor in loadout) or (pirateLab and canUsePB))
-        if thisLoc[0] == locArray[121][0] : #CROCOMIRE'S LAIR
-            thisLoc[4] = eastLomyr and (Super in loadout) and (SpeedBooster in loadout)
+        if thisLoc['fullitemname'] == "Impact Crater: AccelCharge":
+            thisLoc['inlogic'] = exitSpacePort and (Morph in loadout) and (Spazer in loadout) and ((HiJump in loadout) or (SpeedBooster in loadout) or (SpaceJump in loadout))
+        if thisLoc['fullitemname'] == "Subterranean Burrow":
+            thisLoc['inlogic'] = exitSpacePort and ((Morph in loadout) or (GravityBoots in loadout))
+        if thisLoc['fullitemname'] == "Sandy Cache":
+            thisLoc['inlogic'] = jumpAble and (Missile in loadout)
+        if thisLoc['fullitemname'] == "Submarine Nest":
+            thisLoc['inlogic'] = underwater and pinkDoor
+        if thisLoc['fullitemname'] == "Shrine Of The Penumbra":
+            thisLoc['inlogic'] = jumpAble and pinkDoor and (GravitySuit in loadout) and (canUsePB or (canUseBombs and (DarkVisor in loadout)))
+        if thisLoc['fullitemname'] == "Benthic Cache Access":
+            thisLoc['inlogic'] = jumpAble and underwater and canUseBombs and (Super in loadout) and (PowerBomb in loadout)
+        if thisLoc['fullitemname'] == "Benthic Cache":
+            thisLoc['inlogic'] = jumpAble and underwater and canUseBombs and (Super in loadout) and (PowerBomb in loadout)
+        if thisLoc['fullitemname'] == "Ocean Vent Supply Depot":
+            thisLoc['inlogic'] = jumpAble and underwater and (Morph in loadout) and ((Super in loadout) or (Screw in loadout))
+        if thisLoc['fullitemname'] == "Sediment Flow":
+            thisLoc['inlogic'] = jumpAble and underwater and (Super in loadout)
+        if thisLoc['fullitemname'] == "Harmonic Growth Enhancer":
+            thisLoc['inlogic'] = jumpAble and pinkDoor and canUseBombs and ((Wave in loadout) or (DarkVisor in loadout))
+        if thisLoc['fullitemname'] == "Upper Vulnar Power Node":
+            thisLoc['inlogic'] = jumpAble and canUsePB and (Screw in loadout) and (MetroidSuit in loadout)
+        if thisLoc['fullitemname'] == "Grand Vault":
+            thisLoc['inlogic'] = jumpAble and (Grapple in loadout)
+        if thisLoc['fullitemname'] == "Cistern":
+            thisLoc['inlogic'] = vulnar and canUseBombs
+        if thisLoc['fullitemname'] == "Warrior Shrine: ETank":
+            thisLoc['inlogic'] = vulnar and canUsePB
+        if thisLoc['fullitemname'] == "Vulnar Caves Entrance":
+            thisLoc['inlogic'] = vulnar
+        if thisLoc['fullitemname'] == "Crypt":
+            thisLoc['inlogic'] = vulnar and canUseBombs and (Speedball in loadout)
+        if thisLoc['fullitemname'] == "Archives: SpringBall": # yes it's actually Speed Ball, uses Spring data
+            thisLoc['inlogic'] = vulnar and canUseBombs and (Speedball in loadout)
+        if thisLoc['fullitemname'] == "Archives: SJBoost":
+            thisLoc['inlogic'] = vulnar and canUseBombs and (Speedball in loadout) and (SpeedBooster in loadout)
+        if thisLoc['fullitemname'] == "Sensor Maintenance: ETank": # front
+            thisLoc['inlogic'] = vulnar and canUseBombs and (Speedball in loadout)
+        if thisLoc['fullitemname'] == "Eribium Apparatus Room":
+            thisLoc['inlogic'] = vulnar and canUseBombs and (DarkVisor in loadout)
+        if thisLoc['fullitemname'] == "Hot Spring":
+            thisLoc['inlogic'] = vulnar and canUseBombs and (Wave in loadout)
+        if thisLoc['fullitemname'] == "Epiphreatic Crag":
+            thisLoc['inlogic'] = vulnar and canUseBombs and (GravitySuit in loadout) and ((DarkVisor in loadout) or (pirateLab and canUsePB))
+        if thisLoc['fullitemname'] == "Mezzanine Concourse":
+            thisLoc['inlogic'] = upperVulnar
+        if thisLoc['fullitemname'] == "Greater Inferno":
+            thisLoc['inlogic'] = depthsL and canUsePB and (Super in loadout) and (MetroidSuit in loadout)
+        if thisLoc['fullitemname'] == "Burning Depths Cache":
+            thisLoc['inlogic'] = depthsL and canUsePB and (Super in loadout) and (MetroidSuit in loadout) and ((Spazer in loadout) or (Wave in loadout))
+        if thisLoc['fullitemname'] == "Mining Cache":
+            thisLoc['inlogic'] = depthsL and canUseBombs
+        if thisLoc['fullitemname'] == "Infested Passage":
+            thisLoc['inlogic'] = hive
+        if thisLoc['fullitemname'] == "Fire's Boon Shrine":
+            thisLoc['inlogic'] = hive and (Wave in loadout) and ((Ice in loadout) or (SpeedBooster in loadout))
+        if thisLoc['fullitemname'] == "Fire's Bane Shrine":
+            thisLoc['inlogic'] = hive and ((Ice in loadout) or (SpeedBooster in loadout))
+        if thisLoc['fullitemname'] == "Ancient Shaft":
+            thisLoc['inlogic'] = hive and (MetroidSuit in loadout) and ((Ice in loadout) or (SpeedBooster in loadout))
+        if thisLoc['fullitemname'] == "Gymnasium":
+            thisLoc['inlogic'] = hive and (Grapple in loadout) and canUsePB and ((Ice in loadout) or (SpeedBooster in loadout))
+        if thisLoc['fullitemname'] == "Electromechanical Engine":
+            thisLoc['inlogic'] = geothermal
+        if thisLoc['fullitemname'] == "Depressurization Valve":
+            thisLoc['inlogic'] = geothermal and (Grapple in loadout) and (Screw in loadout)
+        if thisLoc['fullitemname'] == "Loading Dock Storage Area":
+            thisLoc['inlogic'] = pirateLab
+        if thisLoc['fullitemname'] == "Containment Area":
+            thisLoc['inlogic'] = pirateLab and (GravitySuit in loadout) and ((MetroidSuit in loadout) or (Screw in loadout))
+        if thisLoc['fullitemname'] == "Briar: SJBoost": # top
+            thisLoc['inlogic'] = eastLomyr and canUsePB
+        if thisLoc['fullitemname'] == "Shrine Of Fervor":
+            thisLoc['inlogic'] = eastLomyr
+        if thisLoc['fullitemname'] == "Chamber Of Wind":
+            thisLoc['inlogic'] = eastLomyr and pinkDoor and (SpeedBooster in loadout)
+        if thisLoc['fullitemname'] == "Water Garden":
+            thisLoc['inlogic'] = eastLomyr and pinkDoor and (SpeedBooster in loadout)
+        if thisLoc['fullitemname'] == "Crocomire's Energy Station":
+            thisLoc['inlogic'] = eastLomyr and (Super in loadout) and (SpeedBooster in loadout)
+        if thisLoc['fullitemname'] == "Wellspring Cache":
+            thisLoc['inlogic'] = eastLomyr and (Super in loadout) and (SpeedBooster in loadout)
+        if thisLoc['fullitemname'] == "Frozen Lake Wall: DamageAmp":
+            thisLoc['inlogic'] = upperVulnar and canFly and (Plasma in loadout)
+        if thisLoc['fullitemname'] == "Grand Promenade":
+            thisLoc['inlogic'] = upperVulnar
+        if thisLoc['fullitemname'] == "Summit Landing":
+            thisLoc['inlogic'] = upperVulnar and canUseBombs and (Speedball in loadout)
+        if thisLoc['fullitemname'] == "Snow Cache":
+            thisLoc['inlogic'] = upperVulnar and canUseBombs and (Plasma in loadout)
+        if thisLoc['fullitemname'] == "Reliquary Access":
+            thisLoc['inlogic'] = upperVulnar and canUseBombs and (Super in loadout) and (DarkVisor in loadout)
+        if thisLoc['fullitemname'] == "Syzygy Observatorium":
+            thisLoc['inlogic'] = upperVulnar and (((Super in loadout) and (Varia in loadout) and ((MetroidSuit in loadout) or (Hypercharge in loadout))) or (Screw in loadout))
+        if thisLoc['fullitemname'] == "Armory Cache 2":
+            thisLoc['inlogic'] = upperVulnar and ((canUseBombs and (Super in loadout) and (DarkVisor in loadout)) or (Screw in loadout))
+        if thisLoc['fullitemname'] == "Armory Cache 3":
+            thisLoc['inlogic'] = upperVulnar and ((canUseBombs and (Super in loadout) and (DarkVisor in loadout)) or (Screw in loadout))
+        if thisLoc['fullitemname'] == "Drawing Room":
+            thisLoc['inlogic'] = upperVulnar and (Super in loadout) and (SpaceJump in loadout)
+        if thisLoc['fullitemname'] == "Impact Crater Overlook":
+            thisLoc['inlogic'] = canFly and canUseBombs and (canUsePB or (Super in loadout))
+        if thisLoc['fullitemname'] == "Magma Lake Cache":
+            thisLoc['inlogic'] = depthsL
+        if thisLoc['fullitemname'] == "Shrine Of The Animate Spark":
+            thisLoc['inlogic'] = hive and (GravitySuit in loadout) and (Grapple in loadout) and (Screw in loadout) and (SpaceJump in loadout) and (SpeedBooster in loadout) and (Charge in loadout)
+        if thisLoc['fullitemname'] == "Docking Port 4": # (4 = letter Omega)
+            thisLoc['inlogic'] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
+        if thisLoc['fullitemname'] == "Ready Room":
+            thisLoc['inlogic'] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
+        if thisLoc['fullitemname'] == "Torpedo Bay":
+            thisLoc['inlogic'] = True
+        if thisLoc['fullitemname'] == "Extract Storage":
+            thisLoc['inlogic'] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
+        if thisLoc['fullitemname'] == "Impact Crater Alcove":
+            thisLoc['inlogic'] = jumpAble and canFly and canUseBombs
+        if thisLoc['fullitemname'] == "Ocean Shore: bottom":
+            thisLoc['inlogic'] = exitSpacePort
+        if thisLoc['fullitemname'] == "Ocean Shore: top":
+            thisLoc['inlogic'] = jumpAble and (canFly or (HiJump in loadout) or ((SpeedBooster in loadout) and (GravitySuit in loadout))) 
+        if thisLoc['fullitemname'] == "Sandy Burrow: ETank": # top
+            thisLoc['inlogic'] = underwater and canUseBombs
+        if thisLoc['fullitemname'] == "Submarine Alcove":
+            thisLoc['inlogic'] = underwater and (Morph in loadout) and (DarkVisor in loadout) and pinkDoor
+        if thisLoc['fullitemname'] == "Sediment Floor":
+            thisLoc['inlogic'] = underwater and (Super in loadout) and (Morph in loadout)
+        if thisLoc['fullitemname'] == "Sandy Gully":
+            thisLoc['inlogic'] = underwater and (Super in loadout)
+        if thisLoc['fullitemname'] == "Hall Of The Elders":
+            thisLoc['inlogic'] = vulnar and (Morph in loadout) and ((Missile in loadout) or (GravitySuit in loadout))
+        if thisLoc['fullitemname'] == "Warrior Shrine: AmmoTank bottom":
+            thisLoc['inlogic'] = vulnar and (Morph in loadout) and (Missile in loadout) and ((Bombs in loadout) or (Wave in loadout))
+        if thisLoc['fullitemname'] == "Warrior Shrine: AmmoTank top":
+            thisLoc['inlogic'] = vulnar and canUseBombs and ((Missile in loadout) or (GravitySuit in loadout)) and ((Bombs in loadout) or (Wave in loadout))
+        if thisLoc['fullitemname'] == "Path Of Swords":
+            thisLoc['inlogic'] = vulnar and canUseBombs
+        if thisLoc['fullitemname'] == "Auxiliary Pump Room":
+            thisLoc['inlogic'] = vulnar and canUseBombs
+        if thisLoc['fullitemname'] == "Monitoring Station":
+            thisLoc['inlogic'] = vulnar and (Morph in loadout) and (Speedball in loadout)
+        if thisLoc['fullitemname'] == "Sensor Maintenance: AmmoTank": # back
+            thisLoc['inlogic'] = vulnar and canUseBombs and (Speedball in loadout) and (Missile in loadout)
+        if thisLoc['fullitemname'] == "Causeway Overlook":
+            thisLoc['inlogic'] = vulnar and canUseBombs
+        if thisLoc['fullitemname'] == "Placid Pool":
+            thisLoc['inlogic'] = vulnar and canUsePB and (Ice in loadout) and ((Varia in loadout) or ((DarkVisor in loadout) and (Wave in loadout)) or ((DarkVisor in loadout) and (Speedball in loadout) or (SpeedBooster in loadout)))
+        if thisLoc['fullitemname'] == "Blazing Chasm":
+            thisLoc['inlogic'] = depthsL and canUsePB and (Super in loadout) and (MetroidSuit in loadout)                  
+        if thisLoc['fullitemname'] == "Generator Manifold":
+            thisLoc['inlogic'] = depthsL and canUsePB and (Super in loadout) and (MetroidSuit in loadout)                  
+        if thisLoc['fullitemname'] == "Fiery Crossing Cache":
+            thisLoc['inlogic'] = depthsL and canUsePB and (Super in loadout)
+        if thisLoc['fullitemname'] == "Dark Crevice Cache":
+            thisLoc['inlogic'] = depthsL and canUseBombs
+        if thisLoc['fullitemname'] == "Ancient Basin":
+            thisLoc['inlogic'] = hive
+        if thisLoc['fullitemname'] == "Central Corridor: right":
+            thisLoc['inlogic'] = vulnar and canUseBombs and (GravitySuit in loadout) and ((DarkVisor in loadout) or (pirateLab and canUsePB))
+        if thisLoc['fullitemname'] == "Briar: AmmoTank": # bottom
+            thisLoc['inlogic'] = eastLomyr and (Morph in loadout)
+        if thisLoc['fullitemname'] == "Icy Flow":
+            thisLoc['inlogic'] = upperVulnar and (SpeedBooster in loadout) and (Plasma in loadout)
+        if thisLoc['fullitemname'] == "Ice Cave":
+            thisLoc['inlogic'] = upperVulnar and (Plasma in loadout)
+        if thisLoc['fullitemname'] == "Antechamber":
+            thisLoc['inlogic'] = upperVulnar and canUsePB
+        if thisLoc['fullitemname'] == "Eddy Channels":
+            thisLoc['inlogic'] = underwater and (Speedball in loadout) and ((pinkDoor and (DarkVisor in loadout)) or (Super in loadout))
+        if thisLoc['fullitemname'] == "Tram To Suzi Island":
+            thisLoc['inlogic'] = underwater and canUsePB and (Super in loadout) and (SpeedBooster in loadout) and (Spazer in loadout)
+        if thisLoc['fullitemname'] == "Portico": # IDK SUZI
+            thisLoc['inlogic'] = hive and canUsePB and (GravitySuit in loadout) and (Grapple in loadout) and (Screw in loadout) and (SpaceJump in loadout) and (SpeedBooster in loadout) and (Charge in loadout)
+        if thisLoc['fullitemname'] == "Tower Rock Lookout": # SUZI
+            thisLoc['inlogic'] = hive and canUsePB and (GravitySuit in loadout) and (Grapple in loadout) and (Screw in loadout) and (SpaceJump in loadout) and (SpeedBooster in loadout) and (Charge in loadout)
+        if thisLoc['fullitemname'] == "Reef Nook": # SUZI
+            thisLoc['inlogic'] = hive and canUsePB and (GravitySuit in loadout) and (Grapple in loadout) and (Screw in loadout) and (SpaceJump in loadout) and (SpeedBooster in loadout) and (Charge in loadout)
+        if thisLoc['fullitemname'] == "Saline Cache": # SUZI
+            thisLoc['inlogic'] = hive and canUsePB and (GravitySuit in loadout) and (Grapple in loadout) and (Screw in loadout) and (SpaceJump in loadout) and (SpeedBooster in loadout) and (Charge in loadout)
+        if thisLoc['fullitemname'] == "Enervation Chamber": # SUZI
+            thisLoc['inlogic'] = hive and canUsePB and (GravitySuit in loadout) and (Grapple in loadout) and (Screw in loadout) and (SpaceJump in loadout) and (SpeedBooster in loadout) and (Charge in loadout)
+        if thisLoc['fullitemname'] == "Weapon Locker": # CAUTIOUS LOGIC
+            thisLoc['inlogic'] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
+        if thisLoc['fullitemname'] == "Aft Battery": # CAUTIOUS LOGIC
+            thisLoc['inlogic'] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
+        if thisLoc['fullitemname'] == "Forward Battery": # CAUTIOUS LOGIC
+            thisLoc['inlogic'] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
+        if thisLoc['fullitemname'] == "Gantry": # CAUTIOUS LOGIC
+            thisLoc['inlogic'] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
+        if thisLoc['fullitemname'] == "Garden Canal": # CAUTIOUS LOGIC
+            thisLoc['inlogic'] = eastLomyr and canUsePB and (Spazer in loadout)
+        if thisLoc['fullitemname'] == "Sandy Burrow: AmmoTank": # bottom
+            thisLoc['inlogic'] = underwater and (Morph in loadout)
+        if thisLoc['fullitemname'] == "Trophobiotic Chamber":
+            thisLoc['inlogic'] = vulnar and (Morph in loadout) and (Speedball in loadout)
+        if thisLoc['fullitemname'] == "Waste Processing":
+            thisLoc['inlogic'] = pirateLab and (SpeedBooster in loadout) and ((Wave in loadout) or canUsePB)
+        if thisLoc['fullitemname'] == "Grand Chasm":
+            thisLoc['inlogic'] = upperVulnar and canUseBombs and (Screw in loadout) and (SpaceJump in loadout)
+        if thisLoc['fullitemname'] == "Mining Site 1": # (1 = letter Alpha)
+            thisLoc['inlogic'] = canUseBombs and ((vulnar and (Wave in loadout)) or depthsL)
+        if thisLoc['fullitemname'] == "Colosseum": # GT
+            thisLoc['inlogic'] = depthsL and (Charge in loadout)
+        if thisLoc['fullitemname'] == "Lava Pool":
+            thisLoc['inlogic'] = depthsL and (MetroidSuit in loadout)
+        if thisLoc['fullitemname'] == "Hive Main Chamber":
+            thisLoc['inlogic'] = hive
+        if thisLoc['fullitemname'] == "Crossway Cache":
+            thisLoc['inlogic'] = hive and ((Ice in loadout) or (SpeedBooster in loadout))
+        if thisLoc['fullitemname'] == "Slag Heap":
+            thisLoc['inlogic'] = hive and (MetroidSuit in loadout) and ((Ice in loadout) or (SpeedBooster in loadout))
+        if thisLoc['fullitemname'] == "Hydrodynamic Chamber":
+            thisLoc['inlogic'] = pirateLab and (Spazer in loadout) and ((HiJump in loadout) or (GravitySuit in loadout))
+        if thisLoc['fullitemname'] == "Central Corridor: left":
+            thisLoc['inlogic'] = vulnar and canUseBombs and (Speedball in loadout) and (SpeedBooster in loadout) and (GravitySuit in loadout) and ((DarkVisor in loadout) or (pirateLab and canUsePB))
+        if thisLoc['fullitemname'] == "Restricted Area":
+            thisLoc['inlogic'] = vulnar and canUseBombs and (MetroidSuit in loadout) and (GravitySuit in loadout) and ((DarkVisor in loadout) or (pirateLab and canUsePB))
+        if thisLoc['fullitemname'] == "Foundry":
+            thisLoc['inlogic'] = vulnar and canUseBombs and (GravitySuit in loadout) and ((DarkVisor in loadout) or (pirateLab and canUsePB))
+        if thisLoc['fullitemname'] == "Norak Escarpment":
+            thisLoc['inlogic'] = eastLomyr and (canFly or (SpeedBooster in loadout))
+        if thisLoc['fullitemname'] == "Glacier's Reach":
+            thisLoc['inlogic'] = upperVulnar and canUseBombs and (Plasma in loadout)
+        if thisLoc['fullitemname'] == "Sitting Room":
+            thisLoc['inlogic'] = upperVulnar and canUsePB and (Speedball in loadout)
+        if thisLoc['fullitemname'] == "Suzi Ruins Map Station Access":
+            thisLoc['inlogic'] = hive and (GravitySuit in loadout) and (Grapple in loadout) and (Screw in loadout) and (SpaceJump in loadout) and (SpeedBooster in loadout) and (Charge in loadout)
+        if thisLoc['fullitemname'] == "Obscured Vestibule": # Suzi
+            thisLoc['inlogic'] = hive and (GravitySuit in loadout) and (Grapple in loadout) and (Screw in loadout) and (SpaceJump in loadout) and (SpeedBooster in loadout) and (Charge in loadout)
+        if thisLoc['fullitemname'] == "Docking Port 3": # (3 = letter Gamma)
+            thisLoc['inlogic'] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
+        if thisLoc['fullitemname'] == "Arena":
+            thisLoc['inlogic'] = vulnar and (Morph in loadout) and (Missile in loadout) and ((Bombs in loadout) or (Wave in loadout))
+        if thisLoc['fullitemname'] == "West Spore Field":
+            thisLoc['inlogic'] = vulnar and canUseBombs and (Super in loadout) and (Wave in loadout) and (Speedball in loadout)
+        if thisLoc['fullitemname'] == "Magma Chamber":
+            thisLoc['inlogic'] = depthsL and ((Charge in loadout) or (MetroidSuit in loadout))
+        if thisLoc['fullitemname'] == "Equipment Locker":
+            thisLoc['inlogic'] = pirateLab and canUseBombs
+        if thisLoc['fullitemname'] == "Antelier": # spelled "Antilier" in subversion 1.1
+            thisLoc['inlogic'] = pirateLab and ((HiJump in loadout) or (GravitySuit in loadout))
+        if thisLoc['fullitemname'] == "Weapon Research":
+            thisLoc['inlogic'] = vulnar and canUseBombs and (Wave in loadout) and (GravitySuit in loadout) and ((DarkVisor in loadout) or (pirateLab and canUsePB))
+        if thisLoc['fullitemname'] == "Crocomire's Lair":
+            thisLoc['inlogic'] = eastLomyr and (Super in loadout) and (SpeedBooster in loadout)
     return unusedLocations

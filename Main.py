@@ -5,7 +5,7 @@ import struct
 import shutil
 import os
 import io
-import pullCSV
+import csv
 import logicCasual
 import fillSpeedrun
 
@@ -43,21 +43,40 @@ def finalizeRom():
     g_rom.close()
     g_rom = None
 
-def commasToList(entry) :
-    #takes a commaed string entry as input, returns a list of the items in the same order without commas
-    slicedEntry=[]
-    lastcomma=0
-    for i in range(0,len(entry)-1) :
-        if entry[i] == "," :
-            slicedEntry.append(entry[lastcomma:i])
-            lastcomma=i+1
-    slicedEntry.append(entry[lastcomma:])
-    return slicedEntry
-
-def itemPlace(locRow,itemArray) :
+def itemPlace(location,itemArray) :
     #provide a locRow as in and the item array such as Missile, Super, etc
-    for location in locRow[1] :
-        writeItem(int(location, 16), itemArray[locRow[2]], itemArray[4]) #updated to preferred visibility
+    if location['hiddenness'] == "open":
+        plmid = itemArray[1]
+    elif location['hiddenness'] == "chozo":
+        plmid = itemArray[2]
+    else:
+        plmid = itemArray[3]
+    # write all rom locations associated with the item location
+    for address in location['locids']:
+        writeItem(address, plmid, itemArray[4])
+    for address in location['alternateroomlocids']:
+        writeItem(address, plmid, itemArray[4])
+
+def pullCSV():
+    csvdict = {}
+    def commentfilter(line):
+        return (line[0] != '#')
+    with open('subversiondata12.csv', 'r') as csvfile:
+        reader = csv.DictReader(filter(commentfilter, csvfile))
+        for row in reader:
+            # commas within fields -> array
+            row['locids']              = row['locids'].split(',')
+            row['alternateroomlocids'] = row['alternateroomlocids'].split(',')
+            # hex fields we want to use -> int
+            row['locids']              = [int(locstr, 16) for locstr in row['locids'] if locstr != '']
+            row['alternateroomlocids'] = [int(locstr, 16) for locstr in row['alternateroomlocids'] if locstr != '']
+            row['plmtypeid']  = int(row['plmtypeid'], 16)
+            row['plmparamhi'] = int(row['plmparamhi'], 16)
+            row['plmparamlo'] = int(row['plmparamlo'], 16)
+            # new key: 'inlogic'
+            row['inlogic'] = False
+            csvdict[row['fullitemname']] = row
+    return csvdict
 
 #main program
 if __name__ == "__main__":
@@ -74,12 +93,13 @@ if __name__ == "__main__":
     seeeed=random.randint(1000000,9999999)
     random.seed(seeeed)
     rom1_path = "../SubversionRando/roms/Sub"+logicChoice+str(seeeed)+".sfc"
-    rom_clean_path = "../SubversionRando/roms/Subversion11.sfc"
-    #you must include Subversion 1.1 in your roms folder with this name^
+    rom_clean_path = "../SubversionRando/roms/Subversion12.sfc"
+    #you must include Subversion 1.2 in your roms folder with this name^
     spoiler_file = open("../SubversionRando/spoilers/aSub"+logicChoice+str(seeeed)+".sfc.spoiler.txt", "w")
 
-    csvraw= pullCSV.pullCSV()
-    #Item = Name, Visible, Chozo, Hidden
+    csvdict = pullCSV()
+    locArray = [csvdict[key] for key in csvdict]
+    #Item = Name, Visible, Chozo, Hidden, AmmoQty
     Missile = ["Missile",
                b"\xdb\xee",
                b"\x2f\xef",
@@ -97,8 +117,8 @@ if __name__ == "__main__":
                  b"\x00"]
     Morph = ["Morph Ball",
              b"\x23\xef",
-             b"\x23\xef",
-             b"\x23\xef",
+             b"\x77\xef",
+             b"\xcb\xef",
              b"\x00"]
     GravityBoots = ["Gravity Boots",
                     b"\x40\xfd",
@@ -230,84 +250,8 @@ if __name__ == "__main__":
                       b"\xc0\xfc",
                       b"\xc0\xfc",
                       b"\x00"]
-    allItemList=[Missile,
-             Super,
-             PowerBomb,
-             Morph,
-             GravityBoots,
-             Speedball,
-             Bombs,
-             HiJump,
-             GravitySuit,
-             DarkVisor,
-             Wave,
-             SpeedBooster,
-             Spazer,
-             Varia,
-             Ice,
-             Grapple,
-             MetroidSuit,
-             Plasma,
-             Screw,
-             Hypercharge,
-             Charge,
-             Xray,
-             SpaceJump,
-             Energy,
-             Refuel,
-             SmallAmmo,
-             LargeAmmo,
-             DamageAmp,
-             ChargeAmp,
-             SpaceJumpBoost]
-    
+
     createWorkingFileCopy(rom_clean_path, rom1_path)
-    
-    #parse csvraw
-    locArray=[[]] #in the form [y][x]
-    x=0
-    y=0
-    #print("y= 0")
-    for rawdata in csvraw :
-        #print("x=",x)
-        #print("rawdata is",rawdata)
-        if x>10 :
-            x=0
-            #print(locArray[y][0],locArray[y][2],locArray[y][4])
-            y+=1
-            locArray.append([])
-            #print("y=",y)
-        if x==0 :
-            locArray[y].append(rawdata) #index [y][0] name of location
-        if x==3 :
-            locArray[y].append(commasToList(rawdata)) #index [y][1] address list of location
-            
-        if x==4 : #index [y][2] preferred visibility
-            #print("seeking in",locArray[y][1][0])
-            #bitty=rom.read_from_clean(locArray[y][1][0],2)
-            locArray[y].append(1)
-            bitty=struct.pack('<H', int(rawdata,16))
-            #print(int(rawdata,16))
-            for itemcheck in allItemList :
-                for indi in range (1,4) :
-                    reversei = 4-indi
-                    if itemcheck[reversei] == bitty :
-                        locArray[y][2]=reversei
-        if x==5 :
-            locArray[y].append(rawdata) #index [y][3] plm identifier
-        if x==10 :
-            if commasToList(rawdata) != "" :
-                locArray[y][1].extend(commasToList(rawdata)) #index [y][1] extra entries
-            for hexi in range(0,len(locArray[y][1])-1) :
-                #print("hexi is",hexi,": locArray[",y,"][1][",hexi,"]=",locArray[y][1][hexi])
-                locArray[y][1][hexi] = hex(int(locArray[y][1][hexi],16))
-            #print("Initialized array:",locArray[y][1])
-            if locArray[y][1][len(locArray[y][1])-1] == "" :
-                locArray[y][1].pop()
-            #print("Corrected initialized array:",locArray[y][1])
-            locArray[y].append(False) #start a logic field
-            #print("locArray[",y,"] has",len(locArray[y]),"entries. Should be 5.")
-        x+=1
     
     seedComplete = False
     randomizeAttempts = 0
@@ -327,7 +271,7 @@ if __name__ == "__main__":
         loadout=[]
         #can split this to have different fill algorithms
         itemLists=fillSpeedrun.initItemLists()
-        while unusedLocations is not [] and availableLocations is not [] :
+        while len(unusedLocations) != 0 or len(availableLocations) != 0:
             #print("loadout contains:")
             #print(loadout)
             for a in loadout:
@@ -336,21 +280,16 @@ if __name__ == "__main__":
                 
             #update logic by updating unusedLocations
             #using helper function, modular for more logic options later
-            #unusedLocations[i][4] holds the True or False for logic
+            #unusedLocations[i]['inlogic'] holds the True or False for logic
             logicCasual.updateLogic(unusedLocations, locArray, loadout)
 
                     
             #update unusedLocations and availableLocations
-            for i in range(0,len(unusedLocations)) :
-                if i > len(unusedLocations)-1 :
-                    break
-                if unusedLocations[i][4] == True :
-                    while unusedLocations[i][4] == True :
-                        #print("Found available location at",unusedLocations[i][0])
-                        availableLocations.append(unusedLocations[i])
-                        unusedLocations.pop(i)
-                        if i > len(unusedLocations)-1 :
-                            break
+            for i in reversed(range(len(unusedLocations))): # iterate in reverse so we can remove freely
+                if unusedLocations[i]['inlogic'] == True :
+                    #print("Found available location at",unusedLocations[i]['fullitemname'])
+                    availableLocations.append(unusedLocations[i])
+                    unusedLocations.pop(i)
             #print("Available locations sits at:",len(availableLocations))
             for al in availableLocations :
                 #print(al[0])
@@ -361,15 +300,9 @@ if __name__ == "__main__":
                 #print(u[0])
                 uu=0
 
-            if availableLocations == [] and unusedLocations == [] :
-                print("Item placements successful.")
-                spoilerSave += "Item placements successful.\n"
-                seedComplete = True
-                break
-
             if availableLocations == [] and unusedLocations != [] :
-                print("Item placement was not successful.",len(unusedLocations),"locations remaining.")
-                spoilerSave+="Item placement was not successful. "+str(len(unusedLocations))+" locations remaining.\n"
+                print(f'Item placement was not successful. {len(unusedLocations)} locations remaining.')
+                spoilerSave+=f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
                 break
 
             #can split here for different fill algorithms
@@ -379,11 +312,18 @@ if __name__ == "__main__":
             placeItem=placePair[1]
             itemPlace(placeLocation,placeItem)
             availableLocations.remove(placeLocation)
-            for bank in itemLists :
-                if placeItem in bank :
-                    bank.remove(placeItem)
+            for itemPowerGrouping in itemLists :
+                if placeItem in itemPowerGrouping :
+                    itemPowerGrouping.remove(placeItem)
+                    break
             loadout.append(placeItem)
-            spoilerSave+=placeLocation[0]+" - - - "+placeItem[0]+"\n"
+            spoilerSave+=placeLocation['fullitemname']+" - - - "+placeItem[0]+"\n"
+
+            if availableLocations == [] and unusedLocations == [] :
+                print("Item placements successful.")
+                spoilerSave += "Item placements successful.\n"
+                seedComplete = True
+                break
             
             
 
@@ -395,6 +335,9 @@ if __name__ == "__main__":
         #writeBytes(0x547a, b"\x02")
         #writeBytes(0x547f, b"\x00")
         uu=0
+    # Morph Ball PLM patch (chozo, hidden)
+    writeBytes(0x268ce, b"\x04")
+    writeBytes(0x26e02, b"\x04")
     finalizeRom()
     print("Done!")
     print("Filename is "+"Sub"+logicChoice+str(seeeed)+".sfc")
