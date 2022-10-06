@@ -92,10 +92,10 @@ if __name__ == "__main__":
     hudFlicker = "Y" #for now
     seeeed=random.randint(1000000,9999999)
     random.seed(seeeed)
-    rom1_path = "../SubversionRando/roms/Sub"+logicChoice+str(seeeed)+".sfc"
-    rom_clean_path = "../SubversionRando/roms/Subversion12.sfc"
+    rom1_path = "roms/Sub"+logicChoice+str(seeeed)+".sfc"
+    rom_clean_path = "roms/Subversion12.sfc"
     #you must include Subversion 1.2 in your roms folder with this name^
-    spoiler_file = open("../SubversionRando/spoilers/aSub"+logicChoice+str(seeeed)+".sfc.spoiler.txt", "w")
+    spoiler_file = open("spoilers/aSub"+logicChoice+str(seeeed)+".sfc.spoiler.txt", "w")
 
     csvdict = pullCSV()
     locArray = [csvdict[key] for key in csvdict]
