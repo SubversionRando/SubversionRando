@@ -20,7 +20,7 @@ def commandLineArgs(sys_args) :
     parser.add_argument('-s', action="store_true", help='Speedrun fill, fast setting comparable to Varia.run Speedrun fill algorithm, Default')
     parser.add_argument('-m', action="store_true", help='Medium fill, medium speed setting that places low-power items first for increased exploration')
     args = parser.parse_args(sys_args)
-    print(args)
+    #print(args)
     return args
 
 def createWorkingFileCopy(origFile, newFile) -> io.BufferedIOBase:
