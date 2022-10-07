@@ -3,10 +3,13 @@ import random
 #this will not update any of the parameters it is given
 #but it will return an item to place at a location
 
+
+
 #itemLists should contain
 # [0] earlyItemList
-# [1] progressionItemList
-# [2] extraItemList
+# [1] lowPowerList
+# [2] highPowerList
+# [3] extraItemList
 
 Missile = ["Missile",
            b"\xdb\xee",
@@ -164,33 +167,36 @@ def initItemLists () :
     earlyItemList=[Missile,
                    Morph,
                    GravityBoots]
-    progressionItemList=[Super,
-                     Grapple,
-                     PowerBomb,
-                     Speedball,
-                     Bombs,
-                     HiJump,
-                     GravitySuit,
-                     DarkVisor,
-                     Wave,
-                     SpeedBooster,
-                     Spazer,
-                     Varia,
-                     Ice,
-                     MetroidSuit,
-                     Plasma,
-                     Screw,
-                     SpaceJump,
-                     Charge]
-    extraItemList=[Hypercharge,
-                   Xray,
+    lowPowerList=[Super,
+                  Speedball,
+                  Bombs,
+                  HiJump,
+                  GravitySuit,
+                  DarkVisor,
+                  Wave,
+                  SpeedBooster,
+                  SpaceJump,
+                  Charge,
+                  Energy,Energy,Energy,Energy,Energy]
+    highPowerList=[Grapple,
+                   PowerBomb,
+                   Varia,
+                   Ice,
+                   MetroidSuit,
+                   Screw,
+                   Spazer,
+                   Plasma,
+                   Hypercharge]
+    extraItemList=[Xray,
                    DamageAmp,DamageAmp,DamageAmp,DamageAmp,DamageAmp,DamageAmp,
                    ChargeAmp,ChargeAmp,ChargeAmp,ChargeAmp,ChargeAmp,ChargeAmp,
-                   Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy,
-                   Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy,
                    Refuel,Refuel,Refuel,Refuel,Refuel,Refuel,Refuel,
+                   Energy,Energy,Energy,Energy,
+                   Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy,
                    SpaceJumpBoost,SpaceJumpBoost,SpaceJumpBoost,SpaceJumpBoost,
                    SpaceJumpBoost,SpaceJumpBoost,SpaceJumpBoost,SpaceJumpBoost,
+                   SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
+                   SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
                    SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
                    SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
                    SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
@@ -202,18 +208,16 @@ def initItemLists () :
                    LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,
                    LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,
                    LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,
+                   LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,
                    LargeAmmo,LargeAmmo,LargeAmmo]
-    return [earlyItemList,progressionItemList,extraItemList]
+    return [earlyItemList,lowPowerList,highPowerList,extraItemList]
 
 def placementAlg(availableLocations, locArray, loadout, itemLists) :
     earlyItemList=itemLists[0]
-    progressionItemList=itemLists[1]
-    extraItemList=itemLists[2]
-    if availableLocations[0]['fullitemname'] == "TORPEDO BAY" :
-        randomIndex = random.randint(0,1)
-        firstItems = [Missile, Morph]
-        placeItem = firstItems[randomIndex]
-        #print(availableLocations[0][0]," - - - ",placeItem[0])
+    lowPowerList=itemLists[1]
+    highPowerList=itemLists[2]
+    extraItemList=itemLists[3]
+    
 
         
     if earlyItemList != [] and availableLocations != []:
@@ -226,17 +230,27 @@ def placementAlg(availableLocations, locArray, loadout, itemLists) :
             randomIndex = random.randint(0,len(availableLocations)-1)
         placeLocation = availableLocations[randomIndex]
 
-    if earlyItemList == [] and progressionItemList != [] and availableLocations != [] :
+    if earlyItemList == [] and lowPowerList != [] and availableLocations != [] :
         randomIndex=0
-        if len(progressionItemList) > 1 :
-            randomIndex = random.randint(0,len(progressionItemList)-1)
-        placeItem = progressionItemList[randomIndex]
+        if len(lowPowerList) > 1 :
+            randomIndex = random.randint(0,len(lowPowerList)-1)
+        placeItem = lowPowerList[randomIndex]
         randomIndex=0
         if len(availableLocations) > 1 :
             randomIndex = random.randint(0,len(availableLocations)-1)
         placeLocation = availableLocations[randomIndex]
 
-    if earlyItemList == [] and progressionItemList == [] and availableLocations != []:
+    if earlyItemList == [] and lowPowerList == [] and highPowerList != [] and availableLocations != []:
+        randomIndex=0
+        if len(highPowerList) > 1 :
+            randomIndex = random.randint(0,len(highPowerList)-1)
+        placeItem = highPowerList[randomIndex]
+        randomIndex=0
+        if len(availableLocations) > 1 :
+            randomIndex = random.randint(0,len(availableLocations)-1)
+        placeLocation = availableLocations[randomIndex]
+
+    if earlyItemList == [] and lowPowerList == [] and highPowerList == [] and availableLocations != []:
         randomIndex=0
         if len(extraItemList) > 1 :
             randomIndex = random.randint(0,len(extraItemList)-1)

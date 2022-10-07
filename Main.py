@@ -7,9 +7,21 @@ import os
 import io
 import csv
 import logicCasual
+import logicExpert
 import fillSpeedrun
+import fillMedium
 
 g_rom : io.BufferedIOBase
+
+def commandLineArgs(sys_args) :
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', action="store_true", help='Casual logic, easy setting matching the vanilla Subversion experience, Default')
+    parser.add_argument('-e', action="store_true", help='Expert logic, hard setting comparable to Varia.run Expert difficulty')
+    parser.add_argument('-s', action="store_true", help='Speedrun fill, fast setting comparable to Varia.run Speedrun fill algorithm, Default')
+    parser.add_argument('-m', action="store_true", help='Medium fill, medium speed setting that places low-power items first for increased exploration')
+    args = parser.parse_args(sys_args)
+    print(args)
+    return args
 
 def createWorkingFileCopy(origFile, newFile) -> io.BufferedIOBase:
     global g_rom
@@ -80,22 +92,25 @@ def pullCSV():
 
 #main program
 if __name__ == "__main__":
-    #logicChoice=""
-    #while logicChoice != "C" and logicChoice != "E" :
-    #    logicChoice= input("Enter C for Casual or E for Expert logic:")
-    #    logicChoice = logicChoice.title()
-    logicChoice="C"
+    workingArgs=commandLineArgs(sys.argv[1:])
+    if workingArgs.e :
+        logicChoice = "E"
+    else :
+        logicChoice = "C" #Default to casual logic
+    if workingArgs.m :
+        fillChoice = "M"
+    else :
+        fillChoice = "S"
     #hudFlicker=""
     #while hudFlicker != "Y" and hudFlicker != "N" :
     #    hudFlicker= input("Enter Y to patch HUD flicker on emulator, or N to decline:")
     #    hudFlicker = hudFlicker.title()
-    hudFlicker = "Y" #for now
     seeeed=random.randint(1000000,9999999)
     random.seed(seeeed)
-    rom1_path = "roms/Sub"+logicChoice+str(seeeed)+".sfc"
+    rom1_path = "roms/Sub"+logicChoice+fillChoice+str(seeeed)+".sfc"
     rom_clean_path = "roms/Subversion12.sfc"
     #you must include Subversion 1.2 in your roms folder with this name^
-    spoiler_file = open("spoilers/aSub"+logicChoice+str(seeeed)+".sfc.spoiler.txt", "w")
+    spoiler_file = open("spoilers/Sub"+logicChoice+fillChoice+str(seeeed)+".sfc.spoiler.txt", "w")
 
     csvdict = pullCSV()
     locArray = [csvdict[key] for key in csvdict]
@@ -250,8 +265,17 @@ if __name__ == "__main__":
                       b"\xc0\xfc",
                       b"\xc0\xfc",
                       b"\x00"]
-
+    spaceDrop = ["Space Drop","","","",""]
     createWorkingFileCopy(rom_clean_path, rom1_path)
+    spacePortLocs=["Ready Room",
+               "Torpedo Bay",
+               "Extract Storage",
+               "Gantry",
+               "Docking Port 4",
+               "Docking Port 3",
+               "Weapon Locker",
+               "Aft Battery",
+               "Forward Battery"]
     
     seedComplete = False
     randomizeAttempts = 0
@@ -269,8 +293,11 @@ if __name__ == "__main__":
         availableLocations=[]
         visitedLocations=[]
         loadout=[]
-        #can split this to have different fill algorithms
-        itemLists=fillSpeedrun.initItemLists()
+        #use appropriate fill algorithm for initializing item lists
+        if fillChoice == "M" :
+            itemLists=fillMedium.initItemLists()
+        else :
+            itemLists=fillSpeedrun.initItemLists()
         while len(unusedLocations) != 0 or len(availableLocations) != 0:
             #print("loadout contains:")
             #print(loadout)
@@ -281,8 +308,10 @@ if __name__ == "__main__":
             #update logic by updating unusedLocations
             #using helper function, modular for more logic options later
             #unusedLocations[i]['inlogic'] holds the True or False for logic
-            logicCasual.updateLogic(unusedLocations, locArray, loadout)
-
+            if logicChoice == "E" :
+                logicExpert.updateLogic(unusedLocations, locArray, loadout)
+            else :
+                logicCasual.updateLogic(unusedLocations, locArray, loadout)
                     
             #update unusedLocations and availableLocations
             for i in reversed(range(len(unusedLocations))): # iterate in reverse so we can remove freely
@@ -297,7 +326,7 @@ if __name__ == "__main__":
             #print("Unused locations sits at size:",len(unusedLocations))
             #print("unusedLocations:")
             for u in unusedLocations :
-                #print(u[0])
+                #print(u['fullitemname'])
                 uu=0
 
             if availableLocations == [] and unusedLocations != [] :
@@ -305,8 +334,11 @@ if __name__ == "__main__":
                 spoilerSave+=f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
                 break
 
-            #can split here for different fill algorithms
-            placePair=fillSpeedrun.placementAlg(availableLocations, locArray, loadout, itemLists)
+            #split here for different fill algorithms
+            if fillChoice == "M" :
+                placePair=fillMedium.placementAlg(availableLocations, locArray, loadout, itemLists)
+            else :
+                placePair=fillSpeedrun.placementAlg(availableLocations, locArray, loadout, itemLists)
             #it returns your location and item, which are handled here
             placeLocation=placePair[0]
             placeItem=placePair[1]
@@ -317,7 +349,10 @@ if __name__ == "__main__":
                     itemPowerGrouping.remove(placeItem)
                     break
             loadout.append(placeItem)
+            if ((placeLocation['fullitemname'] in spacePortLocs) == False) and ((spaceDrop in loadout) == False):
+                loadout.append(spaceDrop)
             spoilerSave+=placeLocation['fullitemname']+" - - - "+placeItem[0]+"\n"
+            #print(placeLocation['fullitemname']+placeItem[0])
 
             if availableLocations == [] and unusedLocations == [] :
                 print("Item placements successful.")
@@ -331,20 +366,20 @@ if __name__ == "__main__":
     # Suit animation skip patch
     writeBytes(0x20717, b"\xea\xea\xea\xea")
     # Flickering hud removal patch
-    if hudFlicker == "Y" :
+    #if hudFlicker == "Y" :
         #writeBytes(0x547a, b"\x02")
         #writeBytes(0x547f, b"\x00")
-        uu=0
+        #uu=0
     # Morph Ball PLM patch (chozo, hidden)
     writeBytes(0x268ce, b"\x04")
     writeBytes(0x26e02, b"\x04")
     finalizeRom()
     print("Done!")
-    print("Filename is "+"Sub"+logicChoice+str(seeeed)+".sfc")
+    print("Filename is "+"Sub"+logicChoice+fillChoice+str(seeeed)+".sfc")
     spoiler_file.write("RNG Seed: {}\n".format(str(seeeed))+"\n")
     spoiler_file.write("\n Spoiler \n\n Spoiler \n\n Spoiler \n\n Spoiler \n\n")
     spoiler_file.write(spoilerSave)    
-    print("Spoiler file is "+"Sub"+logicChoice+str(seeeed)+".sfc.spoiler.txt")
+    print("Spoiler file is "+"Sub"+logicChoice+fillChoice+str(seeeed)+".sfc.spoiler.txt")
 
 
 
