@@ -373,6 +373,16 @@ if __name__ == "__main__":
     # Morph Ball PLM patch (chozo, hidden)
     writeBytes(0x268ce, b"\x04")
     writeBytes(0x26e02, b"\x04")
+    # skip intro (asm edits) TODO turn this into asm and a proper hook
+    writeBytes(0x16eda, b"\x1f") # initial game state set by $82:eeda
+    writeBytes(0x16ee0, b"\x06\x00") # initial game area = 6 (ceres)
+    writeBytes(0x16ee3, b"\x9f\x07") # $079f Area index
+    writeBytes(0x16ee5, b"\xa9\x05\x00\x8f\x14\xd9\x7e\xea\xea") # $7e:d914 = 05 Main
+    writeBytes(0x16eee, b"\x22\x00\x80\x81") # jsl save game & then fall thru to main handling
+    writeBytes(0x16ed0, b"\x21") # adjust earlier branch
+    writeBytes(0x16ed8, b"\x19") # adjust earlier branch
+    # disable demos (asm opcode edit). because the demos show items
+    writeBytes(0x59f29, b"\xad")
     finalizeRom()
     print("Done!")
     print("Filename is "+"Sub"+logicChoice+fillChoice+str(seeeed)+".sfc")
