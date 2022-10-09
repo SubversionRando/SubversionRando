@@ -378,9 +378,9 @@ if __name__ == "__main__":
     writeBytes(0x16ee0, b"\x06\x00") # initial game area = 6 (ceres)
     writeBytes(0x16ee3, b"\x9f\x07") # $079f Area index
     writeBytes(0x16ee5, b"\xa9\x05\x00\x8f\x14\xd9\x7e\xea\xea") # $7e:d914 = 05 Main
-    writeBytes(0x16eee, b"\x22\x00\x80\x81") # jsl save game & then fall thru to main handling
-    writeBytes(0x16ed0, b"\x21") # adjust earlier branch
-    writeBytes(0x16ed8, b"\x19") # adjust earlier branch
+    writeBytes(0x16eee, b"\xad\x52\x09\x22\x00\x80\x81") # jsl save game (param in A: save slot)
+    writeBytes(0x16ed0, b"\x24") # adjust earlier branch to go +6 bytes later to rts
+    writeBytes(0x16ed8, b"\x1c") # adjust earlier branch to go +6 bytes later to rts
     # disable demos (asm opcode edit). because the demos show items
     writeBytes(0x59f29, b"\xad")
     finalizeRom()
