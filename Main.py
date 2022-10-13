@@ -10,6 +10,7 @@ import logicCasual
 import logicExpert
 import fillSpeedrun
 import fillMedium
+import fillMajorMinor
 
 g_rom : io.BufferedIOBase
 
@@ -19,6 +20,7 @@ def commandLineArgs(sys_args) :
     parser.add_argument('-e', action="store_true", help='Expert logic, hard setting comparable to Varia.run Expert difficulty')
     parser.add_argument('-s', action="store_true", help='Speedrun fill, fast setting comparable to Varia.run Speedrun fill algorithm, Default')
     parser.add_argument('-m', action="store_true", help='Medium fill, medium speed setting that places low-power items first for increased exploration')
+    parser.add_argument('-mm', action="store_true", help='Major-Minor fill, using unique majors and locations')
     args = parser.parse_args(sys_args)
     #print(args)
     return args
@@ -99,6 +101,8 @@ if __name__ == "__main__":
         logicChoice = "C" #Default to casual logic
     if workingArgs.m :
         fillChoice = "M"
+    elif workingArgs.mm :
+        fillChoice = "MM"
     else :
         fillChoice = "S"
     #hudFlicker=""
@@ -296,6 +300,8 @@ if __name__ == "__main__":
         #use appropriate fill algorithm for initializing item lists
         if fillChoice == "M" :
             itemLists=fillMedium.initItemLists()
+        elif fillChoice == "MM" :
+            itemLists=fillMajorMinor.initItemLists()
         else :
             itemLists=fillSpeedrun.initItemLists()
         while len(unusedLocations) != 0 or len(availableLocations) != 0:
@@ -337,11 +343,17 @@ if __name__ == "__main__":
             #split here for different fill algorithms
             if fillChoice == "M" :
                 placePair=fillMedium.placementAlg(availableLocations, locArray, loadout, itemLists)
+            elif fillChoice == "MM" :
+                placePair=fillMajorMinor.placementAlg(availableLocations, locArray, loadout, itemLists)
             else :
                 placePair=fillSpeedrun.placementAlg(availableLocations, locArray, loadout, itemLists)
             #it returns your location and item, which are handled here
             placeLocation=placePair[0]
             placeItem=placePair[1]
+            if placeLocation == "Fail" :
+                print(f'Item placement was not successful due to majors. {len(unusedLocations)} locations remaining.')
+                spoilerSave+=f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
+                break
             itemPlace(placeLocation,placeItem)
             availableLocations.remove(placeLocation)
             for itemPowerGrouping in itemLists :
