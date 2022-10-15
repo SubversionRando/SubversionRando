@@ -16,11 +16,11 @@ g_rom : io.BufferedIOBase
 
 def commandLineArgs(sys_args) :
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', action="store_true", help='Casual logic, easy setting matching the vanilla Subversion experience, Default')
-    parser.add_argument('-e', action="store_true", help='Expert logic, hard setting comparable to Varia.run Expert difficulty')
-    parser.add_argument('-s', action="store_true", help='Speedrun fill, fast setting comparable to Varia.run Speedrun fill algorithm, Default')
-    parser.add_argument('-m', action="store_true", help='Medium fill, medium speed setting that places low-power items first for increased exploration')
-    parser.add_argument('-mm', action="store_true", help='Major-Minor fill, using unique majors and locations')
+    parser.add_argument('-c', '--casual', action="store_true", help='Casual logic, easy setting matching the vanilla Subversion experience, Default')
+    parser.add_argument('-e', '--expert', action="store_true", help='Expert logic, hard setting comparable to Varia.run Expert difficulty')
+    parser.add_argument('-s', '--speedrun', action="store_true", help='Speedrun fill, fast setting comparable to Varia.run Speedrun fill algorithm, Default')
+    parser.add_argument('-m', '--medium', action="store_true", help='Medium fill, medium speed setting that places low-power items first for increased exploration')
+    parser.add_argument('-mm', '--majorminor',  action="store_true", help='Major-Minor fill, using unique majors and locations')
     args = parser.parse_args(sys_args)
     #print(args)
     return args
@@ -57,19 +57,28 @@ def finalizeRom():
     g_rom.close()
     g_rom = None
 
-def itemPlace(location,itemArray) :
-    #provide a locRow as in and the item array such as Missile, Super, etc
-    if location['hiddenness'] == "open":
+def plmidFromHiddenness(itemArray, hiddenness):
+    if hiddenness == "open":
         plmid = itemArray[1]
-    elif location['hiddenness'] == "chozo":
+    elif hiddenness == "chozo":
         plmid = itemArray[2]
     else:
         plmid = itemArray[3]
+    return plmid
+
+def itemPlace(location,itemArray) :
+    #provide a locRow as in and the item array such as Missile, Super, etc
     # write all rom locations associated with the item location
+    plmid = plmidFromHiddenness(itemArray, location['hiddenness'])
     for address in location['locids']:
         writeItem(address, plmid, itemArray[4])
     for address in location['alternateroomlocids']:
-        writeItem(address, plmid, itemArray[4])
+        if location['alternateroomdifferenthiddenness'] == "":
+            # most of the alt rooms go here, having the same item hiddenness as the corresponding "pre-item-move" item had
+            plmid_altroom = plmid
+        else:
+            plmid_altroom = plmidFromHiddenness(itemArray, location['alternateroomdifferenthiddenness'])
+        writeItem(address, plmid_altroom, itemArray[4])
 
 def pullCSV():
     csvdict = {}
@@ -95,13 +104,13 @@ def pullCSV():
 #main program
 if __name__ == "__main__":
     workingArgs=commandLineArgs(sys.argv[1:])
-    if workingArgs.e :
+    if workingArgs.expert :
         logicChoice = "E"
     else :
         logicChoice = "C" #Default to casual logic
-    if workingArgs.m :
+    if workingArgs.medium :
         fillChoice = "M"
-    elif workingArgs.mm :
+    elif workingArgs.majorminor :
         fillChoice = "MM"
     else :
         fillChoice = "S"
