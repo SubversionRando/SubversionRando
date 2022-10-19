@@ -252,7 +252,7 @@ def updateLogic (unusedLocations, locArray, loadout) :
         if thisLoc['fullitemname'] == "Shrine Of Fervor":
             thisLoc['inlogic'] = eastLomyr
         if thisLoc['fullitemname'] == "Chamber Of Wind":
-            thisLoc['inlogic'] = eastLomyr and pinkDoor and (SpeedBooster in loadout)
+            thisLoc['inlogic'] = eastLomyr and pinkDoor and (SpeedBooster in loadout) and (canUseBombs or ((Screw in loadout) and (Speedball in loadout)))
         if thisLoc['fullitemname'] == "Water Garden":
             thisLoc['inlogic'] = eastLomyr and pinkDoor and (SpeedBooster in loadout)
         if thisLoc['fullitemname'] == "Crocomire's Energy Station":
@@ -322,7 +322,8 @@ def updateLogic (unusedLocations, locArray, loadout) :
         if thisLoc['fullitemname'] == "Causeway Overlook":
             thisLoc['inlogic'] = vulnar and canUseBombs
         if thisLoc['fullitemname'] == "Placid Pool":
-            thisLoc['inlogic'] = vulnar and canUsePB and (Ice in loadout) and ((Varia in loadout) or ((DarkVisor in loadout) and (Wave in loadout)) or ((DarkVisor in loadout) and (Speedball in loadout) or (SpeedBooster in loadout)))
+            thisLoc['inlogic'] = vulnar and canUsePB and (Ice in loadout) and ((Varia in loadout) or ((DarkVisor in loadout) and (Wave in loadout)) or ((DarkVisor in loadout) and (Speedball in loadout) or
+                                                                                                                                                        (SpeedBooster in loadout)))
         if thisLoc['fullitemname'] == "Blazing Chasm":
             thisLoc['inlogic'] = depthsL and canUsePB and (Super in loadout) and (MetroidSuit in loadout)                  
         if thisLoc['fullitemname'] == "Generator Manifold":
