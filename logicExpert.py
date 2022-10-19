@@ -286,7 +286,7 @@ def updateLogic (unusedLocations, locArray, loadout) :
         if thisLoc['fullitemname'] == "Docking Port 4": # (4 = letter Omega)
             thisLoc['inlogic'] = (((spaceDrop in loadout) == False) and (Grapple in loadout)) or ((spaceDrop in loadout) and geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout))
         if thisLoc['fullitemname'] == "Ready Room":
-            thisLoc['inlogic'] = (((spaceDrop in loadout) == False) and (Missile in loadout)) or ((spaceDrop in loadout) and geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout))
+            thisLoc['inlogic'] = (((spaceDrop in loadout) == False) and (Super in loadout)) or ((spaceDrop in loadout) and geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout))
         if thisLoc['fullitemname'] == "Torpedo Bay":
             thisLoc['inlogic'] = ((spaceDrop in loadout) == False) or (((spaceDrop in loadout) and geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)))
         if thisLoc['fullitemname'] == "Extract Storage":
