@@ -406,6 +406,10 @@ if __name__ == "__main__":
     writeBytes(0x16ed8, b"\x1c") # adjust earlier branch to go +6 bytes later to rts
     # disable demos (asm opcode edit). because the demos show items
     writeBytes(0x59f29, b"\xad")
+    # make always flashing doors out of vanilla gray 'animals saved' doors:
+    #   edit in function $84:BE30 'gray door pre: go to link instruction if critters escaped', which is vanilla and probably not used anyway
+    #   use by writing 0x18 to the high byte of a gray door plm param, OR'ed with the low bit of the 9-low-bits id part
+    writeBytes(0x23e33, b"\x38\x38\x38\x38") # set the carry bit (a lot)
     finalizeRom()
     print("Done!")
     print("Filename is "+"Sub"+logicChoice+fillChoice+str(seeeed)+".sfc")
