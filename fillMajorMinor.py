@@ -267,6 +267,12 @@ def placementAlg(availableLocations, locArray, loadout, itemLists) :
             if (loc['fullitemname'] in majorLocs) :
                 loadMajors.append(loc)
         if loadMajors == [] :
+            for sandySearch in locArray :
+                #print("Searching for Sandy Cache: ",sandySearch['fullitemname'])
+                if (Morph in loadout) and sandySearch['fullitemname'] == "Sandy Cache" :
+                    loadMajors.append(sandySearch)
+                    availableLocations.append(sandySearch)
+        if loadMajors == [] :
             return ["Fail","Fail"]
         randomIndex=0
         if len(earlyItemList) > 1 :

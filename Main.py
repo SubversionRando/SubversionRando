@@ -314,10 +314,10 @@ if __name__ == "__main__":
         else :
             itemLists=fillSpeedrun.initItemLists()
         while len(unusedLocations) != 0 or len(availableLocations) != 0:
-            #print("loadout contains:")
+            print("loadout contains:")
             #print(loadout)
             for a in loadout:
-                #print("-",a[0])
+                print("-",a[0])
                 uu=0 #just do nothing
                 
             #update logic by updating unusedLocations
@@ -331,7 +331,7 @@ if __name__ == "__main__":
             #update unusedLocations and availableLocations
             for i in reversed(range(len(unusedLocations))): # iterate in reverse so we can remove freely
                 if unusedLocations[i]['inlogic'] == True :
-                    #print("Found available location at",unusedLocations[i]['fullitemname'])
+                    print("Found available location at",unusedLocations[i]['fullitemname'])
                     availableLocations.append(unusedLocations[i])
                     unusedLocations.pop(i)
             #print("Available locations sits at:",len(availableLocations))
@@ -359,6 +359,8 @@ if __name__ == "__main__":
             #it returns your location and item, which are handled here
             placeLocation=placePair[0]
             placeItem=placePair[1]
+            if (placeLocation in unusedLocations) :
+                unusedLocations.remove(placeLocation)
             if placeLocation == "Fail" :
                 print(f'Item placement was not successful due to majors. {len(unusedLocations)} locations remaining.')
                 spoilerSave+=f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
