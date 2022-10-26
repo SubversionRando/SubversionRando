@@ -8,9 +8,11 @@ import io
 import csv
 import logicCasual
 import logicExpert
+import logicExpertArea
 import fillSpeedrun
 import fillMedium
 import fillMajorMinor
+import areaRando
 
 g_rom : io.BufferedIOBase
 
@@ -21,6 +23,7 @@ def commandLineArgs(sys_args) :
     parser.add_argument('-s', '--speedrun', action="store_true", help='Speedrun fill, fast setting comparable to Varia.run Speedrun fill algorithm, Default')
     parser.add_argument('-m', '--medium', action="store_true", help='Medium fill, medium speed setting that places low-power items first for increased exploration')
     parser.add_argument('-mm', '--majorminor',  action="store_true", help='Major-Minor fill, using unique majors and locations')
+    parser.add_argument('-area',  action="store_true", help='Area rando shuffles major areas of the game, expert logic only')
     args = parser.parse_args(sys_args)
     #print(args)
     return args
@@ -106,12 +109,16 @@ if __name__ == "__main__":
     workingArgs=commandLineArgs(sys.argv[1:])
     if workingArgs.expert :
         logicChoice = "E"
+    elif workingArgs.area :
+        logicChoice = "AR" #EXPERT area rando
     else :
         logicChoice = "C" #Default to casual logic
     if workingArgs.medium :
         fillChoice = "M"
     elif workingArgs.majorminor :
         fillChoice = "MM"
+    elif workingArgs.area :
+        fillChoice = "EA" #EXPERT area rando 
     else :
         fillChoice = "S"
     #hudFlicker=""
@@ -293,6 +300,9 @@ if __name__ == "__main__":
     seedComplete = False
     randomizeAttempts = 0
     while seedComplete == False:
+        if fillChoice == "EA" : #area rando no logic
+            g_rom,Connections=areaRando.RandomizeAreas(g_rom) 
+            #print(Connections) #test    
         randomizeAttempts += 1
         if randomizeAttempts > 1000 :
             print("Giving up after 1000 attempts. Help?")
@@ -311,6 +321,8 @@ if __name__ == "__main__":
             itemLists=fillMedium.initItemLists()
         elif fillChoice == "MM" :
             itemLists=fillMajorMinor.initItemLists()
+        elif fillChoice == "EA" : #area rando uses medium fill
+            itemLists=fillMedium.initItemLists()
         else :
             itemLists=fillSpeedrun.initItemLists()
         while len(unusedLocations) != 0 or len(availableLocations) != 0:
@@ -325,6 +337,9 @@ if __name__ == "__main__":
             #unusedLocations[i]['inlogic'] holds the True or False for logic
             if logicChoice == "E" :
                 logicExpert.updateLogic(unusedLocations, locArray, loadout)
+            elif logicChoice == "AR" :
+                loadout = areaRando.updateAreaLogic(availableLocations, locArray, loadout, Connections)
+                logicExpertArea.updateLogic(unusedLocations, locArray, loadout)
             else :
                 logicCasual.updateLogic(unusedLocations, locArray, loadout)
                     
@@ -354,6 +369,8 @@ if __name__ == "__main__":
                 placePair=fillMedium.placementAlg(availableLocations, locArray, loadout, itemLists)
             elif fillChoice == "MM" :
                 placePair=fillMajorMinor.placementAlg(availableLocations, locArray, loadout, itemLists)
+            elif fillChoice == "EA" : #area rando
+                placePair=fillMedium.placementAlg(availableLocations, locArray, loadout, itemLists)
             else :
                 placePair=fillSpeedrun.placementAlg(availableLocations, locArray, loadout, itemLists)
             #it returns your location and item, which are handled here
@@ -383,8 +400,9 @@ if __name__ == "__main__":
                 seedComplete = True
                 break
             
-            
-
+    #add area transitions to spoiler
+    for item in Connections :
+        spoilerSave+=item[0][2]+" "+item[0][3]+" << >> "+item[1][2]+" "+item[1][3]+"\n"
 
     # Suit animation skip patch
     writeBytes(0x20717, b"\xea\xea\xea\xea")
