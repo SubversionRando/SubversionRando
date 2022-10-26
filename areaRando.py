@@ -514,7 +514,7 @@ def updateAreaLogic(availableLocations, locArray, loadout, Connections) :
     pinkDoor = (Missile in loadout) or (Super in loadout)
     canUseBombs = (Morph in loadout) and ((Bombs in loadout) or (PowerBomb in loadout))
     canUsePB = (Morph in loadout) and (PowerBomb in loadout)
-    canFly = (Bombs in loadout) or (SpaceJump in loadout)
+    canFly = canUseBombs or (SpaceJump in loadout)
     wave = (Wave in loadout) or ((Charge in loadout) and (Hypercharge in loadout))
     breakIce = (Plasma in loadout) or ((Charge in loadout) and (Hypercharge in loadout))
     energyCount=0
