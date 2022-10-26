@@ -8,11 +8,12 @@ simple readme for now
 2.place a copy of the Subversion 1.2 rom in the roms folder - it must be named Subversion12.sfc
 3.run Main.py in console
 4. optionally, command line arguments are available:
- -h Help
- -c Casual Logic (Default)
- -e Expert logic
- -s Speedrun fill (Default)
- -m Medium fill
+ -h   : Help
+ -c   : Casual Logic (Default)
+ -e   : Expert logic
+ -s   : Speedrun fill (Default)
+ -m   : Medium fill
+ -area   : Area Rando with expert logic and medium fill
 
 This should create a randomized rom with the given name in the roms folder and a spoiler log (.txt) in the spoilers folder.
 
