@@ -401,8 +401,9 @@ if __name__ == "__main__":
                 break
             
     #add area transitions to spoiler
-    for item in Connections :
-        spoilerSave+=item[0][2]+" "+item[0][3]+" << >> "+item[1][2]+" "+item[1][3]+"\n"
+    if fillChoice == "EA" :
+        for item in Connections :
+            spoilerSave+=item[0][2]+" "+item[0][3]+" << >> "+item[1][2]+" "+item[1][3]+"\n"
 
     # Suit animation skip patch
     writeBytes(0x20717, b"\xea\xea\xea\xea")
