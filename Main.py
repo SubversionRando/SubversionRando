@@ -4,7 +4,6 @@ import argparse
 import struct
 import shutil
 import os
-import io
 import csv
 import logicCasual
 import logicExpert
@@ -13,8 +12,8 @@ import fillSpeedrun
 import fillMedium
 import fillMajorMinor
 import areaRando
+from romWriter import RomWriter
 
-g_rom : io.BufferedIOBase
 
 def commandLineArgs(sys_args) :
     parser = argparse.ArgumentParser()
@@ -23,42 +22,11 @@ def commandLineArgs(sys_args) :
     parser.add_argument('-s', '--speedrun', action="store_true", help='Speedrun fill, fast setting comparable to Varia.run Speedrun fill algorithm, Default')
     parser.add_argument('-m', '--medium', action="store_true", help='Medium fill, medium speed setting that places low-power items first for increased exploration')
     parser.add_argument('-mm', '--majorminor',  action="store_true", help='Major-Minor fill, using unique majors and locations')
-    parser.add_argument('-area',  action="store_true", help='Area rando shuffles major areas of the game, expert logic only')
+    parser.add_argument('-a', '--area',  action="store_true", help='Area rando shuffles major areas of the game, expert logic only')
     args = parser.parse_args(sys_args)
     #print(args)
     return args
 
-def createWorkingFileCopy(origFile, newFile) -> io.BufferedIOBase:
-    global g_rom
-    if not os.path.exists(origFile):
-        raise Exception(f'origFile not found: {origFile}')
-    with open(origFile, 'rb') as orig:
-        g_rom = open(newFile, 'wb') # wb = write, binary
-        # copy original to new before we edit new
-        while True:
-            chunk = orig.read(16384) # or any amount
-            if chunk == b"":
-                break
-            g_rom.write(chunk)
-
-def writeItem(address : int, plmid, ammoAmount = b"\x00"):
-    global g_rom
-    if len(plmid) != 2 or len(ammoAmount) != 1:
-        raise Exception(f'plmid length ({len(plmid)}) must be 2 and ammoAmount length ({len(ammoAmount)}) must be 1')
-    g_rom.seek(address)
-    g_rom.write(plmid)
-    g_rom.seek(address+5)
-    g_rom.write(ammoAmount)
-
-def writeBytes(address : int, data):
-    global g_rom
-    g_rom.seek(address)
-    g_rom.write(data)
-
-def finalizeRom():
-    global g_rom
-    g_rom.close()
-    g_rom = None
 
 def plmidFromHiddenness(itemArray, hiddenness):
     if hiddenness == "open":
@@ -69,19 +37,19 @@ def plmidFromHiddenness(itemArray, hiddenness):
         plmid = itemArray[3]
     return plmid
 
-def itemPlace(location,itemArray) :
+def itemPlace(romWriter, location, itemArray) :
     #provide a locRow as in and the item array such as Missile, Super, etc
     # write all rom locations associated with the item location
     plmid = plmidFromHiddenness(itemArray, location['hiddenness'])
     for address in location['locids']:
-        writeItem(address, plmid, itemArray[4])
+        romWriter.writeItem(address, plmid, itemArray[4])
     for address in location['alternateroomlocids']:
         if location['alternateroomdifferenthiddenness'] == "":
             # most of the alt rooms go here, having the same item hiddenness as the corresponding "pre-item-move" item had
             plmid_altroom = plmid
         else:
             plmid_altroom = plmidFromHiddenness(itemArray, location['alternateroomdifferenthiddenness'])
-        writeItem(address, plmid_altroom, itemArray[4])
+        romWriter.writeItem(address, plmid_altroom, itemArray[4])
 
 def pullCSV():
     csvdict = {}
@@ -105,8 +73,8 @@ def pullCSV():
     return csvdict
 
 #main program
-if __name__ == "__main__":
-    workingArgs=commandLineArgs(sys.argv[1:])
+def Main(argv, romWriter : RomWriter = None):
+    workingArgs=commandLineArgs(argv[1:])
     if workingArgs.expert :
         logicChoice = "E"
     elif workingArgs.area :
@@ -286,7 +254,10 @@ if __name__ == "__main__":
                       b"\xc0\xfc",
                       b"\x00"]
     spaceDrop = ["Space Drop","","","",""]
-    createWorkingFileCopy(rom_clean_path, rom1_path)
+    if romWriter is None:
+        romWriter = RomWriter.fromFilePaths(origRomPath=rom_clean_path, newRomPath=rom1_path)
+    else:
+        romWriter.setBaseFilename(rom1_path[:-4].split("/")[-1]) # remove .sfc extension and dirs
     spacePortLocs=["Ready Room",
                "Torpedo Bay",
                "Extract Storage",
@@ -301,7 +272,7 @@ if __name__ == "__main__":
     randomizeAttempts = 0
     while seedComplete == False:
         if fillChoice == "EA" : #area rando no logic
-            g_rom,Connections=areaRando.RandomizeAreas(g_rom) 
+            Connections=areaRando.RandomizeAreas(romWriter) 
             #print(Connections) #test    
         randomizeAttempts += 1
         if randomizeAttempts > 1000 :
@@ -382,7 +353,7 @@ if __name__ == "__main__":
                 print(f'Item placement was not successful due to majors. {len(unusedLocations)} locations remaining.')
                 spoilerSave+=f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
                 break
-            itemPlace(placeLocation,placeItem)
+            itemPlace(romWriter, placeLocation, placeItem)
             availableLocations.remove(placeLocation)
             for itemPowerGrouping in itemLists :
                 if placeItem in itemPowerGrouping :
@@ -406,30 +377,30 @@ if __name__ == "__main__":
             spoilerSave+=item[0][2]+" "+item[0][3]+" << >> "+item[1][2]+" "+item[1][3]+"\n"
 
     # Suit animation skip patch
-    writeBytes(0x20717, b"\xea\xea\xea\xea")
+    romWriter.writeBytes(0x20717, b"\xea\xea\xea\xea")
     # Flickering hud removal patch
     #if hudFlicker == "Y" :
         #writeBytes(0x547a, b"\x02")
         #writeBytes(0x547f, b"\x00")
         #uu=0
     # Morph Ball PLM patch (chozo, hidden)
-    writeBytes(0x268ce, b"\x04")
-    writeBytes(0x26e02, b"\x04")
+    romWriter.writeBytes(0x268ce, b"\x04")
+    romWriter.writeBytes(0x26e02, b"\x04")
     # skip intro (asm edits) TODO turn this into asm and a proper hook
-    writeBytes(0x16eda, b"\x1f") # initial game state set by $82:eeda
-    writeBytes(0x16ee0, b"\x06\x00") # initial game area = 6 (ceres)
-    writeBytes(0x16ee3, b"\x9f\x07") # $079f Area index
-    writeBytes(0x16ee5, b"\xa9\x05\x00\x8f\x14\xd9\x7e\xea\xea") # $7e:d914 = 05 Main
-    writeBytes(0x16eee, b"\xad\x52\x09\x22\x00\x80\x81") # jsl save game (param in A: save slot)
-    writeBytes(0x16ed0, b"\x24") # adjust earlier branch to go +6 bytes later to rts
-    writeBytes(0x16ed8, b"\x1c") # adjust earlier branch to go +6 bytes later to rts
+    romWriter.writeBytes(0x16eda, b"\x1f") # initial game state set by $82:eeda
+    romWriter.writeBytes(0x16ee0, b"\x06\x00") # initial game area = 6 (ceres)
+    romWriter.writeBytes(0x16ee3, b"\x9f\x07") # $079f Area index
+    romWriter.writeBytes(0x16ee5, b"\xa9\x05\x00\x8f\x14\xd9\x7e\xea\xea") # $7e:d914 = 05 Main
+    romWriter.writeBytes(0x16eee, b"\xad\x52\x09\x22\x00\x80\x81") # jsl save game (param in A: save slot)
+    romWriter.writeBytes(0x16ed0, b"\x24") # adjust earlier branch to go +6 bytes later to rts
+    romWriter.writeBytes(0x16ed8, b"\x1c") # adjust earlier branch to go +6 bytes later to rts
     # disable demos (asm opcode edit). because the demos show items
-    writeBytes(0x59f29, b"\xad")
+    romWriter.writeBytes(0x59f29, b"\xad")
     # make always flashing doors out of vanilla gray 'animals saved' doors:
     #   edit in function $84:BE30 'gray door pre: go to link instruction if critters escaped', which is vanilla and probably not used anyway
     #   use by writing 0x18 to the high byte of a gray door plm param, OR'ed with the low bit of the 9-low-bits id part
-    writeBytes(0x23e33, b"\x38\x38\x38\x38") # set the carry bit (a lot)
-    finalizeRom()
+    romWriter.writeBytes(0x23e33, b"\x38\x38\x38\x38") # set the carry bit (a lot)
+    romWriter.finalizeRom()
     print("Done!")
     print("Filename is "+"Sub"+logicChoice+fillChoice+str(seeeed)+".sfc")
     spoiler_file.write("RNG Seed: {}\n".format(str(seeeed))+"\n")
@@ -437,6 +408,6 @@ if __name__ == "__main__":
     spoiler_file.write(spoilerSave)    
     print("Spoiler file is "+"Sub"+logicChoice+fillChoice+str(seeeed)+".sfc.spoiler.txt")
 
-
-
+if __name__ == "__main__":
+    Main(sys.argv)
 

@@ -1,5 +1,6 @@
 import random
 import io
+from romWriter import RomWriter
 
 #RandomizeAreas shuffles the locations and checks that the ship connects to daphne properly
 #updateAreaLogic is like a logic updater for area doors connecting to other area doors
@@ -211,7 +212,7 @@ SpaceJumpBoost = ["Space Jump Boost",
 spaceDrop = ["Space Drop","","","",""]
 
 
-def RandomizeAreas(rom) :
+def RandomizeAreas(romWriter : RomWriter) :
     #Each location holds
     #[0]the data of its door
     #[1]the data of the vanilla door that goes here
@@ -453,20 +454,14 @@ def RandomizeAreas(rom) :
         node1=pair[0]
         node2=pair[1]
         #place data for node1 sending
-        rom.seek(int(node1[0],16))
-        storeInt=int(node2[1],16)
-        rom.write(storeInt.to_bytes(12,'big'))
+        romWriter.writeBytes(int(node1[0],16), int(node2[1],16).to_bytes(12, 'big'))
         #place data for node2 sending
-        rom.seek(int(node2[0],16))
-        storeInt=int(node1[1],16)
-        rom.write(storeInt.to_bytes(12,'big'))
+        romWriter.writeBytes(int(node2[0],16), int(node1[1],16).to_bytes(12, 'big'))
         if node1[4] != node2[4] :
-            rom.seek(int(node1[0],16)+2)
-            rom.write(b"\x40")
-            rom.seek(int(node2[0],16)+2)
-            rom.write(b"\x40")
+            romWriter.writeBytes(int(node1[0],16)+2, b"\x40")
+            romWriter.writeBytes(int(node2[0],16)+2, b"\x40")
 
-    #Area rando done?        
+    #Area rando done?
 
     #coloring some doors to be flashing
     colorDoorsR=['3fff70',
@@ -476,27 +471,23 @@ def RandomizeAreas(rom) :
                  '3ff1f8',
                  '3fe668',
                  '3fe66e']
-                 
-                 
+
+
     colorDoorsL=['3ffec4',
                  '3fe352',
                  '3fe35a',
                  '3fe686',
                  '3ffa2c']
-                 
-                 
-    for item in colorDoorsR :
-        rom.seek(int(item,16))
-        rom.write(b"\x42")       
-        rom.seek(int(item,16)+5)
-        rom.write(b"\x98")
-    for item in colorDoorsL :
-        rom.seek(int(item,16))
-        rom.write(b"\x48")
-        rom.seek(int(item,16)+5)
-        rom.write(b"\x98")
 
-    return rom, Connections
+
+    for doorlocid in colorDoorsR:
+        romWriter.writeBytes(int(doorlocid,16),   b"\x42") # gray type door
+        romWriter.writeBytes(int(doorlocid,16)+5, b"\x98") # animals subtype
+    for doorlocid in colorDoorsL:
+        romWriter.writeBytes(int(doorlocid,16),   b"\x48") # gray type door
+        romWriter.writeBytes(int(doorlocid,16)+5, b"\x98") # animals subtype
+
+    return Connections
 
 def otherDoor(door,Connections) :
     for pair in Connections :
