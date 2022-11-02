@@ -1,13 +1,14 @@
 import random
 import sys
+from typing import Optional
 import argparse
 from typing import Optional
 
-from item_data import Item
+from item_data import Items
 from location_data import Location, pullCSV
-import logicCasual
-import logicExpert
-import logicExpertArea
+import logic_casual
+import logic_expert
+import logic_expert_area
 import fillSpeedrun
 import fillMedium
 import fillMajorMinor
@@ -141,37 +142,33 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         while len(unusedLocations) != 0 or len(availableLocations) != 0:
             # print("loadout contains:")
             # print(loadout)
-            for a in loadout:
-                # print("-",a[0])
-                uu = 0  # just do nothing
+            # for a in loadout:
+            #     print("-",a[0])
 
             # update logic by updating unusedLocations
             # using helper function, modular for more logic options later
             # unusedLocations[i]['inlogic'] holds the True or False for logic
             if logicChoice == "E":
-                logicExpert.updateLogic(unusedLocations, locArray, loadout)
+                logic_expert.updateLogic(unusedLocations, locArray, loadout)
             elif logicChoice == "AR":
                 loadout = areaRando.updateAreaLogic(availableLocations, locArray, loadout, Connections)
-                logicExpertArea.updateLogic(unusedLocations, locArray, loadout)
+                logic_expert_area.updateLogic(unusedLocations, locArray, loadout)
             else:
-                logicCasual.updateLogic(unusedLocations, locArray, loadout)
+                logic_casual.updateLogic(unusedLocations, locArray, loadout)
 
             # update unusedLocations and availableLocations
-            # iterate in reverse so we can remove freely
-            for i in reversed(range(len(unusedLocations))):
-                if unusedLocations[i]['inlogic'] == True:
-                    #print("Found available location at",unusedLocations[i]['fullitemname'])
+            for i in reversed(range(len(unusedLocations))):  # iterate in reverse so we can remove freely
+                if unusedLocations[i]['inlogic'] is True:
+                    # print("Found available location at",unusedLocations[i]['fullitemname'])
                     availableLocations.append(unusedLocations[i])
                     unusedLocations.pop(i)
             # print("Available locations sits at:",len(availableLocations))
-            for al in availableLocations:
-                # print(al[0])
-                uu = 0
+            # for al in availableLocations :
+            #     print(al[0])
             # print("Unused locations sits at size:",len(unusedLocations))
             # print("unusedLocations:")
-            for u in unusedLocations:
-                # print(u['fullitemname'])
-                uu = 0
+            # for u in unusedLocations :
+            #     print(u['fullitemname'])
 
             if availableLocations == [] and unusedLocations != []:
                 print(
@@ -186,7 +183,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
                 placePair = fillMajorMinor.placementAlg(availableLocations, locArray, loadout, itemLists)
             elif fillChoice == "EA":  # area rando
                 placePair = fillMedium.placementAlg(availableLocations, locArray, loadout, itemLists)
-            else:
+            else :
                 placePair = fillSpeedrun.placementAlg(availableLocations, locArray, loadout, itemLists)
             # it returns your location and item, which are handled here
             placeLocation = placePair[0]
@@ -205,10 +202,9 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
                     itemPowerGrouping.remove(placeItem)
                     break
             loadout.append(placeItem)
-            if ((placeLocation['fullitemname'] in spacePortLocs) == False) and ((spaceDrop in loadout) == False):
-                loadout.append(spaceDrop)
-            spoilerSave += placeLocation['fullitemname'] + \
-                " - - - "+placeItem[0]+"\n"
+            if ((placeLocation['fullitemname'] in spacePortLocs) == False) and ((Items.spaceDrop in loadout) == False):
+                loadout.append(Items.spaceDrop)
+            spoilerSave+=placeLocation['fullitemname']+" - - - "+placeItem[0]+"\n"
             # print(placeLocation['fullitemname']+placeItem[0])
 
             if availableLocations == [] and unusedLocations == []:
@@ -264,4 +260,8 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
 
 
 if __name__ == "__main__":
+    import time
+    t0 = time.perf_counter()
     Main(sys.argv)
+    t1 = time.perf_counter()
+    print(f"time taken: {t1 - t0}")

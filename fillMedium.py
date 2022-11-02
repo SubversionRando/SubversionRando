@@ -1,9 +1,17 @@
 import random
 
-from item_data import Items, Item
+from item_data import Item, items_unpackable
 
-# this will not update any of the parameters it is given
-# but it will return an item to place at a location
+#this will not update any of the parameters it is given
+#but it will return an item to place at a location
+
+(
+    Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
+    GravitySuit, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
+    MetroidSuit, Plasma, Screw, Hypercharge, Charge, Xray, SpaceJump, Energy,
+    Refuel, SmallAmmo, LargeAmmo, DamageAmp, ChargeAmp, SpaceJumpBoost,
+    spaceDrop
+) = items_unpackable
 
 
 # itemLists should contain
@@ -15,55 +23,55 @@ ItemLists = tuple[list[Item], list[Item], list[Item], list[Item]]
 
 
 def initItemLists() -> ItemLists:
-    earlyItemList = [Items.Missile,
-                     Items.Morph,
-                     Items.GravityBoots]
-    lowPowerList = [Items.Super,
-                    Items.Speedball,
-                    Items.Bombs,
-                    Items.HiJump,
-                    Items.GravitySuit,
-                    Items.DarkVisor,
-                    Items.Wave,
-                    Items.SpeedBooster,
-                    Items.SpaceJump,
-                    Items.Charge,
-                    Items.Energy, Items.Energy, Items.Energy, Items.Energy, Items.Energy]
-    highPowerList = [Items.Grapple,
-                     Items.PowerBomb,
-                     Items.Varia,
-                     Items.Ice,
-                     Items.MetroidSuit,
-                     Items.Screw,
-                     Items.Spazer,
-                     Items.Plasma,
-                     Items.Hypercharge]
-    extraItemList = [Items.Xray,
-                     Items.DamageAmp, Items.DamageAmp, Items.DamageAmp,
-                     Items.DamageAmp, Items.DamageAmp, Items.DamageAmp,
-                     Items.ChargeAmp, Items.ChargeAmp, Items.ChargeAmp,
-                     Items.ChargeAmp, Items.ChargeAmp, Items.ChargeAmp,
-                     Items.Refuel, Items.Refuel, Items.Refuel, Items.Refuel, Items.Refuel, Items.Refuel, Items.Refuel,
-                     Items.Energy, Items.Energy, Items.Energy, Items.Energy,
-                     Items.Energy, Items.Energy, Items.Energy, Items.Energy, Items.Energy,
-                     Items.Energy, Items.Energy, Items.Energy, Items.Energy,
-                     Items.SpaceJumpBoost, Items.SpaceJumpBoost, Items.SpaceJumpBoost, Items.SpaceJumpBoost,
-                     Items.SpaceJumpBoost, Items.SpaceJumpBoost, Items.SpaceJumpBoost, Items.SpaceJumpBoost,
-                     Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo,
-                     Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo,
-                     Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo,
-                     Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo,
-                     Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo,
-                     Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo,
-                     Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo,
-                     Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo,
-                     Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo,
-                     Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo,
-                     Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo,
-                     Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo,
-                     Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo,
-                     Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo,
-                     Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo]
+    earlyItemList = [Missile,
+                     Morph,
+                     GravityBoots]
+    lowPowerList = [Super,
+                    Speedball,
+                    Bombs,
+                    HiJump,
+                    GravitySuit,
+                    DarkVisor,
+                    Wave,
+                    SpeedBooster,
+                    SpaceJump,
+                    Charge,
+                    Energy, Energy, Energy, Energy, Energy]
+    highPowerList = [Grapple,
+                     PowerBomb,
+                     Varia,
+                     Ice,
+                     MetroidSuit,
+                     Screw,
+                     Spazer,
+                     Plasma,
+                     Hypercharge]
+    extraItemList = [Xray,
+                     DamageAmp, DamageAmp, DamageAmp,
+                     DamageAmp, DamageAmp, DamageAmp,
+                     ChargeAmp, ChargeAmp, ChargeAmp,
+                     ChargeAmp, ChargeAmp, ChargeAmp,
+                     Refuel, Refuel, Refuel, Refuel, Refuel, Refuel, Refuel,
+                     Energy, Energy, Energy, Energy,
+                     Energy, Energy, Energy, Energy, Energy,
+                     Energy, Energy, Energy, Energy,
+                     SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost,
+                     SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost,
+                     SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+                     SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+                     SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+                     SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+                     SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+                     SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+                     SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+                     SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+                     SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+                     SmallAmmo, SmallAmmo, SmallAmmo,
+                     LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo,
+                     LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo,
+                     LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo,
+                     LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo,
+                     LargeAmmo, LargeAmmo, LargeAmmo]
     return earlyItemList, lowPowerList, highPowerList, extraItemList
 
 
