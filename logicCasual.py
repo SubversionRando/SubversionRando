@@ -1,158 +1,22 @@
-#Casual logic updater
-#updates unusedLocations
+from item_data import Item, items_unpackable
+from location_data import Location
 
-def updateLogic (unusedLocations, locArray, loadout) :
-    Missile = ["Missile",
-               b"\xdb\xee",
-               b"\x2f\xef",
-               b"\x83\xef",
-               b"\x00"]
-    Super = ["Super Missile",
-             b"\xdf\xee",
-             b"\x33\xef",
-             b"\x87\xef",
-             b"\x00"]
-    PowerBomb = ["Power Bomb",
-                 b"\xe3\xee",
-                 b"\x37\xef",
-                 b"\x8b\xef",
-                 b"\x00"]
-    Morph = ["Morph Ball",
-             b"\x23\xef",
-             b"\x77\xef",
-             b"\xcb\xef",
-             b"\x00"]
-    GravityBoots = ["Gravity Boots",
-                    b"\x40\xfd",
-                    b"\x40\xfd",
-                    b"\x40\xfd",
-                    b"\x00"]   
-    Speedball = ["Speed Ball",
-                 b"\x03\xef",
-                 b"\x57\xef",
-                 b"\xab\xef",
-                 b"\x00"]
-    Bombs = ["Bombs",
-             b"\xe7\xee",
-             b"\x3b\xef",
-             b"\x8f\xef",
-             b"\x00"]
-    HiJump = ["HiJump",
-              b"\xf3\xee",
-              b"\x47\xef",
-              b"\x9b\xef",
-              b"\x00"]
-    GravitySuit = ["Gravity Suit",
-                   b"\x0b\xef",
-                   b"\x5f\xef",
-                   b"\xb3\xef",
-                   b"\x00"]
-    DarkVisor = ["Dark Visor",
-                 b"\xb0\xfd",
-                 b"\xb0\xfd",
-                 b"\xb0\xfd",
-                 b"\x00"]
-    Wave = ["Wave Beam",
-            b"\xfb\xee",
-            b"\x4f\xef",
-            b"\xa3\xef",
-            b"\x00"]
-    SpeedBooster = ["Speed Booster",
-                    b"\xf7\xee",
-                    b"\x4b\xef",
-                    b"\x9f\xef",
-                    b"\x00"]
-    Spazer = ["Spazer",
-              b"\xff\xee",
-              b"\x53\xef",
-              b"\xa7\xef",
-              b"\x00"]
-    Varia = ["Varia Suit",
-             b"\x07\xef",
-             b"\x5b\xef",
-             b"\xaf\xef",
-             b"\x00"]
-    Ice = ["Ice Beam",
-           b"\xef\xee",
-           b"\x43\xef",
-           b"\x97\xef",
-           b"\x00"]
-    Grapple = ["Grapple Beam",
-               b"\x17\xef",
-               b"\x6b\xef",
-               b"\xbf\xef",
-               b"\x00"]
-    MetroidSuit = ["Metroid Suit",
-                   b"\x20\xfe",
-                   b"\x20\xfe",
-                   b"\x20\xfe",
-                   b"\x00"]
-    Plasma = ["Plasma Beam",
-              b"\x13\xef",
-              b"\x67\xef",
-              b"\xbb\xef",
-              b"\x00"]
-    Screw = ["Screw Attack",
-             b"\x1f\xef",
-             b"\x73\xef",
-             b"\xc7\xef",
-             b"\x00"]
-    Hypercharge = ["Hypercharge",
-                   b"\x80\xf7",
-                   b"\x80\xf7",
-                   b"\x80\xf7",
-                   b"\x00"]
-    Charge = ["Charge Beam",
-              b"\xeb\xee",
-              b"\x3f\xef",
-              b"\x93\xef",
-              b"\x00"]
-    Xray = ["X-Ray Scope",
-            b"\x0f\xef",
-            b"\x63\xef",
-            b"\xb7\xef",
-            b"\x00"]
-    SpaceJump = ["Space Jump",
-                 b"\x1b\xef",
-                 b"\x6f\xef",
-                 b"\xc3\xef",
-                 b"\x00"]
-    Energy = ["Energy Tank",
-              b"\xd7\xee",
-              b"\x2b\xef",
-              b"\x7f\xef",
-              b"\x00"]
-    Refuel = ["Refuel Tank",
-              b"\x27\xef",
-              b"\x7b\xef",
-              b"\xcf\xef",
-              b"\x00"]
-    SmallAmmo = ["Small Ammo",
-                 b"\x00\xf9",
-                 b"\x04\xf9",
-                 b"\x08\xf9",
-                 b"\x05"]
-    LargeAmmo = ["Large Ammo",
-                 b"\x00\xf9",
-                 b"\x04\xf9",
-                 b"\x08\xf9",
-                 b"\x0a"]
-    DamageAmp = ["Damage Amp",
-                 b"\x7e\xf8",
-                 b"\x7e\xf8",
-                 b"\x7e\xf8",
-                 b"\x00"]
-    ChargeAmp = ["Charge Amp",
-                 b"\xa0\xf0",
-                 b"\xa0\xf0",
-                 b"\xa0\xf0",
-                 b"\x00"]
-    SpaceJumpBoost = ["Space Jump Boost",
-                      b"\xc0\xfc",
-                      b"\xc0\xfc",
-                      b"\xc0\xfc",
-                      b"\x00"]
-    spaceDrop = ["Space Drop","","","",""]
+# Casual logic updater
+# updates unusedLocations
+
+(
+    Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
+    GravitySuit, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
+    MetroidSuit, Plasma, Screw, Hypercharge, Charge, Xray, SpaceJump, Energy,
+    Refuel, SmallAmmo, LargeAmmo, DamageAmp, ChargeAmp, SpaceJumpBoost,
+    spaceDrop
+) = items_unpackable
+
+
+def updateLogic(unusedLocations: list[Location],
+                locArray: list[Location],
+                loadout: list[Item]) -> list[Location]:
+
     exitSpacePort = (Morph in loadout) or (Missile in loadout) or (Super in loadout) or (Wave in loadout)
     jumpAble = exitSpacePort and (GravityBoots in loadout)
     underwater = jumpAble and (GravitySuit in loadout)
@@ -171,12 +35,22 @@ def updateLogic (unusedLocations, locArray, loadout) :
     oceanDepths = underwater and ((pinkDoor and (Morph in loadout) and (DarkVisor in loadout)) or (Super in loadout))
     breakIce = (Plasma in loadout) or ((Hypercharge in loadout) and (Charge in loadout))
     suzi = underwater and (SpeedBooster in loadout) and (Grapple in loadout) and (Super in loadout) and canUsePB and (Wave in loadout)
-    #onAndOff = ON varia ice PB graple OFF Hyper charge
-    
-    #print("Updating logic...")
-    for thisLoc in unusedLocations :
-        #thisLoc is a row. thisLoc['inlogic'] is the logic
-        #for each location, check that location names match
+    # onAndOff = ON varia ice PB graple OFF Hyper charge
+
+    logic = {
+        "Impact Crater: AccelCharge": (
+            exitSpacePort and (Morph in loadout) and (Spazer in loadout) and (
+                (HiJump in loadout) or (SpeedBooster in loadout) or (SpaceJump in loadout)
+            )
+        ),
+    }
+
+    # print("Updating logic...")
+    for thisLoc in unusedLocations:
+        thisLoc['inlogic'] = logic[thisLoc['fullitemname']]
+
+        # thisLoc is a row. thisLoc['inlogic'] is the logic
+        # for each location, check that location names match
         if thisLoc['fullitemname'] == "Impact Crater: AccelCharge":
             thisLoc['inlogic'] = exitSpacePort and (Morph in loadout) and (Spazer in loadout) and ((HiJump in loadout) or (SpeedBooster in loadout) or (SpaceJump in loadout))
         if thisLoc['fullitemname'] == "Subterranean Burrow":
@@ -209,11 +83,11 @@ def updateLogic (unusedLocations, locArray, loadout) :
             thisLoc['inlogic'] = vulnar
         if thisLoc['fullitemname'] == "Crypt":
             thisLoc['inlogic'] = vulnar and canUseBombs
-        if thisLoc['fullitemname'] == "Archives: SpringBall": # yes it's actually Speed Ball, uses Spring data
+        if thisLoc['fullitemname'] == "Archives: SpringBall":  # yes it's actually Speed Ball, uses Spring data
             thisLoc['inlogic'] = vulnar and canUseBombs and (Speedball in loadout)
         if thisLoc['fullitemname'] == "Archives: SJBoost":
             thisLoc['inlogic'] = vulnar and canUseBombs and (Speedball in loadout) and (SpeedBooster in loadout)
-        if thisLoc['fullitemname'] == "Sensor Maintenance: ETank": # front
+        if thisLoc['fullitemname'] == "Sensor Maintenance: ETank":  # front
             thisLoc['inlogic'] = vulnar and canUseBombs and (Speedball in loadout)
         if thisLoc['fullitemname'] == "Eribium Apparatus Room":
             thisLoc['inlogic'] = vulnar and canUseBombs and (DarkVisor in loadout)
@@ -247,7 +121,7 @@ def updateLogic (unusedLocations, locArray, loadout) :
             thisLoc['inlogic'] = pirateLab
         if thisLoc['fullitemname'] == "Containment Area":
             thisLoc['inlogic'] = pirateLab and (GravitySuit in loadout) and ((MetroidSuit in loadout) or (Screw in loadout))
-        if thisLoc['fullitemname'] == "Briar: SJBoost": # top
+        if thisLoc['fullitemname'] == "Briar: SJBoost":  # top
             thisLoc['inlogic'] = eastLomyr and canUsePB
         if thisLoc['fullitemname'] == "Shrine Of Fervor":
             thisLoc['inlogic'] = eastLomyr
@@ -283,10 +157,10 @@ def updateLogic (unusedLocations, locArray, loadout) :
             thisLoc['inlogic'] = depthsL
         if thisLoc['fullitemname'] == "Shrine Of The Animate Spark":
             thisLoc['inlogic'] = suzi and canFly and (Hypercharge in loadout) and (Charge in loadout)
-        if thisLoc['fullitemname'] == "Docking Port 4": # (4 = letter Omega)
-            thisLoc['inlogic'] = (((spaceDrop in loadout) == False) and (Grapple in loadout)) or ((spaceDrop in loadout) and geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout))
+        if thisLoc['fullitemname'] == "Docking Port 4":  # (4 = letter Omega)
+            thisLoc['inlogic'] = (((spaceDrop in loadout) is False) and (Grapple in loadout)) or ((spaceDrop in loadout) and geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout))
         if thisLoc['fullitemname'] == "Ready Room":
-            thisLoc['inlogic'] = (((spaceDrop in loadout) == False) and (Super in loadout)) or ((spaceDrop in loadout) and geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout))
+            thisLoc['inlogic'] = (((spaceDrop in loadout) is False) and (Super in loadout)) or ((spaceDrop in loadout) and geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout))
         if thisLoc['fullitemname'] == "Torpedo Bay":
             thisLoc['inlogic'] = True
         if thisLoc['fullitemname'] == "Extract Storage":
@@ -317,7 +191,7 @@ def updateLogic (unusedLocations, locArray, loadout) :
             thisLoc['inlogic'] = vulnar and canUseBombs
         if thisLoc['fullitemname'] == "Monitoring Station":
             thisLoc['inlogic'] = vulnar and (Morph in loadout) and (Speedball in loadout)
-        if thisLoc['fullitemname'] == "Sensor Maintenance: AmmoTank": # back
+        if thisLoc['fullitemname'] == "Sensor Maintenance: AmmoTank":  # back
             thisLoc['inlogic'] = vulnar and canUseBombs and (Speedball in loadout) and (Missile in loadout)
         if thisLoc['fullitemname'] == "Causeway Overlook":
             thisLoc['inlogic'] = vulnar and canUseBombs
@@ -325,9 +199,9 @@ def updateLogic (unusedLocations, locArray, loadout) :
             thisLoc['inlogic'] = vulnar and canUsePB and (Ice in loadout) and ((Varia in loadout) or ((DarkVisor in loadout) and (Wave in loadout)) or ((DarkVisor in loadout) and (Speedball in loadout) or
                                                                                                                                                         (SpeedBooster in loadout)))
         if thisLoc['fullitemname'] == "Blazing Chasm":
-            thisLoc['inlogic'] = depthsL and canUsePB and (Super in loadout) and (MetroidSuit in loadout)                  
+            thisLoc['inlogic'] = depthsL and canUsePB and (Super in loadout) and (MetroidSuit in loadout)
         if thisLoc['fullitemname'] == "Generator Manifold":
-            thisLoc['inlogic'] = depthsL and canUsePB and (Super in loadout) and (MetroidSuit in loadout)                  
+            thisLoc['inlogic'] = depthsL and canUsePB and (Super in loadout) and (MetroidSuit in loadout)
         if thisLoc['fullitemname'] == "Fiery Crossing Cache":
             thisLoc['inlogic'] = depthsL and canUsePB and (Super in loadout)
         if thisLoc['fullitemname'] == "Dark Crevice Cache":
@@ -348,27 +222,27 @@ def updateLogic (unusedLocations, locArray, loadout) :
             thisLoc['inlogic'] = underwater and (Speedball in loadout) and ((pinkDoor and (DarkVisor in loadout)) or (Super in loadout))
         if thisLoc['fullitemname'] == "Tram To Suzi Island":
             thisLoc['inlogic'] = oceanDepths and canUsePB and (Super in loadout) and (Grapple in loadout) and (SpeedBooster in loadout) and (Spazer in loadout)
-        if thisLoc['fullitemname'] == "Portico": 
+        if thisLoc['fullitemname'] == "Portico":
             thisLoc['inlogic'] = suzi
-        if thisLoc['fullitemname'] == "Tower Rock Lookout": 
+        if thisLoc['fullitemname'] == "Tower Rock Lookout":
             thisLoc['inlogic'] = suzi and canFly
-        if thisLoc['fullitemname'] == "Reef Nook": 
+        if thisLoc['fullitemname'] == "Reef Nook":
             thisLoc['inlogic'] = suzi and canFly
-        if thisLoc['fullitemname'] == "Saline Cache": 
+        if thisLoc['fullitemname'] == "Saline Cache":
             thisLoc['inlogic'] = suzi
-        if thisLoc['fullitemname'] == "Enervation Chamber": 
+        if thisLoc['fullitemname'] == "Enervation Chamber":
             thisLoc['inlogic'] = suzi and canFly and (Hypercharge in loadout) and (Charge in loadout)
         if thisLoc['fullitemname'] == "Weapon Locker":
-            thisLoc['inlogic'] = (((spaceDrop in loadout) == False) and (Missile in loadout)) or ((spaceDrop in loadout) and geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout))
-        if thisLoc['fullitemname'] == "Aft Battery": # CAUTIOUS LOGIC
-            thisLoc['inlogic'] = (((spaceDrop in loadout) == False) and (Morph in loadout)) or ((spaceDrop in loadout) and geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout))
-        if thisLoc['fullitemname'] == "Forward Battery": # CAUTIOUS LOGIC
+            thisLoc['inlogic'] = (((spaceDrop in loadout) is False) and (Missile in loadout)) or ((spaceDrop in loadout) and geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout))
+        if thisLoc['fullitemname'] == "Aft Battery":  # CAUTIOUS LOGIC
+            thisLoc['inlogic'] = (((spaceDrop in loadout) is False) and (Morph in loadout)) or ((spaceDrop in loadout) and geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout))
+        if thisLoc['fullitemname'] == "Forward Battery":  # CAUTIOUS LOGIC
             thisLoc['inlogic'] = geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
-        if thisLoc['fullitemname'] == "Gantry": # CAUTIOUS LOGIC
-            thisLoc['inlogic'] = (((spaceDrop in loadout) == False) and (Missile in loadout)) or ((spaceDrop in loadout) and geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout))
-        if thisLoc['fullitemname'] == "Garden Canal": # CAUTIOUS LOGIC
+        if thisLoc['fullitemname'] == "Gantry":  # CAUTIOUS LOGIC
+            thisLoc['inlogic'] = (((spaceDrop in loadout) is False) and (Missile in loadout)) or ((spaceDrop in loadout) and geothermal and (Grapple in loadout) and (Screw in loadout) and (MetroidSuit in loadout))
+        if thisLoc['fullitemname'] == "Garden Canal":  # CAUTIOUS LOGIC
             thisLoc['inlogic'] = eastLomyr and canUsePB and (Spazer in loadout)
-        if thisLoc['fullitemname'] == "Sandy Burrow: AmmoTank": # bottom
+        if thisLoc['fullitemname'] == "Sandy Burrow: AmmoTank":  # bottom
             thisLoc['inlogic'] = underwater and (Morph in loadout) and pinkDoor
         if thisLoc['fullitemname'] == "Trophobiotic Chamber":
             thisLoc['inlogic'] = vulnar and (Morph in loadout) and (Speedball in loadout)
@@ -376,9 +250,9 @@ def updateLogic (unusedLocations, locArray, loadout) :
             thisLoc['inlogic'] = pirateLab and (SpeedBooster in loadout) and ((Wave in loadout) or canUsePB)
         if thisLoc['fullitemname'] == "Grand Chasm":
             thisLoc['inlogic'] = upperVulnar and canUseBombs and (Screw in loadout)
-        if thisLoc['fullitemname'] == "Mining Site 1": # (1 = letter Alpha)
+        if thisLoc['fullitemname'] == "Mining Site 1":  # (1 = letter Alpha)
             thisLoc['inlogic'] = canUseBombs and ((vulnar and underwater and (Wave in loadout)) or depthsL)
-        if thisLoc['fullitemname'] == "Colosseum": # GT
+        if thisLoc['fullitemname'] == "Colosseum":  # GT
             thisLoc['inlogic'] = depthsL and (Charge in loadout)
         if thisLoc['fullitemname'] == "Lava Pool":
             thisLoc['inlogic'] = depthsL and (MetroidSuit in loadout) and canUsePB
@@ -416,7 +290,7 @@ def updateLogic (unusedLocations, locArray, loadout) :
             thisLoc['inlogic'] = depthsL and ((Charge in loadout) or (MetroidSuit in loadout))
         if thisLoc['fullitemname'] == "Equipment Locker":
             thisLoc['inlogic'] = pirateLab and canUseBombs
-        if thisLoc['fullitemname'] == "Antelier": # spelled "Antilier" in subversion 1.1
+        if thisLoc['fullitemname'] == "Antelier":  # spelled "Antilier" in subversion 1.1
             thisLoc['inlogic'] = pirateLab and ((HiJump in loadout) or (GravitySuit in loadout))
         if thisLoc['fullitemname'] == "Weapon Research":
             thisLoc['inlogic'] = vulnar and canUseBombs and (Wave in loadout) and (GravitySuit in loadout) and ((DarkVisor in loadout) or (pirateLab and canUsePB))
