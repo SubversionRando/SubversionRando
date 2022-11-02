@@ -5,9 +5,9 @@ import argparse
 
 from item_data import Items
 from location_data import pullCSV
-import logic_casual
-import logic_expert
-import logic_expert_area
+import logicCasual
+import logicExpert
+import logicExpertArea
 import fillSpeedrun
 import fillMedium
 import fillMajorMinor
@@ -136,12 +136,12 @@ def Main(argv, romWriter: Optional[RomWriter] = None) -> None:
             # using helper function, modular for more logic options later
             # unusedLocations[i]['inlogic'] holds the True or False for logic
             if logicChoice == "E":
-                logic_expert.updateLogic(unusedLocations, locArray, loadout)
+                logicExpert.updateLogic(unusedLocations, locArray, loadout)
             elif logicChoice == "AR":
                 loadout = areaRando.updateAreaLogic(availableLocations, locArray, loadout, Connections)
-                logic_expert_area.updateLogic(unusedLocations, locArray, loadout)
+                logicExpertArea.updateLogic(unusedLocations, locArray, loadout)
             else:
-                logic_casual.updateLogic(unusedLocations, locArray, loadout)
+                logicCasual.updateLogic(unusedLocations, locArray, loadout)
 
             # update unusedLocations and availableLocations
             for i in reversed(range(len(unusedLocations))):  # iterate in reverse so we can remove freely
