@@ -1,6 +1,8 @@
 import random
 import io
+
 from romWriter import RomWriter
+from item_data import items_unpackable
 
 #RandomizeAreas shuffles the locations and checks that the ship connects to daphne properly
 #updateAreaLogic is like a logic updater for area doors connecting to other area doors
@@ -11,205 +13,62 @@ from romWriter import RomWriter
 #[1]the data that is needed to go to this door
 
 
-CraterR=['1c678','5BBB00056E06060000800000','Early','CraterR',0]
-SunkenNestL=['1c7a4','2CBA00040106000000800000','Early','SunkenNestL',0]
-RuinedConcourseBL=['1caf8','C2970004115601050080CCA9','Early','RuinedConcourseBL',1]
-RuinedConcourseTR=['1cbc4','C29700051E0601000080B6A9','Early','RuinedConcourseTR',1]
-CausewayR=['1a1e4','2FA300013E06030000800000','Early','CausewayR',1]
-SporeFieldTR=['1c8c4','578800052E06020000800000','Early','SporeFieldTR',1]
-SporeFieldBR=['1a2ec','578800053E4603040080E4A6','Early','SporeFieldBR',1]
-OceanShoreR=['1ca74','0F8500057E26070200800000','SandLand','OceanShoreR',0]
-EleToTurbidPassageR=['1c15c','73CC00050E26000200800000','SandLand','EleToTurbidPassageR',2]
-PileAnchorL=['1c66c','879F00040116000100800000','Sandland','PileAnchorL',0]
-ExcavationSiteL=['1a130','19EC00000206000000800000','PirateLab','ExcavationSiteL',1]
-WestCorridorR=['1bed4','B7E100050E16000100800000','PirateLab','WestCorridorR',3]
-FoyerR=['197c4','CD8A00051E06010000800000','PirateLab','FoyerR',3]
-ConstructionSiteL=['1c900','EB9E00040136000300800000','PirateLab','ConstructionSiteL',1]
-AlluringCenoteR=['194b8','3CBF00056E06060000800000','PirateLab','AlluringCenoteR',3]
-FieldAccessL=['1a454','71A000040106000000800000','ServiceSector','FieldAccessL',1]
-TransferStationR=['1a0f4','B89B00051E06010000800000','ServiceSector','TransferStationR',1]
-CellarR=['1c8f4','3A8100052E06020000800000','ServiceSector','CellarR',1]
-SubbasementFissureL=['1c864','CC9300040126000200800000','ServiceSector','SubbasementFissureL',1]
-WestTerminalAccessL=['1c6e4','C78100040126000200800000','SkyWorld','WestTerminalAccessL',0]
-MezzanineConcourseL=['1a4f0','93A200040146000400800000','SkyWorld','MezzanineConcourseL',1]
-VulnarCanyonL=['19788','598B00044166040600800000','SkyWorld','VulnarCanyonL',3]
-CanyonPassageR=['195d8','9F8B00012E06020000800000','SkyWorld','CanyonPassageR',3]
-ElevatorToCondenserL=['1c2f4','BAED00040136000300800000','SkyWorld','ElevatorToCondenserL',2]
-LoadingDockSecurityAreaL=['1bf4c','8B9000040216000120010000','SpacePort','LoadingDockSecurityAreaL',3]
-ElevatorToWellspringL=['1cb7c','36CD00040126000200800000','LifeTemple','ElevatorToWellspringL',2]
-NorakBrookL=['1965c','E58B00000126000200800000','LifeTemple','NorakBrookL',3]
-NorakPerimeterTR=['1a0b8','6F8900051E06010000800000','LifeTemple','NorakPerimeterTR',3]
-NorakPerimeterBL=['1bad8','6F890004012600020080ACA7','LifeTemple','NorakPerimeterBL',3]
-VulnarDepthsElevatorEL=['1c87c','A9A100040106000000800000','FireHive','VulnarDepthsElevatorEL',1]
-VulnarDepthsElevatorER=['1c888','A9A100050E06000000800000','FireHive','VulnarDepthsElevatorER',1]
-HiveBurrowL=['1bd84','E5D500040146000400800000','FireHive','HiveBurrowL',2]
-SequesteredInfernoL=['1c4b0','84F300040116000100800000','FireHive','SequesteredInfernoL',2]
-CollapsedPassageR=['1cb04','89CB00051E06010000800000','FireHive','CollapsedPassageR',2]
-MagmaPumpL=['1c2e8','A0BE00040106000000800000','Geothermal','MagmaPumpL',2]
-ReservoirMaintenanceTunnelR=['1c414','B0F100051E160101008020A6','Geothermal','ReservoirMaintenanceTunnelR',2]
-IntakePumpR=['1c4c8','0FF300052E06020000800000','Geothermal','IntakePumpR',2]
-ThermalReservoir1R=['1cbac','F09C00055E06050000800000','Geothermal','ThermalReservoir1R',2]
-GeneratorAccessTunnelL=['1c1b0','F4CF00043106030000800000','Geothermal','GeneratorAccessTunnelL',2]
-ElevatorToMagmaLakeR=['1c0fc','67EF00050E06000000800000','DrayLand','ElevatorToMagmaLakeR',2]
-MagmaPumpAccessR=['1c2b8','E99700050E06000000800000','DrayLand','MagmaPumpAccessR',2]
-FieryGalleryL=['1c174','D7CB00040116000100800000','Verdite','FieryGalleryL',2]
-RagingPitL=['1c12c','2FEE00040116000100800000','Verdite','RagingPitL',2]
-HollowChamberR=['1c108','1BD000051E06010000800000','Verdite','HollowChamberR',2]
-PlacidPoolR=['1c8a0','CBA300051E06010000800000','Verdite','PlacidPoolR',1]
-SporousNookL=['1a340','A59300040106000000800000','Verdite','SporousNookL',1]
-RockyRidgeTrailL=['1bac0','E38800040116000100800000','Daphne','RockyRidgeTrailL',3]
-TramToSuziIslandR=['1c7ec','23A000050E06000000800000','Suzi','TramToSuziIslandR',0]
-Missile = ["Missile",
-           b"\xdb\xee",
-           b"\x2f\xef",
-           b"\x83\xef",
-           b"\x00"]
-Super = ["Super Missile",
-         b"\xdf\xee",
-         b"\x33\xef",
-         b"\x87\xef",
-         b"\x00"]
-PowerBomb = ["Power Bomb",
-             b"\xe3\xee",
-             b"\x37\xef",
-             b"\x8b\xef",
-             b"\x00"]
-Morph = ["Morph Ball",
-         b"\x23\xef",
-         b"\x77\xef",
-         b"\xcb\xef",
-         b"\x00"]
-GravityBoots = ["Gravity Boots",
-                b"\x40\xfd",
-                b"\x40\xfd",
-                b"\x40\xfd",
-                b"\x00"]   
-Speedball = ["Speed Ball",
-             b"\x03\xef",
-             b"\x57\xef",
-             b"\xab\xef",
-             b"\x00"]
-Bombs = ["Bombs",
-         b"\xe7\xee",
-         b"\x3b\xef",
-         b"\x8f\xef",
-         b"\x00"]
-HiJump = ["HiJump",
-          b"\xf3\xee",
-          b"\x47\xef",
-          b"\x9b\xef",
-          b"\x00"]
-GravitySuit = ["Gravity Suit",
-               b"\x0b\xef",
-               b"\x5f\xef",
-               b"\xb3\xef",
-               b"\x00"]
-DarkVisor = ["Dark Visor",
-             b"\xb0\xfd",
-             b"\xb0\xfd",
-             b"\xb0\xfd",
-             b"\x00"]
-Wave = ["Wave Beam",
-        b"\xfb\xee",
-        b"\x4f\xef",
-        b"\xa3\xef",
-        b"\x00"]
-SpeedBooster = ["Speed Booster",
-                b"\xf7\xee",
-                b"\x4b\xef",
-                b"\x9f\xef",
-                b"\x00"]
-Spazer = ["Spazer",
-          b"\xff\xee",
-          b"\x53\xef",
-          b"\xa7\xef",
-          b"\x00"]
-Varia = ["Varia Suit",
-         b"\x07\xef",
-         b"\x5b\xef",
-         b"\xaf\xef",
-         b"\x00"]
-Ice = ["Ice Beam",
-       b"\xef\xee",
-       b"\x43\xef",
-       b"\x97\xef",
-       b"\x00"]
-Grapple = ["Grapple Beam",
-           b"\x17\xef",
-           b"\x6b\xef",
-           b"\xbf\xef",
-           b"\x00"]
-MetroidSuit = ["Metroid Suit",
-               b"\x20\xfe",
-               b"\x20\xfe",
-               b"\x20\xfe",
-               b"\x00"]
-Plasma = ["Plasma Beam",
-          b"\x13\xef",
-          b"\x67\xef",
-          b"\xbb\xef",
-          b"\x00"]
-Screw = ["Screw Attack",
-         b"\x1f\xef",
-         b"\x73\xef",
-         b"\xc7\xef",
-         b"\x00"]
-Hypercharge = ["Hypercharge",
-               b"\x80\xf7",
-               b"\x80\xf7",
-               b"\x80\xf7",
-               b"\x00"]
-Charge = ["Charge Beam",
-          b"\xeb\xee",
-          b"\x3f\xef",
-          b"\x93\xef",
-          b"\x00"]
-Xray = ["X-Ray Scope",
-        b"\x0f\xef",
-        b"\x63\xef",
-        b"\xb7\xef",
-        b"\x00"]
-SpaceJump = ["Space Jump",
-             b"\x1b\xef",
-             b"\x6f\xef",
-             b"\xc3\xef",
-             b"\x00"]
-Energy = ["Energy Tank",
-          b"\xd7\xee",
-          b"\x2b\xef",
-          b"\x7f\xef",
-          b"\x00"]
-Refuel = ["Refuel Tank",
-          b"\x27\xef",
-          b"\x7b\xef",
-          b"\xcf\xef",
-          b"\x00"]
-SmallAmmo = ["Small Ammo",
-             b"\x00\xf9",
-             b"\x04\xf9",
-             b"\x08\xf9",
-             b"\x05"]
-LargeAmmo = ["Large Ammo",
-             b"\x00\xf9",
-             b"\x04\xf9",
-             b"\x08\xf9",
-             b"\x0a"]
-DamageAmp = ["Damage Amp",
-             b"\x7e\xf8",
-             b"\x7e\xf8",
-             b"\x7e\xf8",
-             b"\x00"]
-ChargeAmp = ["Charge Amp",
-             b"\xa0\xf0",
-             b"\xa0\xf0",
-             b"\xa0\xf0",
-             b"\x00"]
-SpaceJumpBoost = ["Space Jump Boost",
-                  b"\xc0\xfc",
-                  b"\xc0\xfc",
-                  b"\xc0\xfc",
-                  b"\x00"]
-spaceDrop = ["Space Drop","","","",""]
+CraterR = ('1c678', '5BBB00056E06060000800000', 'Early', 'CraterR', 0)
+SunkenNestL = ('1c7a4', '2CBA00040106000000800000', 'Early', 'SunkenNestL', 0)
+RuinedConcourseBL = ('1caf8', 'C2970004115601050080CCA9', 'Early', 'RuinedConcourseBL', 1)
+RuinedConcourseTR = ('1cbc4', 'C29700051E0601000080B6A9', 'Early', 'RuinedConcourseTR', 1)
+CausewayR = ('1a1e4', '2FA300013E06030000800000', 'Early', 'CausewayR', 1)
+SporeFieldTR = ('1c8c4', '578800052E06020000800000', 'Early', 'SporeFieldTR', 1)
+SporeFieldBR = ('1a2ec', '578800053E4603040080E4A6', 'Early', 'SporeFieldBR', 1)
+OceanShoreR = ('1ca74', '0F8500057E26070200800000', 'SandLand', 'OceanShoreR', 0)
+EleToTurbidPassageR = ('1c15c', '73CC00050E26000200800000', 'SandLand', 'EleToTurbidPassageR', 2)
+PileAnchorL = ('1c66c', '879F00040116000100800000', 'Sandland', 'PileAnchorL', 0)
+ExcavationSiteL = ('1a130', '19EC00000206000000800000', 'PirateLab', 'ExcavationSiteL', 1)
+WestCorridorR = ('1bed4', 'B7E100050E16000100800000', 'PirateLab', 'WestCorridorR', 3)
+FoyerR = ('197c4', 'CD8A00051E06010000800000', 'PirateLab', 'FoyerR', 3)
+ConstructionSiteL = ('1c900', 'EB9E00040136000300800000', 'PirateLab', 'ConstructionSiteL', 1)
+AlluringCenoteR = ('194b8', '3CBF00056E06060000800000', 'PirateLab', 'AlluringCenoteR', 3)
+FieldAccessL = ('1a454', '71A000040106000000800000', 'ServiceSector', 'FieldAccessL', 1)
+TransferStationR = ('1a0f4', 'B89B00051E06010000800000', 'ServiceSector', 'TransferStationR', 1)
+CellarR = ('1c8f4', '3A8100052E06020000800000', 'ServiceSector', 'CellarR', 1)
+SubbasementFissureL = ('1c864', 'CC9300040126000200800000', 'ServiceSector', 'SubbasementFissureL', 1)
+WestTerminalAccessL = ('1c6e4', 'C78100040126000200800000', 'SkyWorld', 'WestTerminalAccessL', 0)
+MezzanineConcourseL = ('1a4f0', '93A200040146000400800000', 'SkyWorld', 'MezzanineConcourseL', 1)
+VulnarCanyonL = ('19788', '598B00044166040600800000', 'SkyWorld', 'VulnarCanyonL', 3)
+CanyonPassageR = ('195d8', '9F8B00012E06020000800000', 'SkyWorld', 'CanyonPassageR', 3)
+ElevatorToCondenserL = ('1c2f4', 'BAED00040136000300800000', 'SkyWorld', 'ElevatorToCondenserL', 2)
+LoadingDockSecurityAreaL = ('1bf4c', '8B9000040216000120010000', 'SpacePort', 'LoadingDockSecurityAreaL', 3)
+ElevatorToWellspringL = ('1cb7c', '36CD00040126000200800000', 'LifeTemple', 'ElevatorToWellspringL', 2)
+NorakBrookL = ('1965c', 'E58B00000126000200800000', 'LifeTemple', 'NorakBrookL', 3)
+NorakPerimeterTR = ('1a0b8', '6F8900051E06010000800000', 'LifeTemple', 'NorakPerimeterTR', 3)
+NorakPerimeterBL = ('1bad8', '6F890004012600020080ACA7', 'LifeTemple', 'NorakPerimeterBL', 3)
+VulnarDepthsElevatorEL = ('1c87c', 'A9A100040106000000800000', 'FireHive', 'VulnarDepthsElevatorEL', 1)
+VulnarDepthsElevatorER = ('1c888', 'A9A100050E06000000800000', 'FireHive', 'VulnarDepthsElevatorER', 1)
+HiveBurrowL = ('1bd84', 'E5D500040146000400800000', 'FireHive', 'HiveBurrowL', 2)
+SequesteredInfernoL = ('1c4b0', '84F300040116000100800000', 'FireHive', 'SequesteredInfernoL', 2)
+CollapsedPassageR = ('1cb04', '89CB00051E06010000800000', 'FireHive', 'CollapsedPassageR', 2)
+MagmaPumpL = ('1c2e8', 'A0BE00040106000000800000', 'Geothermal', 'MagmaPumpL', 2)
+ReservoirMaintenanceTunnelR = ('1c414', 'B0F100051E160101008020A6', 'Geothermal', 'ReservoirMaintenanceTunnelR', 2)
+IntakePumpR = ('1c4c8', '0FF300052E06020000800000', 'Geothermal', 'IntakePumpR', 2)
+ThermalReservoir1R = ('1cbac', 'F09C00055E06050000800000', 'Geothermal', 'ThermalReservoir1R', 2)
+GeneratorAccessTunnelL = ('1c1b0', 'F4CF00043106030000800000', 'Geothermal', 'GeneratorAccessTunnelL', 2)
+ElevatorToMagmaLakeR = ('1c0fc', '67EF00050E06000000800000', 'DrayLand', 'ElevatorToMagmaLakeR', 2)
+MagmaPumpAccessR = ('1c2b8', 'E99700050E06000000800000', 'DrayLand', 'MagmaPumpAccessR', 2)
+FieryGalleryL = ('1c174', 'D7CB00040116000100800000', 'Verdite', 'FieryGalleryL', 2)
+RagingPitL = ('1c12c', '2FEE00040116000100800000', 'Verdite', 'RagingPitL', 2)
+HollowChamberR = ('1c108', '1BD000051E06010000800000', 'Verdite', 'HollowChamberR', 2)
+PlacidPoolR = ('1c8a0', 'CBA300051E06010000800000', 'Verdite', 'PlacidPoolR', 1)
+SporousNookL = ('1a340', 'A59300040106000000800000', 'Verdite', 'SporousNookL', 1)
+RockyRidgeTrailL = ('1bac0', 'E38800040116000100800000', 'Daphne', 'RockyRidgeTrailL', 3)
+TramToSuziIslandR = ('1c7ec', '23A000050E06000000800000', 'Suzi', 'TramToSuziIslandR', 0)
+
+(
+    Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
+    GravitySuit, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
+    MetroidSuit, Plasma, Screw, Hypercharge, Charge, Xray, SpaceJump, Energy,
+    Refuel, SmallAmmo, LargeAmmo, DamageAmp, ChargeAmp, SpaceJumpBoost,
+    spaceDrop
+) = items_unpackable
 
 
 def RandomizeAreas(romWriter : RomWriter) :

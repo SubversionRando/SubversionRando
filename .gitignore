@@ -3,3 +3,4 @@
 *.smc
 __pycache__/
 *.swp
+.vscode
