@@ -1,5 +1,6 @@
 import random
 import sys
+from typing import Optional
 import argparse
 
 from location_data import pullCSV
@@ -51,7 +52,7 @@ def itemPlace(romWriter, location, itemArray) :
 
 
 # main program
-def Main(argv, romWriter=None):
+def Main(argv, romWriter: Optional[RomWriter] = None) -> None:
     workingArgs=commandLineArgs(argv[1:])
     if workingArgs.expert :
         logicChoice = "E"
