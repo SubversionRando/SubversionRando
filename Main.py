@@ -2,9 +2,8 @@ import random
 import sys
 from typing import Optional
 import argparse
-from typing import Optional
 
-from item_data import Items
+from item_data import Item, Items
 from location_data import Location, pullCSV
 import logic_casual
 import logic_expert
@@ -129,7 +128,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         unusedLocations.extend(locArray)
         availableLocations: list[Location] = []
         # visitedLocations = []
-        loadout = []
+        loadout: list[Item] = []
         # use appropriate fill algorithm for initializing item lists
         if fillChoice == "M":
             itemLists = fillMedium.initItemLists()
