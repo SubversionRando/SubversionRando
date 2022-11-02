@@ -3,6 +3,7 @@ import sys
 from typing import Optional
 import argparse
 
+from item_data import Items
 from location_data import pullCSV
 import logic_casual
 import logic_expert
@@ -81,9 +82,8 @@ def Main(argv, romWriter: Optional[RomWriter] = None) -> None:
 
     csvdict = pullCSV()
     locArray = [csvdict[key] for key in csvdict]
-    #Item = Name, Visible, Chozo, Hidden, AmmoQty
+    # Item = Name, Visible, Chozo, Hidden, AmmoQty
 
-    spaceDrop = ["Space Drop","","","",""]
     if romWriter is None:
         romWriter = RomWriter.fromFilePaths(origRomPath=rom_clean_path, newRomPath=rom1_path)
     else:
@@ -187,8 +187,8 @@ def Main(argv, romWriter: Optional[RomWriter] = None) -> None:
                     itemPowerGrouping.remove(placeItem)
                     break
             loadout.append(placeItem)
-            if ((placeLocation['fullitemname'] in spacePortLocs) == False) and ((spaceDrop in loadout) == False):
-                loadout.append(spaceDrop)
+            if ((placeLocation['fullitemname'] in spacePortLocs) == False) and ((Items.spaceDrop in loadout) == False):
+                loadout.append(Items.spaceDrop)
             spoilerSave+=placeLocation['fullitemname']+" - - - "+placeItem[0]+"\n"
             #print(placeLocation['fullitemname']+placeItem[0])
 
