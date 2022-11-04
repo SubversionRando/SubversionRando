@@ -213,7 +213,7 @@ def updateLogic(unusedLocations: list[Location],
             underwater and (Morph in loadout) and (
                 (Super in loadout) or (vulnar and (Varia in loadout) and canUseBombs)
             ),
-        "Sandy Gully":
+        "Sandy Gully":  # TODO: really no (high jump boots or space jump) required for this?
             underwater and (Super in loadout),
         "Hall Of The Elders":
             vulnar and (Morph in loadout) and ((Missile in loadout) or (GravitySuit in loadout)),
