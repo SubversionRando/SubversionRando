@@ -246,7 +246,7 @@ def updateLogic(unusedLocations: list[Location],
             depthsL and canUsePB and (Super in loadout) and (MetroidSuit in loadout),
         "Fiery Crossing Cache":
             depthsL and canUsePB and (Super in loadout),
-        "Dark Crevice Cache":
+        "Dark Crevice Cache":  # TODO: I think this is pretty expert to do without visor...
             depthsL and canUseBombs,
         "Ancient Basin":
             hive,
