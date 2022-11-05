@@ -1,10 +1,10 @@
 import random
 import sys
+from typing import Optional
 import argparse
-import struct
-import shutil
-import os
-import csv
+
+from item_data import Items
+from location_data import pullCSV
 import logicCasual
 import logicExpert
 import logicExpertArea
@@ -24,7 +24,7 @@ def commandLineArgs(sys_args) :
     parser.add_argument('-mm', '--majorminor',  action="store_true", help='Major-Minor fill, using unique majors and locations')
     parser.add_argument('-a', '--area',  action="store_true", help='Area rando shuffles major areas of the game, expert logic only')
     args = parser.parse_args(sys_args)
-    #print(args)
+    # print(args)
     return args
 
 
@@ -51,36 +51,16 @@ def itemPlace(romWriter, location, itemArray) :
             plmid_altroom = plmidFromHiddenness(itemArray, location['alternateroomdifferenthiddenness'])
         romWriter.writeItem(address, plmid_altroom, itemArray[4])
 
-def pullCSV():
-    csvdict = {}
-    def commentfilter(line):
-        return (line[0] != '#')
-    with open('subversiondata12.csv', 'r') as csvfile:
-        reader = csv.DictReader(filter(commentfilter, csvfile))
-        for row in reader:
-            # commas within fields -> array
-            row['locids']              = row['locids'].split(',')
-            row['alternateroomlocids'] = row['alternateroomlocids'].split(',')
-            # hex fields we want to use -> int
-            row['locids']              = [int(locstr, 16) for locstr in row['locids'] if locstr != '']
-            row['alternateroomlocids'] = [int(locstr, 16) for locstr in row['alternateroomlocids'] if locstr != '']
-            row['plmtypeid']  = int(row['plmtypeid'], 16)
-            row['plmparamhi'] = int(row['plmparamhi'], 16)
-            row['plmparamlo'] = int(row['plmparamlo'], 16)
-            # new key: 'inlogic'
-            row['inlogic'] = False
-            csvdict[row['fullitemname']] = row
-    return csvdict
 
-#main program
-def Main(argv, romWriter : RomWriter = None):
+# main program
+def Main(argv, romWriter: Optional[RomWriter] = None) -> None:
     workingArgs=commandLineArgs(argv[1:])
     if workingArgs.expert :
         logicChoice = "E"
     elif workingArgs.area :
         logicChoice = "AR" #EXPERT area rando
     else :
-        logicChoice = "C" #Default to casual logic
+        logicChoice = "C"  # Default to casual logic
     if workingArgs.medium :
         fillChoice = "M"
     elif workingArgs.majorminor :
@@ -89,11 +69,11 @@ def Main(argv, romWriter : RomWriter = None):
         fillChoice = "EA" #EXPERT area rando 
     else :
         fillChoice = "S"
-    #hudFlicker=""
-    #while hudFlicker != "Y" and hudFlicker != "N" :
-    #    hudFlicker= input("Enter Y to patch HUD flicker on emulator, or N to decline:")
-    #    hudFlicker = hudFlicker.title()
-    seeeed=random.randint(1000000,9999999)
+    # hudFlicker=""
+    # while hudFlicker != "Y" and hudFlicker != "N" :
+    #     hudFlicker= input("Enter Y to patch HUD flicker on emulator, or N to decline:")
+    #     hudFlicker = hudFlicker.title()
+    seeeed = random.randint(1000000,9999999)
     random.seed(seeeed)
     rom1_path = "roms/Sub"+logicChoice+fillChoice+str(seeeed)+".sfc"
     rom_clean_path = "roms/Subversion12.sfc"
@@ -102,158 +82,8 @@ def Main(argv, romWriter : RomWriter = None):
 
     csvdict = pullCSV()
     locArray = [csvdict[key] for key in csvdict]
-    #Item = Name, Visible, Chozo, Hidden, AmmoQty
-    Missile = ["Missile",
-               b"\xdb\xee",
-               b"\x2f\xef",
-               b"\x83\xef",
-               b"\x00"]
-    Super = ["Super Missile",
-             b"\xdf\xee",
-             b"\x33\xef",
-             b"\x87\xef",
-             b"\x00"]
-    PowerBomb = ["Power Bomb",
-                 b"\xe3\xee",
-                 b"\x37\xef",
-                 b"\x8b\xef",
-                 b"\x00"]
-    Morph = ["Morph Ball",
-             b"\x23\xef",
-             b"\x77\xef",
-             b"\xcb\xef",
-             b"\x00"]
-    GravityBoots = ["Gravity Boots",
-                    b"\x40\xfd",
-                    b"\x40\xfd",
-                    b"\x40\xfd",
-                    b"\x00"]   
-    Speedball = ["Speed Ball",
-                 b"\x03\xef",
-                 b"\x57\xef",
-                 b"\xab\xef",
-                 b"\x00"]
-    Bombs = ["Bombs",
-             b"\xe7\xee",
-             b"\x3b\xef",
-             b"\x8f\xef",
-             b"\x00"]
-    HiJump = ["HiJump",
-              b"\xf3\xee",
-              b"\x47\xef",
-              b"\x9b\xef",
-              b"\x00"]
-    GravitySuit = ["Gravity Suit",
-                   b"\x0b\xef",
-                   b"\x5f\xef",
-                   b"\xb3\xef",
-                   b"\x00"]
-    DarkVisor = ["Dark Visor",
-                 b"\xb0\xfd",
-                 b"\xb0\xfd",
-                 b"\xb0\xfd",
-                 b"\x00"]
-    Wave = ["Wave Beam",
-            b"\xfb\xee",
-            b"\x4f\xef",
-            b"\xa3\xef",
-            b"\x00"]
-    SpeedBooster = ["Speed Booster",
-                    b"\xf7\xee",
-                    b"\x4b\xef",
-                    b"\x9f\xef",
-                    b"\x00"]
-    Spazer = ["Spazer",
-              b"\xff\xee",
-              b"\x53\xef",
-              b"\xa7\xef",
-              b"\x00"]
-    Varia = ["Varia Suit",
-             b"\x07\xef",
-             b"\x5b\xef",
-             b"\xaf\xef",
-             b"\x00"]
-    Ice = ["Ice Beam",
-           b"\xef\xee",
-           b"\x43\xef",
-           b"\x97\xef",
-           b"\x00"]
-    Grapple = ["Grapple Beam",
-               b"\x17\xef",
-               b"\x6b\xef",
-               b"\xbf\xef",
-               b"\x00"]
-    MetroidSuit = ["Metroid Suit",
-                   b"\x20\xfe",
-                   b"\x20\xfe",
-                   b"\x20\xfe",
-                   b"\x00"]
-    Plasma = ["Plasma Beam",
-              b"\x13\xef",
-              b"\x67\xef",
-              b"\xbb\xef",
-              b"\x00"]
-    Screw = ["Screw Attack",
-             b"\x1f\xef",
-             b"\x73\xef",
-             b"\xc7\xef",
-             b"\x00"]
-    Hypercharge = ["Hypercharge",
-                   b"\x80\xf7",
-                   b"\x80\xf7",
-                   b"\x80\xf7",
-                   b"\x00"]
-    Charge = ["Charge Beam",
-              b"\xeb\xee",
-              b"\x3f\xef",
-              b"\x93\xef",
-              b"\x00"]
-    Xray = ["X-Ray Scope",
-            b"\x0f\xef",
-            b"\x63\xef",
-            b"\xb7\xef",
-            b"\x00"]
-    SpaceJump = ["Space Jump",
-                 b"\x1b\xef",
-                 b"\x6f\xef",
-                 b"\xc3\xef",
-                 b"\x00"]
-    Energy = ["Energy Tank",
-              b"\xd7\xee",
-              b"\x2b\xef",
-              b"\x7f\xef",
-              b"\x00"]
-    Refuel = ["Refuel Tank",
-              b"\x27\xef",
-              b"\x7b\xef",
-              b"\xcf\xef",
-              b"\x00"]
-    SmallAmmo = ["Small Ammo",
-                 b"\x00\xf9",
-                 b"\x04\xf9",
-                 b"\x08\xf9",
-                 b"\x05"]
-    LargeAmmo = ["Large Ammo",
-                 b"\x00\xf9",
-                 b"\x04\xf9",
-                 b"\x08\xf9",
-                 b"\x0a"]
-    DamageAmp = ["Damage Amp",
-                 b"\x7e\xf8",
-                 b"\x7e\xf8",
-                 b"\x7e\xf8",
-                 b"\x00"]
-    ChargeAmp = ["Charge Amp",
-                 b"\xa0\xf0",
-                 b"\xa0\xf0",
-                 b"\xa0\xf0",
-                 b"\x00"]
-    SpaceJumpBoost = ["Space Jump Boost",
-                      b"\xc0\xfc",
-                      b"\xc0\xfc",
-                      b"\xc0\xfc",
-                      b"\x00"]
-    spaceDrop = ["Space Drop","","","",""]
+    # Item = Name, Visible, Chozo, Hidden, AmmoQty
+
     if romWriter is None:
         romWriter = RomWriter.fromFilePaths(origRomPath=rom_clean_path, newRomPath=rom1_path)
     else:
@@ -297,54 +127,51 @@ def Main(argv, romWriter : RomWriter = None):
         else :
             itemLists=fillSpeedrun.initItemLists()
         while len(unusedLocations) != 0 or len(availableLocations) != 0:
-            #print("loadout contains:")
-            #print(loadout)
-            for a in loadout:
-                #print("-",a[0])
-                uu=0 #just do nothing
-                
-            #update logic by updating unusedLocations
-            #using helper function, modular for more logic options later
-            #unusedLocations[i]['inlogic'] holds the True or False for logic
-            if logicChoice == "E" :
+            # print("loadout contains:")
+            # print(loadout)
+            # for a in loadout:
+            #     print("-",a[0])
+
+            # update logic by updating unusedLocations
+            # using helper function, modular for more logic options later
+            # unusedLocations[i]['inlogic'] holds the True or False for logic
+            if logicChoice == "E":
                 logicExpert.updateLogic(unusedLocations, locArray, loadout)
-            elif logicChoice == "AR" :
+            elif logicChoice == "AR":
                 loadout = areaRando.updateAreaLogic(availableLocations, locArray, loadout, Connections)
                 logicExpertArea.updateLogic(unusedLocations, locArray, loadout)
-            else :
+            else:
                 logicCasual.updateLogic(unusedLocations, locArray, loadout)
-                    
-            #update unusedLocations and availableLocations
-            for i in reversed(range(len(unusedLocations))): # iterate in reverse so we can remove freely
-                if unusedLocations[i]['inlogic'] == True :
-                    #print("Found available location at",unusedLocations[i]['fullitemname'])
+
+            # update unusedLocations and availableLocations
+            for i in reversed(range(len(unusedLocations))):  # iterate in reverse so we can remove freely
+                if unusedLocations[i]['inlogic'] is True:
+                    # print("Found available location at",unusedLocations[i]['fullitemname'])
                     availableLocations.append(unusedLocations[i])
                     unusedLocations.pop(i)
-            #print("Available locations sits at:",len(availableLocations))
-            for al in availableLocations :
-                #print(al[0])
-                uu=0
-            #print("Unused locations sits at size:",len(unusedLocations))
-            #print("unusedLocations:")
-            for u in unusedLocations :
-                #print(u['fullitemname'])
-                uu=0
+            # print("Available locations sits at:",len(availableLocations))
+            # for al in availableLocations :
+            #     print(al[0])
+            # print("Unused locations sits at size:",len(unusedLocations))
+            # print("unusedLocations:")
+            # for u in unusedLocations :
+            #     print(u['fullitemname'])
 
             if availableLocations == [] and unusedLocations != [] :
                 print(f'Item placement was not successful. {len(unusedLocations)} locations remaining.')
                 spoilerSave+=f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
                 break
 
-            #split here for different fill algorithms
-            if fillChoice == "M" :
+            # split here for different fill algorithms
+            if fillChoice == "M":
                 placePair=fillMedium.placementAlg(availableLocations, locArray, loadout, itemLists)
-            elif fillChoice == "MM" :
+            elif fillChoice == "MM":
                 placePair=fillMajorMinor.placementAlg(availableLocations, locArray, loadout, itemLists)
-            elif fillChoice == "EA" : #area rando
+            elif fillChoice == "EA":  # area rando
                 placePair=fillMedium.placementAlg(availableLocations, locArray, loadout, itemLists)
             else :
                 placePair=fillSpeedrun.placementAlg(availableLocations, locArray, loadout, itemLists)
-            #it returns your location and item, which are handled here
+            # it returns your location and item, which are handled here
             placeLocation=placePair[0]
             placeItem=placePair[1]
             if (placeLocation in unusedLocations) :
@@ -360,8 +187,8 @@ def Main(argv, romWriter : RomWriter = None):
                     itemPowerGrouping.remove(placeItem)
                     break
             loadout.append(placeItem)
-            if ((placeLocation['fullitemname'] in spacePortLocs) == False) and ((spaceDrop in loadout) == False):
-                loadout.append(spaceDrop)
+            if ((placeLocation['fullitemname'] in spacePortLocs) == False) and ((Items.spaceDrop in loadout) == False):
+                loadout.append(Items.spaceDrop)
             spoilerSave+=placeLocation['fullitemname']+" - - - "+placeItem[0]+"\n"
             #print(placeLocation['fullitemname']+placeItem[0])
 
@@ -408,6 +235,11 @@ def Main(argv, romWriter : RomWriter = None):
     spoiler_file.write(spoilerSave)    
     print("Spoiler file is "+"Sub"+logicChoice+fillChoice+str(seeeed)+".sfc.spoiler.txt")
 
+
 if __name__ == "__main__":
+    import time
+    t0 = time.perf_counter()
     Main(sys.argv)
+    t1 = time.perf_counter()
+    print(f"time taken: {t1 - t0}")
 
