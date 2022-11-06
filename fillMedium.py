@@ -18,6 +18,13 @@ from location_data import Location
 
 
 def initItemLists() -> ItemLists:
+    """
+    itemLists should contain
+    [0] earlyItemList
+    [1] lowPowerList
+    [2] highPowerList
+    [3] extraItemList
+    """
     earlyItemList = [Missile,
                      Morph,
                      GravityBoots]
