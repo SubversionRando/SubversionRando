@@ -3,6 +3,7 @@ import sys
 from typing import Optional
 import argparse
 
+from fillInterface import InitItemLists, Placement
 from item_data import Item, Items
 from location_data import Location, pullCSV
 import logicCasual
@@ -62,6 +63,17 @@ def itemPlace(romWriter: RomWriter, location: Location, itemArray: Item) -> None
         romWriter.writeItem(address, plmid_altroom, itemArray[4])
 
 
+fillers: dict[str, tuple[InitItemLists, Placement]] = {
+    code: (module.initItemLists, module.placementAlg)
+    for code, module in (
+        ("M", fillMedium),
+        ("MM", fillMajorMinor),
+        ("EA", fillMedium),
+        ("S", fillSpeedrun),
+    )
+}
+
+
 # main program
 def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     workingArgs = commandLineArgs(argv[1:])
@@ -98,7 +110,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
             origRomPath=rom_clean_path, newRomPath=rom1_path)
     else :
         # remove .sfc extension and dirs
-        romWriter.setBaseFilename(rom1_path[ :-4].split("/")[-1])
+        romWriter.setBaseFilename(rom1_path[:-4].split("/")[-1])
     spacePortLocs = ["Ready Room",
                      "Torpedo Bay",
                      "Extract Storage",
@@ -130,14 +142,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         # visitedLocations = []
         loadout: list[Item] = []
         # use appropriate fill algorithm for initializing item lists
-        if fillChoice == "M" :
-            itemLists = fillMedium.initItemLists()
-        elif fillChoice == "MM" :
-            itemLists = fillMajorMinor.initItemLists()
-        elif fillChoice == "EA" :  # area rando uses medium fill
-            itemLists = fillMedium.initItemLists()
-        else :
-            itemLists = fillSpeedrun.initItemLists()
+        itemLists = fillers[fillChoice][0]()
         while len(unusedLocations) != 0 or len(availableLocations) != 0:
             # print("loadout contains:")
             # print(loadout)
@@ -175,23 +180,15 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
                 break
 
             # split here for different fill algorithms
-            if fillChoice == "M":
-                placePair = fillMedium.placementAlg(availableLocations, locArray, loadout, itemLists)
-            elif fillChoice == "MM":
-                placePair = fillMajorMinor.placementAlg(availableLocations, locArray, loadout, itemLists)
-            elif fillChoice == "EA":  # area rando
-                placePair = fillMedium.placementAlg(availableLocations, locArray, loadout, itemLists)
-            else :
-                placePair = fillSpeedrun.placementAlg(availableLocations, locArray, loadout, itemLists)
-            # it returns your location and item, which are handled here
-            placeLocation = placePair[0]
-            placeItem = placePair[1]
-            if (placeLocation in unusedLocations) :
-                unusedLocations.remove(placeLocation)
-            if placeLocation == "Fail" :
+            placePair = fillers[fillChoice][1](availableLocations, locArray, loadout, itemLists)
+            if placePair is None:
                 print(f'Item placement was not successful due to majors. {len(unusedLocations)} locations remaining.')
                 spoilerSave += f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
                 break
+            # it returns your location and item, which are handled here
+            placeLocation, placeItem = placePair
+            if (placeLocation in unusedLocations) :
+                unusedLocations.remove(placeLocation)
             itemPlace(romWriter, placeLocation, placeItem)
             availableLocations.remove(placeLocation)
             for itemPowerGrouping in itemLists :

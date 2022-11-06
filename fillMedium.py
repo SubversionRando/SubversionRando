@@ -1,9 +1,12 @@
+from typing import Optional
 import random
 
+from fillInterface import ItemLists
 from item_data import Item, items_unpackable
+from location_data import Location
 
-#this will not update any of the parameters it is given
-#but it will return an item to place at a location
+# this will not update any of the parameters it is given
+# but it will return an item to place at a location
 
 (
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
@@ -12,14 +15,6 @@ from item_data import Item, items_unpackable
     Refuel, SmallAmmo, LargeAmmo, DamageAmp, ChargeAmp, SpaceJumpBoost,
     spaceDrop
 ) = items_unpackable
-
-
-# itemLists should contain
-# [0] earlyItemList
-# [1] lowPowerList
-# [2] highPowerList
-# [3] extraItemList
-ItemLists = tuple[list[Item], list[Item], list[Item], list[Item]]
 
 
 def initItemLists() -> ItemLists:
@@ -75,50 +70,24 @@ def initItemLists() -> ItemLists:
     return earlyItemList, lowPowerList, highPowerList, extraItemList
 
 
-def placementAlg(availableLocations,
-                 locArray,
-                 loadout,
-                 itemLists: ItemLists) -> tuple[LocationData, Item]:
+def placementAlg(availableLocations: list[Location],
+                 locArray: list[Location],
+                 loadout: list[Item],
+                 itemLists: ItemLists) -> Optional[tuple[Location, Item]]:
     earlyItemList, lowPowerList, highPowerList, extraItemList = itemLists
 
-    if earlyItemList != [] and availableLocations != []:
-        randomIndex = 0
-        if len(earlyItemList) > 1 :
-            randomIndex = random.randint(0, len(earlyItemList)-1)
-        placeItem = earlyItemList[randomIndex]
-        randomIndex = 0
-        if len(availableLocations) > 1:
-            randomIndex = random.randint(0, len(availableLocations)-1)
-        placeLocation = availableLocations[randomIndex]
+    assert len(availableLocations), "placement algorithm received 0 available locations"
 
-    if earlyItemList == [] and lowPowerList != [] and availableLocations != [] :
-        randomIndex = 0
-        if len(lowPowerList) > 1 :
-            randomIndex = random.randint(0, len(lowPowerList)-1)
-        placeItem = lowPowerList[randomIndex]
-        randomIndex = 0
-        if len(availableLocations) > 1 :
-            randomIndex = random.randint(0, len(availableLocations)-1)
-        placeLocation = availableLocations[randomIndex]
+    from_items = (
+        earlyItemList if len(earlyItemList) else (
+            lowPowerList if len(lowPowerList) else (
+                highPowerList if len(highPowerList) else (
+                    extraItemList
+                )
+            )
+        )
+    )
 
-    if earlyItemList == [] and lowPowerList == [] and highPowerList != [] and availableLocations != []:
-        randomIndex = 0
-        if len(highPowerList) > 1 :
-            randomIndex = random.randint(0, len(highPowerList)-1)
-        placeItem = highPowerList[randomIndex]
-        randomIndex = 0
-        if len(availableLocations) > 1 :
-            randomIndex = random.randint(0, len(availableLocations)-1)
-        placeLocation = availableLocations[randomIndex]
+    assert len(from_items), "placement algorithm received 0 items"
 
-    if earlyItemList == [] and lowPowerList == [] and highPowerList == [] and availableLocations != []:
-        randomIndex = 0
-        if len(extraItemList) > 1 :
-            randomIndex = random.randint(0, len(extraItemList)-1)
-        placeItem = extraItemList[randomIndex]
-        randomIndex = 0
-        if len(availableLocations) > 1 :
-            randomIndex = random.randint(0, len(availableLocations)-1)
-        placeLocation = availableLocations[randomIndex]
-
-    return placeLocation, placeItem
+    return random.choice(availableLocations), random.choice(from_items)
