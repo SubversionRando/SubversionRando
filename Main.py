@@ -27,9 +27,9 @@ def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
         '-m', '--medium', action="store_true",
         help='Medium fill, medium speed setting that places low-power items first for increased exploration'
     )
-    parser.add_argument('-mm', '--majorminor',  action="store_true",
+    parser.add_argument('-mm', '--majorminor', action="store_true",
                         help='Major-Minor fill, using unique majors and locations')
-    parser.add_argument('-a', '--area',  action="store_true",
+    parser.add_argument('-a', '--area', action="store_true",
                         help='Area rando shuffles major areas of the game, expert logic only')
     args = parser.parse_args(sys_args)
     # print(args)
@@ -65,19 +65,19 @@ def itemPlace(romWriter: RomWriter, location: Location, itemArray: Item) -> None
 # main program
 def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     workingArgs = commandLineArgs(argv[1:])
-    if workingArgs.expert:
+    if workingArgs.expert :
         logicChoice = "E"
-    elif workingArgs.area:
+    elif workingArgs.area :
         logicChoice = "AR"  # EXPERT area rando
-    else:
+    else :
         logicChoice = "C"  # Default to casual logic
-    if workingArgs.medium:
+    if workingArgs.medium :
         fillChoice = "M"
-    elif workingArgs.majorminor:
+    elif workingArgs.majorminor :
         fillChoice = "MM"
-    elif workingArgs.area:
+    elif workingArgs.area :
         fillChoice = "EA"  # EXPERT area rando
-    else:
+    else :
         fillChoice = "S"
     # hudFlicker=""
     # while hudFlicker != "Y" and hudFlicker != "N" :
@@ -93,12 +93,12 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     csvdict = pullCSV()
     locArray = list(csvdict.values())
 
-    if romWriter is None:
+    if romWriter is None :
         romWriter = RomWriter.fromFilePaths(
             origRomPath=rom_clean_path, newRomPath=rom1_path)
-    else:
+    else :
         # remove .sfc extension and dirs
-        romWriter.setBaseFilename(rom1_path[:-4].split("/")[-1])
+        romWriter.setBaseFilename(rom1_path[ :-4].split("/")[-1])
     spacePortLocs = ["Ready Room",
                      "Torpedo Bay",
                      "Extract Storage",
@@ -112,31 +112,31 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     spoilerSave = ""
     seedComplete = False
     randomizeAttempts = 0
-    while not seedComplete:
-        if fillChoice == "EA":  # area rando no logic
+    while not seedComplete :
+        if fillChoice == "EA" :  # area rando no logic
             Connections = areaRando.RandomizeAreas(romWriter)
             # print(Connections) #test
         randomizeAttempts += 1
-        if randomizeAttempts > 1000:
+        if randomizeAttempts > 1000 :
             print("Giving up after 1000 attempts. Help?")
             break
         print("Starting randomization attempt:", randomizeAttempts)
         spoilerSave = ""
         spoilerSave += f"Starting randomization attempt: {randomizeAttempts}\n"
         # now start randomizing
-        unusedLocations: list[Location] = []
+        unusedLocations : list[Location] = []
         unusedLocations.extend(locArray)
         availableLocations: list[Location] = []
         # visitedLocations = []
         loadout: list[Item] = []
         # use appropriate fill algorithm for initializing item lists
-        if fillChoice == "M":
+        if fillChoice == "M" :
             itemLists = fillMedium.initItemLists()
-        elif fillChoice == "MM":
+        elif fillChoice == "MM" :
             itemLists = fillMajorMinor.initItemLists()
-        elif fillChoice == "EA":  # area rando uses medium fill
+        elif fillChoice == "EA" :  # area rando uses medium fill
             itemLists = fillMedium.initItemLists()
-        else:
+        else :
             itemLists = fillSpeedrun.initItemLists()
         while len(unusedLocations) != 0 or len(availableLocations) != 0:
             # print("loadout contains:")
@@ -169,7 +169,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
             # for u in unusedLocations :
             #     print(u['fullitemname'])
 
-            if availableLocations == [] and unusedLocations != []:
+            if availableLocations == [] and unusedLocations != [] :
                 print(f'Item placement was not successful. {len(unusedLocations)} locations remaining.')
                 spoilerSave += f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
                 break
@@ -186,16 +186,16 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
             # it returns your location and item, which are handled here
             placeLocation = placePair[0]
             placeItem = placePair[1]
-            if (placeLocation in unusedLocations):
+            if (placeLocation in unusedLocations) :
                 unusedLocations.remove(placeLocation)
-            if placeLocation == "Fail":
+            if placeLocation == "Fail" :
                 print(f'Item placement was not successful due to majors. {len(unusedLocations)} locations remaining.')
                 spoilerSave += f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
                 break
             itemPlace(romWriter, placeLocation, placeItem)
             availableLocations.remove(placeLocation)
-            for itemPowerGrouping in itemLists:
-                if placeItem in itemPowerGrouping:
+            for itemPowerGrouping in itemLists :
+                if placeItem in itemPowerGrouping :
                     itemPowerGrouping.remove(placeItem)
                     break
             loadout.append(placeItem)
@@ -204,21 +204,21 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
             spoilerSave += f"{placeLocation['fullitemname']} - - - {placeItem[0]}\n"
             # print(placeLocation['fullitemname']+placeItem[0])
 
-            if availableLocations == [] and unusedLocations == []:
+            if availableLocations == [] and unusedLocations == [] :
                 print("Item placements successful.")
                 spoilerSave += "Item placements successful.\n"
                 seedComplete = True
                 break
 
     # add area transitions to spoiler
-    if fillChoice == "EA":
-        for item in Connections:
+    if fillChoice == "EA" :
+        for item in Connections :
             spoilerSave += f"{item[0][2]} {item[0][3]} << >> {item[1][2]} {item[1][3]}\n"
 
     # Suit animation skip patch
     romWriter.writeBytes(0x20717, b"\xea\xea\xea\xea")
     # Flickering hud removal patch
-    # if hudFlicker == "Y":
+    # if hudFlicker == "Y" :
     #     writeBytes(0x547a, b"\x02")
     #     writeBytes(0x547f, b"\x00")
     # Morph Ball PLM patch (chozo, hidden)

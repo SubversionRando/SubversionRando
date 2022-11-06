@@ -83,7 +83,7 @@ def placementAlg(availableLocations,
 
     if earlyItemList != [] and availableLocations != []:
         randomIndex = 0
-        if len(earlyItemList) > 1:
+        if len(earlyItemList) > 1 :
             randomIndex = random.randint(0, len(earlyItemList)-1)
         placeItem = earlyItemList[randomIndex]
         randomIndex = 0
@@ -91,33 +91,33 @@ def placementAlg(availableLocations,
             randomIndex = random.randint(0, len(availableLocations)-1)
         placeLocation = availableLocations[randomIndex]
 
-    if earlyItemList == [] and lowPowerList != [] and availableLocations != []:
+    if earlyItemList == [] and lowPowerList != [] and availableLocations != [] :
         randomIndex = 0
-        if len(lowPowerList) > 1:
+        if len(lowPowerList) > 1 :
             randomIndex = random.randint(0, len(lowPowerList)-1)
         placeItem = lowPowerList[randomIndex]
         randomIndex = 0
-        if len(availableLocations) > 1:
+        if len(availableLocations) > 1 :
             randomIndex = random.randint(0, len(availableLocations)-1)
         placeLocation = availableLocations[randomIndex]
 
     if earlyItemList == [] and lowPowerList == [] and highPowerList != [] and availableLocations != []:
         randomIndex = 0
-        if len(highPowerList) > 1:
+        if len(highPowerList) > 1 :
             randomIndex = random.randint(0, len(highPowerList)-1)
         placeItem = highPowerList[randomIndex]
         randomIndex = 0
-        if len(availableLocations) > 1:
+        if len(availableLocations) > 1 :
             randomIndex = random.randint(0, len(availableLocations)-1)
         placeLocation = availableLocations[randomIndex]
 
     if earlyItemList == [] and lowPowerList == [] and highPowerList == [] and availableLocations != []:
         randomIndex = 0
-        if len(extraItemList) > 1:
+        if len(extraItemList) > 1 :
             randomIndex = random.randint(0, len(extraItemList)-1)
         placeItem = extraItemList[randomIndex]
         randomIndex = 0
-        if len(availableLocations) > 1:
+        if len(availableLocations) > 1 :
             randomIndex = random.randint(0, len(availableLocations)-1)
         placeLocation = availableLocations[randomIndex]
 
