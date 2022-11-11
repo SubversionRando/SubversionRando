@@ -8,7 +8,6 @@ from item_data import Item, Items
 from location_data import Location, pullCSV
 import logicCasual
 import logicExpert
-import logicExpertArea
 import fillSpeedrun
 import fillMedium
 import fillMajorMinor
@@ -68,7 +67,6 @@ fillers: dict[str, tuple[InitItemLists, Placement]] = {
     for code, module in (
         ("M", fillMedium),
         ("MM", fillMajorMinor),
-        ("EA", fillMedium),
         ("S", fillSpeedrun),
     )
 }
@@ -79,25 +77,29 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     workingArgs = commandLineArgs(argv[1:])
     if workingArgs.expert :
         logicChoice = "E"
-    elif workingArgs.area :
-        logicChoice = "AR"  # EXPERT area rando
     else :
         logicChoice = "C"  # Default to casual logic
     if workingArgs.medium :
         fillChoice = "M"
     elif workingArgs.majorminor :
         fillChoice = "MM"
-    elif workingArgs.area :
-        fillChoice = "EA"  # EXPERT area rando
     else :
         fillChoice = "S"
+    randomizeAreas = False
+    areaA = ""
+    if workingArgs.area :
+        randomizeAreas = True
+        areaA = "A"
+        if fillChoice == "MM" :
+            fillChoice = "M"
+            print("Cannot use Major-Minor in Area rando currently. Using medium instead.")
     # hudFlicker=""
     # while hudFlicker != "Y" and hudFlicker != "N" :
     #     hudFlicker= input("Enter Y to patch HUD flicker on emulator, or N to decline:")
     #     hudFlicker = hudFlicker.title()
     seeeed = random.randint(1000000, 9999999)
     random.seed(seeeed)
-    rom_name = f"Sub{logicChoice}{fillChoice}{seeeed}.sfc"
+    rom_name = f"Sub{logicChoice}{fillChoice}{areaA}{seeeed}.sfc"
     rom1_path = f"roms/{rom_name}"
     rom_clean_path = "roms/Subversion12.sfc"
     # you must include Subversion 1.2 in your roms folder with this name^
@@ -125,9 +127,11 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     seedComplete = False
     randomizeAttempts = 0
     while not seedComplete :
-        if fillChoice == "EA" :  # area rando no logic
+        if randomizeAreas :  # area rando 
             Connections = areaRando.RandomizeAreas(romWriter)
             # print(Connections) #test
+        else :
+            Connections = areaRando.VanillaAreas()
         randomizeAttempts += 1
         if randomizeAttempts > 1000 :
             print("Giving up after 1000 attempts. Help?")
@@ -153,11 +157,13 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
             # using helper function, modular for more logic options later
             # unusedLocations[i]['inlogic'] holds the True or False for logic
             if logicChoice == "E":
+                loadout = logicExpert.updateAreaLogic(availableLocations, locArray, loadout, Connections)
                 logicExpert.updateLogic(unusedLocations, locArray, loadout)
-            elif logicChoice == "AR":
-                loadout = areaRando.updateAreaLogic(availableLocations, locArray, loadout, Connections)
-                logicExpertArea.updateLogic(unusedLocations, locArray, loadout)
+#            elif logicChoice == "AR":
+#                loadout = areaRando.updateAreaLogic(availableLocations, locArray, loadout, Connections)
+#                logicExpertArea.updateLogic(unusedLocations, locArray, loadout)
             else:
+                loadout = logicCasual.updateAreaLogic(availableLocations, locArray, loadout, Connections)
                 logicCasual.updateLogic(unusedLocations, locArray, loadout)
 
             # update unusedLocations and availableLocations
@@ -177,6 +183,11 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
             if availableLocations == [] and unusedLocations != [] :
                 print(f'Item placement was not successful. {len(unusedLocations)} locations remaining.')
                 spoilerSave += f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
+                # for i in loadout:
+                #     print(i[0])
+                # for u in unusedLocations :
+                #     print("--",u['fullitemname'])
+
                 break
 
             # split here for different fill algorithms
@@ -208,7 +219,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
                 break
 
     # add area transitions to spoiler
-    if fillChoice == "EA" :
+    if randomizeAreas :
         for item in Connections :
             spoilerSave += f"{item[0][2]} {item[0][3]} << >> {item[1][2]} {item[1][3]}\n"
 

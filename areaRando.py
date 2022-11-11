@@ -69,6 +69,32 @@ TramToSuziIslandR = ('1c7ec', '23A000050E06000000800000', 'Suzi', 'TramToSuziIsl
     spaceDrop
 ) = items_unpackable
 
+def VanillaAreas() :
+
+    return [[CraterR,WestTerminalAccessL],
+            [SunkenNestL,OceanShoreR],
+            [RuinedConcourseBL,TransferStationR],
+            [RuinedConcourseTR,MezzanineConcourseL],
+            [CausewayR,ExcavationSiteL],
+            [SporeFieldTR,FieldAccessL],
+            [SporeFieldBR,SporousNookL],
+            [EleToTurbidPassageR,FieryGalleryL],
+            [PileAnchorL,TramToSuziIslandR],
+            [WestCorridorR,LoadingDockSecurityAreaL],
+            [FoyerR,VulnarCanyonL],
+            [ConstructionSiteL,CellarR],
+            [AlluringCenoteR,NorakPerimeterBL],
+            [SubbasementFissureL,VulnarDepthsElevatorER],
+            [CanyonPassageR,NorakBrookL],
+            [ElevatorToCondenserL,IntakePumpR],
+            [ElevatorToWellspringL,CollapsedPassageR],
+            [NorakPerimeterTR,RockyRidgeTrailL],
+            [VulnarDepthsElevatorEL,PlacidPoolR],
+            [HiveBurrowL,ThermalReservoir1R],
+            [SequesteredInfernoL,ReservoirMaintenanceTunnelR],
+            [MagmaPumpL,MagmaPumpAccessR],
+            [GeneratorAccessTunnelL,HollowChamberR],
+            [ElevatorToMagmaLakeR,RagingPitL]]
 
 def RandomizeAreas(romWriter : RomWriter) :
     # Each location holds
@@ -192,6 +218,7 @@ def RandomizeAreas(romWriter : RomWriter) :
                              RockyRidgeTrailL]
         # for h in RightSideDoorsList :
         #     print(h[2],h[3])
+
         # for h in LeftSideDoorsList :
         #     print(h[2],h[3])
 
