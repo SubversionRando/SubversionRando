@@ -246,7 +246,7 @@ def updateAreaLogic(availableLocations, locArray, loadout, Connections) :
                 (DarkVisor in loadout) and
                 pinkDoor and
                 (wave or
-                 (Speedbooster in loadout) or
+                 (SpeedBooster in loadout) or
                  (Screw in loadout) or
                  ((Super in loadout) and
                   ((Speedball in loadout) or
