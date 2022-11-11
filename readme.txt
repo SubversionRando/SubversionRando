@@ -13,11 +13,9 @@ simple readme for now
  -e   : Expert logic
  -s   : Speedrun fill (Default)
  -m   : Medium fill
- -area   : Area Rando with expert logic and medium fill
+ -a   : Area Rando with expert logic and medium fill
 
 This should create a randomized rom with the given name in the roms folder and a spoiler log (.txt) in the spoilers folder.
-
-Note: keep the outer folder named SubversionRando for everything to work as intended
 
 Casual logic notes: -c
 For now, casual logic is the only one published. More are possible and coming eventually. You could update the logicCasual file if you want a different experience. Casual logic is meant to mimic the "intended" experience of Subversion, with its few moments of suitless underwater movement, no hellruns, and no "gate glitches" in logic. Logic regarding the shutdown, space port, and Suzi is overly cautious so I would be surprised to find any progress there besides Torpedo Bay. In casual, Torpedo Bay (the vanilla missile) will always have morph or missile as your intended escape from the space port, then the very next pack of items that will be placed are Missile, Morph, and GravityBoots. If you are looking into the code, see the earlyItemList.
@@ -34,5 +32,5 @@ To make for a more layered logical experience, the progression items are placed 
 Major/Minor fill notes: -mm
 Compatible with casual/expert/etc logic and places Unique+Energy items at the Unique+Energy locations. 23 unique and 16 energy locations in all. While this puts the hard-to-reach unique locations into the major pool, energy tanks seem to be sprinkled around, making this option a nice balance of hard-to-reach items and available energy locations. Note that Refuel tanks, damage amps, accel charge, and space jump boosts are all in the minor pool.
 
-Area Rando notes: -area
-Logically shuffles the major areas of the game and places items in logical places according to the door placement. Also creates a "logical" escape due to some map changes that happen during the final escape. (Warning: the elevator out of Sky Temple is bugged during the escape, so do NOT use it!) For now, this logic does not account for turning the power on/off to collect items.
+Area Rando notes: -a
+Logically shuffles the major areas of the game and places items in logical places according to the door placement. Also creates a "logical" escape due to some map changes that happen during the final escape. (Warning: the elevator out of Sky Temple is bugged during the escape, so do NOT use it!) For now, this logic does not account for turning the power on/off to collect items. Now compatible with casual or expert logic, and speedrun or medium fill. Not currently compatible with major-minor.
