@@ -7,7 +7,6 @@ from item_data import Items
 from location_data import pullCSV
 import logicCasual
 import logicExpert
-import logicExpertArea
 import fillSpeedrun
 import fillMedium
 import fillMajorMinor
@@ -57,28 +56,32 @@ def Main(argv, romWriter: Optional[RomWriter] = None) -> None:
     workingArgs=commandLineArgs(argv[1:])
     if workingArgs.expert :
         logicChoice = "E"
-    elif workingArgs.area :
-        logicChoice = "AR" #EXPERT area rando
     else :
         logicChoice = "C"  # Default to casual logic
     if workingArgs.medium :
         fillChoice = "M"
     elif workingArgs.majorminor :
         fillChoice = "MM"
-    elif workingArgs.area :
-        fillChoice = "EA" #EXPERT area rando 
     else :
         fillChoice = "S"
+    randomizeAreas=False
+    areaA=""
+    if workingArgs.area :
+        randomizeAreas=True
+        areaA="A"
+        if fillChoice == "MM" :
+            fillChoice = "M"
+            print("Cannot use Major-Minor in Area rando currently. Using medium instead.")
     # hudFlicker=""
     # while hudFlicker != "Y" and hudFlicker != "N" :
     #     hudFlicker= input("Enter Y to patch HUD flicker on emulator, or N to decline:")
     #     hudFlicker = hudFlicker.title()
     seeeed = random.randint(1000000,9999999)
     random.seed(seeeed)
-    rom1_path = "roms/Sub"+logicChoice+fillChoice+str(seeeed)+".sfc"
+    rom1_path = "roms/Sub"+logicChoice+fillChoice+areaA+str(seeeed)+".sfc"
     rom_clean_path = "roms/Subversion12.sfc"
     #you must include Subversion 1.2 in your roms folder with this name^
-    spoiler_file = open("spoilers/Sub"+logicChoice+fillChoice+str(seeeed)+".sfc.spoiler.txt", "w")
+    spoiler_file = open("spoilers/Sub"+logicChoice+fillChoice+areaA+str(seeeed)+".sfc.spoiler.txt", "w")
 
     csvdict = pullCSV()
     locArray = [csvdict[key] for key in csvdict]
@@ -101,9 +104,11 @@ def Main(argv, romWriter: Optional[RomWriter] = None) -> None:
     seedComplete = False
     randomizeAttempts = 0
     while seedComplete == False:
-        if fillChoice == "EA" : #area rando no logic
+        if randomizeAreas : #area rando 
             Connections=areaRando.RandomizeAreas(romWriter) 
-            #print(Connections) #test    
+            #print(Connections) #test
+        else :
+            Connections=areaRando.VanillaAreas()
         randomizeAttempts += 1
         if randomizeAttempts > 1000 :
             print("Giving up after 1000 attempts. Help?")
@@ -122,8 +127,8 @@ def Main(argv, romWriter: Optional[RomWriter] = None) -> None:
             itemLists=fillMedium.initItemLists()
         elif fillChoice == "MM" :
             itemLists=fillMajorMinor.initItemLists()
-        elif fillChoice == "EA" : #area rando uses medium fill
-            itemLists=fillMedium.initItemLists()
+#        elif fillChoice == "EA" : #area rando uses medium fill
+#            itemLists=fillMedium.initItemLists()
         else :
             itemLists=fillSpeedrun.initItemLists()
         while len(unusedLocations) != 0 or len(availableLocations) != 0:
@@ -136,11 +141,13 @@ def Main(argv, romWriter: Optional[RomWriter] = None) -> None:
             # using helper function, modular for more logic options later
             # unusedLocations[i]['inlogic'] holds the True or False for logic
             if logicChoice == "E":
+                loadout = logicExpert.updateAreaLogic(availableLocations, locArray, loadout, Connections)
                 logicExpert.updateLogic(unusedLocations, locArray, loadout)
-            elif logicChoice == "AR":
-                loadout = areaRando.updateAreaLogic(availableLocations, locArray, loadout, Connections)
-                logicExpertArea.updateLogic(unusedLocations, locArray, loadout)
+#            elif logicChoice == "AR":
+#                loadout = areaRando.updateAreaLogic(availableLocations, locArray, loadout, Connections)
+#                logicExpertArea.updateLogic(unusedLocations, locArray, loadout)
             else:
+                loadout = logicCasual.updateAreaLogic(availableLocations, locArray, loadout, Connections)
                 logicCasual.updateLogic(unusedLocations, locArray, loadout)
 
             # update unusedLocations and availableLocations
@@ -160,6 +167,11 @@ def Main(argv, romWriter: Optional[RomWriter] = None) -> None:
             if availableLocations == [] and unusedLocations != [] :
                 print(f'Item placement was not successful. {len(unusedLocations)} locations remaining.')
                 spoilerSave+=f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
+                #for i in loadout:
+                #    print(i[0])
+                #for u in unusedLocations :
+                #    print("--",u['fullitemname'])
+                
                 break
 
             # split here for different fill algorithms
@@ -167,8 +179,8 @@ def Main(argv, romWriter: Optional[RomWriter] = None) -> None:
                 placePair=fillMedium.placementAlg(availableLocations, locArray, loadout, itemLists)
             elif fillChoice == "MM":
                 placePair=fillMajorMinor.placementAlg(availableLocations, locArray, loadout, itemLists)
-            elif fillChoice == "EA":  # area rando
-                placePair=fillMedium.placementAlg(availableLocations, locArray, loadout, itemLists)
+#            elif fillChoice == "EA":  # area rando
+#                placePair=fillMedium.placementAlg(availableLocations, locArray, loadout, itemLists)
             else :
                 placePair=fillSpeedrun.placementAlg(availableLocations, locArray, loadout, itemLists)
             # it returns your location and item, which are handled here
@@ -199,7 +211,7 @@ def Main(argv, romWriter: Optional[RomWriter] = None) -> None:
                 break
             
     #add area transitions to spoiler
-    if fillChoice == "EA" :
+    if randomizeAreas :
         for item in Connections :
             spoilerSave+=item[0][2]+" "+item[0][3]+" << >> "+item[1][2]+" "+item[1][3]+"\n"
 
@@ -229,11 +241,11 @@ def Main(argv, romWriter: Optional[RomWriter] = None) -> None:
     romWriter.writeBytes(0x23e33, b"\x38\x38\x38\x38") # set the carry bit (a lot)
     romWriter.finalizeRom()
     print("Done!")
-    print("Filename is "+"Sub"+logicChoice+fillChoice+str(seeeed)+".sfc")
+    print("Filename is "+"Sub"+logicChoice+fillChoice+areaA+str(seeeed)+".sfc")
     spoiler_file.write("RNG Seed: {}\n".format(str(seeeed))+"\n")
     spoiler_file.write("\n Spoiler \n\n Spoiler \n\n Spoiler \n\n Spoiler \n\n")
     spoiler_file.write(spoilerSave)    
-    print("Spoiler file is "+"Sub"+logicChoice+fillChoice+str(seeeed)+".sfc.spoiler.txt")
+    print("Spoiler file is "+"Sub"+logicChoice+fillChoice+areaA+str(seeeed)+".sfc.spoiler.txt")
 
 
 if __name__ == "__main__":

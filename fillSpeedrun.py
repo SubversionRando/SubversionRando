@@ -41,12 +41,12 @@ def initItemLists () :
                      Plasma,
                      Screw,
                      SpaceJump,
-                     Charge]
+                     Charge,
+                         Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy]
     extraItemList=[Hypercharge,
                    Xray,
                    DamageAmp,DamageAmp,DamageAmp,DamageAmp,DamageAmp,DamageAmp,
                    ChargeAmp,ChargeAmp,ChargeAmp,ChargeAmp,ChargeAmp,ChargeAmp,
-                   Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy,
                    Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy,
                    Refuel,Refuel,Refuel,Refuel,Refuel,Refuel,Refuel,
                    SpaceJumpBoost,SpaceJumpBoost,SpaceJumpBoost,SpaceJumpBoost,
