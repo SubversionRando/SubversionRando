@@ -127,7 +127,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     seedComplete = False
     randomizeAttempts = 0
     while not seedComplete :
-        if randomizeAreas :  # area rando 
+        if randomizeAreas :  # area rando
             Connections = areaRando.RandomizeAreas(romWriter)
             # print(Connections) #test
         else :
