@@ -126,9 +126,9 @@ class FillMajorMinor(FillAlgorithm):
         for torpedoSearch in availableLocations :
             # print("Searching for Torpedo Bay: ", torpedoSearch['fullitemname'])
             if torpedoSearch['fullitemname'] == "Torpedo Bay" :
-                print("          found Torpedo Bay")
+                # print("          found Torpedo Bay")
                 placeItem = random.choice([Missile, Morph])
-                print(availableLocations[0], " - - - ", placeItem)
+                # print(availableLocations[0], " - - - ", placeItem)
                 placeLocation = torpedoSearch
                 return placeLocation, placeItem
 
@@ -151,10 +151,11 @@ class FillMajorMinor(FillAlgorithm):
                 for loc in availableLocations
                 if (loc['fullitemname'] in majorLocs)
             ]
-            if len(valid_locations) == 0 and (Morph in loadout):
+            if from_items is self.earlyItemList and len(valid_locations) == 0 and (Morph in loadout):
                 for sandySearch in locArray:
                     # print("Searching for Sandy Cache: ", sandySearch['fullitemname'])
                     if sandySearch['fullitemname'] == "Sandy Cache":
+                        # print("   ---   appending sandy cache")
                         valid_locations.append(sandySearch)
                         availableLocations.append(sandySearch)
                         break
