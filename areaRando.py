@@ -37,7 +37,8 @@ from item_data import items_unpackable
 ) = items_unpackable
 
 
-def RandomizeAreas(romWriter : RomWriter) :# Each location holds
+def RandomizeAreas(romWriter : RomWriter) :
+    # Each location holds
     # [0]the data of its door
     # [1]the data of the vanilla door that goes here
     # [2]the area
@@ -297,10 +298,10 @@ def RandomizeAreas(romWriter : RomWriter) :# Each location holds
                    '3fe686',
                    '3ffa2c']
 
-    for doorlocid in colorDoorsR :
+    for doorlocid in colorDoorsR:
         romWriter.writeBytes(int(doorlocid, 16),   b"\x42")  # gray type door
         romWriter.writeBytes(int(doorlocid, 16)+5, b"\x98")  # animals subtype
-    for doorlocid in colorDoorsL :
+    for doorlocid in colorDoorsL:
         romWriter.writeBytes(int(doorlocid, 16),   b"\x48")  # gray type door
         romWriter.writeBytes(int(doorlocid, 16)+5, b"\x98")  # animals subtype
 
