@@ -1,9 +1,10 @@
+from typing import Optional, Union
 import random
+from connection_data import Connection
 
-from item_data import items_unpackable
-
-#this will not update any of the parameters it is given
-#but it will return an item to place at a location
+from fillInterface import FillAlgorithm
+from item_data import Item, items_unpackable
+from location_data import Location
 
 (
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
@@ -14,7 +15,7 @@ from item_data import items_unpackable
 ) = items_unpackable
 
 
-majorLocs = ["Ocean Vent Supply Depot", #start of unique majors
+majorLocs = ["Ocean Vent Supply Depot",  # start of unique majors
              "Sandy Cache",
              "Shrine Of The Penumbra",
              "Subterranean Burrow",
@@ -36,8 +37,8 @@ majorLocs = ["Ocean Vent Supply Depot", #start of unique majors
              "Syzygy Observatorium",
              "Shrine Of The Animate Spark",
              "Extract Storage",
-             "Torpedo Bay", #end of unique majors
-             "Sandy Burrow: ETank", #E Tanks
+             "Torpedo Bay",  # end of unique majors
+             "Sandy Burrow: ETank",  # E Tanks
              "Sediment Flow",
              "Epiphreatic Crag",
              "Mezzanine Concourse",
@@ -52,137 +53,124 @@ majorLocs = ["Ocean Vent Supply Depot", #start of unique majors
              "Water Garden",
              "Reliquary Access",
              "Summit Landing",
-             "Ready Room"] 
+             "Ready Room"]
 
 
-#itemLists should contain
-# [0] earlyItemList
-# [1] progressionItemList
-# [2] ETankList
-# [3] extraItemList
+class FillMajorMinor(FillAlgorithm):
+    earlyItemList: list[Item]
+    progressionItemList: list[Item]
+    eTankList: list[Item]
+    extraItemList: list[Item]
 
+    itemLists: list[list[Item]]
 
-def initItemLists () :
-    earlyItemList=[Missile,
-                   Morph,
-                   GravityBoots]
-    progressionItemList=[Super,
-                         Grapple,
-                         PowerBomb,
-                         Speedball,
-                         Bombs,
-                         HiJump,
-                         GravitySuit,
-                         DarkVisor,
-                         Wave,
-                         SpeedBooster,
-                         Spazer,
-                         Varia,
-                         Ice,
-                         MetroidSuit,
-                         Plasma,
-                         Screw,
-                         SpaceJump,
-                         Charge,
-                         Hypercharge,
-                         Xray,
-                         Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy]
-    eTankList=[Energy,Energy,Energy,Energy,Energy,Energy,Energy,Energy]
-    extraItemList=[Refuel,Refuel,Refuel,Refuel,Refuel,Refuel,Refuel,
-                   DamageAmp,DamageAmp,DamageAmp,DamageAmp,DamageAmp,DamageAmp,
-                   ChargeAmp,ChargeAmp,ChargeAmp,ChargeAmp,ChargeAmp,ChargeAmp,
-                   SpaceJumpBoost,SpaceJumpBoost,SpaceJumpBoost,SpaceJumpBoost,
-                   SpaceJumpBoost,SpaceJumpBoost,SpaceJumpBoost,SpaceJumpBoost,
-                   SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
-                   SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
-                   SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
-                   SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
-                   SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
-                   SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
-                   SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,SmallAmmo,
-                   SmallAmmo,SmallAmmo,SmallAmmo,
-                   LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,
-                   LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,
-                   LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,LargeAmmo,
-                   LargeAmmo,LargeAmmo,LargeAmmo]
-    return [earlyItemList,progressionItemList,eTankList,extraItemList]
+    def __init__(self) -> None:
+        self.earlyItemList = [
+            Missile,
+            Morph,
+            GravityBoots
+        ]
+        self.progressionItemList = [
+            Super,
+            Grapple,
+            PowerBomb,
+            Speedball,
+            Bombs,
+            HiJump,
+            GravitySuit,
+            DarkVisor,
+            Wave,
+            SpeedBooster,
+            Spazer,
+            Varia,
+            Ice,
+            MetroidSuit,
+            Plasma,
+            Screw,
+            SpaceJump,
+            Charge,
+            Hypercharge,
+            Xray,
+            Energy, Energy, Energy, Energy, Energy, Energy, Energy, Energy
+        ]
+        self.eTankList = [Energy, Energy, Energy, Energy, Energy, Energy, Energy, Energy]
+        self.extraItemList = [
+            Refuel, Refuel, Refuel, Refuel, Refuel, Refuel, Refuel,
+            DamageAmp, DamageAmp, DamageAmp, DamageAmp, DamageAmp, DamageAmp,
+            ChargeAmp, ChargeAmp, ChargeAmp, ChargeAmp, ChargeAmp, ChargeAmp,
+            SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost,
+            SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost,
+            SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+            SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+            SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+            SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+            SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+            SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+            SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+            SmallAmmo, SmallAmmo, SmallAmmo,
+            LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo,
+            LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo,
+            LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo,
+            LargeAmmo, LargeAmmo, LargeAmmo
+        ]
+        self.itemLists = [self.earlyItemList, self.progressionItemList, self.eTankList, self.extraItemList]
 
-def placementAlg(availableLocations, locArray, loadout, itemLists) :
-    earlyItemList=itemLists[0]
-    progressionItemList=itemLists[1]
-    eTankList=itemLists[2]
-    extraItemList=itemLists[3]
-    for torpedoSearch in availableLocations :
-        #print("Searching for Torpedo Bay: ",torpedoSearch['fullitemname'])
-        if torpedoSearch['fullitemname'] == "Torpedo Bay" :
-            #print("          found Torpedo Bay")
-            randomIndex = random.randint(0,1)
-            firstItems = [Missile, Morph]
-            placeItem = firstItems[randomIndex]
-            #print(availableLocations[0][0]," - - - ",placeItem[0])
-            placeLocation = torpedoSearch
-            return [placeLocation, placeItem]
-        
-    if earlyItemList != [] and availableLocations != []:
-        loadMajors = []
-        for loc in availableLocations :
-            if (loc['fullitemname'] in majorLocs) :
-                loadMajors.append(loc)
-        if loadMajors == [] :
-            for sandySearch in locArray :
-                #print("Searching for Sandy Cache: ",sandySearch['fullitemname'])
-                if (Morph in loadout) and sandySearch['fullitemname'] == "Sandy Cache" :
-                    loadMajors.append(sandySearch)
-                    availableLocations.append(sandySearch)
-        if loadMajors == [] :
-            return ["Fail","Fail"]
-        randomIndex=0
-        if len(earlyItemList) > 1 :
-            randomIndex = random.randint(0,len(earlyItemList)-1)
-        placeItem = earlyItemList[randomIndex]
-        randomIndex=0
-        if len(loadMajors) > 1 :
-            randomIndex = random.randint(0,len(loadMajors)-1)
-        placeLocation = loadMajors[randomIndex]
+    def choose_placement(self,
+                         availableLocations: list[Location],
+                         locArray: list[Location],
+                         loadout: list[Union[Item, Connection]]) -> Optional[tuple[Location, Item]]:
+        """ returns (location to place an item, which item to place there) """
 
-    if earlyItemList == [] and progressionItemList != [] and availableLocations != [] :
-        loadMajors = []
-        for loc in availableLocations :
-            if (loc['fullitemname'] in majorLocs) :
-                loadMajors.append(loc)
-        if loadMajors == [] :
-            return ["Fail","Fail"]
-        randomIndex=0
-        if len(progressionItemList) > 1 :
-            randomIndex = random.randint(0,len(progressionItemList)-1)
-        placeItem = progressionItemList[randomIndex]
-        randomIndex=0
-        if len(loadMajors) > 1 :
-            randomIndex = random.randint(0,len(loadMajors)-1)
-        placeLocation = loadMajors[randomIndex]
+        assert len(availableLocations), "placement algorithm received 0 available locations"
 
-    if earlyItemList == [] and progressionItemList == [] and eTankList != [] and availableLocations != [] :
-        loadMajors = []
-        for loc in availableLocations :
-            if (loc['fullitemname'] in majorLocs) :
-                loadMajors.append(loc)
-        if loadMajors == [] :
-            return ["Fail","Fail"]
-        randomIndex=0
-        placeItem = eTankList[randomIndex]
-        randomIndex=0
-        if len(loadMajors) > 1 :
-            randomIndex = random.randint(0,len(loadMajors)-1)
-        placeLocation = loadMajors[randomIndex]
+        for torpedoSearch in availableLocations :
+            # print("Searching for Torpedo Bay: ", torpedoSearch['fullitemname'])
+            if torpedoSearch['fullitemname'] == "Torpedo Bay" :
+                # print("          found Torpedo Bay")
+                placeItem = random.choice([Missile, Morph])
+                # print(availableLocations[0], " - - - ", placeItem)
+                placeLocation = torpedoSearch
+                return placeLocation, placeItem
 
-    if earlyItemList == [] and progressionItemList == [] and eTankList == [] and availableLocations != []:
-        randomIndex=0
-        if len(extraItemList) > 1 :
-            randomIndex = random.randint(0,len(extraItemList)-1)
-        placeItem = extraItemList[randomIndex]
-        randomIndex=0
-        if len(availableLocations) > 1 :
-            randomIndex = random.randint(0,len(availableLocations)-1)
-        placeLocation = availableLocations[randomIndex]
+        from_items = (
+            self.earlyItemList if len(self.earlyItemList) else (
+                self.progressionItemList if len(self.progressionItemList) else (
+                    self.eTankList if len(self.eTankList) else (
+                        self.extraItemList
+                    )
+                )
+            )
+        )
 
-    return [placeLocation, placeItem]
+        if from_items is self.extraItemList:
+            valid_locations = availableLocations
+        else:  # not extraItemList
+            # load majors
+            valid_locations = [
+                loc
+                for loc in availableLocations
+                if (loc['fullitemname'] in majorLocs)
+            ]
+            if from_items is self.earlyItemList and len(valid_locations) == 0 and (Morph in loadout):
+                for sandySearch in locArray:
+                    # print("Searching for Sandy Cache: ", sandySearch['fullitemname'])
+                    if sandySearch['fullitemname'] == "Sandy Cache":
+                        # print("   ---   appending sandy cache")
+                        valid_locations.append(sandySearch)
+                        availableLocations.append(sandySearch)
+                        break
+            if len(valid_locations) == 0:
+                return None  # fail
+
+        return random.choice(valid_locations), random.choice(from_items)
+
+    def remove_from_pool(self, item: Item) -> None:
+        """ removes this item from the item pool """
+        for each_list in self.itemLists:
+            try:
+                i = each_list.index(item)
+                each_list.pop(i)
+                break
+            except ValueError:
+                # not in this list
+                pass
