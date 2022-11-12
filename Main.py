@@ -1,9 +1,10 @@
 import random
 import sys
-from typing import Optional
+from typing import Optional, Type, Union
 import argparse
 
-from fillInterface import InitItemLists, Placement
+from connection_data import Connection, VanillaAreas
+from fillInterface import FillAlgorithm
 from item_data import Item, Items
 from location_data import Location, pullCSV
 import logicCasual
@@ -62,13 +63,10 @@ def itemPlace(romWriter: RomWriter, location: Location, itemArray: Item) -> None
         romWriter.writeItem(address, plmid_altroom, itemArray[4])
 
 
-fillers: dict[str, tuple[InitItemLists, Placement]] = {
-    code: (module.initItemLists, module.placementAlg)
-    for code, module in (
-        ("M", fillMedium),
-        ("MM", fillMajorMinor),
-        ("S", fillSpeedrun),
-    )
+fillers: dict[str, Type[FillAlgorithm]] = {
+    "M": fillMedium.FillMedium,
+    "MM": fillMajorMinor.FillMajorMinor,
+    "S": fillSpeedrun.FillSpeedrun,
 }
 
 
@@ -126,12 +124,11 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     spoilerSave = ""
     seedComplete = False
     randomizeAttempts = 0
+    Connections = VanillaAreas()
     while not seedComplete :
         if randomizeAreas :  # area rando
             Connections = areaRando.RandomizeAreas(romWriter)
             # print(Connections) #test
-        else :
-            Connections = areaRando.VanillaAreas()
         randomizeAttempts += 1
         if randomizeAttempts > 1000 :
             print("Giving up after 1000 attempts. Help?")
@@ -144,9 +141,9 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         unusedLocations.extend(locArray)
         availableLocations: list[Location] = []
         # visitedLocations = []
-        loadout: list[Item] = []
+        loadout: list[Union[Item, Connection]] = []
         # use appropriate fill algorithm for initializing item lists
-        itemLists = fillers[fillChoice][0]()
+        fill_algorithm = fillers[fillChoice]()
         while len(unusedLocations) != 0 or len(availableLocations) != 0:
             # print("loadout contains:")
             # print(loadout)
@@ -191,7 +188,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
                 break
 
             # split here for different fill algorithms
-            placePair = fillers[fillChoice][1](availableLocations, locArray, loadout, itemLists)
+            placePair = fill_algorithm.choose_placement(availableLocations, locArray, loadout)
             if placePair is None:
                 print(f'Item placement was not successful due to majors. {len(unusedLocations)} locations remaining.')
                 spoilerSave += f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
@@ -202,10 +199,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
                 unusedLocations.remove(placeLocation)
             itemPlace(romWriter, placeLocation, placeItem)
             availableLocations.remove(placeLocation)
-            for itemPowerGrouping in itemLists :
-                if placeItem in itemPowerGrouping :
-                    itemPowerGrouping.remove(placeItem)
-                    break
+            fill_algorithm.remove_from_pool(placeItem)
             loadout.append(placeItem)
             if not ((placeLocation['fullitemname'] in spacePortLocs) or (Items.spaceDrop in loadout)):
                 loadout.append(Items.spaceDrop)
@@ -243,7 +237,8 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     # disable demos (asm opcode edit). because the demos show items
     romWriter.writeBytes(0x59f29, b"\xad")
     # make always flashing doors out of vanilla gray 'animals saved' doors:
-    #   edit in function $84:BE30 'gray door pre: go to link instruction if critters escaped', which is vanilla and probably not used anyway
+    #   edit in function $84:BE30 'gray door pre: go to link instruction if critters escaped',
+    #   which is vanilla and probably not used anyway
     #   use by writing 0x18 to the high byte of a gray door plm param, OR'ed with the low bit of the 9-low-bits id part
     romWriter.writeBytes(0x23e33, b"\x38\x38\x38\x38")  # set the carry bit (a lot)
     romWriter.finalizeRom()

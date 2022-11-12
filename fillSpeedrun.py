@@ -1,7 +1,8 @@
-from typing import Optional
 import random
+from typing import Optional, Union
 
-from fillInterface import ItemLists
+from connection_data import Connection
+from fillInterface import FillAlgorithm
 from item_data import Item, items_unpackable
 from location_data import Location
 
@@ -17,78 +18,100 @@ from location_data import Location
     spaceDrop
 ) = items_unpackable
 
-# itemLists should contain
-# [0] earlyItemList
-# [1] progressionItemList
-# [2] extraItemList
 
+class FillSpeedrun(FillAlgorithm):
+    earlyItemList: list[Item]
+    progressionItemList: list[Item]
+    extraItemList: list[Item]
+    itemLists: list[list[Item]]
+    """
+    itemLists should contain
+    [0] earlyItemList
+    [1] progressionItemList
+    [2] extraItemList
+    """
 
-def initItemLists() -> ItemLists:
-    earlyItemList = [Missile,
-                     Morph,
-                     GravityBoots]
-    progressionItemList = [Super,
-                           Grapple,
-                           PowerBomb,
-                           Speedball,
-                           Bombs,
-                           HiJump,
-                           GravitySuit,
-                           DarkVisor,
-                           Wave,
-                           SpeedBooster,
-                           Spazer,
-                           Varia,
-                           Ice,
-                           MetroidSuit,
-                           Plasma,
-                           Screw,
-                           SpaceJump,
-                           Charge,
-                           Energy, Energy, Energy, Energy, Energy, Energy, Energy, Energy, Energy]
-    extraItemList = [Hypercharge,
-                     Xray,
-                     DamageAmp, DamageAmp, DamageAmp, DamageAmp, DamageAmp, DamageAmp,
-                     ChargeAmp, ChargeAmp, ChargeAmp, ChargeAmp, ChargeAmp, ChargeAmp,
-                     Energy, Energy, Energy, Energy, Energy, Energy, Energy, Energy, Energy,
-                     Refuel, Refuel, Refuel, Refuel, Refuel, Refuel, Refuel,
-                     SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost,
-                     SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost,
-                     SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
-                     SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
-                     SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
-                     SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
-                     SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
-                     SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
-                     SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
-                     SmallAmmo, SmallAmmo, SmallAmmo,
-                     LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo,
-                     LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo,
-                     LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo,
-                     LargeAmmo, LargeAmmo, LargeAmmo]
-    unused: list[Item] = []
-    return earlyItemList, progressionItemList, extraItemList, unused
+    def __init__(self) -> None:
+        self.earlyItemList = [
+            Missile,
+            Morph,
+            GravityBoots
+        ]
+        self.progressionItemList = [
+            Super,
+            Grapple,
+            PowerBomb,
+            Speedball,
+            Bombs,
+            HiJump,
+            GravitySuit,
+            DarkVisor,
+            Wave,
+            SpeedBooster,
+            Spazer,
+            Varia,
+            Ice,
+            MetroidSuit,
+            Plasma,
+            Screw,
+            SpaceJump,
+            Charge,
+            Energy, Energy, Energy, Energy, Energy, Energy, Energy, Energy, Energy
+        ]
+        self.extraItemList = [
+            Hypercharge,
+            Xray,
+            DamageAmp, DamageAmp, DamageAmp, DamageAmp, DamageAmp, DamageAmp,
+            ChargeAmp, ChargeAmp, ChargeAmp, ChargeAmp, ChargeAmp, ChargeAmp,
+            Energy, Energy, Energy, Energy, Energy, Energy, Energy, Energy, Energy,
+            Refuel, Refuel, Refuel, Refuel, Refuel, Refuel, Refuel,
+            SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost,
+            SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost,
+            SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+            SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+            SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+            SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+            SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+            SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+            SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,
+            SmallAmmo, SmallAmmo, SmallAmmo,
+            LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo,
+            LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo,
+            LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo, LargeAmmo,
+            LargeAmmo, LargeAmmo, LargeAmmo
+        ]
 
+        self.itemLists = [self.earlyItemList, self.progressionItemList, self.extraItemList]
 
-def placementAlg(availableLocations: list[Location],
-                 locArray: list[Location],
-                 loadout: list[Item],
-                 itemLists: ItemLists) -> Optional[tuple[Location, Item]]:
-    assert len(availableLocations), "placement algorithm received 0 available locations"
+    def choose_placement(self,
+                         availableLocations: list[Location],
+                         locArray: list[Location],
+                         loadout: list[Union[Item, Connection]]) -> Optional[tuple[Location, Item]]:
+        """ returns (location to place an item, which item to place there) """
+        assert len(availableLocations), "placement algorithm received 0 available locations"
 
-    earlyItemList, progressionItemList, extraItemList, _ = itemLists
+        if availableLocations[0]['fullitemname'] == "TORPEDO BAY":
+            return availableLocations[0], random.choice([Missile, Morph])
 
-    if availableLocations[0]['fullitemname'] == "TORPEDO BAY":
-        return availableLocations[0], random.choice([Missile, Morph])
-
-    from_items = (
-        earlyItemList if len(earlyItemList) else (
-            progressionItemList if len(progressionItemList) else (
-                extraItemList
+        from_items = (
+            self.earlyItemList if len(self.earlyItemList) else (
+                self.progressionItemList if len(self.progressionItemList) else (
+                    self.extraItemList
+                )
             )
         )
-    )
 
-    assert len(from_items), "placement algorithm received 0 items"
+        assert len(from_items), "tried to place item when placement algorithm has 0 items left in item pool"
 
-    return random.choice(availableLocations), random.choice(from_items)
+        return random.choice(availableLocations), random.choice(from_items)
+
+    def remove_from_pool(self, item: Item) -> None:
+        """ removes this item from the item pool """
+        for each_list in self.itemLists:
+            try:
+                i = each_list.index(item)
+                each_list.pop(i)
+                break
+            except ValueError:
+                # not in this list
+                pass
