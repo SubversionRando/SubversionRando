@@ -1,6 +1,6 @@
 """ data for the connections in area rando """
 
-Connection = tuple[str, str, str, str, int]
+AreaDoor = tuple[str, str, str, str, int]
 """
  - [0] the data of its door
  - [1] the data of the vanilla door that goes here
@@ -10,7 +10,7 @@ Connection = tuple[str, str, str, str, int]
 """
 
 
-connections_unpackable: tuple[Connection, ...] = (
+area_doors_unpackable: tuple[AreaDoor, ...] = (
     ('1c678', '5BBB00056E06060000800000', 'Early', 'CraterR', 0),
     ('1c7a4', '2CBA00040106000000800000', 'Early', 'SunkenNestL', 0),
     ('1caf8', 'C2970004115601050080CCA9', 'Early', 'RuinedConcourseBL', 1),
@@ -20,7 +20,7 @@ connections_unpackable: tuple[Connection, ...] = (
     ('1a2ec', '578800053E4603040080E4A6', 'Early', 'SporeFieldBR', 1),
     ('1ca74', '0F8500057E26070200800000', 'SandLand', 'OceanShoreR', 0),
     ('1c15c', '73CC00050E26000200800000', 'SandLand', 'EleToTurbidPassageR', 2),
-    ('1c66c', '879F00040116000100800000', 'Sandland', 'PileAnchorL', 0),
+    ('1c66c', '879F00040116000100800000', 'SandLand', 'PileAnchorL', 0),
     ('1a130', '19EC00000206000000800000', 'PirateLab', 'ExcavationSiteL', 1),
     ('1bed4', 'B7E100050E16000100800000', 'PirateLab', 'WestCorridorR', 3),
     ('197c4', 'CD8A00051E06010000800000', 'PirateLab', 'FoyerR', 3),
@@ -61,6 +61,11 @@ connections_unpackable: tuple[Connection, ...] = (
     ('1c7ec', '23A000050E06000000800000', 'Suzi', 'TramToSuziIslandR', 0),
 )
 
+area_doors: dict[str, AreaDoor] = {
+    door[3]: door
+    for door in area_doors_unpackable
+}
+
 # to make sure this unpacking list is correct:
 # print(f"({', '.join([c[3] for c in connections_unpackable])})")
 
@@ -77,10 +82,10 @@ connections_unpackable: tuple[Connection, ...] = (
     ThermalReservoir1R, GeneratorAccessTunnelL, ElevatorToMagmaLakeR,
     MagmaPumpAccessR, FieryGalleryL, RagingPitL, HollowChamberR, PlacidPoolR,
     SporousNookL, RockyRidgeTrailL, TramToSuziIslandR
-) = connections_unpackable
+) = area_doors_unpackable
 
 
-def VanillaAreas() -> list[tuple[Connection, Connection]]:
+def VanillaAreas() -> list[tuple[AreaDoor, AreaDoor]]:
 
     return [(CraterR, WestTerminalAccessL),
             (SunkenNestL, OceanShoreR),

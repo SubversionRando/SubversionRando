@@ -1,14 +1,15 @@
 import random
 import sys
-from typing import Optional, Type, Union
+from typing import Optional, Type
 import argparse
 
-from connection_data import Connection, VanillaAreas
+from connection_data import SunkenNestL, VanillaAreas
 from fillInterface import FillAlgorithm
 from item_data import Item, Items
+from loadout import Loadout
 from location_data import Location, pullCSV
-import logicCasual
-import logicExpert
+from logic import LogicLevel
+import logic_updater
 import fillSpeedrun
 import fillMedium
 import fillMajorMinor
@@ -141,7 +142,9 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         unusedLocations.extend(locArray)
         availableLocations: list[Location] = []
         # visitedLocations = []
-        loadout: list[Union[Item, Connection]] = []
+        loadout = Loadout()
+        loadout.logic_level = LogicLevel.EXPERT if logicChoice == "E" else LogicLevel.CASUAL
+        loadout.append(SunkenNestL)  # starting area
         # use appropriate fill algorithm for initializing item lists
         fill_algorithm = fillers[fillChoice]()
         while len(unusedLocations) != 0 or len(availableLocations) != 0:
@@ -153,15 +156,8 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
             # update logic by updating unusedLocations
             # using helper function, modular for more logic options later
             # unusedLocations[i]['inlogic'] holds the True or False for logic
-            if logicChoice == "E":
-                loadout = logicExpert.updateAreaLogic(availableLocations, locArray, loadout, Connections)
-                logicExpert.updateLogic(unusedLocations, locArray, loadout)
-#            elif logicChoice == "AR":
-#                loadout = areaRando.updateAreaLogic(availableLocations, locArray, loadout, Connections)
-#                logicExpertArea.updateLogic(unusedLocations, locArray, loadout)
-            else:
-                loadout = logicCasual.updateAreaLogic(availableLocations, locArray, loadout, Connections)
-                logicCasual.updateLogic(unusedLocations, locArray, loadout)
+            logic_updater.updateAreaLogic(loadout, Connections)
+            logic_updater.updateLogic(unusedLocations, locArray, loadout)
 
             # update unusedLocations and availableLocations
             for i in reversed(range(len(unusedLocations))):  # iterate in reverse so we can remove freely
