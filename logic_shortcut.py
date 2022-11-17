@@ -5,7 +5,5 @@ if TYPE_CHECKING:
 
 
 class LogicShortcut:
-    access: "Callable[[Loadout], bool]"
-
     def __init__(self, access: "Callable[[Loadout], bool]") -> None:
-        self.access = access
+        self.access: "Callable[[Loadout], bool]" = access

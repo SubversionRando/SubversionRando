@@ -3,7 +3,8 @@ from typing import Callable
 
 from connection_data import area_doors_unpackable
 from item_data import items_unpackable
-from loadout import Loadout, LogicShortcut
+from loadout import Loadout
+from logic_shortcut import LogicShortcut
 
 # TODO: There are a bunch of places where where Expert logic needed energy tanks even if they had Varia suit.
 # Need to make sure everything is right in those places.
@@ -107,17 +108,24 @@ plasmaWaveGate = LogicShortcut(lambda loadout: (
 """ the switches that are blocked by plasma+wave barriers """
 
 
-ENERGY_PER_TANK = 100
 STARTING_ENERGY = 99
+ENERGY_PER_TANK = 100
+FOR_N_TANKS = 12
+LATER_ENERGY_PER_TANK = 50
 
 
-# TODO: test hell run logic (I don't know if it needs a functools partial)
+def energy_from_tanks(n: int) -> int:
+    first_tanks = min(FOR_N_TANKS, n) * ENERGY_PER_TANK
+    later_tanks = max(0, n - FOR_N_TANKS) * LATER_ENERGY_PER_TANK
+    return STARTING_ENERGY + first_tanks + later_tanks
+
+
 def energy_req(casual: int, expert: int) -> LogicShortcut:
     return LogicShortcut(lambda loadout: (
-        (loadout.count(Energy) * ENERGY_PER_TANK + STARTING_ENERGY > casual) or
+        (energy_from_tanks(loadout.count(Energy)) > casual) or
         (
             (Expert in loadout) and
-            (loadout.count(Energy) * ENERGY_PER_TANK + STARTING_ENERGY > expert)
+            (energy_from_tanks(loadout.count(Energy)) > expert)
         )
     ))
 

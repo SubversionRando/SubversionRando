@@ -1,5 +1,5 @@
 from typing import Union
-from connection_data import Connection, connections_unpackable
+from connection_data import AreaDoor, area_doors_unpackable
 from item_data import Item, items_unpackable
 from location_data import Location
 
@@ -22,7 +22,7 @@ from location_data import Location
     ThermalReservoir1R, GeneratorAccessTunnelL, ElevatorToMagmaLakeR,
     MagmaPumpAccessR, FieryGalleryL, RagingPitL, HollowChamberR, PlacidPoolR,
     SporousNookL, RockyRidgeTrailL, TramToSuziIslandR
-) = connections_unpackable
+) = area_doors_unpackable
 
 (
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
@@ -40,7 +40,10 @@ def otherDoor(door,Connections) :
                 other = pair[1]
     return other
 
-def updateAreaLogic(availableLocations, locArray, loadout, Connections) :
+def updateAreaLogic(availableLocations: list[Location],
+                    locArray: list[Location],
+                    loadout: list[Union[Item, AreaDoor]],
+                    Connections: list[tuple[AreaDoor, AreaDoor]]) -> list[Union[Item, AreaDoor]]:
     exitSpacePort = True
     jumpAble = exitSpacePort and (GravityBoots in loadout)
     underwater = jumpAble and ((HiJump in loadout) or (GravitySuit in loadout))
@@ -1005,7 +1008,7 @@ def updateAreaLogic(availableLocations, locArray, loadout, Connections) :
 
 def updateLogic(unusedLocations: list[Location],
                 locArray: list[Location],
-                loadout: list[Union[Item, Connection]]) -> list[Location]:
+                loadout: list[Union[Item, AreaDoor]]) -> list[Location]:
 
     energyCount = 0
     for item in loadout:
