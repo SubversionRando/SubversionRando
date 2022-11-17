@@ -1769,7 +1769,8 @@ def updateLogic(unusedLocations: list[Location],
         "Sensor Maintenance: ETank":  # front
             (
                 vulnar and
-                canUseBombs
+                canUseBombs and
+                (Speedball in loadout)
                 ),
         "Eribium Apparatus Room":
             (
@@ -2035,7 +2036,10 @@ def updateLogic(unusedLocations: list[Location],
                 (WestTerminalAccessL in loadout) and
                 jumpAble and
                 (Super in loadout) and
-                (DarkVisor in loadout)
+                (DarkVisor in loadout) and
+                ((Speedball in loadout) or
+                 ((Bombs in loadout) and
+                  (Morph in loadout)))
                 ),
         "Syzygy Observatorium":
             (
@@ -2498,6 +2502,8 @@ def updateLogic(unusedLocations: list[Location],
         "Mining Site 1":  # (1 = letter Alpha)
             (
                 canUseBombs and
+                ((Speedball in loadout) or
+                 (Bombs in loadout)) and
                 jumpAble and
                 pinkDoor and
                 ((EleToTurbidPassageR in loadout) and
