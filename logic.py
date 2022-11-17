@@ -1547,7 +1547,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (vulnar in loadout) and (Morph in loadout) and (Speedball in loadout) and (SpeedBooster in loadout)
     ),
     "Sensor Maintenance: ETank": lambda loadout: (  # front
-        ((vulnar in loadout) and (canBomb in loadout)) or
+        ((vulnar in loadout) and (canBomb in loadout) and (Speedball in loadout)) or
         (
             (Expert in loadout) and
             ((vulnar in loadout) and (Morph in loadout))
@@ -1868,7 +1868,14 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (WestTerminalAccessL in loadout) and (jumpAble in loadout) and (canBomb in loadout)
     ),
     "Reliquary Access": lambda loadout: (
-        (WestTerminalAccessL in loadout) and (jumpAble in loadout) and (Super in loadout) and (DarkVisor in loadout)
+        (WestTerminalAccessL in loadout) and
+        (jumpAble in loadout) and
+        (Super in loadout) and
+        (DarkVisor in loadout) and
+        ((Expert in loadout) or (Speedball in loadout) or (
+            (Bombs in loadout) and
+            (Morph in loadout)
+        ))
     ),
     "Syzygy Observatorium": lambda loadout: (
         (WestTerminalAccessL in loadout) and
@@ -2351,6 +2358,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Mining Site 1": lambda loadout: (  # (1 = letter Alpha)
         (canBomb in loadout) and
+        ((Expert in loadout) or (Speedball in loadout) or (Bombs in loadout)) and  # short morph jump
         (jumpAble in loadout) and
         (pinkDoor in loadout) and
         ((
