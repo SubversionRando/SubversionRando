@@ -1,7 +1,6 @@
 from connection_data import AreaDoor, area_doors
 from loadout import Loadout
 from location_data import Location
-from logic import area_logic, location_logic
 
 
 def otherDoor(door: AreaDoor, Connections: list[tuple[AreaDoor, AreaDoor]]) -> AreaDoor:
@@ -19,7 +18,7 @@ def updateAreaLogic(loadout: Loadout,
     stuck = False  # check if loadout keeps increasing
     while not stuck:
         prev_loadout = loadout.copy()
-        for _area, paths in area_logic.items():
+        for _area, paths in loadout.logic.area_logic.items():
             for path, access in paths.items():
                 origin, destination = path
                 if area_doors[destination] not in loadout:
@@ -38,6 +37,6 @@ def updateLogic(unusedLocations: list[Location],
                 loadout: Loadout) -> list[Location]:
     # print("Updating logic...")
     for thisLoc in unusedLocations:
-        thisLoc['inlogic'] = location_logic[thisLoc['fullitemname']](loadout)
+        thisLoc['inlogic'] = loadout.logic.location_logic[thisLoc['fullitemname']](loadout)
 
     return unusedLocations

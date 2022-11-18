@@ -1,7 +1,10 @@
 # import hacks, because this project is not a python package
 import sys
 from pathlib import Path
+from typing import Type
 import pytest
+
+from logicInterface import LogicInterface
 
 file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
@@ -11,23 +14,24 @@ from connection_data import AreaDoor, SunkenNestL, VanillaAreas
 from item_data import Items, items_unpackable
 from loadout import Loadout
 from location_data import Location, pullCSV
-from logic import LogicLevel
+from logicCasual import Casual
+from logicExpert import Expert
 from logic_updater import updateAreaLogic, updateLogic
 
 
-def setup() -> tuple[
+def setup(logic: Type[LogicInterface]) -> tuple[
     list[Location], list[tuple[AreaDoor, AreaDoor]], Loadout
 ]:
     """ returns (all locations, vanilla connections, a new loadout) """
     locations = pullCSV()
     all_locations = list(locations.values())
     connections = VanillaAreas()
-    loadout = Loadout()
+    loadout = Loadout(logic)
     return all_locations, connections, loadout
 
 
 def test_start_logic() -> None:
-    all_locations, connections, loadout = setup()
+    all_locations, connections, loadout = setup(Casual)
 
     def update_acc() -> list[Location]:
         updateAreaLogic(loadout, connections)
@@ -53,7 +57,8 @@ def test_start_logic() -> None:
         print(loc["fullitemname"])
     assert len(accessible) == 4, "add Ocean Shore: bottom"
 
-    loadout.logic_level = LogicLevel.EXPERT
+    loadout = Loadout(Expert, loadout.contents)
+
     accessible = update_acc()
     print("  with expert")
     for loc in accessible:
@@ -68,11 +73,10 @@ def test_start_logic() -> None:
     assert len(accessible) == 7
 
 
-@pytest.mark.parametrize("logic", (LogicLevel.CASUAL, LogicLevel.EXPERT))
-def test_all_locations(logic: LogicLevel) -> None:
-    all_locations, connections, loadout = setup()
+@pytest.mark.parametrize("logic", (Casual, Expert))
+def test_all_locations(logic: Type[LogicInterface]) -> None:
+    all_locations, connections, loadout = setup(logic)
 
-    loadout.logic_level = logic
     loadout.append(SunkenNestL)
     loadout.append(Items.spaceDrop)
     for item in items_unpackable:
@@ -89,9 +93,8 @@ def test_all_locations(logic: LogicLevel) -> None:
 
 
 def test_casual_no_hell_runs() -> None:
-    all_locations, connections, loadout = setup()
+    all_locations, connections, loadout = setup(Casual)
 
-    loadout.logic_level = LogicLevel.CASUAL
     loadout.append(SunkenNestL)
     loadout.append(Items.spaceDrop)
     for item in items_unpackable:
@@ -109,9 +112,8 @@ def test_casual_no_hell_runs() -> None:
 
 
 def test_expert_hell_runs() -> None:
-    all_locations, connections, loadout = setup()
+    all_locations, connections, loadout = setup(Expert)
 
-    loadout.logic_level = LogicLevel.EXPERT
     loadout.append(SunkenNestL)
     loadout.append(Items.spaceDrop)
     for item in items_unpackable:
@@ -133,4 +135,5 @@ def test_expert_hell_runs() -> None:
 
 if __name__ == "__main__":
     test_start_logic()
+    test_casual_no_hell_runs()
     test_expert_hell_runs()

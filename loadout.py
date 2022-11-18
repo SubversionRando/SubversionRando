@@ -1,9 +1,12 @@
 from collections import Counter
-from typing import Any, Iterable, Iterator, Optional, Union
+from typing import TYPE_CHECKING, Any, Iterable, Iterator, Optional, Type, Union
 
 from connection_data import AreaDoor
 from item_data import Item
 from logic_shortcut import LogicShortcut
+
+if TYPE_CHECKING:
+    from logicInterface import LogicInterface
 
 
 class ItemCounter(Counter[Union[Item, AreaDoor]]):
@@ -23,16 +26,19 @@ class ItemCounter(Counter[Union[Item, AreaDoor]]):
 
 class Loadout:
     contents: ItemCounter
-    logic_level: int
+    logic: "Type[LogicInterface]"
 
-    def __init__(self, items: Optional[Iterable[Union[Item, AreaDoor]]] = None, logic_level: int = 0) -> None:
+    def __init__(self, logic: "Type[LogicInterface]", items: Optional[Iterable[Union[Item, AreaDoor]]] = None) -> None:
         self.contents = ItemCounter(items)
-        self.logic_level = logic_level
+        self.logic = logic
 
     def __eq__(self, __o: object) -> bool:
         if not isinstance(__o, Loadout):
             return False
-        return (self.contents == __o.contents) and (self.logic_level == __o.logic_level)
+        return (
+            (self.contents == __o.contents) and
+            (self.logic is __o.logic)
+        )
 
     def __contains__(self, x: Union[Item, AreaDoor, LogicShortcut]) -> bool:
         if isinstance(x, LogicShortcut):
@@ -58,4 +64,4 @@ class Loadout:
 
     def copy(self) -> "Loadout":
         # TODO: test copy
-        return Loadout(self.contents, self.logic_level)
+        return Loadout(self.logic, self.contents)

@@ -8,7 +8,8 @@ from fillInterface import FillAlgorithm
 from item_data import Item, Items
 from loadout import Loadout
 from location_data import Location, pullCSV
-from logic import LogicLevel
+from logicCasual import Casual
+from logicExpert import Expert
 import logic_updater
 import fillSpeedrun
 import fillMedium
@@ -92,6 +93,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         if fillChoice == "MM" :
             fillChoice = "M"
             print("Cannot use Major-Minor in Area rando currently. Using medium instead.")
+
     # hudFlicker=""
     # while hudFlicker != "Y" and hudFlicker != "N" :
     #     hudFlicker= input("Enter Y to patch HUD flicker on emulator, or N to decline:")
@@ -142,8 +144,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         unusedLocations.extend(locArray)
         availableLocations: list[Location] = []
         # visitedLocations = []
-        loadout = Loadout()
-        loadout.logic_level = LogicLevel.EXPERT if logicChoice == "E" else LogicLevel.CASUAL
+        loadout = Loadout(Expert if logicChoice == "E" else Casual)
         loadout.append(SunkenNestL)  # starting area
         # use appropriate fill algorithm for initializing item lists
         fill_algorithm = fillers[fillChoice]()
