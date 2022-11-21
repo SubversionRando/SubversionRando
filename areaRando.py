@@ -241,9 +241,9 @@ def RandomizeAreas(romWriter : RomWriter) :
             # print("    Lengths: OpenNodesL",len(OpenNodesL)," and OpenNodesR",len(OpenNodesR))
         # print("LeftoverL  ",OpenNodesL)
         # print("LeftoverR  ",OpenNodesR)
-        print(len(Connections), "Connections created:")
-        for item in Connections :
-            print(item[0][2], item[0][3], " << >> ", item[1][2], item[1][3])
+        # print(len(Connections), "Connections created:")
+        # for item in Connections :
+            # print(item[0][2], item[0][3], " << >> ", item[1][2], item[1][3])
         pathToDaphne = [CraterR, SunkenNestL]
         # check for valid area configuration
         if findDaphne(CraterR) or findDaphne(SunkenNestL) :
