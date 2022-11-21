@@ -1,6 +1,6 @@
 import random
 
-from connection_data import connections_unpackable
+from connection_data import area_doors_unpackable
 from romWriter import RomWriter
 from item_data import items_unpackable
 
@@ -26,7 +26,7 @@ from item_data import items_unpackable
     ThermalReservoir1R, GeneratorAccessTunnelL, ElevatorToMagmaLakeR,
     MagmaPumpAccessR, FieryGalleryL, RagingPitL, HollowChamberR, PlacidPoolR,
     SporousNookL, RockyRidgeTrailL, TramToSuziIslandR
-) = connections_unpackable
+) = area_doors_unpackable
 
 (
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,

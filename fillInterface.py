@@ -1,8 +1,8 @@
 import abc
-from typing import Optional, Union
+from typing import Optional
 
-from connection_data import Connection
 from item_data import Item
+from loadout import Loadout
 from location_data import Location
 
 # `abc`` means the algorithm isn't implemented here
@@ -14,7 +14,7 @@ class FillAlgorithm(abc.ABC):
     def choose_placement(self,
                          availableLocations: list[Location],
                          locArray: list[Location],
-                         loadout: list[Union[Item, Connection]]) -> Optional[tuple[Location, Item]]:
+                         loadout: Loadout) -> Optional[tuple[Location, Item]]:
         """ returns (location to place an item, which item to place there) """
 
     @abc.abstractmethod

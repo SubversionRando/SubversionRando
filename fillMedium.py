@@ -1,9 +1,9 @@
-from typing import Optional, Union
+from typing import Optional
 import random
-from connection_data import Connection
 
 from fillInterface import FillAlgorithm
 from item_data import Item, items_unpackable
+from loadout import Loadout
 from location_data import Location
 
 # this will not update any of the parameters it is given
@@ -97,7 +97,7 @@ class FillMedium(FillAlgorithm):
     def choose_placement(self,
                          availableLocations: list[Location],
                          locArray: list[Location],
-                         loadout: list[Union[Item, Connection]]) -> Optional[tuple[Location, Item]]:
+                         loadout: Loadout) -> Optional[tuple[Location, Item]]:
         """ returns (location to place an item, which item to place there) """
         assert len(availableLocations), "placement algorithm received 0 available locations"
 
