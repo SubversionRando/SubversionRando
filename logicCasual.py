@@ -2359,4 +2359,4 @@ class Casual(LogicInterface):
 
     @staticmethod
     def can_fall_from_spaceport(loadout: Loadout) -> bool:
-        return loadout.has_any(Morph, Missile)
+        return loadout.has_any(Morph, Missile, wave, Super)
