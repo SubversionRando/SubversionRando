@@ -80,7 +80,6 @@ icePod = LogicShortcut(lambda loadout: (
 ))
 suzi = LogicShortcut(lambda loadout: (
     loadout.has_all(jumpAble, SpeedBooster, Grapple, Super, wave, canUsePB, GravitySuit)
-    # TODO: capital "Wave"? so hypercharge can't get into suzi?
 ))
 electricHyper = LogicShortcut(lambda loadout: (
     (MetroidSuit in loadout) or (
@@ -612,7 +611,9 @@ area_logic: AreaLogicType = {
     "SkyWorld": {
         ("WestTerminalAccessL", "MezzanineConcourseL"): lambda loadout: (
             (jumpAble in loadout) and
-            ((canFly in loadout) or (SpeedBooster in loadout) or (Ice in loadout))
+            ((canFly in loadout) or
+             (SpeedBooster in loadout) or
+             (Ice in loadout))
         ),
         ("WestTerminalAccessL", "VulnarCanyonL"): lambda loadout: (
             (jumpAble in loadout) and
@@ -1186,7 +1187,6 @@ area_logic: AreaLogicType = {
 
 location_logic: LocationLogicType = {
     "Impact Crater: AccelCharge": lambda loadout: (
-        (exitSpacePort in loadout) and
         (jumpAble in loadout) and
         (Morph in loadout) and
         (Spazer in loadout) and
@@ -1203,7 +1203,9 @@ location_logic: LocationLogicType = {
         ((Morph in loadout) or (GravitySuit in loadout))
     ),
     "Submarine Nest": lambda loadout: (
-        (OceanShoreR in loadout) and (pinkDoor in loadout) and (underwater in loadout)
+        (OceanShoreR in loadout) and
+        (pinkDoor in loadout) and
+        (underwater in loadout)
     ),
     "Shrine Of The Penumbra": lambda loadout: (
         (OceanShoreR in loadout) and
@@ -1219,7 +1221,8 @@ location_logic: LocationLogicType = {
         ((OceanShoreR in loadout) or (EleToTurbidPassageR in loadout)) and
         (underwater in loadout) and
         (canUsePB in loadout) and
-        (Super in loadout)
+        (Super in loadout) and
+        (DarkVisor in loadout)
     ),
     "Benthic Cache": lambda loadout: (
         ((OceanShoreR in loadout) or (EleToTurbidPassageR in loadout)) and
@@ -1240,7 +1243,10 @@ location_logic: LocationLogicType = {
         ))
     ),
     "Sediment Flow": lambda loadout: (
-        (OceanShoreR in loadout) and (jumpAble in loadout) and (underwater in loadout) and (Super in loadout)
+        (OceanShoreR in loadout) and
+        (jumpAble in loadout) and
+        (underwater in loadout) and
+        (Super in loadout)
     ),
     "Harmonic Growth Enhancer": lambda loadout: (
         (FieldAccessL in loadout) and
@@ -1251,16 +1257,25 @@ location_logic: LocationLogicType = {
         (DarkVisor in loadout)
     ),
     "Upper Vulnar Power Node": lambda loadout: (
-        (vulnar in loadout) and (canUsePB in loadout) and (Screw in loadout) and (MetroidSuit in loadout)
+        (vulnar in loadout) and
+        (canUsePB in loadout) and
+        (Screw in loadout) and
+        (MetroidSuit in loadout)
     ),
     "Grand Vault": lambda loadout: (
-        (vulnar in loadout) and (Grapple in loadout)
+        (vulnar in loadout) and
+        (Grapple in loadout)
     ),
     "Cistern": lambda loadout: (
-        (RuinedConcourseBL in loadout) and (jumpAble in loadout) and (canBomb in loadout)
+        (RuinedConcourseBL in loadout) and
+        (jumpAble in loadout) and
+        (canBomb in loadout)
     ),
     "Warrior Shrine: ETank": lambda loadout: (
-        (RuinedConcourseBL in loadout) and (jumpAble in loadout) and (pinkDoor in loadout) and (canUsePB in loadout)
+        (RuinedConcourseBL in loadout) and
+        (jumpAble in loadout) and
+        (pinkDoor in loadout) and
+        (canUsePB in loadout)
     ),
     "Vulnar Caves Entrance": lambda loadout: (
         (vulnar in loadout)
@@ -1269,25 +1284,38 @@ location_logic: LocationLogicType = {
         (RuinedConcourseBL in loadout) and
         (jumpAble in loadout) and
         (canBomb in loadout) and
-        ((pinkDoor in loadout) or (
-            (GravitySuit in loadout) and
-            ((HiJump in loadout) or (SpaceJump in loadout) or (Bombs in loadout) or (Speedball in loadout))
-        ) or (
-            (HiJump in loadout) and
-            (Speedball in loadout) or  # TODO: are these parentheses in the right place? (and mixed with or)
-            (Ice in loadout)
-        )) and
-        ((Wave in loadout) or (Bombs in loadout))
+        (
+            (pinkDoor in loadout) or (
+                (GravitySuit in loadout) and
+                (
+                    (HiJump in loadout) or
+                    (SpaceJump in loadout) or
+                    (Bombs in loadout)
+                )
+            )
+        ) and (
+            (wave in loadout) or
+            (Bombs in loadout)
+            )
     ),
     "Archives: SpringBall": lambda loadout: (
-        (vulnar in loadout) and (Morph in loadout) and (Speedball in loadout)
+        (vulnar in loadout) and
+        (Morph in loadout) and
+        (Speedball in loadout)
     ),
     "Archives: SJBoost": lambda loadout: (
-        (vulnar in loadout) and (Morph in loadout) and (Speedball in loadout) and (SpeedBooster in loadout)
+        (vulnar in loadout) and
+        (Morph in loadout) and
+        (Speedball in loadout) and
+        (SpeedBooster in loadout)
     ),
     "Sensor Maintenance: ETank": lambda loadout: (  # front
         # TODO: check area door, don't assume start location
-        (vulnar in loadout) and (canBomb in loadout) and (Speedball in loadout)
+        (vulnar in loadout) and
+        (canBomb in loadout) and
+        (Speedball in loadout) and
+        (LargeAmmo in loadout) and
+        (SmallAmmo in loadout)
     ),
     "Eribium Apparatus Room": lambda loadout: (
         (FieldAccessL in loadout) and
@@ -1313,7 +1341,13 @@ location_logic: LocationLogicType = {
         (GravitySuit in loadout)
     ),
     "Mezzanine Concourse": lambda loadout: (
-        (MezzanineConcourseL in loadout) and (jumpAble in loadout) and (WestTerminalAccessL in loadout)
+        (MezzanineConcourseL in loadout) and
+        (jumpAble in loadout) and
+        (
+            (canFly in loadout) or
+            (SpeedBooster in loadout) or
+            (Ice in loadout)
+            )
     ),
     "Greater Inferno": lambda loadout: (
         (MagmaPumpAccessR in loadout) and
@@ -1322,7 +1356,12 @@ location_logic: LocationLogicType = {
         (Super in loadout) and
         (GravitySuit in loadout) and
         (Varia in loadout) and
-        (MetroidSuit in loadout)
+        (MetroidSuit in loadout) and
+        (
+            (wave in loadout) or
+            (plasmaWaveGate in loadout)
+            )
+            
     ),
     "Burning Depths Cache": lambda loadout: (
         (MagmaPumpAccessR in loadout) and
@@ -1335,9 +1374,18 @@ location_logic: LocationLogicType = {
     ),
     "Mining Cache": lambda loadout: (
         ((
-            ((EleToTurbidPassageR in loadout) and (Varia in loadout)) or
-            ((SporousNookL in loadout) and (GravitySuit in loadout))
-        ) and (jumpAble in loadout) and (Super in loadout) and (canBomb in loadout))
+            (
+                (EleToTurbidPassageR in loadout) and
+                (Varia in loadout)
+                ) or
+            (
+                (SporousNookL in loadout) and
+                (GravitySuit in loadout)
+                ))
+        ) and
+         (jumpAble in loadout) and
+         (Super in loadout) and
+         (canBomb in loadout)
     ),
     "Infested Passage": lambda loadout: (
         (jumpAble in loadout) and
@@ -1345,7 +1393,7 @@ location_logic: LocationLogicType = {
         (
             (VulnarDepthsElevatorEL in loadout) and
             (canBomb in loadout)
-        ) or (  # TODO: missing parentheses around this or?
+        ) or (  
             (SequesteredInfernoL in loadout) and
             (electricHyper in loadout) and
             (Morph in loadout) and
@@ -1359,18 +1407,18 @@ location_logic: LocationLogicType = {
             (canBomb in loadout) and
             (pinkDoor in loadout) and
             (Varia in loadout) and
-            (icePod in loadout)
+            (icePod in loadout) and
+            (wave in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and
             (electricHyper in loadout) and
             (pinkDoor in loadout) and
             (Varia in loadout)
         ) or (
-            (CollapsedPassageR in loadout) and  # TODO: is PB needed here?
+            (CollapsedPassageR in loadout) and
             (Super in loadout) and
             (Varia in loadout) and
-            (canBomb in loadout) and
-            (wave in loadout)
+            (canBomb in loadout)
         )
     ),
     "Fire's Bane Shrine": lambda loadout: (
@@ -1461,8 +1509,13 @@ location_logic: LocationLogicType = {
         (jumpAble in loadout) and
         (
             (FoyerR in loadout) and
-            ((MetroidSuit in loadout) or (Screw in loadout))
-        ) or  # TODO: verify parentheses in the right place (mixed and and or)
+            (canBomb in loadout) and
+            (Speedball in loadout) and
+            (
+                (MetroidSuit in loadout) or
+                (Screw in loadout)
+                )
+        ) or  
         (
             (AlluringCenoteR in loadout) and
             (Grapple in loadout) and
@@ -1472,36 +1525,95 @@ location_logic: LocationLogicType = {
         )
     ),
     "Briar: SJBoost": lambda loadout: (  # top
-        (NorakBrookL in loadout) and (jumpAble in loadout) and (canUsePB in loadout)
+        (NorakPerimeterBL in loadout) and
+        (jumpAble in loadout) and
+        (canUsePB in loadout)
     ),
     "Shrine Of Fervor": lambda loadout: (
-        (NorakBrookL in loadout) and
         (jumpAble in loadout) and
-        ((HiJump in loadout) or (SpaceJump in loadout) or (Morph in loadout))
+        (
+            (HiJump in loadout) or
+            (SpaceJump in loadout) or
+            (Morph in loadout)
+        ) and
+        ((
+            (NorakBrookL in loadout) and
+            (GravitySuit in loadout) and
+            (Morph in loadout)
+            ) or
+         (
+             (NorakPerimeterBL in loadout) and
+             (
+                 (canBomb in loadout) or
+                 (Screw in loadout)
+            )
+            ) or
+         (
+             (NorakPerimeterTR in loadout) and
+             (MetroidSuit in loadout)
+        ))    
     ),
     "Chamber Of Wind": lambda loadout: (
-        (NorakBrookL in loadout) and
+        (NorakPerimeterBL in loadout) and
         (jumpAble in loadout) and
         (pinkDoor in loadout) and
         (canFly in loadout) and
-        ((canBomb in loadout) or (
-            (Screw in loadout) and
-            (Speedball in loadout) and
-            (Morph in loadout)
-        ) and (SpeedBooster in loadout))  # TODO: verify parentheses
+        (SpeedBooster in loadout) and
+        (
+            (canBomb in loadout) or
+            (
+                (Screw in loadout) and
+                (Speedball in loadout) and
+                (Morph in loadout)
+            )
+        )
     ),
     "Water Garden": lambda loadout: (
-        (NorakBrookL in loadout) and
         (jumpAble in loadout) and
         (SpeedBooster in loadout) and
-        ((HiJump in loadout) or (SpaceJump in loadout) or (Morph in loadout))
+        ((HiJump in loadout) or
+         (SpaceJump in loadout) or
+         (Morph in loadout)) and
+        ((
+            (NorakBrookL in loadout) and
+            (GravitySuit in loadout) and
+            (Morph in loadout)
+            ) or
+         (
+             (NorakPerimeterBL in loadout) and
+             (
+                 (canBomb in loadout) or
+                 (Screw in loadout)
+            )
+            ) or
+         (
+             (NorakPerimeterTR in loadout) and
+             (MetroidSuit in loadout)
+        ))    
     ),
     "Crocomire's Energy Station": lambda loadout: (
-        (NorakBrookL in loadout) and
         (jumpAble in loadout) and
         (Super in loadout) and
         (SpeedBooster in loadout) and
-        ((HiJump in loadout) or (SpaceJump in loadout) or (Morph in loadout))
+        ((HiJump in loadout) or
+         (SpaceJump in loadout) or
+         (Morph in loadout)) and
+        ((
+            (NorakBrookL in loadout) and
+            (GravitySuit in loadout) and
+            (Morph in loadout)
+            ) or
+         (
+             (NorakPerimeterBL in loadout) and
+             (
+                 (canBomb in loadout) or
+                 (Screw in loadout)
+            )
+            ) or
+         (
+             (NorakPerimeterTR in loadout) and
+             (MetroidSuit in loadout)
+        ))    
     ),
     "Wellspring Cache": lambda loadout: (
         (ElevatorToWellspringL in loadout) and
@@ -1511,16 +1623,24 @@ location_logic: LocationLogicType = {
         (Morph in loadout)
     ),
     "Frozen Lake Wall: DamageAmp": lambda loadout: (
-        (ElevatorToCondenserL in loadout) and (jumpAble in loadout) and (canUsePB in loadout)
+        (ElevatorToCondenserL in loadout) and
+        (jumpAble in loadout) and
+        (canUsePB in loadout)
     ),
     "Grand Promenade": lambda loadout: (
-        (WestTerminalAccessL in loadout) and (jumpAble in loadout)
+        (WestTerminalAccessL in loadout) and
+        (jumpAble in loadout)
     ),
     "Summit Landing": lambda loadout: (
-        (WestTerminalAccessL in loadout) and (jumpAble in loadout) and (canBomb in loadout)
+        (WestTerminalAccessL in loadout) and
+        (jumpAble in loadout) and
+        (canBomb in loadout) and
+        (Speedball in loadout)
     ),
     "Snow Cache": lambda loadout: (
-        (WestTerminalAccessL in loadout) and (jumpAble in loadout) and (canBomb in loadout)
+        (WestTerminalAccessL in loadout) and
+        (jumpAble in loadout) and
+        (canBomb in loadout)
     ),
     "Reliquary Access": lambda loadout: (
         (WestTerminalAccessL in loadout) and
@@ -1550,7 +1670,11 @@ location_logic: LocationLogicType = {
         ((Screw in loadout) or (
             (Super in loadout) and
             (canBomb in loadout) and
-            (DarkVisor in loadout)
+            (DarkVisor in loadout) and
+            ((Speedball in loadout) or (
+            (Bombs in loadout) and
+            (Morph in loadout)
+        ))
         ))
     ),
     "Armory Cache 3": lambda loadout: (
@@ -1559,19 +1683,29 @@ location_logic: LocationLogicType = {
         ((Screw in loadout) or (
             (Super in loadout) and
             (canBomb in loadout) and
-            (DarkVisor in loadout)
+            (DarkVisor in loadout) and
+            ((Speedball in loadout) or (
+            (Bombs in loadout) and
+            (Morph in loadout)
+        ))
         ))
     ),
     "Drawing Room": lambda loadout: (
-        (WestTerminalAccessL in loadout) and (jumpAble in loadout) and (Super in loadout)
+        (WestTerminalAccessL in loadout) and
+        (jumpAble in loadout) and
+        (Super in loadout)
     ),
     "Impact Crater Overlook": lambda loadout: (  # TODO: check an area door, don't assume we start in this area
         (canFly in loadout) and
         (canBomb in loadout) and
-        ((canUsePB in loadout) or (Super in loadout))
+        ((canUsePB in loadout) or
+         (Super in loadout))
     ),
     "Magma Lake Cache": lambda loadout: (
-        (ElevatorToMagmaLakeR in loadout) and (jumpAble in loadout) and (icePod in loadout) and (Morph in loadout)
+        (ElevatorToMagmaLakeR in loadout) and
+        (jumpAble in loadout) and
+        (icePod in loadout) and
+        (Morph in loadout)
     ),
     "Shrine Of The Animate Spark": lambda loadout: (
         (TramToSuziIslandR in loadout) and
@@ -1603,12 +1737,11 @@ location_logic: LocationLogicType = {
         True
     ),
     "Extract Storage": lambda loadout: (
+        (canUsePB in loadout) and
         (
-            (canUsePB in loadout) and
-            (spaceDrop not in loadout)
-        ) or (
+            (spaceDrop not in loadout) or (
             loadout.has_all(spaceDrop, LoadingDockSecurityAreaL, jumpAble, Grapple, MetroidSuit)
-        )
+        ))
     ),
     "Impact Crater Alcove": lambda loadout: (  # TODO: check an area door, don't assume we start in this area
         (jumpAble in loadout) and
@@ -1629,20 +1762,17 @@ location_logic: LocationLogicType = {
     ),
     "Sandy Burrow: ETank": lambda loadout: (  # top
         (OceanShoreR in loadout) and
-        (underwater in loadout) and
         (GravitySuit in loadout) and
         ((Screw in loadout) or (canBomb in loadout)) and
         ((HiJump in loadout) or (SpaceJump in loadout))
     ),
     "Submarine Alcove": lambda loadout: (
+        (DarkVisor in loadout) and
         (
             (OceanShoreR in loadout) and
             (underwater in loadout) and
             (Morph in loadout) and
-            ((
-                (DarkVisor in loadout) and
-                (pinkDoor in loadout)
-            ) or (Super in loadout))
+            (pinkDoor in loadout)
         ) or (
             (EleToTurbidPassageR in loadout) and
             (Super in loadout) and
@@ -1652,24 +1782,24 @@ location_logic: LocationLogicType = {
         )
     ),
     "Sediment Floor": lambda loadout: (
+        (GravitySuit in loadout) and
+        (Morph in loadout) and
         (
             (OceanShoreR in loadout) and
-            (underwater in loadout) and
-            (Morph in loadout) and
             ((
                 (DarkVisor in loadout) and
                 (pinkDoor in loadout)
             ) or (Super in loadout))
         ) or (
             (EleToTurbidPassageR in loadout) and
-            (pinkDoor in loadout) and
-            (underwater in loadout) and
-            (Morph in loadout) and
+            (Super in loadout) and
             (Speedball in loadout)
         )
     ),
     "Sandy Gully": lambda loadout: (
-        (OceanShoreR in loadout) and (underwater in loadout) and (Super in loadout)
+        (OceanShoreR in loadout) and
+        (GravitySuit in loadout) and
+        (Super in loadout)
     ),
     "Hall Of The Elders": lambda loadout: (
         (RuinedConcourseBL in loadout) and
@@ -1679,13 +1809,23 @@ location_logic: LocationLogicType = {
         ) or (pinkDoor in loadout))
     ),
     "Warrior Shrine: AmmoTank bottom": lambda loadout: (
-        (RuinedConcourseBL in loadout) and (jumpAble in loadout) and (Morph in loadout) and (pinkDoor in loadout)
+        (RuinedConcourseBL in loadout) and
+        (jumpAble in loadout) and
+        (Morph in loadout) and
+        (pinkDoor in loadout)
     ),
     "Warrior Shrine: AmmoTank top": lambda loadout: (
-        (RuinedConcourseBL in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (pinkDoor in loadout)
+        (RuinedConcourseBL in loadout) and
+        (jumpAble in loadout) and
+        (canBomb in loadout) and
+        (pinkDoor in loadout) and
+        (Speedball in loadout)
     ),
     "Path Of Swords": lambda loadout: (
-        (vulnar in loadout) and ((canBomb in loadout) or ((Morph in loadout) and (Screw in loadout)))
+        (vulnar in loadout) and
+        ((canBomb in loadout) or
+         ((Morph in loadout) and
+          (Screw in loadout)))
     ),
     "Auxiliary Pump Room": lambda loadout: (
         (vulnar in loadout) and (canBomb in loadout)
@@ -1698,13 +1838,21 @@ location_logic: LocationLogicType = {
     "Sensor Maintenance: AmmoTank": lambda loadout: (  # back
         (vulnar in loadout) and
         (canBomb in loadout) and
-        (Speedball in loadout)
+        (Speedball in loadout) and
+        (LargeAmmo in loadout) and
+        (SmallAmmo in loadout)
     ),
     "Causeway Overlook": lambda loadout: (
-        (CausewayR in loadout) and (jumpAble in loadout) and (canBomb in loadout)
+        (CausewayR in loadout) and
+        (jumpAble in loadout) and
+        (canBomb in loadout)
     ),
     "Placid Pool": lambda loadout: (
-        (PlacidPoolR in loadout) and (jumpAble in loadout) and (canUsePB in loadout) and (icePod in loadout)
+        (PlacidPoolR in loadout) and
+        (jumpAble in loadout) and
+        (canUsePB in loadout) and
+        (icePod in loadout) and
+        (GravitySuit in loadout)
     ),
     "Blazing Chasm": lambda loadout: (
         (ElevatorToMagmaLakeR in loadout) and
@@ -1744,7 +1892,7 @@ location_logic: LocationLogicType = {
         (jumpAble in loadout) and
         (canBomb in loadout) and
         ((canFly in loadout) or (SpeedBooster in loadout) or (HiJump in loadout)) and
-        (DarkVisor in loadout)  # Shouldn't an expert be able to do this without visor?
+        (DarkVisor in loadout)  
     ),
     "Ancient Basin": lambda loadout: (
         (Varia in loadout) and
@@ -1770,10 +1918,27 @@ location_logic: LocationLogicType = {
         (FoyerR in loadout) and
         (jumpAble in loadout) and
         (GravitySuit in loadout) and
-        (canBomb in loadout)
+        (canBomb in loadout) and
+        (Speedball in loadout)
     ),
     "Briar: AmmoTank": lambda loadout: (  # bottom
-        (NorakBrookL in loadout) and (jumpAble in loadout) and (Morph in loadout)
+        (jumpAble in loadout) and
+        (Morph in loadout) and
+        ((
+            (NorakBrookL in loadout) and
+            (GravitySuit in loadout)
+            ) or
+         (
+             (NorakPerimeterBL in loadout) and
+             (
+                 (canBomb in loadout) or
+                 (Screw in loadout)
+            )
+            ) or
+         (
+             (NorakPerimeterTR in loadout) and
+             (MetroidSuit in loadout)
+        ))    
     ),
     "Icy Flow": lambda loadout: (
         (WestTerminalAccessL in loadout) and
@@ -1782,21 +1947,28 @@ location_logic: LocationLogicType = {
         (breakIce in loadout)
     ),
     "Ice Cave": lambda loadout: (
-        (WestTerminalAccessL in loadout) and (jumpAble in loadout) and (breakIce in loadout)
+        (WestTerminalAccessL in loadout) and
+        (jumpAble in loadout) and
+        (breakIce in loadout)
     ),
     "Antechamber": lambda loadout: (
-        (WestTerminalAccessL in loadout) and (jumpAble in loadout) and (canUsePB in loadout)
+        (WestTerminalAccessL in loadout) and
+        (jumpAble in loadout) and
+        (canUsePB in loadout)
     ),
     "Eddy Channels": lambda loadout: (
         (EleToTurbidPassageR in loadout) and
-        (underwater in loadout) and
+        (GravitySuit in loadout) and
         (DarkVisor in loadout) and
         (Morph in loadout) and
         (Speedball in loadout) and
         (Super in loadout)
     ),
     "Tram To Suzi Island": lambda loadout: (
-        (TramToSuziIslandR in loadout) and (jumpAble in loadout) and (Spazer in loadout) and (Morph in loadout)
+        (TramToSuziIslandR in loadout) and
+        (jumpAble in loadout) and
+        (Spazer in loadout) and
+        (Morph in loadout)
     ),
     "Portico": lambda loadout: (
         (TramToSuziIslandR in loadout) and
@@ -1833,6 +2005,7 @@ location_logic: LocationLogicType = {
     "Enervation Chamber": lambda loadout: (
         (TramToSuziIslandR in loadout) and
         (suzi in loadout) and
+        (energy_req(650) in loadout) and
         (canFly in loadout) and
         (Hypercharge in loadout) and
         (Charge in loadout)
@@ -1891,42 +2064,53 @@ location_logic: LocationLogicType = {
         )
     ),
     "Garden Canal": lambda loadout: (
-        (NorakBrookL in loadout) and
+        (NorakPerimeterBL in loadout) and
         (jumpAble in loadout) and
         (canUsePB in loadout) and
         (Spazer in loadout) and
-        ((HiJump in loadout) or (SpaceJump in loadout) or (Morph in loadout))
+        ((HiJump in loadout) or
+         (SpaceJump in loadout) or
+         (Morph in loadout))
     ),
     "Sandy Burrow: AmmoTank": lambda loadout: (  # bottom
         (OceanShoreR in loadout) and
         (GravitySuit in loadout) and
         (Morph in loadout) and
-        ((HiJump in loadout) or (SpaceJump in loadout))
+        ((HiJump in loadout) or (canFly in loadout))
     ),
     "Trophobiotic Chamber": lambda loadout: (
-        (vulnar in loadout) and (Morph in loadout) and (Speedball in loadout)
+        (vulnar in loadout) and
+        (Morph in loadout) and
+        (Speedball in loadout)
     ),
     "Waste Processing": lambda loadout: (
         (SpeedBooster in loadout) and
         (jumpAble in loadout) and
-        ((
-            (SubbasementFissureL in loadout) and
-            (canUsePB in loadout)
-        ) or (
-            (CellarR in loadout) and
-            (pinkDoor in loadout) and
-            (canBomb in loadout) and
-            (underwater in loadout) and
-            (DarkVisor in loadout)
-        ) or (
-            (TransferStationR in loadout) and
-            (DarkVisor in loadout) and
-            (wave in loadout) and
-            (canBomb in loadout)
-        ))
+        (
+            (
+                (SubbasementFissureL in loadout) and
+                (canUsePB in loadout)
+                ) or
+            (
+                (CellarR in loadout) and
+                (pinkDoor in loadout) and
+                (canBomb in loadout) and
+                (underwater in loadout) and
+                (DarkVisor in loadout)
+                ) or
+            (
+                (TransferStationR in loadout) and
+                (DarkVisor in loadout) and
+                (wave in loadout) and
+                (canBomb in loadout)
+                )
+            )
     ),
     "Grand Chasm": lambda loadout: (
-        (WestTerminalAccessL in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (Screw in loadout)
+        (WestTerminalAccessL in loadout) and
+        (jumpAble in loadout) and
+        (canBomb in loadout) and
+        (Screw in loadout)
     ),
     "Mining Site 1": lambda loadout: (  # (1 = letter Alpha)
         (canBomb in loadout) and
@@ -1942,9 +2126,12 @@ location_logic: LocationLogicType = {
         ))
     ),
     "Colosseum": lambda loadout: (  # GT
-        (ElevatorToMagmaLakeR in loadout) and (jumpAble in loadout) and (Varia in loadout) and (Charge in loadout)
+        (ElevatorToMagmaLakeR in loadout) and
+        (jumpAble in loadout) and
+        (Varia in loadout) and
+        (Charge in loadout)
     ),
-    "Lava Pool": lambda loadout: (  # BATH ENERGY COUNT??
+    "Lava Pool": lambda loadout: ( # No bath count in casual
         loadout.has_all(EleToTurbidPassageR, jumpAble, Varia, MetroidSuit, canBomb)
     ),
     "Hive Main Chamber": lambda loadout: (
@@ -1954,25 +2141,23 @@ location_logic: LocationLogicType = {
         (canBomb in loadout)
     ),
     "Crossway Cache": lambda loadout: (
+        (jumpAble in loadout) and
+        (Varia in loadout) and
         (
             (VulnarDepthsElevatorEL in loadout) and
-            (jumpAble in loadout) and
-            (Varia in loadout) and
             (canBomb in loadout) and
             (icePod in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and
-            (Varia in loadout) and
             (electricHyper in loadout)
         ) or (
             (CollapsedPassageR in loadout) and
-            (Super in loadout) and
-            (Varia in loadout) and
-            (canUsePB in loadout) and
+            (pinkDoor in loadout) and
+            (canBomb in loadout) and
             (wave in loadout)
         )
     ),
-    "Slag Heap": lambda loadout: (  # Sequestered Inferno w Metroid Suit is simplest  Possibly a no-Metroid version?
+    "Slag Heap": lambda loadout: (  # No Metroid-less lava baths in casual
         (canBomb in loadout) and
         (jumpAble in loadout) and
         (Varia in loadout) and
@@ -1980,11 +2165,19 @@ location_logic: LocationLogicType = {
         (SequesteredInfernoL in loadout)
     ),
     "Hydrodynamic Chamber": lambda loadout: (  # one of the only intended water rooms
-        (WestCorridorR in loadout) and
-        ((GravitySuit in loadout) or (HiJump in loadout)) and
         (Morph in loadout) and
-        (pinkDoor in loadout) and
-        (Spazer in loadout)
+        (Spazer in loadout) and
+        (
+            (WestCorridorR in loadout) and
+            ((GravitySuit in loadout) or (HiJump in loadout)) and
+            (pinkDoor in loadout)
+        ) or
+        (
+            (FoyerR in loadout) and
+            (canBomb in loadout) and
+            (Speedball in loadout) and
+            (Screw in loadout)
+        )
     ),
     "Central Corridor: left": lambda loadout: (
         (FoyerR in loadout) and
@@ -1995,21 +2188,35 @@ location_logic: LocationLogicType = {
         (Morph in loadout)
     ),
     "Restricted Area": lambda loadout: (
-        (FoyerR in loadout) and (jumpAble in loadout) and (MetroidSuit in loadout)
+        (FoyerR in loadout) and
+        (jumpAble in loadout) and
+        (MetroidSuit in loadout) and
+        (canBomb in loadout) and
+        (Speedball in loadout)
     ),
     "Foundry": lambda loadout: (
-        (FoyerR in loadout) and (jumpAble in loadout)
+        (FoyerR in loadout) and
+        (jumpAble in loadout) and
+        (canBomb in loadout) and
+        (Speedball in loadout) and
+        (energy_req(250) in loadout) # Worth testing
     ),
     "Norak Escarpment": lambda loadout: (
         (NorakBrookL in loadout) and
         (jumpAble in loadout) and
-        ((canFly in loadout) or (SpeedBooster in loadout))
+        (canFly in loadout)
     ),
     "Glacier's Reach": lambda loadout: (
-        (WestTerminalAccessL in loadout) and (jumpAble in loadout) and (energy_req(650) in loadout)
+        (WestTerminalAccessL in loadout) and
+        (jumpAble in loadout) and
+        (canBomb in loadout) and
+        (energy_req(650) in loadout)
     ),
     "Sitting Room": lambda loadout: (
-        (WestTerminalAccessL in loadout) and (jumpAble in loadout) and (canUsePB in loadout) and (Speedball in loadout)
+        (WestTerminalAccessL in loadout) and
+        (jumpAble in loadout) and
+        (canUsePB in loadout) and
+        (Speedball in loadout)
     ),
     "Suzi Ruins Map Station Access": lambda loadout: (
         (TramToSuziIslandR in loadout) and
@@ -2031,12 +2238,23 @@ location_logic: LocationLogicType = {
         ) or (
             (spaceDrop in loadout) and
             (LoadingDockSecurityAreaL in loadout) and
-            (jumpAble in loadout) and
             (MetroidSuit in loadout)
         )
     ),
     "Arena": lambda loadout: (
-        (RuinedConcourseBL in loadout) and (jumpAble in loadout) and (pinkDoor in loadout)
+        (RuinedConcourseBL in loadout) and
+        (jumpAble in loadout) and
+        (canBomb in loadout) and
+        (
+            (pinkDoor in loadout) or (
+                (GravitySuit in loadout) and
+                (
+                    (HiJump in loadout) or
+                    (SpaceJump in loadout) or
+                    (Bombs in loadout)
+                )
+            )
+        )
     ),
     "West Spore Field": lambda loadout: (
         (vulnar in loadout) and
@@ -2066,29 +2284,70 @@ location_logic: LocationLogicType = {
     "Antelier": lambda loadout: (  # spelled "Antilier" in subversion 1.1
         (
             (WestCorridorR in loadout) and
-            ((GravitySuit in loadout) or (HiJump in loadout)) and
-            ((
-                (pinkDoor in loadout) and
-                (Morph in loadout)
-            ) or (Super in loadout))
-        ) or (
+            (
+                (GravitySuit in loadout) or (HiJump in loadout)
+                ) and
+            (
+                (
+                    (pinkDoor in loadout) and
+                    (Morph in loadout)
+                ) or
+             (
+                 (Super in loadout) and
+                 (
+                     (Morph in loadout) or
+                     (MetroidSuit in loadout)
+                     )
+                 )
+                )
+            ) or
+        (
             (FoyerR in loadout) and
             (underwater in loadout) and
-            (Screw in loadout)
-        )
-    ),
+            (Screw in loadout) and
+            (canBomb in loadout) and
+            (Speedball in loadout)
+            )
+        ),
     "Weapon Research": lambda loadout: (
-        (FoyerR in loadout) and
         (jumpAble in loadout) and
+        (Speedball in loadout) and
+        (Morph in loadout) and
         ((wave in loadout) or (MetroidSuit in loadout)) and
-        ((canBomb in loadout) or (Spazer in loadout))
+        (
+            (FoyerR in loadout) and
+            (canBomb in loadout)
+            ) or
+        (
+            (WestCorridorR in loadout) and
+            ((GravitySuit in loadout) or (HiJump in loadout)) and
+            (pinkDoor in loadout) and
+            (Spazer in loadout)
+            )
     ),
     "Crocomire's Lair": lambda loadout: (
-        (NorakBrookL in loadout) and
         (jumpAble in loadout) and
         (Super in loadout) and
         (SpeedBooster in loadout) and
-        ((HiJump in loadout) or (SpaceJump in loadout) or (Morph in loadout))
+        ((HiJump in loadout) or (SpaceJump in loadout) or (Morph in loadout)) and
+        (
+            (
+                (NorakPerimeterBL in loadout) and
+                (
+                    (canBomb in loadout) or
+                    (Screw in loadout)
+                    )
+                ) or
+            (
+                (NorakPerimeterTR in loadout) and
+                (MetroidSuit in loadout)
+                ) or
+            (
+                (NorakBrookL in loadout) and
+                (Morph in loadout) and
+                (GravitySuit in loadout)
+                )
+            )
     ),
 }
 
