@@ -50,6 +50,12 @@ class Loadout:
             for _ in range(count):
                 yield item
 
+    def __len__(self) -> int:
+        return sum(self.contents.values())  # `Counter.total()` requires python 3.10
+
+    def __repr__(self) -> str:
+        return f"Loadout({self.logic.__name__}, {self.contents})"
+
     def count(self, item: Union[Item, AreaDoor]) -> int:
         return self.contents[item]
 
