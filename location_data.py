@@ -30,6 +30,49 @@ spacePortLocs = ["Ready Room",
                  "Forward Battery"]
 
 
+majorLocs = frozenset([
+    "Ocean Vent Supply Depot",  # start of unique majors
+    "Sandy Cache",
+    "Shrine Of The Penumbra",
+    "Subterranean Burrow",
+    "Archives: SpringBall",
+    "Arena",
+    "Grand Vault",
+    "Harmonic Growth Enhancer",
+    "West Spore Field",
+    "Electromechanical Engine",
+    "Fire's Bane Shrine",
+    "Greater Inferno",
+    "Magma Chamber",
+    "Antelier",
+    "Chamber Of Wind",
+    "Crocomire's Lair",
+    "Equipment Locker",
+    "Weapon Research",
+    "Armory Cache 2",
+    "Syzygy Observatorium",
+    "Shrine Of The Animate Spark",
+    "Extract Storage",
+    "Torpedo Bay",  # end of unique majors
+    "Sandy Burrow: ETank",  # E Tanks
+    "Sediment Flow",
+    "Epiphreatic Crag",
+    "Mezzanine Concourse",
+    "Sensor Maintenance: ETank",
+    "Trophobiotic Chamber",
+    "Vulnar Caves Entrance",
+    "Warrior Shrine: ETank",
+    "Depressurization Valve",
+    "Gymnasium",
+    "Mining Cache",
+    "Containment Area",
+    "Water Garden",
+    "Reliquary Access",
+    "Summit Landing",
+    "Ready Room"
+])
+
+
 def pullCSV() -> dict[str, Location]:
     csvdict: dict[str, Location] = {}
 

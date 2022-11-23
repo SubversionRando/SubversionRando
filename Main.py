@@ -30,7 +30,7 @@ def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
     parser.add_argument('-s', '--speedrun', action="store_true",
                         help='Speedrun fill, fast setting comparable to Varia.run Speedrun fill algorithm, Default')
     parser.add_argument('-af', '--assumedfill', action="store_true",
-                        help='Assumed fill, standard')
+                        help='Assumed fill, standard slower progression fill algorithm')
     parser.add_argument(
         '-m', '--medium', action="store_true",
         help='Medium fill, medium speed setting that places low-power items first for increased exploration'
@@ -149,10 +149,10 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         spoilerSave = ""
         spoilerSave += f"Starting randomization attempt: {randomizeAttempts}\n"
         # now start randomizing
-        if fillChoice != "AF":
-            seedComplete, spoilerSave = forward_fill(logicChoice, fillChoice, locArray, spoilerSave, Connections)
-        else:
+        if fillChoice == "AF":
             seedComplete, spoilerSave = assumed_fill(logicChoice, locArray, spoilerSave, Connections)
+        else:
+            seedComplete, spoilerSave = forward_fill(logicChoice, fillChoice, locArray, spoilerSave, Connections)
 
     # add area transitions to spoiler
     if randomizeAreas :
@@ -211,14 +211,14 @@ def assumed_fill(logicChoice: Literal["E", "C"],
     dummy_locations: list[Location] = []
     loadout = Loadout(Expert if logicChoice == "E" else Casual)
     fill_algorithm = fillAssumed.FillAssumed(Connections)
-    n_items_to_place = sum(len(li) for li in fill_algorithm.itemLists)
+    n_items_to_place = fill_algorithm.count_items_remaining()
     assert n_items_to_place <= len(locArray), f"{n_items_to_place} items to put in {len(locArray)} locations"
-    print(f"{sum(len(li) for li in fill_algorithm.itemLists)} items to place")
-    while any(len(li) for li in fill_algorithm.itemLists):
+    print(f"{fill_algorithm.count_items_remaining()} items to place")
+    while fill_algorithm.count_items_remaining():
         placePair = fill_algorithm.choose_placement(dummy_locations, locArray, loadout)
         if placePair is None:
             message = ('Item placement was not successful in assumed. '
-                       f'{sum(len(li) for li in fill_algorithm.itemLists)} items remaining.')
+                       f'{fill_algorithm.count_items_remaining()} items remaining.')
             print(message)
             spoilerSave += f'{message}\n'
             break
@@ -226,8 +226,10 @@ def assumed_fill(logicChoice: Literal["E", "C"],
         placeLocation["item"] = placeItem
         spoilerSave += f"{placeLocation['fullitemname']} - - - {placeItem[0]}\n"
 
-        if all(len(li) == 0 for li in fill_algorithm.itemLists):
-            # Normally, assumed
+        if fill_algorithm.count_items_remaining() == 0:
+            # Normally, assumed fill will always make a valid playthrough,
+            # but dropping from spaceport can mess that up,
+            # so it needs to be checked again.
             completable, _, _ = solve(locArray, loadout.logic, Connections)
             if completable:
                 print("Item placements successful.")

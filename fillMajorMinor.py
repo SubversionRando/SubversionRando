@@ -5,7 +5,7 @@ from connection_data import AreaDoor
 from fillInterface import FillAlgorithm
 from item_data import Item, items_unpackable
 from loadout import Loadout
-from location_data import Location
+from location_data import Location, majorLocs
 
 (
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
@@ -14,47 +14,6 @@ from location_data import Location
     Refuel, SmallAmmo, LargeAmmo, DamageAmp, ChargeAmp, SpaceJumpBoost,
     spaceDrop
 ) = items_unpackable
-
-
-majorLocs = ["Ocean Vent Supply Depot",  # start of unique majors
-             "Sandy Cache",
-             "Shrine Of The Penumbra",
-             "Subterranean Burrow",
-             "Archives: SpringBall",
-             "Arena",
-             "Grand Vault",
-             "Harmonic Growth Enhancer",
-             "West Spore Field",
-             "Electromechanical Engine",
-             "Fire's Bane Shrine",
-             "Greater Inferno",
-             "Magma Chamber",
-             "Antelier",
-             "Chamber Of Wind",
-             "Crocomire's Lair",
-             "Equipment Locker",
-             "Weapon Research",
-             "Armory Cache 2",
-             "Syzygy Observatorium",
-             "Shrine Of The Animate Spark",
-             "Extract Storage",
-             "Torpedo Bay",  # end of unique majors
-             "Sandy Burrow: ETank",  # E Tanks
-             "Sediment Flow",
-             "Epiphreatic Crag",
-             "Mezzanine Concourse",
-             "Sensor Maintenance: ETank",
-             "Trophobiotic Chamber",
-             "Vulnar Caves Entrance",
-             "Warrior Shrine: ETank",
-             "Depressurization Valve",
-             "Gymnasium",
-             "Mining Cache",
-             "Containment Area",
-             "Water Garden",
-             "Reliquary Access",
-             "Summit Landing",
-             "Ready Room"]
 
 
 class FillMajorMinor(FillAlgorithm):
@@ -164,6 +123,9 @@ class FillMajorMinor(FillAlgorithm):
                 return None  # fail
 
         return random.choice(valid_locations), random.choice(from_items)
+
+    def count_items_remaining(self) -> int:
+        return sum(len(li) for li in self.itemLists)
 
     def remove_from_pool(self, item: Item) -> None:
         """ removes this item from the item pool """

@@ -116,6 +116,9 @@ class FillMedium(FillAlgorithm):
 
         return random.choice(availableLocations), random.choice(from_items)
 
+    def count_items_remaining(self) -> int:
+        return sum(len(li) for li in self.itemLists)
+
     def remove_from_pool(self, item: Item) -> None:
         """ removes this item from the item pool """
         for each_list in self.itemLists:

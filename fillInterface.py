@@ -23,5 +23,9 @@ class FillAlgorithm(abc.ABC):
         """ returns (location to place an item, which item to place there) """
 
     @abc.abstractmethod
+    def count_items_remaining(self) -> int:
+        """ how many items left to place """
+
+    @abc.abstractmethod
     def remove_from_pool(self, item: Item) -> None:
         """ removes this item from the item pool """

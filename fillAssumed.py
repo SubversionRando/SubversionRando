@@ -113,6 +113,9 @@ class FillAssumed(FillAlgorithm):
 
         return random.choice(available_locations), item_to_place
 
+    def count_items_remaining(self) -> int:
+        return sum(len(li) for li in self.itemLists)
+
     def remove_from_pool(self, item: Item) -> None:
         """ removes this item from the item pool """
         pass  # removed in placement function
