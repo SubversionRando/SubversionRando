@@ -77,12 +77,12 @@ def solve(all_locations: list[Location],
         log_lines.pop()
 
     if not logic.can_fall_from_spaceport(loadout):
-        print("solver: couldn't get out of spaceport")
-        for loc in unused_locations:
-            if loc['inlogic'] and loc['fullitemname'] not in spacePortLocs:
-                print("solver: found another way out of spaceport besides Ridley")
-                print(loadout)
-                print("but logic doesn't support that yet")
+        # print("solver: couldn't get out of spaceport")
+        # for loc in unused_locations:
+        #     if loc['inlogic'] and loc['fullitemname'] not in spacePortLocs:
+        #         print("solver: found another way out of spaceport besides Ridley")
+        #         print(loadout)
+        #         print("but logic doesn't support that yet")
         return False, log_lines, [loc for loc in all_locations if loc["fullitemname"] in used_locs]
     loadout.append(Items.spaceDrop)
     loadout.append(SunkenNestL)  # assuming this is where we land
