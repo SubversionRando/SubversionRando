@@ -199,7 +199,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         spoiler_file.write('\n\n')
         for solve_line in solve_lines:
             spoiler_file.write(solve_line + '\n')
-    print(f"Spoiler file is {rom_name}.spoiler.txt")
+    print(f"Spoiler file is spoilers/{rom_name}.spoiler.txt")
 
 
 def assumed_fill(logicChoice: Literal["E", "C"],

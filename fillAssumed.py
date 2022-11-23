@@ -5,7 +5,7 @@ from connection_data import AreaDoor
 from fillInterface import FillAlgorithm
 from item_data import Item, Items
 from loadout import Loadout
-from location_data import Location
+from location_data import Location, spacePortLocs
 from solver import solve
 
 _minor_items = {
@@ -82,6 +82,20 @@ class FillAssumed(FillAlgorithm):
     def _get_empty_locations(self, all_locations: list[Location]) -> list[Location]:
         return [loc for loc in all_locations if loc["item"] is None]
 
+    @staticmethod
+    def _choose_location(locs: list[Location], spaceport_deprio: int) -> Location:
+        """
+        to work against spaceport front-loading,
+        because 1 progression item in space port
+        will lead to more progression items in spaceport
+        """
+        distribution = locs.copy()
+        for _ in range(spaceport_deprio):
+            for loc in locs:
+                if loc["fullitemname"] not in spacePortLocs:
+                    distribution.append(loc)
+        return random.choice(distribution)
+
     def choose_placement(self,
                          availableLocations: list[Location],
                          locArray: list[Location],
@@ -99,6 +113,18 @@ class FillAssumed(FillAlgorithm):
         assert len(from_items), "tried to place item when placement algorithm has 0 items left in item pool"
 
         item_to_place = random.choice(from_items)
+
+        # If Missile is placed before Super, it's very likely that
+        # Super will be in Torpedo Bay or some other really early place.
+        # So this makes sure that Super is placed before Missile.
+        # Consider disabling this in door rando (when Super can't open pink door).
+        if item_to_place == Items.Missile:
+            if Items.Super in from_items:
+                item_to_place = Items.Super
+        #         print("Super placed before Missile")
+        #     else:
+        #         print("Missile placed before Super")
+
         from_items.remove(item_to_place)
 
         if from_items is self.prog_items:
@@ -111,7 +137,9 @@ class FillAssumed(FillAlgorithm):
         if len(available_locations) == 0:
             return None
 
-        return random.choice(available_locations), item_to_place
+        # This magic number 2 could be an option for "How loaded do you want the spaceport to be?"
+        # (lower number means more progression items in spaceport)
+        return self._choose_location(available_locations, 2), item_to_place
 
     def count_items_remaining(self) -> int:
         return sum(len(li) for li in self.itemLists)
