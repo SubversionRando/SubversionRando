@@ -1,7 +1,7 @@
 import random
 from typing import Optional
 
-from connection_data import AreaDoor, SunkenNestL
+from connection_data import AreaDoor
 from fillInterface import FillAlgorithm
 from item_data import Item, Items
 from loadout import Loadout
@@ -115,11 +115,4 @@ class FillAssumed(FillAlgorithm):
 
     def remove_from_pool(self, item: Item) -> None:
         """ removes this item from the item pool """
-        for each_list in self.itemLists:
-            try:
-                i = each_list.index(item)
-                each_list.pop(i)
-                break
-            except ValueError:
-                # not in this list
-                pass
+        pass  # removed in placement function
