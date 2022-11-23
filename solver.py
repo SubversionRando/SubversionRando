@@ -38,7 +38,7 @@ _progression_items = frozenset([
 def solve(all_locations: list[Location],
           logic: Type[LogicInterface],
           connections: list[tuple[AreaDoor, AreaDoor]]) -> tuple[bool, list[str]]:
-    """ returns whether completable """
+    """ returns (whether completable, spoiler lines) """
     for loc in all_locations:
         loc['inlogic'] = False
 
@@ -47,7 +47,7 @@ def solve(all_locations: list[Location],
 
     loadout = Loadout(logic)
 
-    log_lines = ["spaceport:"]
+    log_lines = [" - spaceport -"]
     # this loop just for spaceport
     stuck = False
     while not stuck:
@@ -72,8 +72,8 @@ def solve(all_locations: list[Location],
         unused_locations = [loc for loc in unused_locations if loc['fullitemname'] not in used_locs]
         stuck = len(loadout) == prev_loadout_count
 
-    assert "sphere" in log_lines[-1].lower(), "how did we get unstuck without looking at an empty sphere?"
-    log_lines.pop()
+    while "sphere:" in log_lines[-1]:
+        log_lines.pop()
 
     if not logic.can_fall_from_spaceport(loadout):
         print("solver: couldn't get out of spaceport")
@@ -83,6 +83,7 @@ def solve(all_locations: list[Location],
                 print(loadout)
                 print("but logic doesn't support that yet")
         return False, log_lines
+    loadout.append(Items.spaceDrop)
     loadout.append(SunkenNestL)  # assuming this is where we land
     log_lines.append(" - fall from spaceport -")
 
@@ -105,8 +106,8 @@ def solve(all_locations: list[Location],
         unused_locations = [loc for loc in unused_locations if loc['fullitemname'] not in used_locs]
         stuck = len(loadout) == prev_loadout_count
 
-    assert "sphere" in log_lines[-1].lower(), "how did we get unstuck without looking at an empty sphere?"
-    log_lines.pop()
+    while "sphere:" in log_lines[-1]:
+        log_lines.pop()
 
     # for line in log_lines:
     #     print(line)
