@@ -7,7 +7,7 @@ from connection_data import SunkenNestL, VanillaAreas
 from fillInterface import FillAlgorithm
 from item_data import Item, Items
 from loadout import Loadout
-from location_data import Location, pullCSV
+from location_data import Location, pullCSV, spacePortLocs
 from logicCasual import Casual
 from logicExpert import Expert
 import logic_updater
@@ -16,6 +16,7 @@ import fillMedium
 import fillMajorMinor
 import areaRando
 from romWriter import RomWriter
+from solver import solve
 
 
 def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
@@ -49,20 +50,25 @@ def plmidFromHiddenness(itemArray: Item, hiddenness: str) -> bytes:
     return plmid
 
 
-def itemPlace(romWriter: RomWriter, location: Location, itemArray: Item) -> None:
-    # provide a locRow as in and the item array such as Missile, Super, etc
-    # write all rom locations associated with the item location
-    plmid = plmidFromHiddenness(itemArray, location['hiddenness'])
+def write_location(romWriter: RomWriter, location: Location) -> None:
+    """
+    provide a location with an ['item'] value, such as Missile, Super, etc
+    write all rom locations associated with the item location
+    """
+    item = location["item"]
+    assert item, f"{location['fullitemname']} didn't get an item"
+    # TODO: support locations with no items?
+    plmid = plmidFromHiddenness(item, location['hiddenness'])
     for address in location['locids']:
-        romWriter.writeItem(address, plmid, itemArray[4])
+        romWriter.writeItem(address, plmid, item[4])
     for address in location['alternateroomlocids']:
         if location['alternateroomdifferenthiddenness'] == "":
             # most of the alt rooms go here, having the same item hiddenness
             # as the corresponding "pre-item-move" item had
             plmid_altroom = plmid
         else:
-            plmid_altroom = plmidFromHiddenness(itemArray, location['alternateroomdifferenthiddenness'])
-        romWriter.writeItem(address, plmid_altroom, itemArray[4])
+            plmid_altroom = plmidFromHiddenness(item, location['alternateroomdifferenthiddenness'])
+        romWriter.writeItem(address, plmid_altroom, item[4])
 
 
 fillers: dict[str, Type[FillAlgorithm]] = {
@@ -114,15 +120,6 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     else :
         # remove .sfc extension and dirs
         romWriter.setBaseFilename(rom1_path[:-4].split("/")[-1])
-    spacePortLocs = ["Ready Room",
-                     "Torpedo Bay",
-                     "Extract Storage",
-                     "Gantry",
-                     "Docking Port 4",
-                     "Docking Port 3",
-                     "Weapon Locker",
-                     "Aft Battery",
-                     "Forward Battery"]
 
     spoilerSave = ""
     seedComplete = False
@@ -194,7 +191,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
             placeLocation, placeItem = placePair
             if (placeLocation in unusedLocations) :
                 unusedLocations.remove(placeLocation)
-            itemPlace(romWriter, placeLocation, placeItem)
+            placeLocation["item"] = placeItem
             availableLocations.remove(placeLocation)
             fill_algorithm.remove_from_pool(placeItem)
             loadout.append(placeItem)
@@ -213,6 +210,12 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     if randomizeAreas :
         for item in Connections :
             spoilerSave += f"{item[0][2]} {item[0][3]} << >> {item[1][2]} {item[1][3]}\n"
+
+    _got_all, solve_lines = solve(locArray, Expert if logicChoice == "E" else Casual, Connections)
+
+    # write all items into their locations
+    for loc in locArray:
+        write_location(romWriter, loc)
 
     # Suit animation skip patch
     romWriter.writeBytes(0x20717, b"\xea\xea\xea\xea")
@@ -245,6 +248,9 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         spoiler_file.write(f"RNG Seed: {seeeed}\n\n")
         spoiler_file.write("\n Spoiler \n\n Spoiler \n\n Spoiler \n\n Spoiler \n\n")
         spoiler_file.write(spoilerSave)
+        spoiler_file.write('\n\n')
+        for solve_line in solve_lines:
+            spoiler_file.write(solve_line + '\n')
     print(f"Spoiler file is {rom_name}.spoiler.txt")
 
 

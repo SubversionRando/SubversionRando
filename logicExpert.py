@@ -1,6 +1,7 @@
 from typing import ClassVar
 from connection_data import area_doors_unpackable
 from item_data import items_unpackable
+from loadout import Loadout
 from logicCommon import energy_req, varia_or_hell_run
 from logicInterface import AreaLogicType, LocationLogicType, LogicInterface
 from logic_shortcut import LogicShortcut
@@ -1972,3 +1973,7 @@ location_logic: LocationLogicType = {
 class Expert(LogicInterface):
     area_logic: ClassVar[AreaLogicType] = area_logic
     location_logic: ClassVar[LocationLogicType] = location_logic
+
+    @staticmethod
+    def can_fall_from_spaceport(loadout: Loadout) -> bool:
+        return True

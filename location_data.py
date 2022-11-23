@@ -1,5 +1,7 @@
 import csv
-from typing import TypedDict, cast
+from typing import Optional, TypedDict, cast
+
+from item_data import Item
 
 
 # other unused columns in Location:
@@ -14,6 +16,18 @@ class Location(TypedDict):
     alternateroomlocids: list[int]
     alternateroomdifferenthiddenness: str
     inlogic: bool
+    item: Optional[Item]
+
+
+spacePortLocs = ["Ready Room",
+                 "Torpedo Bay",
+                 "Extract Storage",
+                 "Gantry",
+                 "Docking Port 4",
+                 "Docking Port 3",
+                 "Weapon Locker",
+                 "Aft Battery",
+                 "Forward Battery"]
 
 
 def pullCSV() -> dict[str, Location]:
@@ -38,5 +52,7 @@ def pullCSV() -> dict[str, Location]:
             row['plmparamlo'] = int(row['plmparamlo'], 16)
             # new key: 'inlogic'
             row['inlogic'] = False
+            # the item that we place in this location
+            row["item"] = None
             csvdict[row['fullitemname']] = cast(Location, row)
     return csvdict
