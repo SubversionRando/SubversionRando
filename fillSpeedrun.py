@@ -1,5 +1,6 @@
 import random
 from typing import Optional
+from connection_data import AreaDoor
 
 from fillInterface import FillAlgorithm
 from item_data import Item, items_unpackable
@@ -31,7 +32,7 @@ class FillSpeedrun(FillAlgorithm):
     [2] extraItemList
     """
 
-    def __init__(self) -> None:
+    def __init__(self, connections: list[tuple[AreaDoor, AreaDoor]]) -> None:
         self.earlyItemList = [
             Missile,
             Morph,

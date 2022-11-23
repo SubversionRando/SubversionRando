@@ -1,9 +1,9 @@
 import random
 import sys
-from typing import Optional, Type
+from typing import Literal, Optional, Type
 import argparse
 
-from connection_data import SunkenNestL, VanillaAreas
+from connection_data import AreaDoor, SunkenNestL, VanillaAreas
 from fillInterface import FillAlgorithm
 from item_data import Item, Items
 from loadout import Loadout
@@ -11,9 +11,10 @@ from location_data import Location, pullCSV, spacePortLocs
 from logicCasual import Casual
 from logicExpert import Expert
 import logic_updater
-import fillSpeedrun
 import fillMedium
 import fillMajorMinor
+import fillAssumed
+import fillSpeedrun
 import areaRando
 from romWriter import RomWriter
 from solver import solve
@@ -25,14 +26,18 @@ def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
                         help='Casual logic, easy setting matching the vanilla Subversion experience, Default')
     parser.add_argument('-e', '--expert', action="store_true",
                         help='Expert logic, hard setting comparable to Varia.run Expert difficulty')
+
     parser.add_argument('-s', '--speedrun', action="store_true",
                         help='Speedrun fill, fast setting comparable to Varia.run Speedrun fill algorithm, Default')
+    parser.add_argument('-af', '--assumedfill', action="store_true",
+                        help='Assumed fill, standard')
     parser.add_argument(
         '-m', '--medium', action="store_true",
         help='Medium fill, medium speed setting that places low-power items first for increased exploration'
     )
     parser.add_argument('-mm', '--majorminor', action="store_true",
                         help='Major-Minor fill, using unique majors and locations')
+
     parser.add_argument('-a', '--area', action="store_true",
                         help='Area rando shuffles major areas of the game, expert logic only')
     args = parser.parse_args(sys_args)
@@ -75,20 +80,27 @@ fillers: dict[str, Type[FillAlgorithm]] = {
     "M": fillMedium.FillMedium,
     "MM": fillMajorMinor.FillMajorMinor,
     "S": fillSpeedrun.FillSpeedrun,
+    "AF": fillAssumed.FillAssumed,
 }
 
 
 # main program
 def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     workingArgs = commandLineArgs(argv[1:])
+
+    logicChoice: Literal["E", "C"]
     if workingArgs.expert :
         logicChoice = "E"
     else :
         logicChoice = "C"  # Default to casual logic
+
+    fillChoice: Literal["M", "MM", "AF", "S"]
     if workingArgs.medium :
         fillChoice = "M"
     elif workingArgs.majorminor :
         fillChoice = "MM"
+    elif workingArgs.assumedfill :
+        fillChoice = "AF"
     else :
         fillChoice = "S"
     randomizeAreas = False
@@ -137,81 +149,17 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         spoilerSave = ""
         spoilerSave += f"Starting randomization attempt: {randomizeAttempts}\n"
         # now start randomizing
-        unusedLocations : list[Location] = []
-        unusedLocations.extend(locArray)
-        availableLocations: list[Location] = []
-        # visitedLocations = []
-        loadout = Loadout(Expert if logicChoice == "E" else Casual)
-        loadout.append(SunkenNestL)  # starting area
-        # use appropriate fill algorithm for initializing item lists
-        fill_algorithm = fillers[fillChoice]()
-        while len(unusedLocations) != 0 or len(availableLocations) != 0:
-            # print("loadout contains:")
-            # print(loadout)
-            # for a in loadout:
-            #     print("-",a[0])
-
-            # update logic by updating unusedLocations
-            # using helper function, modular for more logic options later
-            # unusedLocations[i]['inlogic'] holds the True or False for logic
-            logic_updater.updateAreaLogic(loadout, Connections)
-            logic_updater.updateLogic(unusedLocations, locArray, loadout)
-
-            # update unusedLocations and availableLocations
-            for i in reversed(range(len(unusedLocations))):  # iterate in reverse so we can remove freely
-                if unusedLocations[i]['inlogic'] is True:
-                    # print("Found available location at",unusedLocations[i]['fullitemname'])
-                    availableLocations.append(unusedLocations[i])
-                    unusedLocations.pop(i)
-            # print("Available locations sits at:",len(availableLocations))
-            # for al in availableLocations :
-            #     print(al[0])
-            # print("Unused locations sits at size:",len(unusedLocations))
-            # print("unusedLocations:")
-            # for u in unusedLocations :
-            #     print(u['fullitemname'])
-
-            if availableLocations == [] and unusedLocations != [] :
-                print(f'Item placement was not successful. {len(unusedLocations)} locations remaining.')
-                spoilerSave += f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
-                # for i in loadout:
-                #     print(i[0])
-                # for u in unusedLocations :
-                #     print("--",u['fullitemname'])
-
-                break
-
-            # split here for different fill algorithms
-            placePair = fill_algorithm.choose_placement(availableLocations, locArray, loadout)
-            if placePair is None:
-                print(f'Item placement was not successful due to majors. {len(unusedLocations)} locations remaining.')
-                spoilerSave += f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
-                break
-            # it returns your location and item, which are handled here
-            placeLocation, placeItem = placePair
-            if (placeLocation in unusedLocations) :
-                unusedLocations.remove(placeLocation)
-            placeLocation["item"] = placeItem
-            availableLocations.remove(placeLocation)
-            fill_algorithm.remove_from_pool(placeItem)
-            loadout.append(placeItem)
-            if not ((placeLocation['fullitemname'] in spacePortLocs) or (Items.spaceDrop in loadout)):
-                loadout.append(Items.spaceDrop)
-            spoilerSave += f"{placeLocation['fullitemname']} - - - {placeItem[0]}\n"
-            # print(placeLocation['fullitemname']+placeItem[0])
-
-            if availableLocations == [] and unusedLocations == [] :
-                print("Item placements successful.")
-                spoilerSave += "Item placements successful.\n"
-                seedComplete = True
-                break
+        if fillChoice != "AF":
+            seedComplete, spoilerSave = forward_fill(logicChoice, fillChoice, locArray, spoilerSave, Connections)
+        else:
+            seedComplete, spoilerSave = assumed_fill(logicChoice, locArray, spoilerSave, Connections)
 
     # add area transitions to spoiler
     if randomizeAreas :
         for item in Connections :
             spoilerSave += f"{item[0][2]} {item[0][3]} << >> {item[1][2]} {item[1][3]}\n"
 
-    _got_all, solve_lines = solve(locArray, Expert if logicChoice == "E" else Casual, Connections)
+    _got_all, solve_lines, _locs = solve(locArray, Expert if logicChoice == "E" else Casual, Connections)
 
     # write all items into their locations
     for loc in locArray:
@@ -252,6 +200,114 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         for solve_line in solve_lines:
             spoiler_file.write(solve_line + '\n')
     print(f"Spoiler file is {rom_name}.spoiler.txt")
+
+
+def assumed_fill(logicChoice: Literal["E", "C"],
+                 locArray: list[Location],
+                 spoilerSave: str,
+                 Connections: list[tuple[AreaDoor, AreaDoor]]) -> tuple[bool, str]:
+    for loc in locArray:
+        loc["item"] = None
+    dummy_locations: list[Location] = []
+    loadout = Loadout(Expert if logicChoice == "E" else Casual)
+    fill_algorithm = fillAssumed.FillAssumed(Connections)
+    n_items_to_place = sum(len(li) for li in fill_algorithm.itemLists)
+    assert n_items_to_place <= len(locArray), f"{n_items_to_place} items to put in {len(locArray)} locations"
+    print(f"{sum(len(li) for li in fill_algorithm.itemLists)} items to place")
+    while any(len(li) for li in fill_algorithm.itemLists):
+        placePair = fill_algorithm.choose_placement(dummy_locations, locArray, loadout)
+        if placePair is None:
+            message = ('Item placement was not successful in assumed. '
+                       f'{sum(len(li) for li in fill_algorithm.itemLists)} items remaining.')
+            print(message)
+            spoilerSave += f'{message}\n'
+            break
+        placeLocation, placeItem = placePair
+        placeLocation["item"] = placeItem
+        spoilerSave += f"{placeLocation['fullitemname']} - - - {placeItem[0]}\n"
+
+        if all(len(li) == 0 for li in fill_algorithm.itemLists):
+            # Normally, assumed
+            completable, _, _ = solve(locArray, loadout.logic, Connections)
+            if completable:
+                print("Item placements successful.")
+                spoilerSave += "Item placements successful.\n"
+            return completable, spoilerSave
+
+    return False, spoilerSave
+
+
+def forward_fill(logicChoice: Literal["E", "C"],
+                 fillChoice: Literal["M", "S", "MM"],
+                 locArray: list[Location],
+                 spoilerSave: str,
+                 Connections: list[tuple[AreaDoor, AreaDoor]]) -> tuple[bool, str]:
+    unusedLocations : list[Location] = []
+    unusedLocations.extend(locArray)
+    availableLocations: list[Location] = []
+    # visitedLocations = []
+    loadout = Loadout(Expert if logicChoice == "E" else Casual)
+    loadout.append(SunkenNestL)  # starting area
+    # use appropriate fill algorithm for initializing item lists
+    fill_algorithm = fillers[fillChoice](Connections)
+    while len(unusedLocations) != 0 or len(availableLocations) != 0:
+        # print("loadout contains:")
+        # print(loadout)
+        # for a in loadout:
+        #     print("-",a[0])
+        # update logic by updating unusedLocations
+        # using helper function, modular for more logic options later
+        # unusedLocations[i]['inlogic'] holds the True or False for logic
+        logic_updater.updateAreaLogic(loadout, Connections)
+        logic_updater.updateLogic(unusedLocations, locArray, loadout)
+
+        # update unusedLocations and availableLocations
+        for i in reversed(range(len(unusedLocations))):  # iterate in reverse so we can remove freely
+            if unusedLocations[i]['inlogic'] is True:
+                # print("Found available location at",unusedLocations[i]['fullitemname'])
+                availableLocations.append(unusedLocations[i])
+                unusedLocations.pop(i)
+        # print("Available locations sits at:",len(availableLocations))
+        # for al in availableLocations :
+        #     print(al[0])
+        # print("Unused locations sits at size:",len(unusedLocations))
+        # print("unusedLocations:")
+        # for u in unusedLocations :
+        #     print(u['fullitemname'])
+
+        if availableLocations == [] and unusedLocations != [] :
+            print(f'Item placement was not successful. {len(unusedLocations)} locations remaining.')
+            spoilerSave += f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
+            # for i in loadout:
+            #     print(i[0])
+            # for u in unusedLocations :
+            #     print("--",u['fullitemname'])
+
+            break
+
+        placePair = fill_algorithm.choose_placement(availableLocations, locArray, loadout)
+        if placePair is None:
+            print(f'Item placement was not successful due to majors. {len(unusedLocations)} locations remaining.')
+            spoilerSave += f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
+            break
+        # it returns your location and item, which are handled here
+        placeLocation, placeItem = placePair
+        if (placeLocation in unusedLocations) :
+            unusedLocations.remove(placeLocation)
+        placeLocation["item"] = placeItem
+        availableLocations.remove(placeLocation)
+        fill_algorithm.remove_from_pool(placeItem)
+        loadout.append(placeItem)
+        if not ((placeLocation['fullitemname'] in spacePortLocs) or (Items.spaceDrop in loadout)):
+            loadout.append(Items.spaceDrop)
+        spoilerSave += f"{placeLocation['fullitemname']} - - - {placeItem[0]}\n"
+        # print(placeLocation['fullitemname']+placeItem[0])
+
+        if availableLocations == [] and unusedLocations == [] :
+            print("Item placements successful.")
+            spoilerSave += "Item placements successful.\n"
+            return True, spoilerSave
+    return False, spoilerSave
 
 
 if __name__ == "__main__":

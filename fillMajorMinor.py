@@ -1,5 +1,6 @@
 from typing import Optional
 import random
+from connection_data import AreaDoor
 
 from fillInterface import FillAlgorithm
 from item_data import Item, items_unpackable
@@ -64,7 +65,7 @@ class FillMajorMinor(FillAlgorithm):
 
     itemLists: list[list[Item]]
 
-    def __init__(self) -> None:
+    def __init__(self, connections: list[tuple[AreaDoor, AreaDoor]]) -> None:
         self.earlyItemList = [
             Missile,
             Morph,
