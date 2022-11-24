@@ -1536,7 +1536,10 @@ location_logic: LocationLogicType = {
         ) and
         ((
             (NorakBrookL in loadout) and
-            (GravitySuit in loadout) and
+            ((GravitySuit in loadout) or (
+                (SpaceJump in loadout) and
+                (HiJump in loadout)
+            )) and
             (Morph in loadout)
         ) or (
             (NorakPerimeterBL in loadout) and
