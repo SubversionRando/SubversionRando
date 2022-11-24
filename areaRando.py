@@ -1,8 +1,9 @@
 import random
 
-from connection_data import area_doors_unpackable
-from romWriter import RomWriter
+from connection_data import AreaDoor, area_doors_unpackable
 from item_data import items_unpackable
+from logic_updater import otherDoor as find_other_door
+from romWriter import RomWriter
 
 # RandomizeAreas shuffles the locations and checks that the ship connects to daphne properly
 # updateAreaLogic is like a logic updater for area doors connecting to other area doors
@@ -37,7 +38,7 @@ from item_data import items_unpackable
 ) = items_unpackable
 
 
-def RandomizeAreas(romWriter : RomWriter) :
+def RandomizeAreas() -> list[tuple[AreaDoor, AreaDoor]]:
     # Each location holds
     # [0]the data of its door
     # [1]the data of the vanilla door that goes here
@@ -45,17 +46,12 @@ def RandomizeAreas(romWriter : RomWriter) :
     # [3]the name of the door
     # [4]region
 
-    def findDaphne(fromDoor) :
+    def findDaphne(fromDoor: AreaDoor) -> bool:
         # print("fromDoor:",fromDoor[3])
         # print("pathToDaphne:",pathToDaphne)
         testcases = []
-        for item in Connections :
-            # print("The first item:",len(item),item)
-            if (fromDoor in item) :
-                otherDoor = item[0]
-                if fromDoor == otherDoor :
-                    otherDoor = item[1]
-                # print("Declaring otherDoor: ",otherDoor)
+        otherDoor = find_other_door(fromDoor, Connections)
+        # print("Declaring otherDoor: ",otherDoor)
         # print("otherDoor:",otherDoor[3])
         if (otherDoor == RockyRidgeTrailL) :
             # print("FoundDaphne:")
@@ -90,12 +86,13 @@ def RandomizeAreas(romWriter : RomWriter) :
             return False
         pathToDaphne.append(otherDoor)
         for eachOtherExit in testcases:
-            if (eachOtherExit in pathToDaphne) == False :
+            if (eachOtherExit not in pathToDaphne):
                 pathToDaphne.append(eachOtherExit)
                 check = findDaphne(eachOtherExit)
                 soFar = (soFar or check)
         return soFar
 
+    Connections: list[tuple[AreaDoor, AreaDoor]] = []
     areaAttempts = 0
     connected = False
     while not connected :
@@ -177,14 +174,12 @@ def RandomizeAreas(romWriter : RomWriter) :
                 # if it fails, the loop will try again with no change
                 RightSideDoorsList.remove(selectedDoor)
                 # Choose a random Left node to connect to
-                randomNode = 0
-                if len(OpenNodesL) > 1 :
-                    randomNode = random.randint(0, len(OpenNodesL)-1)
-                Connections.append([selectedDoor, OpenNodesL[randomNode]])
+                randomNode = random.choice(OpenNodesL)
+                Connections.append((selectedDoor, randomNode))
                 # for DEBUG
                 # print('RightSideDoorsList')
                 # print('pairing',selectedDoor[2],selectedDoor[3],"--",OpenNodesL[randomNode][2],OpenNodesL[randomNode][3])
-                OpenNodesL.remove(OpenNodesL[randomNode])
+                OpenNodesL.remove(randomNode)
                 # Now add the area to the visitedareas
                 # and all nodes from that area
                 VisitedAreas = VisitedAreas+[selectedDoor[2]]
@@ -199,14 +194,12 @@ def RandomizeAreas(romWriter : RomWriter) :
                 # if it fails, the loop will try again with no change
                 LeftSideDoorsList.remove(selectedDoor)
                 # Choose a random Right node to connect to
-                randomNode = 0
-                if len(OpenNodesR) > 1 :
-                    randomNode = random.randint(0, len(OpenNodesR)-1)
-                Connections.append([selectedDoor, OpenNodesR[randomNode]])
+                randomNode = random.choice(OpenNodesR)
+                Connections.append((selectedDoor, randomNode))
                 # for DEBUG
                 # print('LeftSideDoorsList')
                 # print('pairing',selectedDoor[2],selectedDoor[3],"--",OpenNodesR[randomNode][2],OpenNodesR[randomNode][3])
-                OpenNodesR.remove(OpenNodesR[randomNode])
+                OpenNodesR.remove(randomNode)
                 # Now add the area to the visitedareas
                 # and all nodes from that area
                 VisitedAreas = VisitedAreas + [selectedDoor[2]]  # add the area string
@@ -235,7 +228,7 @@ def RandomizeAreas(romWriter : RomWriter) :
             if len(OpenNodesR) > 1 :
                 randomR = random.randint(0, len(OpenNodesR) - 1)
             chosenNodeR = OpenNodesR[randomR]
-            Connections.append([chosenNodeL, chosenNodeR])
+            Connections.append((chosenNodeL, chosenNodeR))
             OpenNodesL.remove(chosenNodeL)
             OpenNodesR.remove(chosenNodeR)
             # print("    Lengths: OpenNodesL",len(OpenNodesL)," and OpenNodesR",len(OpenNodesR))
@@ -249,7 +242,10 @@ def RandomizeAreas(romWriter : RomWriter) :
         if findDaphne(CraterR) or findDaphne(SunkenNestL) :
             connected = True
 
-    # then connect the doors together
+    return Connections
+
+
+def write_area_doors(Connections: list[tuple[AreaDoor, AreaDoor]], romWriter : RomWriter) -> None:
 
     # Now I need to read the OG Subversion rom for 12 bytes at address:Node1[1]
     # and write it into the 12 bytes at Node2[0]
@@ -260,16 +256,16 @@ def RandomizeAreas(romWriter : RomWriter) :
     # I am getting the pure original Subversion data
 
     # do a round of reading the door data for each node
-#    for pair in Connections :
-#        for node in pair :
-#            addressSending=int(node[0],16)
-#            addressReceiving=int(node[1],16)
-#            rom.seek(addressSending)
-#            sendingBytes=rom.read(12)
-#            node.append(sendingBytes) #this becomes node[3]
-#            rom.seek(addressReceiving)
-#            receivingBytes=rom.read(12)
-#            node.append(receivingBytes)    #this becomes node[4]
+    # for pair in Connections :
+    #     for node in pair :
+    #         addressSending=int(node[0],16)
+    #         addressReceiving=int(node[1],16)
+    #         rom.seek(addressSending)
+    #         sendingBytes=rom.read(12)
+    #         node.append(sendingBytes) #this becomes node[3]
+    #         rom.seek(addressReceiving)
+    #         receivingBytes=rom.read(12)
+    #         node.append(receivingBytes)    #this becomes node[4]
     for pair in Connections :
         node1 = pair[0]
         node2 = pair[1]
@@ -299,20 +295,8 @@ def RandomizeAreas(romWriter : RomWriter) :
                    '3ffa2c']
 
     for doorlocid in colorDoorsR:
-        romWriter.writeBytes(int(doorlocid, 16),   b"\x42")  # gray type door
+        romWriter.writeBytes(int(doorlocid, 16)+0, b"\x42")  # gray type door
         romWriter.writeBytes(int(doorlocid, 16)+5, b"\x98")  # animals subtype
     for doorlocid in colorDoorsL:
-        romWriter.writeBytes(int(doorlocid, 16),   b"\x48")  # gray type door
+        romWriter.writeBytes(int(doorlocid, 16)+0, b"\x48")  # gray type door
         romWriter.writeBytes(int(doorlocid, 16)+5, b"\x98")  # animals subtype
-
-    return Connections
-
-
-def otherDoor(door, Connections) :
-    for pair in Connections :
-        if (door in pair) :
-            other = pair[0]
-            if door == other :
-                other = pair[1]
-    return other
-# return these to top later

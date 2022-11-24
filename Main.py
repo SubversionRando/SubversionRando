@@ -127,7 +127,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     Connections = VanillaAreas()
     while not seedComplete :
         if randomizeAreas :  # area rando
-            Connections = areaRando.RandomizeAreas(romWriter)
+            Connections = areaRando.RandomizeAreas()
             # print(Connections) #test
         randomizeAttempts += 1
         if randomizeAttempts > 1000 :
@@ -213,6 +213,8 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
 
     _got_all, solve_lines = solve(locArray, Expert if logicChoice == "E" else Casual, Connections)
 
+    if randomizeAreas:
+        areaRando.write_area_doors(Connections, romWriter)
     # write all items into their locations
     for loc in locArray:
         write_location(romWriter, loc)
