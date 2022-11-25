@@ -2,6 +2,8 @@
 import sys
 from pathlib import Path
 
+from game import Game
+
 file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
 sys.path.append(str(root))
@@ -14,8 +16,8 @@ from logicCasual import Casual
 
 
 def test_area_rando() -> None:
-    area_rando = True
-    loadout = Loadout(Casual, area_rando)
+    game = Game(Casual, [], True, [])
+    loadout = Loadout(game)
 
     assert canOpen(area_doors["CraterR"]) in loadout
     assert canOpen(area_doors["WestTerminalAccessL"]) in loadout
@@ -24,8 +26,8 @@ def test_area_rando() -> None:
 
 
 def test_area_rando_with_items() -> None:
-    area_rando = True
-    loadout = Loadout(Casual, area_rando, (Items.PowerBomb, Items.Super))
+    game = Game(Casual, [], True, [])
+    loadout = Loadout(game, (Items.PowerBomb, Items.Super))
 
     assert canOpen(area_doors["CraterR"]) in loadout
     assert canOpen(area_doors["WestTerminalAccessL"]) in loadout
@@ -34,8 +36,8 @@ def test_area_rando_with_items() -> None:
 
 
 def test_non_area_rando_locked() -> None:
-    area_rando = False
-    loadout = Loadout(Casual, area_rando)
+    game = Game(Casual, [], False, [])
+    loadout = Loadout(game)
 
     assert canOpen(area_doors["CraterR"]) not in loadout
     assert canOpen(area_doors["WestTerminalAccessL"]) not in loadout
@@ -44,8 +46,8 @@ def test_non_area_rando_locked() -> None:
 
 
 def test_non_area_rando_open() -> None:
-    area_rando = False
-    loadout = Loadout(Casual, area_rando, (Items.PowerBomb, Items.Super))
+    game = Game(Casual, [], False, [])
+    loadout = Loadout(game, (Items.PowerBomb, Items.Super))
 
     assert canOpen(area_doors["CraterR"]) in loadout
     assert canOpen(area_doors["WestTerminalAccessL"]) in loadout

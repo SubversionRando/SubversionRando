@@ -117,7 +117,6 @@ class FillMajorMinor(FillAlgorithm):
 
     def choose_placement(self,
                          availableLocations: list[Location],
-                         locArray: list[Location],
                          loadout: Loadout) -> Optional[tuple[Location, Item]]:
         """ returns (location to place an item, which item to place there) """
 
@@ -152,7 +151,7 @@ class FillMajorMinor(FillAlgorithm):
                 if (loc['fullitemname'] in majorLocs)
             ]
             if from_items is self.earlyItemList and len(valid_locations) == 0 and (Morph in loadout):
-                for sandySearch in locArray:
+                for sandySearch in loadout.game.all_locations:
                     # print("Searching for Sandy Cache: ", sandySearch['fullitemname'])
                     if sandySearch['fullitemname'] == "Sandy Cache":
                         # print("   ---   appending sandy cache")

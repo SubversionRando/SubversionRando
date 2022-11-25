@@ -5,6 +5,7 @@ import argparse
 
 from connection_data import SunkenNestL, VanillaAreas
 from fillInterface import FillAlgorithm
+from game import Game
 from item_data import Item, Items
 from loadout import Loadout
 from location_data import Location, pullCSV, spacePortLocs
@@ -91,10 +92,8 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         fillChoice = "MM"
     else :
         fillChoice = "S"
-    randomizeAreas = False
     areaA = ""
     if workingArgs.area :
-        randomizeAreas = True
         areaA = "A"
         if fillChoice == "MM" :
             fillChoice = "M"
@@ -124,10 +123,13 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     spoilerSave = ""
     seedComplete = False
     randomizeAttempts = 0
-    Connections = VanillaAreas()
+    game = Game(Expert if logicChoice == "E" else Casual,
+                list(csvdict.values()),
+                areaA == "A",
+                VanillaAreas())
     while not seedComplete :
-        if randomizeAreas :  # area rando
-            Connections = areaRando.RandomizeAreas()
+        if game.area_rando:  # area rando
+            game.connections = areaRando.RandomizeAreas()
             # print(Connections) #test
         randomizeAttempts += 1
         if randomizeAttempts > 1000 :
@@ -141,7 +143,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         unusedLocations.extend(locArray)
         availableLocations: list[Location] = []
         # visitedLocations = []
-        loadout = Loadout(Expert if logicChoice == "E" else Casual, randomizeAreas)
+        loadout = Loadout(game)
         loadout.append(SunkenNestL)  # starting area
         # use appropriate fill algorithm for initializing item lists
         fill_algorithm = fillers[fillChoice]()
@@ -154,8 +156,8 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
             # update logic by updating unusedLocations
             # using helper function, modular for more logic options later
             # unusedLocations[i]['inlogic'] holds the True or False for logic
-            logic_updater.updateAreaLogic(loadout, Connections)
-            logic_updater.updateLogic(unusedLocations, locArray, loadout)
+            logic_updater.updateAreaLogic(loadout)
+            logic_updater.updateLogic(unusedLocations, loadout)
 
             # update unusedLocations and availableLocations
             for i in reversed(range(len(unusedLocations))):  # iterate in reverse so we can remove freely
@@ -182,7 +184,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
                 break
 
             # split here for different fill algorithms
-            placePair = fill_algorithm.choose_placement(availableLocations, locArray, loadout)
+            placePair = fill_algorithm.choose_placement(availableLocations, loadout)
             if placePair is None:
                 print(f'Item placement was not successful due to majors. {len(unusedLocations)} locations remaining.')
                 spoilerSave += f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
@@ -207,14 +209,14 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
                 break
 
     # add area transitions to spoiler
-    if randomizeAreas :
-        for item in Connections :
+    if game.area_rando:
+        for item in game.connections:
             spoilerSave += f"{item[0][2]} {item[0][3]} << >> {item[1][2]} {item[1][3]}\n"
 
-    _got_all, solve_lines = solve(locArray, Expert if logicChoice == "E" else Casual, Connections)
+    _got_all, solve_lines = solve(game)
 
-    if randomizeAreas:
-        areaRando.write_area_doors(Connections, romWriter)
+    if game.area_rando:
+        areaRando.write_area_doors(game.connections, romWriter)
     # write all items into their locations
     for loc in locArray:
         write_location(romWriter, loc)
