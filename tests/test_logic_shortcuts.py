@@ -3,8 +3,6 @@ import sys
 from pathlib import Path
 import pytest
 
-from logicExpert import Expert
-
 file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
 sys.path.append(str(root))
@@ -13,6 +11,7 @@ from item_data import Items
 from loadout import Loadout
 from logicCasual import Casual
 from logicCommon import energy_from_tanks, energy_req, varia_or_hell_run
+from logicExpert import Expert
 from logic_shortcut import LogicShortcut
 
 
@@ -33,7 +32,7 @@ def test_energy_from_tanks() -> None:
 
 
 def test_energy_req() -> None:
-    loadout = Loadout(Casual, (Items.Energy for _ in range(10)))
+    loadout = Loadout(Casual, False, (Items.Energy for _ in range(10)))
 
     assert energy_req(900) in loadout
     assert energy_req(1100) not in loadout
@@ -43,11 +42,11 @@ def test_energy_req() -> None:
 
     assert energy_req(1100) in loadout
 
-    loadout = Loadout(Casual)  # empty
+    loadout = Loadout(Casual, False)  # empty
 
     assert energy_req(900) not in loadout
 
-    loadout = Loadout(Expert)  # empty
+    loadout = Loadout(Expert, False)  # empty
 
     assert energy_req(700) not in loadout
 
@@ -64,7 +63,7 @@ def test_energy_req() -> None:
 
 
 def test_varia_or_hell_run() -> None:
-    loadout = Loadout(Expert)
+    loadout = Loadout(Expert, False)
 
     assert varia_or_hell_run(400) not in loadout
     assert varia_or_hell_run(800) not in loadout
@@ -90,7 +89,7 @@ def test_varia_or_hell_run() -> None:
     assert varia_or_hell_run(1200) in loadout
     assert varia_or_hell_run(1400) in loadout
 
-    loadout = Loadout(Expert)
+    loadout = Loadout(Expert, False)
     loadout.append(Items.Varia)  # only varia, no energy
 
     assert varia_or_hell_run(400) in loadout
@@ -112,7 +111,7 @@ def test_use_as_bool() -> None:
         (Items.Bombs in loadout) and
         (Items.Morph in loadout)
     ))
-    loadout = Loadout(Casual)
+    loadout = Loadout(Casual, False)
 
     with pytest.raises(TypeError):
         _ = (

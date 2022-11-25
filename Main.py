@@ -141,7 +141,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         unusedLocations.extend(locArray)
         availableLocations: list[Location] = []
         # visitedLocations = []
-        loadout = Loadout(Expert if logicChoice == "E" else Casual)
+        loadout = Loadout(Expert if logicChoice == "E" else Casual, randomizeAreas)
         loadout.append(SunkenNestL)  # starting area
         # use appropriate fill algorithm for initializing item lists
         fill_algorithm = fillers[fillChoice]()

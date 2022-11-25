@@ -1,7 +1,7 @@
 from collections import Counter
-from typing import TYPE_CHECKING, Any, Iterable, Iterator, Optional, Type, Union
+from typing import TYPE_CHECKING, Any, Iterable, Iterator, Mapping, Optional, Type, Union
 
-from connection_data import AreaDoor
+from connection_data import AreaDoor, vanilla_doors
 from item_data import Item
 from logic_shortcut import LogicShortcut
 
@@ -25,12 +25,19 @@ class ItemCounter(Counter[Union[Item, AreaDoor]]):
 
 
 class Loadout:
-    contents: ItemCounter
     logic: "Type[LogicInterface]"
+    area_rando: bool
+    contents: ItemCounter
+    door_data: Mapping[AreaDoor, Item]
 
-    def __init__(self, logic: "Type[LogicInterface]", items: Optional[Iterable[Union[Item, AreaDoor]]] = None) -> None:
-        self.contents = ItemCounter(items)
+    def __init__(self,
+                 logic: "Type[LogicInterface]",
+                 area_rando: bool,
+                 items: Optional[Iterable[Union[Item, AreaDoor]]] = None) -> None:
         self.logic = logic
+        self.area_rando = area_rando
+        self.contents = ItemCounter(items)
+        self.door_data = vanilla_doors
 
     def __eq__(self, __o: object) -> bool:
         if not isinstance(__o, Loadout):
@@ -70,4 +77,4 @@ class Loadout:
 
     def copy(self) -> "Loadout":
         # TODO: test copy
-        return Loadout(self.logic, self.contents)
+        return Loadout(self.logic, self.area_rando, self.contents)

@@ -4,8 +4,6 @@ from pathlib import Path
 from typing import Type
 import pytest
 
-from logicInterface import LogicInterface
-
 file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
 sys.path.append(str(root))
@@ -16,6 +14,7 @@ from loadout import Loadout
 from location_data import Location, pullCSV
 from logicCasual import Casual
 from logicExpert import Expert
+from logicInterface import LogicInterface
 from logic_updater import updateAreaLogic, updateLogic
 
 
@@ -26,7 +25,7 @@ def setup(logic: Type[LogicInterface]) -> tuple[
     locations = pullCSV()
     all_locations = list(locations.values())
     connections = VanillaAreas()
-    loadout = Loadout(logic)
+    loadout = Loadout(logic, False)
     return all_locations, connections, loadout
 
 
@@ -57,7 +56,7 @@ def test_start_logic() -> None:
         print(loc["fullitemname"])
     assert len(accessible) == 4, "add Ocean Shore: bottom"
 
-    loadout = Loadout(Expert, loadout.contents)
+    loadout = Loadout(Expert, False, loadout.contents)
 
     accessible = update_acc()
     print("  with expert")

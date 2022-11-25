@@ -1,6 +1,6 @@
 from typing import Type
 
-from connection_data import AreaDoor, SunkenNestL
+from connection_data import AreaDoor, SunkenNestL, VanillaAreas
 from item_data import Items
 from loadout import Loadout
 from location_data import Location, spacePortLocs
@@ -45,7 +45,7 @@ def solve(all_locations: list[Location],
     unused_locations = all_locations.copy()
     used_locs: set[str] = set()
 
-    loadout = Loadout(logic)
+    loadout = Loadout(logic, connections != VanillaAreas())
 
     log_lines = [" - spaceport -"]
     # this loop just for spaceport
