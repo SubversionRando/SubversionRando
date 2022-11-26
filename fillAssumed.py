@@ -102,11 +102,9 @@ class FillAssumed(FillAlgorithm):
         """ returns (location to place an item, which item to place there) """
 
         from_items = (
-            # self.earlyItemList if len(self.earlyItemList) else (
             self.prog_items if len(self.prog_items) else (
                 self.extra_items
             )
-            # )
         )
 
         assert len(from_items), "tried to place item when placement algorithm has 0 items left in item pool"
