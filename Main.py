@@ -29,7 +29,7 @@ def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
 
     parser.add_argument('-s', '--speedrun', action="store_true",
                         help='Speedrun fill, fast setting comparable to Varia.run Speedrun fill algorithm, Default')
-    parser.add_argument('-af', '--assumedfill', action="store_true",
+    parser.add_argument('-d', '--assumedfill', action="store_true",
                         help='Assumed fill, standard slower progression fill algorithm')
     parser.add_argument(
         '-m', '--medium', action="store_true",
@@ -94,13 +94,13 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     else :
         logicChoice = "C"  # Default to casual logic
 
-    fillChoice: Literal["M", "MM", "AF", "S"]
+    fillChoice: Literal["M", "MM", "D", "S"]
     if workingArgs.medium :
         fillChoice = "M"
     elif workingArgs.majorminor :
         fillChoice = "MM"
     elif workingArgs.assumedfill :
-        fillChoice = "AF"
+        fillChoice = "D"
     else :
         fillChoice = "S"
     randomizeAreas = False
@@ -149,7 +149,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         spoilerSave = ""
         spoilerSave += f"Starting randomization attempt: {randomizeAttempts}\n"
         # now start randomizing
-        if fillChoice == "AF":
+        if fillChoice == "D":
             seedComplete, spoilerSave = assumed_fill(logicChoice, locArray, spoilerSave, Connections)
         else:
             seedComplete, spoilerSave = forward_fill(logicChoice, fillChoice, locArray, spoilerSave, Connections)
