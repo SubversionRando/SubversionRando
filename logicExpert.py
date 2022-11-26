@@ -1339,6 +1339,7 @@ location_logic: LocationLogicType = {
     "Shrine Of Fervor": lambda loadout: (
         (NorakBrookL in loadout) and
         (jumpAble in loadout)
+        # This requires Morph and I think something else (to get from Shrine fo Fervor to NorakBrookL)
     ),
     "Chamber Of Wind": lambda loadout: (
         (NorakBrookL in loadout) and
