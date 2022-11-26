@@ -1,10 +1,8 @@
-from typing import Type
-
-from connection_data import AreaDoor, SunkenNestL
+from connection_data import SunkenNestL
+from game import Game
 from item_data import Items
 from loadout import Loadout
-from location_data import Location, spacePortLocs
-from logicInterface import LogicInterface
+from location_data import spacePortLocs
 from logic_updater import updateAreaLogic, updateLogic
 
 _progression_items = frozenset([
@@ -35,17 +33,15 @@ _progression_items = frozenset([
 ])
 
 
-def solve(all_locations: list[Location],
-          logic: Type[LogicInterface],
-          connections: list[tuple[AreaDoor, AreaDoor]]) -> tuple[bool, list[str]]:
+def solve(game: Game) -> tuple[bool, list[str]]:
     """ returns (whether completable, spoiler lines) """
-    for loc in all_locations:
+    for loc in game.all_locations:
         loc['inlogic'] = False
 
-    unused_locations = all_locations.copy()
+    unused_locations = game.all_locations.copy()
     used_locs: set[str] = set()
 
-    loadout = Loadout(logic)
+    loadout = Loadout(game)
 
     log_lines = [" - spaceport -"]
     # this loop just for spaceport
@@ -53,8 +49,8 @@ def solve(all_locations: list[Location],
     while not stuck:
         prev_loadout_count = len(loadout)
         log_lines.append("sphere:")
-        updateAreaLogic(loadout, connections)
-        updateLogic(unused_locations, all_locations, loadout)
+        updateAreaLogic(loadout)
+        updateLogic(unused_locations, loadout)
         for loc in unused_locations:
             if loc['inlogic']:
                 loc_name = loc['fullitemname']
@@ -75,7 +71,7 @@ def solve(all_locations: list[Location],
     while "sphere:" in log_lines[-1]:
         log_lines.pop()
 
-    if not logic.can_fall_from_spaceport(loadout):
+    if not game.logic.can_fall_from_spaceport(loadout):
         print("solver: couldn't get out of spaceport")
         for loc in unused_locations:
             if loc['inlogic'] and loc['fullitemname'] not in spacePortLocs:
@@ -91,8 +87,8 @@ def solve(all_locations: list[Location],
     while not stuck:
         prev_loadout_count = len(loadout)
         log_lines.append("sphere:")
-        updateAreaLogic(loadout, connections)
-        updateLogic(unused_locations, all_locations, loadout)
+        updateAreaLogic(loadout)
+        updateLogic(unused_locations, loadout)
         for loc in unused_locations:
             if loc['inlogic']:
                 loc_name = loc['fullitemname']

@@ -2,8 +2,7 @@
 import sys
 from pathlib import Path
 import pytest
-
-from logicExpert import Expert
+from game import Game
 
 file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
@@ -13,6 +12,7 @@ from item_data import Items
 from loadout import Loadout
 from logicCasual import Casual
 from logicCommon import energy_from_tanks, energy_req, varia_or_hell_run
+from logicExpert import Expert
 from logic_shortcut import LogicShortcut
 
 
@@ -33,7 +33,8 @@ def test_energy_from_tanks() -> None:
 
 
 def test_energy_req() -> None:
-    loadout = Loadout(Casual, (Items.Energy for _ in range(10)))
+    game = Game(Casual, [], False, [])
+    loadout = Loadout(game, (Items.Energy for _ in range(10)))
 
     assert energy_req(900) in loadout
     assert energy_req(1100) not in loadout
@@ -43,11 +44,12 @@ def test_energy_req() -> None:
 
     assert energy_req(1100) in loadout
 
-    loadout = Loadout(Casual)  # empty
+    loadout = Loadout(game)  # empty
 
     assert energy_req(900) not in loadout
 
-    loadout = Loadout(Expert)  # empty
+    game = Game(Expert, [], False, [])
+    loadout = Loadout(game)  # empty
 
     assert energy_req(700) not in loadout
 
@@ -64,7 +66,8 @@ def test_energy_req() -> None:
 
 
 def test_varia_or_hell_run() -> None:
-    loadout = Loadout(Expert)
+    game = Game(Expert, [], False, [])
+    loadout = Loadout(game)
 
     assert varia_or_hell_run(400) not in loadout
     assert varia_or_hell_run(800) not in loadout
@@ -90,7 +93,7 @@ def test_varia_or_hell_run() -> None:
     assert varia_or_hell_run(1200) in loadout
     assert varia_or_hell_run(1400) in loadout
 
-    loadout = Loadout(Expert)
+    loadout = Loadout(game)
     loadout.append(Items.Varia)  # only varia, no energy
 
     assert varia_or_hell_run(400) in loadout
@@ -112,7 +115,8 @@ def test_use_as_bool() -> None:
         (Items.Bombs in loadout) and
         (Items.Morph in loadout)
     ))
-    loadout = Loadout(Casual)
+    game = Game(Casual, [], False, [])
+    loadout = Loadout(game)
 
     with pytest.raises(TypeError):
         _ = (

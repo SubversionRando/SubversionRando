@@ -13,7 +13,6 @@ class FillAlgorithm(abc.ABC):
     @abc.abstractmethod
     def choose_placement(self,
                          availableLocations: list[Location],
-                         locArray: list[Location],
                          loadout: Loadout) -> Optional[tuple[Location, Item]]:
         """ returns (location to place an item, which item to place there) """
 
