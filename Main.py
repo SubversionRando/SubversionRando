@@ -3,8 +3,9 @@ import sys
 from typing import Literal, Optional, Type
 import argparse
 
-from connection_data import AreaDoor, SunkenNestL, VanillaAreas
+from connection_data import SunkenNestL, VanillaAreas
 from fillInterface import FillAlgorithm
+from game import Game
 from item_data import Item, Items
 from loadout import Loadout
 from location_data import Location, pullCSV, spacePortLocs
@@ -103,10 +104,8 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         fillChoice = "D"
     else :
         fillChoice = "S"
-    randomizeAreas = False
     areaA = ""
     if workingArgs.area :
-        randomizeAreas = True
         areaA = "A"
         if fillChoice == "MM" :
             fillChoice = "M"
@@ -136,10 +135,13 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     spoilerSave = ""
     seedComplete = False
     randomizeAttempts = 0
-    Connections = VanillaAreas()
+    game = Game(Expert if logicChoice == "E" else Casual,
+                list(csvdict.values()),
+                areaA == "A",
+                VanillaAreas())
     while not seedComplete :
-        if randomizeAreas :  # area rando
-            Connections = areaRando.RandomizeAreas()
+        if game.area_rando:  # area rando
+            game.connections = areaRando.RandomizeAreas()
             # print(Connections) #test
         randomizeAttempts += 1
         if randomizeAttempts > 1000 :
@@ -150,19 +152,19 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         spoilerSave += f"Starting randomization attempt: {randomizeAttempts}\n"
         # now start randomizing
         if fillChoice == "D":
-            seedComplete, spoilerSave = assumed_fill(logicChoice, locArray, spoilerSave, Connections)
+            seedComplete, spoilerSave = assumed_fill(game, spoilerSave)
         else:
-            seedComplete, spoilerSave = forward_fill(logicChoice, fillChoice, locArray, spoilerSave, Connections)
+            seedComplete, spoilerSave = forward_fill(game, fillChoice, spoilerSave)
 
     # add area transitions to spoiler
-    if randomizeAreas :
-        for item in Connections :
+    if game.area_rando:
+        for item in game.connections:
             spoilerSave += f"{item[0][2]} {item[0][3]} << >> {item[1][2]} {item[1][3]}\n"
 
-    _got_all, solve_lines, _locs = solve(locArray, Expert if logicChoice == "E" else Casual, Connections)
+    _got_all, solve_lines, _locs = solve(game)
 
-    if randomizeAreas:
-        areaRando.write_area_doors(Connections, romWriter)
+    if game.area_rando:
+        areaRando.write_area_doors(game.connections, romWriter)
     # write all items into their locations
     for loc in locArray:
         write_location(romWriter, loc)
@@ -204,20 +206,18 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     print(f"Spoiler file is spoilers/{rom_name}.spoiler.txt")
 
 
-def assumed_fill(logicChoice: Literal["E", "C"],
-                 locArray: list[Location],
-                 spoilerSave: str,
-                 Connections: list[tuple[AreaDoor, AreaDoor]]) -> tuple[bool, str]:
-    for loc in locArray:
+def assumed_fill(game: Game, spoilerSave: str) -> tuple[bool, str]:
+    for loc in game.all_locations:
         loc["item"] = None
     dummy_locations: list[Location] = []
-    loadout = Loadout(Expert if logicChoice == "E" else Casual)
-    fill_algorithm = fillAssumed.FillAssumed(Connections)
+    loadout = Loadout(game)
+    fill_algorithm = fillAssumed.FillAssumed(game.connections)
     n_items_to_place = fill_algorithm.count_items_remaining()
-    assert n_items_to_place <= len(locArray), f"{n_items_to_place} items to put in {len(locArray)} locations"
+    assert n_items_to_place <= len(game.all_locations), \
+        f"{n_items_to_place} items to put in {len(game.all_locations)} locations"
     print(f"{fill_algorithm.count_items_remaining()} items to place")
     while fill_algorithm.count_items_remaining():
-        placePair = fill_algorithm.choose_placement(dummy_locations, locArray, loadout)
+        placePair = fill_algorithm.choose_placement(dummy_locations, loadout)
         if placePair is None:
             message = ('Item placement was not successful in assumed. '
                        f'{fill_algorithm.count_items_remaining()} items remaining.')
@@ -232,7 +232,7 @@ def assumed_fill(logicChoice: Literal["E", "C"],
             # Normally, assumed fill will always make a valid playthrough,
             # but dropping from spaceport can mess that up,
             # so it needs to be checked again.
-            completable, _, _ = solve(locArray, loadout.logic, Connections)
+            completable, _, _ = solve(game)
             if completable:
                 print("Item placements successful.")
                 spoilerSave += "Item placements successful.\n"
@@ -241,19 +241,17 @@ def assumed_fill(logicChoice: Literal["E", "C"],
     return False, spoilerSave
 
 
-def forward_fill(logicChoice: Literal["E", "C"],
+def forward_fill(game: Game,
                  fillChoice: Literal["M", "S", "MM"],
-                 locArray: list[Location],
-                 spoilerSave: str,
-                 Connections: list[tuple[AreaDoor, AreaDoor]]) -> tuple[bool, str]:
+                 spoilerSave: str) -> tuple[bool, str]:
     unusedLocations : list[Location] = []
-    unusedLocations.extend(locArray)
+    unusedLocations.extend(game.all_locations)
     availableLocations: list[Location] = []
     # visitedLocations = []
-    loadout = Loadout(Expert if logicChoice == "E" else Casual)
+    loadout = Loadout(game)
     loadout.append(SunkenNestL)  # starting area
     # use appropriate fill algorithm for initializing item lists
-    fill_algorithm = fillers[fillChoice](Connections)
+    fill_algorithm = fillers[fillChoice](game.connections)
     while len(unusedLocations) != 0 or len(availableLocations) != 0:
         # print("loadout contains:")
         # print(loadout)
@@ -262,8 +260,8 @@ def forward_fill(logicChoice: Literal["E", "C"],
         # update logic by updating unusedLocations
         # using helper function, modular for more logic options later
         # unusedLocations[i]['inlogic'] holds the True or False for logic
-        logic_updater.updateAreaLogic(loadout, Connections)
-        logic_updater.updateLogic(unusedLocations, locArray, loadout)
+        logic_updater.updateAreaLogic(loadout)
+        logic_updater.updateLogic(unusedLocations, loadout)
 
         # update unusedLocations and availableLocations
         for i in reversed(range(len(unusedLocations))):  # iterate in reverse so we can remove freely
@@ -289,7 +287,7 @@ def forward_fill(logicChoice: Literal["E", "C"],
 
             break
 
-        placePair = fill_algorithm.choose_placement(availableLocations, locArray, loadout)
+        placePair = fill_algorithm.choose_placement(availableLocations, loadout)
         if placePair is None:
             print(f'Item placement was not successful due to majors. {len(unusedLocations)} locations remaining.')
             spoilerSave += f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'

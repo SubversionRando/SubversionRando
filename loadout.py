@@ -1,12 +1,12 @@
 from collections import Counter
-from typing import TYPE_CHECKING, Any, Iterable, Iterator, Optional, Type, Union
+from typing import TYPE_CHECKING, Any, Iterable, Iterator, Optional, Union
 
 from connection_data import AreaDoor
 from item_data import Item
 from logic_shortcut import LogicShortcut
 
 if TYPE_CHECKING:
-    from logicInterface import LogicInterface
+    from game import Game
 
 
 class ItemCounter(Counter[Union[Item, AreaDoor]]):
@@ -26,18 +26,19 @@ class ItemCounter(Counter[Union[Item, AreaDoor]]):
 
 class Loadout:
     contents: ItemCounter
-    logic: "Type[LogicInterface]"
 
-    def __init__(self, logic: "Type[LogicInterface]", items: Optional[Iterable[Union[Item, AreaDoor]]] = None) -> None:
+    def __init__(self,
+                 game: "Game",
+                 items: Optional[Iterable[Union[Item, AreaDoor]]] = None) -> None:
+        self.game = game
         self.contents = ItemCounter(items)
-        self.logic = logic
 
     def __eq__(self, __o: object) -> bool:
         if not isinstance(__o, Loadout):
             return False
         return (
             (self.contents == __o.contents) and
-            (self.logic is __o.logic)
+            (self.game is __o.game)
         )
 
     def __contains__(self, x: Union[Item, AreaDoor, LogicShortcut]) -> bool:
@@ -54,7 +55,7 @@ class Loadout:
         return sum(self.contents.values())  # `Counter.total()` requires python 3.10
 
     def __repr__(self) -> str:
-        return f"Loadout({self.logic.__name__}, {self.contents})"
+        return f"Loadout({self.game}, {self.contents})"
 
     def count(self, item: Union[Item, AreaDoor]) -> int:
         return self.contents[item]
@@ -70,4 +71,4 @@ class Loadout:
 
     def copy(self) -> "Loadout":
         # TODO: test copy
-        return Loadout(self.logic, self.contents)
+        return Loadout(self.game, self.contents)

@@ -1,5 +1,7 @@
 from typing import ClassVar
+
 from connection_data import area_doors_unpackable
+from door_logic import canOpen
 from item_data import items_unpackable
 from loadout import Loadout
 from logicCommon import energy_req
@@ -105,7 +107,7 @@ area_logic: AreaLogicType = {
             canFly in loadout
         ),  # this location cares about area rando
         ("SunkenNestL", "CraterR"): lambda loadout: (
-            loadout.has_all(canFly, canUsePB)
+            loadout.has_all(canFly, canOpen(CraterR))
         ),  # this location cares about area rando
         ("SunkenNestL", "RuinedConcourseBL"): lambda loadout: (
             (jumpAble in loadout) and

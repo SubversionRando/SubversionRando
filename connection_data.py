@@ -1,4 +1,6 @@
 """ data for the connections in area rando """
+from item_data import Item, Items
+
 
 AreaDoor = tuple[str, str, str, str, int]
 """
@@ -64,6 +66,13 @@ area_doors_unpackable: tuple[AreaDoor, ...] = (
 area_doors: dict[str, AreaDoor] = {
     door[3]: door
     for door in area_doors_unpackable
+}
+
+vanilla_doors: dict[AreaDoor, Item] = {
+    area_doors["CraterR"]: Items.PowerBomb,
+    area_doors["WestTerminalAccessL"]: Items.PowerBomb,
+    area_doors["VulnarCanyonL"]: Items.PowerBomb,
+    area_doors["FoyerR"]: Items.Super
 }
 
 # to make sure this unpacking list is correct:

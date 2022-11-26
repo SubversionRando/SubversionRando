@@ -72,12 +72,12 @@ class FillAssumed(FillAlgorithm):
 
         self.itemLists = [self.prog_items, self.extra_items]
 
-    def _get_accessible_locations(self, all_locations: list[Location], loadout: Loadout) -> list[Location]:
-        _, _, locs = solve(all_locations, loadout.logic, self.connections, loadout)
+    def _get_accessible_locations(self, loadout: Loadout) -> list[Location]:
+        _, _, locs = solve(loadout.game, loadout)
         return locs
 
-    def _get_available_locations(self, all_locations: list[Location], loadout: Loadout) -> list[Location]:
-        return [loc for loc in self._get_accessible_locations(all_locations, loadout) if loc["item"] is None]
+    def _get_available_locations(self, loadout: Loadout) -> list[Location]:
+        return [loc for loc in self._get_accessible_locations(loadout) if loc["item"] is None]
 
     def _get_empty_locations(self, all_locations: list[Location]) -> list[Location]:
         return [loc for loc in all_locations if loc["item"] is None]
@@ -98,7 +98,6 @@ class FillAssumed(FillAlgorithm):
 
     def choose_placement(self,
                          availableLocations: list[Location],
-                         locArray: list[Location],
                          loadout: Loadout) -> Optional[tuple[Location, Item]]:
         """ returns (location to place an item, which item to place there) """
 
@@ -128,12 +127,12 @@ class FillAssumed(FillAlgorithm):
         from_items.remove(item_to_place)
 
         if from_items is self.prog_items:
-            loadout = Loadout(loadout.logic)
+            loadout = Loadout(loadout.game)
             for item in from_items:
                 loadout.append(item)
-            available_locations = self._get_available_locations(locArray, loadout)
+            available_locations = self._get_available_locations(loadout)
         else:  # extra
-            available_locations = self._get_empty_locations(locArray)
+            available_locations = self._get_empty_locations(loadout.game.all_locations)
         if len(available_locations) == 0:
             return None
 

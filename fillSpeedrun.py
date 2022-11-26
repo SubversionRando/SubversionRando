@@ -86,7 +86,6 @@ class FillSpeedrun(FillAlgorithm):
 
     def choose_placement(self,
                          availableLocations: list[Location],
-                         locArray: list[Location],
                          loadout: Loadout) -> Optional[tuple[Location, Item]]:
         """ returns (location to place an item, which item to place there) """
         assert len(availableLocations), "placement algorithm received 0 available locations"
