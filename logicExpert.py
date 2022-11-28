@@ -44,9 +44,6 @@ exitSpacePort = LogicShortcut(lambda loadout: (
     # TODO: Why did one definition have somethings different?
     # (Morph in loadout) or (Missile in loadout) or (Super in loadout) or (Wave in loadout)
 ))
-canFly = LogicShortcut(lambda loadout: (
-    (SpaceJump in loadout) or loadout.has_all(Morph, Bombs)
-))
 canUsePB = LogicShortcut(lambda loadout: (
     loadout.has_all(Morph, PowerBomb)
 ))
@@ -57,6 +54,9 @@ canBomb = LogicShortcut(lambda loadout: (
 # even though it might only have PBs
 jumpAble = LogicShortcut(lambda loadout: (
     loadout.has_all(exitSpacePort, GravityBoots)
+))
+canFly = LogicShortcut(lambda loadout: (
+    (jumpAble in loadout) and ((SpaceJump in loadout) or loadout.has_all(Morph, Bombs))
 ))
 wave = LogicShortcut(lambda loadout: (
     (Wave in loadout) or ((Charge in loadout) and (Hypercharge in loadout))

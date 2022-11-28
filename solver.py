@@ -90,6 +90,11 @@ def solve(game: Game) -> tuple[bool, list[str]]:
         updateAreaLogic(loadout)
         updateLogic(unused_locations, loadout)
         for loc in unused_locations:
+            # special case: major/minor can put missiles or grav boots in sandy cache even though it's not in logic
+            if loc['fullitemname'] == "Sandy Cache" and loc['item'] in {
+                Items.GravityBoots, Items.Missile
+            }:
+                loc['inlogic'] = True
             if loc['inlogic']:
                 loc_name = loc['fullitemname']
                 item = loc['item']
