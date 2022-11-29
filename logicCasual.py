@@ -82,7 +82,7 @@ icePod = LogicShortcut(lambda loadout: (
     ((Ice in loadout) and (missileDamage in loadout)) or ((Charge in loadout) and (Hypercharge in loadout))
 ))
 suzi = LogicShortcut(lambda loadout: (
-    loadout.has_all(jumpAble, SpeedBooster, Grapple, Super, wave, canUsePB, GravitySuit)
+    loadout.has_all(jumpAble, canFly, SpeedBooster, Super, wave, canUsePB, GravitySuit)
 ))
 electricHyper = LogicShortcut(lambda loadout: (
     (MetroidSuit in loadout) or (
@@ -1099,6 +1099,7 @@ area_logic: AreaLogicType = {
             (jumpAble in loadout) and
             (canBomb in loadout) and
             (Varia in loadout) and
+            (Super in loadout) and
             (canUsePB in loadout) and
             (
                 (icePod in loadout) or
