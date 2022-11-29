@@ -1,4 +1,3 @@
-import abc
 from typing import Callable, ClassVar
 
 from loadout import Loadout
@@ -29,6 +28,6 @@ class LogicInterface:
     """
 
     @staticmethod
-    @abc.abstractmethod
     def can_fall_from_spaceport(loadout: Loadout) -> bool:
         """ returns whether I can leave spaceport by Ridley free-fall """
+        raise NotImplementedError("can_fall_from_spaceport")

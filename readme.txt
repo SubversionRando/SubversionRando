@@ -13,6 +13,7 @@ simple readme for now
  -e   : Expert logic
  -s   : Speedrun fill (Default)
  -m   : Medium fill
+ -d   : Assumed fill
  -a   : Area Rando
 
 This should create a randomized rom with the given name in the roms folder and a spoiler log (.txt) in the spoilers folder.

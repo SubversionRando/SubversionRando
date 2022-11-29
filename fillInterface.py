@@ -1,6 +1,7 @@
 import abc
 from typing import Optional
 
+from connection_data import AreaDoor
 from item_data import Item
 from loadout import Loadout
 from location_data import Location
@@ -11,10 +12,18 @@ from location_data import Location
 
 class FillAlgorithm(abc.ABC):
     @abc.abstractmethod
+    def __init__(self, connections: list[tuple[AreaDoor, AreaDoor]]) -> None:
+        """ setup, build item pool, etc. """
+
+    @abc.abstractmethod
     def choose_placement(self,
                          availableLocations: list[Location],
                          loadout: Loadout) -> Optional[tuple[Location, Item]]:
         """ returns (location to place an item, which item to place there) """
+
+    @abc.abstractmethod
+    def count_items_remaining(self) -> int:
+        """ how many items left to place """
 
     @abc.abstractmethod
     def remove_from_pool(self, item: Item) -> None:

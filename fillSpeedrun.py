@@ -1,5 +1,6 @@
 import random
 from typing import Optional
+from connection_data import AreaDoor
 
 from fillInterface import FillAlgorithm
 from item_data import Item, items_unpackable
@@ -31,7 +32,7 @@ class FillSpeedrun(FillAlgorithm):
     [2] extraItemList
     """
 
-    def __init__(self) -> None:
+    def __init__(self, connections: list[tuple[AreaDoor, AreaDoor]]) -> None:
         self.earlyItemList = [
             Missile,
             Morph,
@@ -103,6 +104,9 @@ class FillSpeedrun(FillAlgorithm):
         assert len(from_items), "tried to place item when placement algorithm has 0 items left in item pool"
 
         return random.choice(availableLocations), random.choice(from_items)
+
+    def count_items_remaining(self) -> int:
+        return sum(len(li) for li in self.itemLists)
 
     def remove_from_pool(self, item: Item) -> None:
         """ removes this item from the item pool """

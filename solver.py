@@ -1,8 +1,10 @@
+from typing import Optional
+
 from connection_data import SunkenNestL
 from game import Game
 from item_data import Items
 from loadout import Loadout
-from location_data import spacePortLocs
+from location_data import Location, spacePortLocs
 from logic_updater import updateAreaLogic, updateLogic
 
 _progression_items = frozenset([
@@ -33,15 +35,15 @@ _progression_items = frozenset([
 ])
 
 
-def solve(game: Game) -> tuple[bool, list[str]]:
-    """ returns (whether completable, spoiler lines) """
+def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, list[str], list[Location]]:
+    """ returns (whether completable, spoiler lines, accessible locations) """
     for loc in game.all_locations:
         loc['inlogic'] = False
 
     unused_locations = game.all_locations.copy()
     used_locs: set[str] = set()
 
-    loadout = Loadout(game)
+    loadout = Loadout(game, starting_items)
 
     log_lines = [" - spaceport -"]
     # this loop just for spaceport
@@ -72,13 +74,13 @@ def solve(game: Game) -> tuple[bool, list[str]]:
         log_lines.pop()
 
     if not game.logic.can_fall_from_spaceport(loadout):
-        print("solver: couldn't get out of spaceport")
-        for loc in unused_locations:
-            if loc['inlogic'] and loc['fullitemname'] not in spacePortLocs:
-                print("solver: found another way out of spaceport besides Ridley")
-                print(loadout)
-                print("but logic doesn't support that yet")
-        return False, log_lines
+        # print("solver: couldn't get out of spaceport")
+        # for loc in unused_locations:
+        #     if loc['inlogic'] and loc['fullitemname'] not in spacePortLocs:
+        #         print("solver: found another way out of spaceport besides Ridley")
+        #         print(loadout)
+        #         print("but logic doesn't support that yet")
+        return False, log_lines, [loc for loc in game.all_locations if loc["fullitemname"] in used_locs]
     loadout.append(Items.spaceDrop)
     loadout.append(SunkenNestL)  # assuming this is where we land
     log_lines.append(" - fall from spaceport -")
@@ -113,4 +115,10 @@ def solve(game: Game) -> tuple[bool, list[str]]:
     # for line in log_lines:
     #     print(line)
 
-    return len(unused_locations) == 0, log_lines
+    # note: the reason for making a new list from all_locations rather than used_locs,
+    # is that used_locs is a `set`, so iterating through it is not deterministic, so seeds wouldn't be reproducible
+    return (
+        len(unused_locations) == 0,
+        log_lines,
+        [loc for loc in game.all_locations if loc["fullitemname"] in used_locs]
+    )
