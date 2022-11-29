@@ -188,7 +188,7 @@ area_logic: AreaLogicType = {
                             )
                         )
                     )
-                )thout speedbooster, but casual can do it without speedbooster
+                )
         ),
         ("RuinedConcourseTR", "SunkenNestL"): lambda loadout: (
             True  # TODO: put requirements here. Don't assume that we start with Sunken Nest
@@ -404,8 +404,7 @@ area_logic: AreaLogicType = {
                     (pinkDoor in loadout) and
                     (Screw in loadout)
                     )
-                )
-            )
+                )        
         ),
         ("ExcavationSiteL", "ConstructionSiteL"): lambda loadout: (
             (jumpAble in loadout) and
@@ -559,9 +558,9 @@ area_logic: AreaLogicType = {
             ((
                 (canUsePB in loadout) and
                 (Screw in loadout) and
-                (pinkDoor in loadout) and
-                
-            ) or (
+                (pinkDoor in loadout)
+                ) or
+             (
                 (Morph in loadout) and
                 (wave in loadout) and
                 (Bombs in loadout)
@@ -617,7 +616,7 @@ area_logic: AreaLogicType = {
             ((
                 (canUsePB in loadout) and
                 (Screw in loadout) and
-                (pinkDoor in loadout) and
+                (pinkDoor in loadout)
                 
             ) or (
                 (Morph in loadout) and
@@ -736,7 +735,7 @@ area_logic: AreaLogicType = {
                 (SpaceJump in loadout) or
                 (SpeedBooster in loadout) or
                 (Bombs in loadout)
-                ) needs PBs and casual doesn't?
+                ) 
         ),
         ("TransferStationR", "FieldAccessL"): lambda loadout: (
             loadout.has_all(jumpAble, pinkDoor, DarkVisor, wave, canBomb)
@@ -1030,6 +1029,7 @@ area_logic: AreaLogicType = {
              (HiJump in loadout) or
              (Speedball in loadout) or
              (SpaceJump in loadout))
+             )
         ),
         ("NorakPerimeterTR", "ElevatorToWellspringL"): lambda loadout: (
             (jumpAble in loadout) and
@@ -1056,8 +1056,9 @@ area_logic: AreaLogicType = {
              ((SpeedBooster in loadout) and
               (Morph in loadout)) and
             (MetroidSuit in loadout)
+             )
         ), #Test doing NorakPerimeterBL spark with/out morph
-        ),
+            
         ("NorakPerimeterBL", "ElevatorToWellspringL"): lambda loadout: (
             (jumpAble in loadout) and
             (canBomb in loadout) and
@@ -1084,6 +1085,7 @@ area_logic: AreaLogicType = {
              ((SpeedBooster in loadout) and
               (Morph in loadout)) and
             (MetroidSuit in loadout)
+             )
         ),
     },
     "FireHive": {
@@ -1321,7 +1323,6 @@ area_logic: AreaLogicType = {
                      (HiJump in loadout) or
                      (Ice in loadout)
                      )
-                 )
                 ) and
             (varia_or_hell_run(350) in loadout) and
             (MetroidSuit in loadout) and
@@ -1418,7 +1419,7 @@ area_logic: AreaLogicType = {
             (jumpAble in loadout) and
             (Morph in loadout) and
             (varia_or_hell_run(550) in loadout) and
-            (icePod in loadout) 
+            (icePod in loadout) and
             (Super in loadout) and
             ((canBomb in loadout) or (Screw in loadout) or (SpeedBooster in loadout))
         ),
@@ -1451,7 +1452,7 @@ area_logic: AreaLogicType = {
                 ) and
             (
                 (canBomb in loadout) or
-                (Screw in loadout) or
+                (Screw in loadout)
                 )
         ),
         ("RagingPitL", "FieryGalleryL"): lambda loadout: (
