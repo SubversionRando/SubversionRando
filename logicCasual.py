@@ -104,10 +104,20 @@ area_logic: AreaLogicType = {
         # using SunkenNestL as the hub for this area, so we don't need a path from every door to every other door
         # just need at least a path with sunken nest to and from every other door in the area
         ("CraterR", "SunkenNestL"): lambda loadout: (
-            canFly in loadout
+            (canFly in loadout)
         ),  # this location cares about area rando
         ("SunkenNestL", "CraterR"): lambda loadout: (
-            loadout.has_all(canFly, canOpen(CraterR))
+            (jumpAble in loadout) and
+            (canOpen(CraterR) in loadout) and
+            (
+                (
+                    (SpaceJump in loadout) and (HiJump in loadout)
+                    ) or
+                (SpeedBooster in loadout) or
+                (
+                    (Morph in loadout) and (Bombs in loadout)
+                    )
+                )
         ),  # this location cares about area rando
         ("SunkenNestL", "RuinedConcourseBL"): lambda loadout: (
             (jumpAble in loadout) and
@@ -293,7 +303,9 @@ area_logic: AreaLogicType = {
             )
         ),
         ("ExcavationSiteL", "FoyerR"): lambda loadout: (
-            (jumpAble in loadout) and (underwater in loadout) and (
+            (jumpAble in loadout) and
+            (canOpen(FoyerR) in loadout) and
+            (underwater in loadout) and (
                 ((canUsePB in loadout) and (wave in loadout) and (Bombs in loadout)) or
                 ((
                     (pinkDoor in loadout) or
@@ -343,6 +355,7 @@ area_logic: AreaLogicType = {
         ),
         ("WestCorridorR", "FoyerR"): lambda loadout: (
             (jumpAble in loadout) and
+            (canOpen(FoyerR) in loadout) and
             (underwater in loadout) and
             ((
                 (canUsePB in loadout) and
@@ -386,7 +399,8 @@ area_logic: AreaLogicType = {
             ))
         ),
         ("FoyerR", "ExcavationSiteL"): lambda loadout: (
-            (jumpAble in loadout) and (underwater in loadout) and (
+            (jumpAble in loadout) and
+            (underwater in loadout) and (
                 ((canUsePB in loadout) and (wave in loadout) and (Bombs in loadout)) or
                 ((
                     (pinkDoor in loadout) or
@@ -461,6 +475,7 @@ area_logic: AreaLogicType = {
         ),
         ("ConstructionSiteL", "FoyerR"): lambda loadout: (
             (jumpAble in loadout) and
+            (canOpen(FoyerR) in loadout) and
             (underwater in loadout) and
             ((
                 (canUsePB in loadout) and
@@ -521,6 +536,7 @@ area_logic: AreaLogicType = {
         ),
         ("AlluringCenoteR", "FoyerR"): lambda loadout: (
             (jumpAble in loadout) and
+            (canOpen(FoyerR) in loadout) and
             (canUsePB in loadout) and
             (Grapple in loadout) and
             (SpeedBooster in loadout) and
@@ -629,6 +645,7 @@ area_logic: AreaLogicType = {
         ),
         ("WestTerminalAccessL", "VulnarCanyonL"): lambda loadout: (
             (jumpAble in loadout) and
+            (canOpen(VulnarCanyonL) in loadout) and
             ((canBomb in loadout) or (Screw in loadout)) and
             (SpeedBooster in loadout)
         ),  # area test for PB door
@@ -645,6 +662,7 @@ area_logic: AreaLogicType = {
             ((HiJump in loadout) or (SpaceJump in loadout) or (Bombs in loadout) or (Grapple in loadout))
         ),
         ("MezzanineConcourseL", "WestTerminalAccessL"): lambda loadout: (
+            (canOpen(WestTerminalAccessL) in loadout) and
             (jumpAble in loadout) and (
                 (canFly in loadout) or
                 (SpeedBooster in loadout) or
@@ -652,14 +670,20 @@ area_logic: AreaLogicType = {
             )
         ),
         ("MezzanineConcourseL", "VulnarCanyonL"): lambda loadout: (
-            (WestTerminalAccessL in loadout) and
-            (jumpAble in loadout) and
+            (jumpAble in loadout) and (
+                (canFly in loadout) or
+                (SpeedBooster in loadout) or
+                (Ice in loadout)
+                ) and
             ((canBomb in loadout) or (Screw in loadout)) and
             (SpeedBooster in loadout)
         ),  # area test for PB door
         ("MezzanineConcourseL", "CanyonPassageR"): lambda loadout: (
-            (WestTerminalAccessL in loadout) and
-            (jumpAble in loadout) and
+            (jumpAble in loadout) and (
+                (canFly in loadout) or
+                (SpeedBooster in loadout) or
+                (Ice in loadout)
+                ) and
             ((canBomb in loadout) or (Screw in loadout)) and
             (SpeedBooster in loadout)
         ),
@@ -672,11 +696,16 @@ area_logic: AreaLogicType = {
         ),
         ("VulnarCanyonL", "WestTerminalAccessL"): lambda loadout: (
             (jumpAble in loadout) and
+            (canOpen(WestTerminalAccessL) in loadout) and
             ((canBomb in loadout) or (Screw in loadout)) and
             (SpeedBooster in loadout)
         ),
         ("VulnarCanyonL", "MezzanineConcourseL"): lambda loadout: (
-            (WestTerminalAccessL in loadout) and
+            (jumpAble in loadout) and (
+                (canFly in loadout) or
+                (SpeedBooster in loadout) or
+                (Ice in loadout)
+                ) and
             (jumpAble in loadout) and
             ((canBomb in loadout) or (Screw in loadout)) and
             (SpeedBooster in loadout)
@@ -694,6 +723,7 @@ area_logic: AreaLogicType = {
         ),
         ("CanyonPassageR", "WestTerminalAccessL"): lambda loadout: (
             (jumpAble in loadout) and
+            (canOpen(WestTerminalAccessL) in loadout) and
             (SpeedBooster in loadout) and
             ((canBomb in loadout) or (Screw in loadout))
         ),
@@ -706,7 +736,8 @@ area_logic: AreaLogicType = {
             (SpeedBooster in loadout)
         ),
         ("CanyonPassageR", "VulnarCanyonL"): lambda loadout: (
-            (jumpAble in loadout)
+            (jumpAble in loadout) and
+            (canOpen(VulnarCanyonL) in loadout)
         ),  # area test for PB door
         ("CanyonPassageR", "ElevatorToCondenserL"): lambda loadout: (
             (jumpAble in loadout) and
@@ -723,6 +754,7 @@ area_logic: AreaLogicType = {
         ),
         ("ElevatorToCondenserL", "WestTerminalAccessL"): lambda loadout: (
             (jumpAble in loadout) and
+            (canOpen(WestTerminalAccessL) in loadout) and
             (canBomb in loadout) and
             (breakIce in loadout) and
             (underwater in loadout) and
@@ -737,6 +769,7 @@ area_logic: AreaLogicType = {
         ),
         ("ElevatorToCondenserL", "VulnarCanyonL"): lambda loadout: (
             (jumpAble in loadout) and
+            (canOpen(VulnarCanyonL) in loadout) and
             (canBomb in loadout) and
             (SpeedBooster in loadout) and
             (breakIce in loadout) and
@@ -1769,11 +1802,13 @@ location_logic: LocationLogicType = {
     ),
     "Sandy Burrow: ETank": lambda loadout: (  # top
         (OceanShoreR in loadout) and
+        (jumpAble in loadout) and
         (GravitySuit in loadout) and
         ((Screw in loadout) or (canBomb in loadout)) and
         ((HiJump in loadout) or (SpaceJump in loadout))
     ),
     "Submarine Alcove": lambda loadout: (
+        (jumpAble in loadout) and
         (DarkVisor in loadout) and
         (
             (OceanShoreR in loadout) and
@@ -1789,6 +1824,7 @@ location_logic: LocationLogicType = {
         )
     ),
     "Sediment Floor": lambda loadout: (
+        (jumpAble in loadout) and
         (GravitySuit in loadout) and
         (Morph in loadout) and
         (
@@ -1805,11 +1841,13 @@ location_logic: LocationLogicType = {
     ),
     "Sandy Gully": lambda loadout: (
         (OceanShoreR in loadout) and
+        (jumpAble in loadout) and
         (GravitySuit in loadout) and
         (Super in loadout)
     ),
     "Hall Of The Elders": lambda loadout: (
         (RuinedConcourseBL in loadout) and
+        (jumpAble in loadout) and
         ((
             (GravitySuit in loadout) and
             ((HiJump in loadout) or (canFly in loadout))
