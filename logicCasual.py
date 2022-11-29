@@ -198,15 +198,19 @@ area_logic: AreaLogicType = {
             True  # TODO: put requirements here. Don't assume that we start with Sunken Nest
         ),
         ("SporeFieldTR", "RuinedConcourseBL"): lambda loadout: (
-            (jumpAble in loadout) and
+            (vulnar in loadout) and
             (canBomb in loadout)
         ),
         ("SporeFieldTR", "RuinedConcourseTR"): lambda loadout: (
-            (jumpAble in loadout) and
-            (pinkDoor in loadout) and
+            (vulnar in loadout) and
             (canBomb in loadout) and
             (SpeedBooster in loadout) and
             (energy_req(180) in loadout)
+        ),
+        ("SporeFieldTR", "SporeFieldBR"): lambda loadout: (
+            (jumpAble in loadout) and
+            (wave in loadout) and
+            (DarkVisor in loadout)
         ),
         ("SporeFieldTR", "CausewayR"): lambda loadout: (
             (jumpAble in loadout) and
@@ -231,6 +235,11 @@ area_logic: AreaLogicType = {
             (canBomb in loadout) and
             (SpeedBooster in loadout) and
             (energy_req(180) in loadout)
+        ),
+        ("SporeFieldBR", "SporeFieldTR"): lambda loadout: (
+            (jumpAble in loadout) and
+            (wave in loadout) and
+            (DarkVisor in loadout)
         ),
         ("SporeFieldBR", "CausewayR"): lambda loadout: (
             (jumpAble in loadout) and
@@ -317,8 +326,9 @@ area_logic: AreaLogicType = {
             (Grapple in loadout) and
             (SpeedBooster in loadout) and
             (Speedball in loadout) and
+            (underwater in loadout) and
             ((Screw in loadout) or (MetroidSuit in loadout)) and
-            (((wave in loadout) and (Bombs in loadout)) or ((Screw in loadout) and (underwater in loadout)))
+            (((wave in loadout) and (Bombs in loadout)) or (Screw in loadout))
         ),
         ("WestCorridorR", "ExcavationSiteL"): lambda loadout: (
             (jumpAble in loadout) and (
@@ -333,10 +343,10 @@ area_logic: AreaLogicType = {
         ),
         ("WestCorridorR", "FoyerR"): lambda loadout: (
             (jumpAble in loadout) and
+            (underwater in loadout) and
             ((
                 (canUsePB in loadout) and
                 (pinkDoor in loadout) and
-                (underwater in loadout) and
                 (wave in loadout) and
                 (Bombs in loadout)
             ) or (
@@ -365,13 +375,13 @@ area_logic: AreaLogicType = {
             (Grapple in loadout) and
             (SpeedBooster in loadout) and
             (Speedball in loadout) and
+            (underwater in loadout) and
             ((Screw in loadout) or (MetroidSuit in loadout)) and
             ((
                 (wave in loadout) and
                 (Bombs in loadout)
             ) or (
                 (Screw in loadout) and
-                (underwater in loadout) and
                 (pinkDoor in loadout)
             ))
         ),
@@ -426,8 +436,8 @@ area_logic: AreaLogicType = {
         ),
         ("ConstructionSiteL", "ExcavationSiteL"): lambda loadout: (
             (jumpAble in loadout) and
+            (underwater in loadout) and
             ((canUsePB in loadout) or (
-                (underwater in loadout) and
                 (pinkDoor in loadout) and
                 (Morph in loadout) and
                 (Screw in loadout) and
@@ -484,14 +494,14 @@ area_logic: AreaLogicType = {
             (Grapple in loadout) and
             (SpeedBooster in loadout) and
             (Speedball in loadout) and
+            (underwater in loadout) and
             ((Screw in loadout) or (MetroidSuit in loadout)) and
             ((
                 (wave in loadout) and
                 (Bombs in loadout)
-            ) or (
-                (Screw in loadout) and
-                (underwater in loadout)
-            ))
+            ) or
+             (Screw in loadout)
+            )
         ),
         ("AlluringCenoteR", "WestCorridorR"): lambda loadout: (
             (jumpAble in loadout) and
@@ -552,7 +562,7 @@ area_logic: AreaLogicType = {
             (canBomb in loadout) and
             (DarkVisor in loadout) and
             (wave in loadout) and
-            ((HiJump in loadout) or (SpaceJump in loadout) or (SpeedBooster in loadout))
+            ((SpaceJump in loadout) or (SpeedBooster in loadout))
         ),
         ("TransferStationR", "FieldAccessL"): lambda loadout: (
             loadout.has_all(jumpAble, pinkDoor, DarkVisor, wave, canBomb)
@@ -571,10 +581,10 @@ area_logic: AreaLogicType = {
             (canBomb in loadout) and
             (DarkVisor in loadout) and
             (wave in loadout) and
-            ((HiJump in loadout) or (SpaceJump in loadout) or (SpeedBooster in loadout))
+            ((SpaceJump in loadout) or (SpeedBooster in loadout))
         ),
         ("CellarR", "FieldAccessL"): lambda loadout: (
-            loadout.has_all(jumpAble, Super, canBomb, DarkVisor, wave)
+            loadout.has_all(jumpAble, pinkDoor, canBomb, DarkVisor, wave)
         ),
         ("CellarR", "TransferStationR"): lambda loadout: (
             loadout.has_all(jumpAble, pinkDoor, canBomb, DarkVisor, wave)
@@ -585,21 +595,21 @@ area_logic: AreaLogicType = {
             (canBomb in loadout) and
             (DarkVisor in loadout) and
             (underwater in loadout) and
-            ((HiJump in loadout) or (SpaceJump in loadout) or (SpeedBooster in loadout))
+            ((SpaceJump in loadout) or (SpeedBooster in loadout))
         ),
         ("SubbasementFissureL", "FieldAccessL"): lambda loadout: (
             (jumpAble in loadout) and
             (canUsePB in loadout) and
             (wave in loadout) and
             (DarkVisor in loadout) and
-            ((HiJump in loadout) or (SpaceJump in loadout) or (SpeedBooster in loadout))
+            ((SpaceJump in loadout) or (SpeedBooster in loadout))
         ),
         ("SubbasementFissureL", "TransferStationR"): lambda loadout: (
             (jumpAble in loadout) and
             (canUsePB in loadout) and
             (wave in loadout) and
             (DarkVisor in loadout) and
-            ((HiJump in loadout) or (SpaceJump in loadout) or (SpeedBooster in loadout))
+            ((SpaceJump in loadout) or (SpeedBooster in loadout))
         ),
         ("SubbasementFissureL", "CellarR"): lambda loadout: (
             (jumpAble in loadout) and
@@ -607,7 +617,7 @@ area_logic: AreaLogicType = {
             (canUsePB in loadout) and
             (DarkVisor in loadout) and
             (underwater in loadout) and
-            ((HiJump in loadout) or (SpaceJump in loadout) or (SpeedBooster in loadout))
+            ((SpaceJump in loadout) or (SpeedBooster in loadout))
         ),
     },
     "SkyWorld": {
@@ -675,10 +685,12 @@ area_logic: AreaLogicType = {
             jumpAble in loadout
         ),
         ("VulnarCanyonL", "ElevatorToCondenserL"): lambda loadout: (
-            (WestTerminalAccessL in loadout) and
             (jumpAble in loadout) and
-            ((canBomb in loadout) or (Screw in loadout)) and
-            (SpeedBooster in loadout)
+            (canBomb in loadout) and
+            (SpeedBooster in loadout) and
+            (breakIce in loadout) and
+            (underwater in loadout) and
+            ((HiJump in loadout) or (SpaceJump in loadout) or (Bombs in loadout) or (Grapple in loadout))
         ),
         ("CanyonPassageR", "WestTerminalAccessL"): lambda loadout: (
             (jumpAble in loadout) and
@@ -724,10 +736,17 @@ area_logic: AreaLogicType = {
             ((HiJump in loadout) or (SpaceJump in loadout) or (Bombs in loadout) or (Grapple in loadout))
         ),
         ("ElevatorToCondenserL", "VulnarCanyonL"): lambda loadout: (
-            (WestTerminalAccessL in loadout) and
             (jumpAble in loadout) and
-            ((canBomb in loadout) or (Screw in loadout)) and
-            (SpeedBooster in loadout)
+            (canBomb in loadout) and
+            (SpeedBooster in loadout) and
+            (breakIce in loadout) and
+            (GravitySuit in loadout) and
+            (
+                (HiJump in loadout) or
+                 (SpaceJump in loadout) or
+                 (Bombs in loadout) or
+                 (Grapple in loadout)
+                )
         ),  # area test for PB door
         ("ElevatorToCondenserL", "CanyonPassageR"): lambda loadout: (
             (jumpAble in loadout) and
@@ -747,26 +766,22 @@ area_logic: AreaLogicType = {
         ("ElevatorToWellspringL", "NorakBrookL"): lambda loadout: (
             (jumpAble in loadout) and
             (canBomb in loadout) and
-            ((HiJump in loadout) or (SpaceJump in loadout)) and
             (GravitySuit in loadout)
         ),
         ("ElevatorToWellspringL", "NorakPerimeterTR"): lambda loadout: (
             (jumpAble in loadout) and
             (underwater in loadout) and
             (canBomb in loadout) and
-            ((HiJump in loadout) or (SpaceJump in loadout)) and
             (MetroidSuit in loadout)
         ),
         ("ElevatorToWellspringL", "NorakPerimeterBL"): lambda loadout: (
             (jumpAble in loadout) and
             (underwater in loadout) and
-            (canBomb in loadout) and
-            ((HiJump in loadout) or (SpaceJump in loadout))
+            (canBomb in loadout)
         ),
         ("NorakBrookL", "ElevatorToWellspringL"): lambda loadout: (
             (jumpAble in loadout) and
             (canBomb in loadout) and
-            ((HiJump in loadout) or (SpaceJump in loadout)) and
             (GravitySuit in loadout)
         ),
         ("NorakBrookL", "NorakPerimeterTR"): lambda loadout: (
@@ -785,7 +800,6 @@ area_logic: AreaLogicType = {
         ("NorakPerimeterTR", "ElevatorToWellspringL"): lambda loadout: (
             (jumpAble in loadout) and
             (canBomb in loadout) and
-            ((HiJump in loadout) or (SpaceJump in loadout)) and
             (GravitySuit in loadout) and
             (MetroidSuit in loadout)
         ),
@@ -803,7 +817,6 @@ area_logic: AreaLogicType = {
         ("NorakPerimeterBL", "ElevatorToWellspringL"): lambda loadout: (
             (jumpAble in loadout) and
             (canBomb in loadout) and
-            ((HiJump in loadout) or (SpaceJump in loadout)) and
             (GravitySuit in loadout)
         ),
         ("NorakPerimeterBL", "NorakBrookL"): lambda loadout: (
@@ -838,7 +851,7 @@ area_logic: AreaLogicType = {
             (electricHyper in loadout)
         ),
         ("VulnarDepthsElevatorER", "CollapsedPassageR"): lambda loadout: (
-            (canUsePB in loadout) and
+            (canBomb in loadout) and
             (Super in loadout) and
             (Varia in loadout) and
             (electricHyper in loadout)
@@ -860,7 +873,7 @@ area_logic: AreaLogicType = {
             (jumpAble in loadout) and
             (pinkDoor in loadout) and
             (canBomb in loadout) and
-            (energy_req(450) in loadout) and  # TODO: want to make casual require more energy than expert?
+            (Varia in loadout) and
             (electricHyper in loadout)
         ),
         ("SequesteredInfernoL", "HiveBurrowL"): lambda loadout: (
@@ -995,22 +1008,14 @@ area_logic: AreaLogicType = {
             (underwater in loadout) and
             (MetroidSuit in loadout) and
             (Varia in loadout) and
-            (canUsePB in loadout) and
-            ((Screw in loadout) or (
-                (Hypercharge in loadout) and
-                (Charge in loadout)
-            ))
+            (canUsePB in loadout)
         ),
         ("MagmaPumpAccessR", "ElevatorToMagmaLakeR"): lambda loadout: (
             (jumpAble in loadout) and
             (underwater in loadout) and
             (MetroidSuit in loadout) and
             (Varia in loadout) and
-            (canUsePB in loadout) and
-            ((Screw in loadout) or (
-                (Hypercharge in loadout) and
-                (Charge in loadout)
-            ))
+            (canUsePB in loadout)
         ),
     },
     "Verdite": {
