@@ -1202,13 +1202,12 @@ area_logic: AreaLogicType = {
             (canUsePB in loadout) and
             (
                 (GravitySuit in loadout) or
-                (canUseBombs and
-                 (LargeAmmo in loadout) and
-                 (
+                (canBomb in loadout) and
+                (LargeAmmo in loadout) and
+                (
                      (HiJump in loadout) or
                      (Ice in loadout)
                      )
-                 )
                 ) and
             (plasmaWaveGate in loadout) and
             (varia_or_hell_run(350) in loadout) and
@@ -1345,12 +1344,11 @@ area_logic: AreaLogicType = {
             (canUsePB in loadout) and
             (
                 (GravitySuit in loadout) or
-                (canUseBombs and
-                 (
+                (canBomb in loadout) and
+                (
                      (HiJump in loadout) or
                      (Ice in loadout)
                      )
-                 )
                 ) and
             (plasmaWaveGate in loadout) and
             (varia_or_hell_run(350) in loadout) and
@@ -1361,12 +1359,11 @@ area_logic: AreaLogicType = {
             (jumpAble in loadout) and
             (
                 (GravitySuit in loadout) or
-                (canUseBombs and
-                 (
+                (canBomb in loadout) and
+                (
                      (HiJump in loadout) or
                      (Ice in loadout)
                      )
-                 )
                 ) and
             (canUsePB in loadout) and
             (MetroidSuit in loadout) and
