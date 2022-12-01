@@ -84,7 +84,7 @@ icePod = LogicShortcut(lambda loadout: (
     ((Ice in loadout) and (missileDamage in loadout)) or ((Charge in loadout) and (Hypercharge in loadout))
 ))
 suzi = LogicShortcut(lambda loadout: (
-    loadout.has_all(jumpAble, canFly, SpeedBooster, Super, canUsePB, wave, GravitySuit)
+    loadout.has_all(jumpAble, SpeedBooster, Super, canUsePB, wave, GravitySuit)
 ))
 """ to complete all the suzi cyphers """
 electricHyper = LogicShortcut(lambda loadout: (
@@ -390,19 +390,20 @@ area_logic: AreaLogicType = {
             (canOpen(FoyerR) in loadout) and
             (canBomb in loadout) and
             (
-                (GravitySuit in loadout) or
-                (HiJump in loadout) or
-                (Ice in loadout)
-                ) and
-            (
                 (
                     (canUsePB in loadout) and
-                    (wave in loadout) and
+                    ((wave in loadout) or (Spazer in loadout)) and
                     (Bombs in loadout)
                     ) or
                 (
                     (pinkDoor in loadout) and
-                    (Screw in loadout)
+                    (Screw in loadout) and
+                    (
+                        (GravitySuit in loadout) or
+                        (HiJump in loadout) or
+                        (Ice in loadout) or
+                        (Speedball in loadout)
+                        )
                     )
                 )        
         ),
@@ -414,12 +415,13 @@ area_logic: AreaLogicType = {
                     (
                         (GravitySuit in loadout) or
                         (HiJump in loadout) or
-                        (Ice in loadout)
+                        (Ice in loadout) or
+                        (Speedball in loadout)
                         ) and
                     (pinkDoor in loadout) and
                     (Morph in loadout) and
                     (Screw in loadout) and
-                    (wave in loadout) and
+                    ((wave in loadout) or (Spazer in loadout)) and
                     (Bombs in loadout)
                     )
                 )
@@ -430,19 +432,20 @@ area_logic: AreaLogicType = {
             (Grapple in loadout) and
             (SpeedBooster in loadout) and
             (Speedball in loadout) and
-            (
-                (GravitySuit in loadout) or
-                (HiJump in loadout) or
-                (Ice in loadout)
-                ) and
             ((Screw in loadout) or (MetroidSuit in loadout)) and
             (
                 (
-                    (wave in loadout) and
+                    ((wave in loadout) or (Spazer in loadout)) and
                     (Bombs in loadout)
                     ) or
                 (
-                    (Screw in loadout)
+                    (Screw in loadout) and
+                    (
+                        (GravitySuit in loadout) or
+                        (HiJump in loadout) or
+                        (Ice in loadout) or
+                        (Speedball in loadout)
+                        )
                     )
                 )
         ),
@@ -462,13 +465,14 @@ area_logic: AreaLogicType = {
             (canOpen(FoyerR) in loadout) and
             ((
                 (canUsePB in loadout) and
-                (wave in loadout) and
+                ((wave in loadout) or (Spazer in loadout)) and
                 (Bombs in loadout)
             ) or (
                 (
                     (GravitySuit in loadout) or
                     (HiJump in loadout) or
-                    (Ice in loadout)
+                    (Ice in loadout) or
+                    (Speedball in loadout)
                     ) and
                 (pinkDoor in loadout) and
                 (canBomb in loadout) and
@@ -476,20 +480,23 @@ area_logic: AreaLogicType = {
             ))
         ),
         ("WestCorridorR", "ConstructionSiteL"): lambda loadout: (
-            (pinkDoor in loadout) and
             (jumpAble in loadout) and
-            ((canUsePB in loadout) or
-             (
+            (
+                (canUsePB in loadout) or
                 (
-                    (GravitySuit in loadout) or
-                    (HiJump in loadout) or
-                    (Ice in loadout)
-                    ) and
-                (Morph in loadout) and
-                (Screw in loadout) and
-                (wave in loadout) and
-                (Bombs in loadout)
-            ))
+                    (pinkDoor in loadout) and
+                    (Morph in loadout) and
+                    (Screw in loadout) and
+                    ((wave in loadout) or (Spazer in loadout)) and
+                    (Bombs in loadout) and
+                    (
+                        (GravitySuit in loadout) or
+                        (HiJump in loadout) or
+                        (Ice in loadout) or
+                        (Speedball in loadout)
+                        )
+                    )
+                )
         ),
         ("WestCorridorR", "AlluringCenoteR"): lambda loadout: (
             (jumpAble in loadout) and
@@ -499,45 +506,42 @@ area_logic: AreaLogicType = {
             (Speedball in loadout) and
             ((Screw in loadout) or (MetroidSuit in loadout)) and
             ((
-                (wave in loadout) and
+                ((wave in loadout) or (Spazer in loadout)) and
                 (Bombs in loadout)
             ) or (
                 (Screw in loadout) and
+                (pinkDoor in loadout) and
                 (
                     (GravitySuit in loadout) or
                     (HiJump in loadout) or
-                    (Ice in loadout)
-                    ) and
-                (pinkDoor in loadout)
-            ))
+                    (Ice in loadout) or
+                    (Speedball in loadout)
+                    )
+                )
+             )
         ),
         ("FoyerR", "ExcavationSiteL"): lambda loadout: (
             (jumpAble in loadout) and
             (canBomb in loadout) and
             (
-                (GravitySuit in loadout) or
-                (HiJump in loadout) or
-                (Ice in loadout)
-                ) and
-            (
                 (
                     (canUsePB in loadout) and
-                    (wave in loadout) and
+                    ((wave in loadout) or (Spazer in loadout)) and
                     (Bombs in loadout)
                     ) or
                 (
                     (pinkDoor in loadout) and
-                    (Screw in loadout)
+                    (Screw in loadout) and
+                    (
+                        (GravitySuit in loadout) or
+                        (HiJump in loadout) or
+                        (Ice in loadout)
+                        )
                     )
                 )
         ),
         ("FoyerR", "WestCorridorR"): lambda loadout: (
             (jumpAble in loadout) and
-            (
-                (GravitySuit in loadout) or
-                (HiJump in loadout) or
-                (Ice in loadout)
-                ) and
             ((
                 (canUsePB in loadout) and
                 (wave in loadout) and
@@ -545,24 +549,30 @@ area_logic: AreaLogicType = {
             ) or (
                 (pinkDoor in loadout) and
                 (canBomb in loadout) and
-                (Screw in loadout)
+                (Screw in loadout) and
+                (
+                    (GravitySuit in loadout) or
+                    (HiJump in loadout) or
+                    (Ice in loadout) or
+                    (Speedball in loadout)
+                    )
             ))
         ),
         ("FoyerR", "ConstructionSiteL"): lambda loadout: (
             (jumpAble in loadout) and
-            (
-                (GravitySuit in loadout) or
-                (HiJump in loadout) or
-                (Ice in loadout)
-                ) and
             ((
                 (canUsePB in loadout) and
                 (Screw in loadout) and
-                (pinkDoor in loadout)
+                (pinkDoor in loadout) and
+                (
+                    (GravitySuit in loadout) or
+                    (HiJump in loadout) or
+                    (Ice in loadout)
+                    )
                 ) or
              (
                 (Morph in loadout) and
-                (wave in loadout) and
+                ((wave in loadout) or (Spazer in loadout)) and
                 (Bombs in loadout)
             ))
         ),
@@ -580,12 +590,13 @@ area_logic: AreaLogicType = {
                 (
                     (GravitySuit in loadout) or
                     (HiJump in loadout) or
-                    (Ice in loadout)
+                    (Ice in loadout) or
+                    (Speedball in loadout)
                 ) and
                 (pinkDoor in loadout) and
                 (Morph in loadout) and
                 (Screw in loadout) and
-                (wave in loadout) and
+                ((wave in loadout) or (Spazer in loadout)) and
                 (Bombs in loadout)
             ))
         ),
@@ -597,51 +608,54 @@ area_logic: AreaLogicType = {
                 (
                     (GravitySuit in loadout) or
                     (HiJump in loadout) or
-                    (Ice in loadout)
+                    (Ice in loadout) or
+                    (Speedball in loadout)
                     ) and
                 (Morph in loadout) and
                 (Screw in loadout) and
-                (wave in loadout) and
+                ((wave in loadout) or (Spazer in loadout)) and
                 (Bombs in loadout)
             ))
         ),
         ("ConstructionSiteL", "FoyerR"): lambda loadout: (
             (jumpAble in loadout) and
             (canOpen(FoyerR) in loadout) and
-            (
-                (GravitySuit in loadout) or
-                (HiJump in loadout) or
-                (Ice in loadout)
-                ) and
             ((
                 (canUsePB in loadout) and
                 (Screw in loadout) and
-                (pinkDoor in loadout)
+                (pinkDoor in loadout) and
+                (
+                    (GravitySuit in loadout) or
+                    (HiJump in loadout) or
+                    (Ice in loadout) or
+                    (Speedball in loadout)
+                    )
                 
             ) or (
                 (Morph in loadout) and
-                (wave in loadout) and
+                ((wave in loadout) or (Spazer in loadout)) and
                 (Bombs in loadout)
             ))
         ),
         ("ConstructionSiteL", "AlluringCenoteR"): lambda loadout: (
             (jumpAble in loadout) and
             (canUsePB in loadout) and
-            (
-                (GravitySuit in loadout) or
-                (HiJump in loadout) or
-                (Ice in loadout)
-                ) and
             (Grapple in loadout) and
             (SpeedBooster in loadout) and
             (Speedball in loadout) and
             ((Screw in loadout) or (MetroidSuit in loadout)) and
             ((
-                (wave in loadout) and
+                ((wave in loadout) or (Spazer in loadout)) and
                 (Bombs in loadout)
             ) or (
                 (Screw in loadout) and
-                (pinkDoor in loadout)
+                (pinkDoor in loadout) and
+                (
+                    (GravitySuit in loadout) or
+                    (HiJump in loadout) or
+                    (Ice in loadout) or
+                    (Speedball in loadout)
+                    )
             ))
         ),
         ("AlluringCenoteR", "ExcavationSiteL"): lambda loadout: (
@@ -650,18 +664,18 @@ area_logic: AreaLogicType = {
             (Grapple in loadout) and
             (SpeedBooster in loadout) and
             (Speedball in loadout) and
-            (
-                (GravitySuit in loadout) or
-                (HiJump in loadout) or
-                (Ice in loadout)
-                ) and
             ((Screw in loadout) or (MetroidSuit in loadout)) and
             ((
-                (wave in loadout) and
+                ((wave in loadout) or (Spazer in loadout)) and
                 (Bombs in loadout)
             ) or (
                 (Screw in loadout) and
-                (pinkDoor in loadout)
+                (pinkDoor in loadout) and
+                (
+                    (GravitySuit in loadout) or
+                    (HiJump in loadout) or
+                    (Ice in loadout)
+                    )
             ))
         ),
         ("AlluringCenoteR", "WestCorridorR"): lambda loadout: (
@@ -670,18 +684,19 @@ area_logic: AreaLogicType = {
             (Grapple in loadout) and
             (SpeedBooster in loadout) and
             (Speedball in loadout) and
-            (
-                (GravitySuit in loadout) or
-                (HiJump in loadout) or
-                (Ice in loadout)
-                ) and
             ((Screw in loadout) or (MetroidSuit in loadout)) and
             ((
-                (wave in loadout) and
+                ((wave in loadout) or (Spazer in loadout)) and
                 (Bombs in loadout)
             ) or (
                 (Screw in loadout) and
-                (pinkDoor in loadout)
+                (pinkDoor in loadout) and
+                (
+                    (GravitySuit in loadout) or
+                    (HiJump in loadout) or
+                    (Ice in loadout) or
+                    (Speedball in loadout)
+                    )
             ))
         ),
         ("AlluringCenoteR", "FoyerR"): lambda loadout: (
@@ -696,21 +711,22 @@ area_logic: AreaLogicType = {
         ("AlluringCenoteR", "ConstructionSiteL"): lambda loadout: (
             (jumpAble in loadout) and
             (canUsePB in loadout) and
-            (
-                (GravitySuit in loadout) or
-                (HiJump in loadout) or
-                (Ice in loadout)
-                ) and
             (Grapple in loadout) and
             (SpeedBooster in loadout) and
             (Speedball in loadout) and
             ((Screw in loadout) or (MetroidSuit in loadout)) and
             ((
-                (wave in loadout) and
+                ((wave in loadout) or (Spazer in loadout)) and
                 (Bombs in loadout)
             ) or (
                 (Screw in loadout) and
-                (pinkDoor in loadout)
+                (pinkDoor in loadout) and
+                (
+                    (GravitySuit in loadout) or
+                    (HiJump in loadout) or
+                    (Ice in loadout) or
+                    (Speedball in loadout)
+                    )
             ))
         ),
     },
@@ -842,10 +858,19 @@ area_logic: AreaLogicType = {
             (jumpAble in loadout) and
             (canBomb in loadout) and
             (breakIce in loadout) and
-            ((Ice in loadout) or
-             (GravitySuit in loadout) or
-             (Grapple in loadout) or
-             (Speedball in loadout))
+            (
+                (
+                    (Ice in loadout) or
+                    (GravitySuit in loadout) or
+                    (Grapple in loadout) or
+                    ((Speedball in loadout) and (HiJump in loadout))
+                    ) and
+                (
+                    (GravitySuit in loadout) or
+                    (Speedball in loadout) or
+                    (HiJump in loadout)
+                    )
+                )
         ),
         ("MezzanineConcourseL", "WestTerminalAccessL"): lambda loadout: (
             (jumpAble in loadout) and
@@ -873,10 +898,19 @@ area_logic: AreaLogicType = {
             (jumpAble in loadout) and
             (canBomb in loadout) and
             (breakIce in loadout) and
-            ((Ice in loadout) or
-             (GravitySuit in loadout) or
-             (Grapple in loadout) or
-             (Speedball in loadout)) and
+            (
+                (
+                    (Ice in loadout) or
+                    (GravitySuit in loadout) or
+                    (Grapple in loadout) or
+                    ((Speedball in loadout) and (HiJump in loadout))
+                    ) and
+                (
+                    (GravitySuit in loadout) or
+                    (Speedball in loadout) or
+                    (HiJump in loadout)
+                    )
+                ) and
             ((HiJump in loadout) or
              (SpaceJump in loadout) or
              (Bombs in loadout) or
@@ -902,10 +936,19 @@ area_logic: AreaLogicType = {
             (canBomb in loadout) and
             (breakIce in loadout) and
             (SpeedBooster in loadout) and
-            ((Ice in loadout) or
-             (GravitySuit in loadout) or
-             (Grapple in loadout) or
-             (Speedball in loadout))
+            (
+                (
+                    (Ice in loadout) or
+                    (GravitySuit in loadout) or
+                    (Grapple in loadout) or
+                    ((Speedball in loadout) and (HiJump in loadout))
+                    ) and
+                (
+                    (GravitySuit in loadout) or
+                    (Speedball in loadout) or
+                    (HiJump in loadout)
+                    )
+                )
         ),
         ("CanyonPassageR", "WestTerminalAccessL"): lambda loadout: (
             (jumpAble in loadout) and
@@ -926,29 +969,56 @@ area_logic: AreaLogicType = {
             (canBomb in loadout) and
             (breakIce in loadout) and
             (SpeedBooster in loadout) and
-            ((Ice in loadout) or
-             (GravitySuit in loadout) or
-             (Grapple in loadout) or
-             (Speedball in loadout))
+            (
+                (
+                    (Ice in loadout) or
+                    (GravitySuit in loadout) or
+                    (Grapple in loadout) or
+                    ((Speedball in loadout) and (HiJump in loadout))
+                    ) and
+                (
+                    (GravitySuit in loadout) or
+                    (Speedball in loadout) or
+                    (HiJump in loadout)
+                    )
+                )
         ),
         ("ElevatorToCondenserL", "WestTerminalAccessL"): lambda loadout: (
             (jumpAble in loadout) and
             (canOpen(WestTerminalAccessL) in loadout) and
             (canBomb in loadout) and
             (breakIce in loadout) and
-            ((Ice in loadout) or
-             (GravitySuit in loadout) or
-             (Grapple in loadout) or
-             (Speedball in loadout))
+            (
+                (
+                    (Ice in loadout) or
+                    (GravitySuit in loadout) or
+                    (Grapple in loadout) or
+                    ((Speedball in loadout) and (HiJump in loadout))
+                    ) and
+                (
+                    (GravitySuit in loadout) or
+                    (Speedball in loadout) or
+                    (HiJump in loadout)
+                    )
+                )
         ),
         ("ElevatorToCondenserL", "MezzanineConcourseL"): lambda loadout: (
             (jumpAble in loadout) and
             (canBomb in loadout) and
             (breakIce in loadout) and
-            ((Ice in loadout) or
-             (GravitySuit in loadout) or
-             (Grapple in loadout) or
-             (Speedball in loadout)) and
+            (
+                (
+                    (Ice in loadout) or
+                    (GravitySuit in loadout) or
+                    (Grapple in loadout) or
+                    ((Speedball in loadout) and (HiJump in loadout))
+                    ) and
+                (
+                    (GravitySuit in loadout) or
+                    (Speedball in loadout) or
+                    (HiJump in loadout)
+                    )
+                ) and
             ((HiJump in loadout) or
              (SpaceJump in loadout) or
              (Bombs in loadout) or
@@ -961,10 +1031,19 @@ area_logic: AreaLogicType = {
             (canBomb in loadout) and
             (breakIce in loadout) and
             (SpeedBooster in loadout) and
-            ((Ice in loadout) or
-             (GravitySuit in loadout) or
-             (Grapple in loadout) or
-             (Speedball in loadout))
+            (
+                (
+                    (Ice in loadout) or
+                    (GravitySuit in loadout) or
+                    (Grapple in loadout) or
+                    ((Speedball in loadout) and (HiJump in loadout))
+                    ) and
+                (
+                    (GravitySuit in loadout) or
+                    (Speedball in loadout) or
+                    (HiJump in loadout)
+                    )
+                )
         ),
         ("ElevatorToCondenserL", "CanyonPassageR"): lambda loadout: (
             (jumpAble in loadout) and
@@ -972,10 +1051,19 @@ area_logic: AreaLogicType = {
             (canBomb in loadout) and
             (breakIce in loadout) and
             (SpeedBooster in loadout) and
-            ((Ice in loadout) or
-             (GravitySuit in loadout) or
-             (Grapple in loadout) or
-             (Speedball in loadout))
+            (
+                (
+                    (Ice in loadout) or
+                    (GravitySuit in loadout) or
+                    (Grapple in loadout) or
+                    ((Speedball in loadout) and (HiJump in loadout))
+                    ) and
+                (
+                    (GravitySuit in loadout) or
+                    (Speedball in loadout) or
+                    (HiJump in loadout)
+                    )
+                )
         ),
     },
     "LifeTemple": {
@@ -1016,20 +1104,25 @@ area_logic: AreaLogicType = {
              (Ice in loadout) or
              (HiJump in loadout) or
              (Speedball in loadout) or
-             (SpaceJump in loadout))
+             (SpaceJump in loadout) or
+             (Bombs in loadout) or
+             (SpeedBooster in loadout))
         ),
         ("NorakBrookL", "NorakPerimeterBL"): lambda loadout: (
             (jumpAble in loadout) and
-            ((canBomb in loadout) or
-             (Screw in loadout) or
-             (SpeedBooster in loadout) and
             (Morph in loadout) and
+            (
+                (canBomb in loadout) or
+                (Screw in loadout) or
+                (SpeedBooster in loadout)
+                ) and
             ((GravitySuit in loadout) or
              (Ice in loadout) or
              (HiJump in loadout) or
              (Speedball in loadout) or
-             (SpaceJump in loadout))
-             )
+             (SpaceJump in loadout) or
+             (Bombs in loadout) or
+             (SpeedBooster in loadout))
         ),
         ("NorakPerimeterTR", "ElevatorToWellspringL"): lambda loadout: (
             (jumpAble in loadout) and
@@ -1047,7 +1140,9 @@ area_logic: AreaLogicType = {
              (Ice in loadout) or
              (HiJump in loadout) or
              (Speedball in loadout) or
-             (SpaceJump in loadout))
+             (SpaceJump in loadout) or
+             (Bombs in loadout) or
+             (SpeedBooster in loadout))
         ),
         ("NorakPerimeterTR", "NorakPerimeterBL"): lambda loadout: (
             (jumpAble in loadout) and
@@ -1073,7 +1168,9 @@ area_logic: AreaLogicType = {
              (Ice in loadout) or
              (HiJump in loadout) or
              (Speedball in loadout) or
-             (SpaceJump in loadout))and
+             (SpaceJump in loadout) or
+             (Bombs in loadout) or
+             (SpeedBooster in loadout)) and
             ((canBomb in loadout) or
              (Screw in loadout) or
              (SpeedBooster in loadout))
@@ -1177,8 +1274,10 @@ area_logic: AreaLogicType = {
             (plasmaWaveGate in loadout) and
             (varia_or_hell_run(350) in loadout) and
             (canUsePB in loadout) and
-            (MetroidSuit in loadout) and
-            (Screw in loadout)
+            (
+                ((MetroidSuit in loadout) and (energy_req(250) in loadout)) or
+                (Screw in loadout)
+                )
         ),
         ("MagmaPumpL", "ThermalReservoir1R"): lambda loadout: (
             (jumpAble in loadout) and
@@ -1225,10 +1324,13 @@ area_logic: AreaLogicType = {
             (canUsePB in loadout) and
             ((GravitySuit in loadout) or
              (HiJump in loadout)) and
-            ((MetroidSuit in loadout) or (
-                (breakIce in loadout) and
-                (Screw in loadout)
-            ))
+            (
+                ((MetroidSuit in loadout) and (energy_req(250) in loadout)) or
+                (
+                    (breakIce in loadout) and
+                    (Screw in loadout)
+                    )
+                )
         ),
         ("ReservoirMaintenanceTunnelR", "ThermalReservoir1R"): lambda loadout: (
             (jumpAble in loadout) and
@@ -1267,18 +1369,23 @@ area_logic: AreaLogicType = {
             (plasmaWaveGate in loadout) and
             (varia_or_hell_run(350) in loadout) and
             (canUsePB in loadout) and
-            (MetroidSuit in loadout) and
-            (Screw in loadout)
+            (
+                ((MetroidSuit in loadout) and (energy_req(250) in loadout))or
+                (Screw in loadout)
+                )
         ),
         ("IntakePumpR", "ReservoirMaintenanceTunnelR"): lambda loadout: (
             (jumpAble in loadout) and
             (canUsePB in loadout) and
             ((GravitySuit in loadout) or
              (HiJump in loadout)) and
-            ((MetroidSuit in loadout) or (
-                (breakIce in loadout) and
-                (Screw in loadout)
-            ))
+            (
+                ((MetroidSuit in loadout) and (energy_req(250) in loadout)) or
+                (
+                    (breakIce in loadout) and
+                    (Screw in loadout)
+                    )
+                )
         ),
         ("IntakePumpR", "ThermalReservoir1R"): lambda loadout: (
             (jumpAble in loadout) and
@@ -1287,6 +1394,10 @@ area_logic: AreaLogicType = {
              (HiJump in loadout)) and
             (Screw in loadout) and
             (MetroidSuit in loadout) and
+            (
+                (energy_req(250) in loadout) or
+                (breakIce in loadout)
+                ) and
             (varia_or_hell_run(350) in loadout)
         ),
         ("IntakePumpR", "GeneratorAccessTunnelL"): lambda loadout: (
@@ -1294,7 +1405,11 @@ area_logic: AreaLogicType = {
             (canUsePB in loadout) and
             ((GravitySuit in loadout) or (HiJump in loadout)) and
             (Screw in loadout) and
-            (MetroidSuit in loadout)
+            (MetroidSuit in loadout) and
+            (
+                (energy_req(250) in loadout) or
+                (breakIce in loadout)
+                )
         ),
         ("ThermalReservoir1R", "MagmaPumpL"): lambda loadout: (
             (jumpAble in loadout) and
@@ -1334,6 +1449,10 @@ area_logic: AreaLogicType = {
              (HiJump in loadout)) and
             (Screw in loadout) and
             (MetroidSuit in loadout) and
+            (
+                (energy_req(250) in loadout) or
+                (breakIce in loadout)
+                ) and
             (varia_or_hell_run(350) in loadout)
         ),
         ("ThermalReservoir1R", "GeneratorAccessTunnelL"): lambda loadout: (
@@ -1374,7 +1493,11 @@ area_logic: AreaLogicType = {
             (canUsePB in loadout) and
             ((GravitySuit in loadout) or (HiJump in loadout)) and
             (Screw in loadout) and
-            (MetroidSuit in loadout)
+            (MetroidSuit in loadout) and
+            (
+                (energy_req(250) in loadout) or
+                (breakIce in loadout)
+                )
         ),
         ("GeneratorAccessTunnelL", "ThermalReservoir1R"): lambda loadout: (
             loadout.has_all(jumpAble, canUsePB, MetroidSuit, varia_or_hell_run(350))
@@ -1808,16 +1931,22 @@ location_logic: LocationLogicType = {
         (
             (pinkDoor in loadout) or
             (
-                (GravitySuit in loadout) or
                 (
-                    (HiJump in loadout) and
+                    (HiJump in loadout) or
+                    (SpaceJump in loadout) or
+                    (Speedball in loadout)
+                    ) and
+                    (GravitySuit in loadout) or
                     (
-                        (Speedball in loadout) or
-                        (Ice in loadout)
+                        (HiJump in loadout) and
+                        (
+                            (Speedball in loadout) or
+                            (Ice in loadout)
+                            )
                         )
                     )
-                )
-            ) and
+             
+                ) and
         (
             (wave in loadout) or
             (Bombs in loadout)
@@ -1881,12 +2010,13 @@ location_logic: LocationLogicType = {
     "Mezzanine Concourse": lambda loadout: (
         (MezzanineConcourseL in loadout) and
         (jumpAble in loadout) and
+        (Morph in loadout) and
         (
             (canFly in loadout) or
             (SpeedBooster in loadout) or
             (HiJump in loadout) or
             (Ice in loadout) or
-            ((Morph in loadout) and (Speedball in loadout))
+            (Speedball in loadout)
             )
     ),
     "Greater Inferno": lambda loadout: (
@@ -1994,7 +2124,7 @@ location_logic: LocationLogicType = {
             (energy_req(1250) in loadout) or
             (
                 (Varia in loadout) and
-                (energy_req(650) in loadout)
+                (energy_req(650) in loadout) 
                 )
             ) and
         (
@@ -2097,7 +2227,9 @@ location_logic: LocationLogicType = {
                  (Ice in loadout) or
                  (HiJump in loadout) or
                  (Speedball in loadout) or
-                 (SpaceJump in loadout))
+                 (SpaceJump in loadout) or
+                 (Bombs in loadout) or
+                 (SpeedBooster in loadout))
                 ) or
             (
                 (NorakPerimeterTR in loadout) and
@@ -2300,7 +2432,6 @@ location_logic: LocationLogicType = {
     "Shrine Of The Animate Spark": lambda loadout: (
         (TramToSuziIslandR in loadout) and
         (suzi in loadout) and
-        (canFly in loadout) and
         (Hypercharge in loadout) and
         (Charge in loadout) and
         (energy_req(350) in loadout)
@@ -2321,7 +2452,16 @@ location_logic: LocationLogicType = {
             (spaceDrop not in loadout) and
             (Super in loadout)
         ) or (
-            loadout.has_all(spaceDrop, LoadingDockSecurityAreaL, jumpAble, MetroidSuit, Grapple, Super)
+            (spaceDrop in loadout) and
+            (LoadingDockSecurityAreaL in loadout) and
+            (jumpAble in loadout) and
+            (MetroidSuit in loadout) and
+            (Super in loadout) and
+            (
+                (Grapple in loadout) or
+                (Xray in loadout) or
+                (Ice in loadout)
+                )
         )
     ),
     "Torpedo Bay": lambda loadout: (
@@ -2331,9 +2471,23 @@ location_logic: LocationLogicType = {
         (
             (canUsePB in loadout) and
             (spaceDrop not in loadout)
-        ) or (
-            loadout.has_all(spaceDrop, LoadingDockSecurityAreaL, jumpAble, Grapple, MetroidSuit)
-        )
+        ) or
+        (
+            (spaceDrop in loadout) and
+            (LoadingDockSecurityAreaL in loadout) and
+            (jumpAble in loadout) and
+            (MetroidSuit in loadout) and
+            (
+                (Grapple in loadout) or
+                (
+                    (Super in loadout) and
+                    (
+                        (Xray in loadout) or
+                        (Ice in loadout)
+                        )
+                    )
+                )
+            )
     ),
     "Impact Crater Alcove": lambda loadout: (  # TODO: check an area door, don't assume we start in this area
         (jumpAble in loadout) and
@@ -2359,38 +2513,52 @@ location_logic: LocationLogicType = {
         ))
     ),
     "Submarine Alcove": lambda loadout: (
+        (jumpAble in loadout) and
+        (Morph in loadout) and
         (
+                (GravitySuit in loadout) or
+                (HiJump in loadout) or
+                (
+                    (Speedball in loadout) and
+                    (Ice in loadout)
+                    )
+                ) and
+        ((
             (OceanShoreR in loadout) and
-            (underwater in loadout) and
-            (Morph in loadout) and
-            ((
-                (DarkVisor in loadout) and
-                (pinkDoor in loadout)
-            ) or (Super in loadout))
-        ) or (
-            (EleToTurbidPassageR in loadout) and
-            (Super in loadout) and
-            (underwater in loadout) and
-            (Morph in loadout) and
-            (Speedball in loadout)
-        )
-    ),
+            (
+                (Super in loadout) or
+                (
+                    (pinkDoor in loadout) and
+                    (
+                    (DarkVisor in loadout) or
+                    (
+                        (GravitySuit in loadout) and
+                        (Screw in loadout)
+                        )
+                    )
+                    )
+                )
+            ) or
+         (
+             (EleToTurbidPassageR in loadout) and
+             (Super in loadout) and
+             (Speedball in loadout)
+             )
+         )
+    ), #check for speedball+ice entry
     "Sediment Floor": lambda loadout: (
+        (OceanShoreR in loadout) and
+        (jumpAble in loadout) and
+        (Morph in loadout) and
+        (Super in loadout) and
         (
-            (OceanShoreR in loadout) and
-            (underwater in loadout) and
-            (Morph in loadout) and
-            ((
-                (DarkVisor in loadout) and
-                (pinkDoor in loadout)
-            ) or (Super in loadout))
-        ) or (
-            (EleToTurbidPassageR in loadout) and
-            (pinkDoor in loadout) and
-            (underwater in loadout) and
-            (Morph in loadout) and
-            (Speedball in loadout)
-        )
+            (GravitySuit in loadout) or
+            (HiJump in loadout) or
+            (
+                (Speedball in loadout) and
+                (Ice in loadout)
+                )
+            )
     ),
     "Sandy Gully": lambda loadout: (
         (OceanShoreR in loadout) and (underwater in loadout) and (Super in loadout)
@@ -2409,7 +2577,14 @@ location_logic: LocationLogicType = {
         (RuinedConcourseBL in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (pinkDoor in loadout)
     ),
     "Path Of Swords": lambda loadout: (
-        (vulnar in loadout) and ((canBomb in loadout) or ((Morph in loadout) and (Screw in loadout)))
+        (vulnar in loadout) and
+        (
+            (canBomb in loadout) or
+            (
+                (Morph in loadout) and
+                (Screw in loadout)
+                )
+            )
     ),
     "Auxiliary Pump Room": lambda loadout: (
         (vulnar in loadout) and (canBomb in loadout)
@@ -2420,13 +2595,26 @@ location_logic: LocationLogicType = {
     ),
     "Sensor Maintenance: AmmoTank": lambda loadout: (  # back
         (vulnar in loadout) and
-        (canBomb in loadout)
+        (canBomb in loadout) and
+        (
+            (Super in loadout) or
+            (canUsePB in loadout)
+            )
     ),
     "Causeway Overlook": lambda loadout: (
-        (CausewayR in loadout) and (jumpAble in loadout) and (canBomb in loadout)
+        (CausewayR in loadout) and
+        (jumpAble in loadout) and
+        (canBomb in loadout)
     ),
     "Placid Pool": lambda loadout: (
-        (PlacidPoolR in loadout) and (jumpAble in loadout) and (canUsePB in loadout) and (icePod in loadout)
+        (PlacidPoolR in loadout) and
+        (jumpAble in loadout) and
+        (canUsePB in loadout) and
+        (icePod in loadout) and
+        (
+            (GravitySuit in loadout) or
+            (HiJump in loadout)
+            )
     ),
     "Blazing Chasm": lambda loadout: (
         (ElevatorToMagmaLakeR in loadout) and
@@ -2464,104 +2652,190 @@ location_logic: LocationLogicType = {
         (ElevatorToMagmaLakeR in loadout) and
         (jumpAble in loadout) and
         (canBomb in loadout) and
-        ((canFly in loadout) or (SpeedBooster in loadout) or (HiJump in loadout)) and
-        (DarkVisor in loadout)  # Shouldn't an expert be able to do this without visor?
+        ((canFly in loadout) or (SpeedBooster in loadout) or (HiJump in loadout))
     ),
     "Ancient Basin": lambda loadout: (
-        (varia_or_hell_run(750) in loadout) and
+        (jumpAble in loadout) and
+        (pinkDoor in loadout) and
         ((
             (VulnarDepthsElevatorEL in loadout) and
-            (jumpAble in loadout) and
             (canBomb in loadout) and
-            (pinkDoor in loadout) and
-            (icePod in loadout)
+            (icePod in loadout) and
+            (varia_or_hell_run(450) in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and
             (electricHyper in loadout) and
-            (pinkDoor in loadout) and
-            (Morph in loadout)
+            (Morph in loadout) and
+            (varia_or_hell_run(350) in loadout)
         ) or (
             (CollapsedPassageR in loadout) and
-            (Super in loadout) and
-            (canUsePB in loadout) and
-            (wave in loadout)
+            (canBomb in loadout) and
+            (wave in loadout) and
+            (varia_or_hell_run(750) in loadout)
         ))
     ),
     "Central Corridor: right": lambda loadout: (
-        (FoyerR in loadout) and
         (jumpAble in loadout) and
-        ((GravitySuit in loadout) or (HiJump in loadout) or (Ice in loadout)) and
-        (canBomb in loadout)
+        (canBomb in loadout) and
+        (
+            (FoyerR in loadout) or
+            (
+                (ConstructionSiteL in loadout) and
+                ((wave in loadout) or (Spazer in loadout)) and
+                (Bombs in loadout)
+                ) or
+            (
+                (WestCorridorR in loadout) and
+                (Screw in loadout) and
+                (pinkDoor in loadout) and
+                (
+                    (GravitySuit in loadout) or
+                    (HiJump in loadout) or
+                    (Ice in loadout) or
+                    (Speedball in loadout)
+                    )
+                )
+            )        
     ),
     "Briar: AmmoTank": lambda loadout: (  # bottom
-        (NorakBrookL in loadout) and (jumpAble in loadout) and (Morph in loadout)
+        (jumpAble in loadout) and
+        (Morph in loadout) and
+        ((
+            (NorakBrookL in loadout) and
+            (
+                (GravitySuit in loadout) or
+                (Ice in loadout) or
+                (HiJump in loadout) or
+                (Speedball in loadout) or
+                (SpaceJump in loadout) or
+                (Bombs in loadout) or
+                (SpeedBooster in loadout)
+                )
+            ) or
+         (
+             (NorakPerimeterTR in loadout) and
+             (MetroidSuit in loadout)
+             ) or
+         (
+             (NorakPerimeterBL in loadout) and
+             (canBomb in loadout)
+             )
+         ) 
     ),
     "Icy Flow": lambda loadout: (
-        (WestTerminalAccessL in loadout) and
+        (MezzanineConcourseL in loadout) and
         (jumpAble in loadout) and
         (SpeedBooster in loadout) and
         (breakIce in loadout)
     ),
     "Ice Cave": lambda loadout: (
-        (WestTerminalAccessL in loadout) and (jumpAble in loadout) and (breakIce in loadout)
+        (jumpAble in loadout) and
+        (breakIce in loadout) and
+        (
+            (WestTerminalAccessL in loadout) or
+            (
+                (MezzanineConcourseL in loadout) and
+                ((canFly in loadout) or
+                 (SpeedBooster in loadout) or
+                 (HiJump in loadout) or
+                 (Ice in loadout) or
+                 ((Morph in loadout) and (Speedball in loadout)))
+                )
+            )
     ),
     "Antechamber": lambda loadout: (
-        (WestTerminalAccessL in loadout) and (jumpAble in loadout) and (canUsePB in loadout)
+        (jumpAble in loadout) and
+        (canUsePB in loadout) and
+        (
+            (WestTerminalAccessL in loadout) or
+            (
+                (MezzanineConcourseL in loadout) and
+                ((canFly in loadout) or
+                 (SpeedBooster in loadout) or
+                 (HiJump in loadout) or
+                 (Ice in loadout) or
+                 ((Morph in loadout) and (Speedball in loadout)))
+                )
+            )
     ),
     "Eddy Channels": lambda loadout: (
         (EleToTurbidPassageR in loadout) and
-        (underwater in loadout) and
+        (
+            (GravitySuit in loadout) or
+            (HiJump in loadout) or
+            (Ice in loadout)
+            ) and
         (Morph in loadout) and
         (Speedball in loadout) and
         (Super in loadout)
     ),
     "Tram To Suzi Island": lambda loadout: (
-        (TramToSuziIslandR in loadout) and (jumpAble in loadout) and (Spazer in loadout) and (Morph in loadout)
+        (TramToSuziIslandR in loadout) and
+        (jumpAble in loadout) and
+        (Spazer in loadout) and
+        (Morph in loadout)
     ),
     "Portico": lambda loadout: (
         (TramToSuziIslandR in loadout) and
         (jumpAble in loadout) and
+        (wave in loadout) and
         (Super in loadout) and
         (energy_req(350) in loadout)
     ),
     "Tower Rock Lookout": lambda loadout: (
         (TramToSuziIslandR in loadout) and
         (jumpAble in loadout) and
+        (wave in loadout) and
         (pinkDoor in loadout) and
         (energy_req(350) in loadout) and
         (GravitySuit in loadout) and
-        ((
-            (SpaceJump in loadout) and
-            (HiJump in loadout)
-        ) or (
-            (canFly in loadout)
-        ))
+        (
+            (
+                (SpaceJump in loadout) and
+                (HiJump in loadout)
+                ) or
+            (
+                (Bombs in loadout) and
+                (Morph in loadout)
+                ) or
+            (SpeedBooster in loadout)
+            )
     ),
     "Reef Nook": lambda loadout: (
         (TramToSuziIslandR in loadout) and
         (jumpAble in loadout) and
+        (wave in loadout) and
         (pinkDoor in loadout) and
         (energy_req(350) in loadout) and
         (GravitySuit in loadout) and
-        ((
-            (SpaceJump in loadout) and
-            (HiJump in loadout)
-        ) or (
-            (canFly in loadout)
-        ))
+        (Morph in loadout) and
+        (
+            (
+                (SpaceJump in loadout) and
+                (HiJump in loadout)
+                ) or
+            (Bombs in loadout) or
+            (SpeedBooster in loadout)
+            )
     ),
     "Saline Cache": lambda loadout: (
         (TramToSuziIslandR in loadout) and
         (jumpAble in loadout) and
+        (wave in loadout) and
         (Super in loadout) and
         (energy_req(350) in loadout) and
-        (GravitySuit in loadout) and
-        (canFly in loadout)
+        (
+            (GravitySuit in loadout) or
+            (
+                (HiJump in loadout) and
+                (Speedball in loadout) and
+                (Morph in loadout)
+                )
+            )
     ),
     "Enervation Chamber": lambda loadout: (
         (TramToSuziIslandR in loadout) and
         (suzi in loadout) and
-        (canFly in loadout) and
         (Hypercharge in loadout) and
         (Charge in loadout)
     ),
@@ -2569,41 +2843,72 @@ location_logic: LocationLogicType = {
         (
             (spaceDrop not in loadout) and
             (pinkDoor in loadout)
-        ) or (
+        ) or
+        (
             (spaceDrop in loadout) and
             (LoadingDockSecurityAreaL in loadout) and
             (jumpAble in loadout) and
             (MetroidSuit in loadout) and
-            (Grapple in loadout) and
-            (pinkDoor in loadout)
-        )
+            (pinkDoor in loadout) and
+            (
+                (Grapple in loadout) or
+                (
+                    (Super in loadout) and
+                    (
+                        (Xray in loadout) or
+                        (Ice in loadout)
+                        )
+                    )
+                )
+            )
     ),
     "Aft Battery": lambda loadout: (
         (
             (spaceDrop not in loadout) and
             (Morph in loadout)
-        ) or (
+        ) or
+        (
             (spaceDrop in loadout) and
             (LoadingDockSecurityAreaL in loadout) and
             (jumpAble in loadout) and
             (MetroidSuit in loadout) and
-            (Grapple in loadout) and
-            (Morph in loadout)
-        )
+            (Morph in loadout) and
+            (
+                (Grapple in loadout) or
+                (
+                    (Super in loadout) and
+                    (
+                        (Xray in loadout) or
+                        (Ice in loadout)
+                        )
+                    )
+                )
+            )
     ),
     "Forward Battery": lambda loadout: (
         (
             (spaceDrop not in loadout) and
             (pinkDoor in loadout) and
             (Morph in loadout)
-        ) or (
+        ) or
+        (
             (spaceDrop in loadout) and
             (LoadingDockSecurityAreaL in loadout) and
             (jumpAble in loadout) and
             (Grapple in loadout) and
             (MetroidSuit in loadout) and
-            (pinkDoor in loadout)
-        )
+            (pinkDoor in loadout) and
+            (
+                (Grapple in loadout) or
+                (
+                    (Super in loadout) and
+                    (
+                        (Xray in loadout) or
+                        (Ice in loadout)
+                        )
+                    )
+                )
+            )
     ),
     "Gantry": lambda loadout: (
         (
@@ -2615,39 +2920,55 @@ location_logic: LocationLogicType = {
             (jumpAble in loadout) and
             (MetroidSuit in loadout) and
             (Grapple in loadout) and
-            (pinkDoor in loadout)
-        )
+            (pinkDoor in loadout) and
+            (
+                (Grapple in loadout) or
+                (
+                    (Super in loadout) and
+                    (
+                        (Xray in loadout) or
+                        (Ice in loadout)
+                        )
+                    )
+                )
+            )
     ),
     "Garden Canal": lambda loadout: (
-        (NorakBrookL in loadout) and
         (jumpAble in loadout) and
         (canUsePB in loadout) and
-        (Spazer in loadout)
+        (Spazer in loadout) and
+        (NorakPerimeterBL in loadout)
     ),
     "Sandy Burrow: AmmoTank": lambda loadout: (  # bottom
         (OceanShoreR in loadout) and
-        ((GravitySuit in loadout) or (
-            (HiJump in loadout) and
-            ((Speedball in loadout) or (Ice in loadout))
-        )) and
-        (Morph in loadout)
+        (jumpAble in loadout) and
+        (Morph in loadout) and
+        (
+            (GravitySuit in loadout) or
+            (
+                (HiJump in loadout) and
+                (
+                    (Speedball in loadout) or
+                    (Ice in loadout)
+                    )
+                )
+            )
     ),
     "Trophobiotic Chamber": lambda loadout: (
         (vulnar in loadout) and (Morph in loadout) and (Speedball in loadout)
     ),
     "Waste Processing": lambda loadout: (
-        (SpeedBooster in loadout) and
         (jumpAble in loadout) and
+        (SpeedBooster in loadout) and
         ((
             (SubbasementFissureL in loadout) and
             (canUsePB in loadout)
         ) or (
             (CellarR in loadout) and
             (pinkDoor in loadout) and
-            (canBomb in loadout) and
-            (DarkVisor in loadout)
+            (canBomb in loadout)
         ) or (
-            (FieldAccessL in loadout) and  # expert required to access from this door
+            (FieldAccessL in loadout) and
             (pinkDoor in loadout) and
             (wave in loadout) and
             (canBomb in loadout)
@@ -2662,36 +2983,53 @@ location_logic: LocationLogicType = {
         (WestTerminalAccessL in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (Screw in loadout)
     ),
     "Mining Site 1": lambda loadout: (  # (1 = letter Alpha)
-        (canBomb in loadout) and
         (jumpAble in loadout) and
+        (canBomb in loadout) and
         (pinkDoor in loadout) and
-        ((
-            (EleToTurbidPassageR in loadout) and
-            (varia_or_hell_run(550) in loadout)
-        ) or (
-            (SporousNookL in loadout) and
-            ((GravitySuit in loadout) or (Speedball in loadout) or (
-                (HiJump in loadout) and
-                (Ice in loadout)
-            ))
-        ))
+        (
+            (
+                (FieryGalleryL in loadout) and
+                (varia_or_hell_run(550) in loadout)
+                ) or
+            (
+                (SporousNookL in loadout) and
+                (
+                    (GravitySuit in loadout) or
+                    (Speedball in loadout) or
+                    (
+                        (HiJump in loadout) and
+                        (Ice in loadout)
+                        )
+                    )
+                )
+            )
     ),
     "Colosseum": lambda loadout: (  # GT
         (ElevatorToMagmaLakeR in loadout) and (jumpAble in loadout) and (Varia in loadout) and (Charge in loadout)
     ),
     "Lava Pool": lambda loadout: (  # BATH ENERGY COUNT??
-        loadout.has_all(EleToTurbidPassageR, jumpAble, Varia, MetroidSuit, canBomb)
+        loadout.has_all(FieryGalleryL, jumpAble, Varia, MetroidSuit, canBomb)
     ),
     "Hive Main Chamber": lambda loadout: (
-        (VulnarDepthsElevatorEL in loadout) and
         (jumpAble in loadout) and
-        (varia_or_hell_run(650) in loadout) and
-        (canBomb in loadout)
+        (
+            (
+                (VulnarDepthsElevatorEL in loadout) and
+                (varia_or_hell_run(650) in loadout) and
+                (canBomb in loadout)
+                ) or
+            (
+                (SequesteredInfernoL in loadout) and
+                (varia_or_hell_run(250) in loadout) and
+                (Morph in loadout) and
+                (icePod in loadout)
+                )
+            )
     ),
     "Crossway Cache": lambda loadout: (
+        (jumpAble in loadout) and
         (
             (VulnarDepthsElevatorEL in loadout) and
-            (jumpAble in loadout) and
             (varia_or_hell_run(650) in loadout) and
             (canBomb in loadout) and
             (icePod in loadout)
@@ -2703,11 +3041,11 @@ location_logic: LocationLogicType = {
             (CollapsedPassageR in loadout) and
             (Super in loadout) and
             (varia_or_hell_run(750) in loadout) and
-            (canUsePB in loadout) and
+            (canBomb in loadout) and
             (wave in loadout)
         )
     ),
-    "Slag Heap": lambda loadout: (  # Sequestered Inferno w Metroid Suit is simplest  Possibly a no-Metroid version?
+    "Slag Heap": lambda loadout: (  # Consider bath counts
         (canBomb in loadout) and
         (jumpAble in loadout) and
         (varia_or_hell_run(950) in loadout) and
@@ -2717,20 +3055,41 @@ location_logic: LocationLogicType = {
             ((Ice in loadout) or ((Hypercharge in loadout) and (Charge in loadout)))
         ) or (
             (SequesteredInfernoL in loadout) and
-            (electricHyper in loadout)  # TODO: expert needs hyper and casual doesn't?
+            (electricHyper in loadout)
         ) or (
             (CollapsedPassageR in loadout) and
             (Super in loadout) and
-            (canUsePB in loadout) and
+            (canBomb in loadout) and
             (wave in loadout)
         ))
     ),
-    "Hydrodynamic Chamber": lambda loadout: (  # one of the only intended water rooms
-        (WestCorridorR in loadout) and
-        ((GravitySuit in loadout) or (HiJump in loadout)) and
+    "Hydrodynamic Chamber": lambda loadout: (
+        (jumpAble in loadout) and
+        (Spazer in loadout) and
         (Morph in loadout) and
-        (pinkDoor in loadout) and
-        (Spazer in loadout)
+        (
+            (
+                (ConstructionSiteL in loadout) and
+                ((wave in loadout) or (Spazer in loadout)) and
+                (Bombs in loadout) and
+                (Screw in loadout)
+                ) or
+            (
+                (WestCorridorR in loadout) and
+                (pinkDoor in loadout) and
+                (
+                    (GravitySuit in loadout) or
+                    (HiJump in loadout) or
+                    (Ice in loadout) or
+                    ((Morph in loadout) and (Speedball in loadout))
+                    )
+                ) or
+            (
+                (FoyerR in loadout) and
+                (canBomb in loadout) and
+                (Screw in loadout)
+                )
+            )
     ),
     "Central Corridor: left": lambda loadout: (
         (FoyerR in loadout) and
@@ -2741,25 +3100,100 @@ location_logic: LocationLogicType = {
         (Morph in loadout)
     ),
     "Restricted Area": lambda loadout: (
-        (FoyerR in loadout) and (jumpAble in loadout) and (MetroidSuit in loadout)
+        (jumpAble in loadout) and
+        (MetroidSuit in loadout) and
+        (
+            (
+                (WestCorridorR in loadout) and
+                (pinkDoor in loadout) and
+                (Screw in loadout) and
+                (
+                    (GravitySuit in loadout) or
+                    (HiJump in loadout) or
+                    (Ice in loadout) or
+                    (Speedball in loadout)
+                    )
+                ) or
+            (
+                (FoyerR in loadout) and
+                (canBomb in loadout)
+                ) or
+            (
+                (ConstructionSiteL in loadout) and
+                ((wave in loadout) or (Spazer in loadout)) and
+                (Bombs in loadout)
+                )
+            )
     ),
     "Foundry": lambda loadout: (
-        (FoyerR in loadout) and (jumpAble in loadout)
+        (jumpAble in loadout) and
+        (Morph in loadout) and
+        (
+            (
+                (WestCorridorR in loadout) and
+                (pinkDoor in loadout) and
+                (Screw in loadout) and
+                (
+                    (GravitySuit in loadout) or
+                    (HiJump in loadout) or
+                    (Ice in loadout) or
+                    (Speedball in loadout)
+                    )
+                ) or
+            (
+                (FoyerR in loadout) and
+                (canBomb in loadout)
+                ) or
+            (
+                (ConstructionSiteL in loadout) and
+                ((wave in loadout) or (Spazer in loadout)) and
+                (Bombs in loadout)
+                )
+            )
     ),
     "Norak Escarpment": lambda loadout: (
         (NorakBrookL in loadout) and
         (jumpAble in loadout) and
-        ((canFly in loadout) or (SpeedBooster in loadout))
-    ),
+        (canFly in loadout)
+    ), #might not always have room for speed
     "Glacier's Reach": lambda loadout: (
-        (WestTerminalAccessL in loadout) and (jumpAble in loadout) and (energy_req(350) in loadout)
+        (jumpAble in loadout) and
+        (energy_req(350) in loadout) and
+        (
+            (WestTerminalAccessL in loadout) or
+            (
+                (MezzanineConcourseL in loadout) and
+                ((canFly in loadout) or
+                 (SpeedBooster in loadout) or
+                 (HiJump in loadout) or
+                 (Ice in loadout) or
+                 ((Morph in loadout) and (Speedball in loadout)))
+                )
+            )
     ),
     "Sitting Room": lambda loadout: (
-        (WestTerminalAccessL in loadout) and (jumpAble in loadout) and (canUsePB in loadout) and (Speedball in loadout)
+        (jumpAble in loadout) and
+        (canUsePB in loadout) and
+        (
+            (Bombs in loadout) or
+            (Speedball in loadout)
+            ) and
+        (
+            (WestTerminalAccessL in loadout) or
+            (
+                (MezzanineConcourseL in loadout) and
+                ((canFly in loadout) or
+                 (SpeedBooster in loadout) or
+                 (HiJump in loadout) or
+                 (Ice in loadout) or
+                 ((Morph in loadout) and (Speedball in loadout)))
+                )
+            )
     ),
     "Suzi Ruins Map Station Access": lambda loadout: (
         (TramToSuziIslandR in loadout) and
         (jumpAble in loadout) and
+        (wave in loadout) and
         (energy_req(350) in loadout) and
         (canUsePB in loadout) and
         (Super in loadout)
@@ -2767,6 +3201,7 @@ location_logic: LocationLogicType = {
     "Obscured Vestibule": lambda loadout: (
         (TramToSuziIslandR in loadout) and
         (jumpAble in loadout) and
+        (wave in loadout) and
         (energy_req(350) in loadout) and
         (canBomb in loadout)
     ),
@@ -2782,16 +3217,47 @@ location_logic: LocationLogicType = {
         )
     ),
     "Arena": lambda loadout: (
-        (RuinedConcourseBL in loadout) and (jumpAble in loadout) and (pinkDoor in loadout)
+        (RuinedConcourseBL in loadout) and
+        (jumpAble in loadout) and
+        (
+            (pinkDoor in loadout) or
+            (
+                (
+                    (HiJump in loadout) or
+                    (SpaceJump in loadout) or
+                    ((Speedball in loadout) and (Morph in loadout))
+                ) and
+            (GravitySuit in loadout) or
+                (
+                    (HiJump in loadout) and
+                    (
+                        ((Speedball in loadout) and (Morph in loadout)) or
+                        (Ice in loadout)
+                        )
+                    )
+                )
+            )
     ),
     "West Spore Field": lambda loadout: (
         (vulnar in loadout) and
-        ((canBomb in loadout) or (
-            (Morph in loadout) and
-            (Screw in loadout)
-        )) and
         (Super in loadout) and
-        (Speedball in loadout)  # possible with space jump and no speedball
+        (
+            (canBomb in loadout) or
+            (
+                (Morph in loadout) and
+                (Screw in loadout)
+                )
+            ) and
+        (
+            (GravitySuit in loadout) or
+            (
+                (SpaceJump in loadout) and
+                (
+                    (HiJump in loadout) or
+                    (Speedball in loadout)
+                    )
+                )
+            )
     ),
     "Magma Chamber": lambda loadout: (
         (ElevatorToMagmaLakeR in loadout) and
@@ -2801,8 +3267,7 @@ location_logic: LocationLogicType = {
             (Varia in loadout) and (Charge in loadout)
         ) or (
             (MetroidSuit in loadout) and
-            (energy_req(650) in loadout)
-            # REVIEW: the same energy required whether you have varia or not?
+            (varia_or_hell_run(650) in loadout)
         ))
     ),
     "Equipment Locker": lambda loadout: (
@@ -2812,28 +3277,67 @@ location_logic: LocationLogicType = {
         ((GravitySuit in loadout) or (HiJump in loadout) or (canBomb in loadout)) and
         ((MetroidSuit in loadout) or (Morph in loadout))
     ),
-    "Antelier": lambda loadout: (  # spelled "Antilier" in subversion 1.1
+    "Antelier": lambda loadout: (  # spelled "Antilier" in subversion 1.1  
+        (jumpAble in loadout) and
         (
-            (WestCorridorR in loadout) and
-            ((GravitySuit in loadout) or (HiJump in loadout)) and
-            ((
-                (pinkDoor in loadout) and
-                (Morph in loadout)
-            ) or (Super in loadout))
-        ) or (
-            (FoyerR in loadout) and
-            (underwater in loadout) and
-            (Screw in loadout)
-        )
+            (
+                (ConstructionSiteL in loadout) and
+                (Morph in loadout) and
+                ((wave in loadout) or (Spazer in loadout)) and
+                (Bombs in loadout) and
+                (Screw in loadout)
+                ) or
+            (
+                (WestCorridorR in loadout) and
+                (
+                    ((pinkDoor in loadout) and (Morph in loadout)) or
+                    ((MetroidSuit in loadout) and (Super in loadout))
+                    ) and
+                (
+                    (GravitySuit in loadout) or
+                    (HiJump in loadout) or
+                    (Ice in loadout) or
+                    ((Morph in loadout) and (Speedball in loadout))
+                    )
+                ) or
+            (
+                (FoyerR in loadout) and
+                (canBomb in loadout) and
+                (Screw in loadout)
+                )
+            )
     ),
     "Weapon Research": lambda loadout: (
-        (FoyerR in loadout) and
         (jumpAble in loadout) and
         ((wave in loadout) or (MetroidSuit in loadout)) and
-        ((canBomb in loadout) or (Spazer in loadout))
+        ((canBomb in loadout) or ((Spazer in loadout) and (Morph in loadout))) and
+        (
+            (
+                (ConstructionSiteL in loadout) and
+                (Morph in loadout) and
+                ((wave in loadout) or (Spazer in loadout)) and
+                (Bombs in loadout)
+                ) or
+            (
+                (WestCorridorR in loadout) and
+                (Screw in loadout) and
+                (pinkDoor in loadout) and
+                (Morph in loadout) and
+                (
+                    (GravitySuit in loadout) or
+                    (HiJump in loadout) or
+                    (Ice in loadout) or
+                    ((Morph in loadout) and (Speedball in loadout))
+                    )
+                ) or
+            (
+                (FoyerR in loadout) and
+                (canBomb in loadout)
+                )
+            )
     ),
     "Crocomire's Lair": lambda loadout: (
-        (NorakBrookL in loadout) and
+        (NorakPerimeterBL in loadout) and
         (jumpAble in loadout) and
         (Super in loadout) and
         (SpeedBooster in loadout)
