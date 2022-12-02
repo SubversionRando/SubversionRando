@@ -6,6 +6,10 @@ ENERGY_PER_TANK = 100
 FOR_N_TANKS = 12
 LATER_ENERGY_PER_TANK = 50
 
+canUsePB = LogicShortcut(lambda loadout: (
+    loadout.has_all(Items.Morph, Items.PowerBomb)
+))
+
 
 def energy_from_tanks(n: int) -> int:
     first_tanks = min(FOR_N_TANKS, n) * ENERGY_PER_TANK

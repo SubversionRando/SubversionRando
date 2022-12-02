@@ -1,5 +1,8 @@
 """ data for the connections in area rando """
+from typing import Union
 from item_data import Item, Items
+from logicCommon import canUsePB
+from logic_shortcut import LogicShortcut
 
 
 AreaDoor = tuple[str, str, str, str, int]
@@ -68,10 +71,10 @@ area_doors: dict[str, AreaDoor] = {
     for door in area_doors_unpackable
 }
 
-vanilla_doors: dict[AreaDoor, Item] = {
-    area_doors["CraterR"]: Items.PowerBomb,
-    area_doors["WestTerminalAccessL"]: Items.PowerBomb,
-    area_doors["VulnarCanyonL"]: Items.PowerBomb,
+vanilla_doors: dict[AreaDoor, Union[Item, LogicShortcut]] = {
+    area_doors["CraterR"]: canUsePB,
+    area_doors["WestTerminalAccessL"]: canUsePB,
+    area_doors["VulnarCanyonL"]: canUsePB,
     area_doors["FoyerR"]: Items.Super
 }
 

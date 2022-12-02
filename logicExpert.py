@@ -4,7 +4,7 @@ from connection_data import area_doors_unpackable
 from door_logic import canOpen
 from item_data import items_unpackable
 from loadout import Loadout
-from logicCommon import energy_req, varia_or_hell_run
+from logicCommon import canUsePB, energy_req, varia_or_hell_run
 from logicInterface import AreaLogicType, LocationLogicType, LogicInterface
 from logic_shortcut import LogicShortcut
 
@@ -43,9 +43,6 @@ exitSpacePort = LogicShortcut(lambda loadout: (
     True
     # TODO: Why did one definition have somethings different?
     # (Morph in loadout) or (Missile in loadout) or (Super in loadout) or (Wave in loadout)
-))
-canUsePB = LogicShortcut(lambda loadout: (
-    loadout.has_all(Morph, PowerBomb)
 ))
 canBomb = LogicShortcut(lambda loadout: (
     (Morph in loadout) and loadout.has_any(Bombs, PowerBomb)
@@ -100,6 +97,13 @@ plasmaWaveGate = LogicShortcut(lambda loadout: (
     ((Hypercharge in loadout) and (Charge in loadout))
 ))
 """ the switches that are blocked by plasma+wave barriers """
+
+hotSpring = LogicShortcut(lambda loadout: (
+    (GravitySuit in loadout) or
+    (Speedball in loadout) or
+    ((HiJump in loadout) and (Ice in loadout))
+))
+""" traverse "Hot Spring" between Sporous Nook and Vulnar Depths Elevator W """
 
 
 area_logic: AreaLogicType = {
@@ -1563,18 +1567,11 @@ area_logic: AreaLogicType = {
         ("FieryGalleryL", "SporousNookL"): lambda loadout: (
             (jumpAble in loadout) and
             (varia_or_hell_run(550) in loadout) and
-            (
-                (GravitySuit in loadout) or
-                (Speedball in loadout) or
-                (
-                    (HiJump in loadout) and
-                    (Ice in loadout)
-                    )
-                ) and
+            (hotSpring in loadout) and
             (
                 (canBomb in loadout) or
                 (Screw in loadout)
-                )
+            )
         ),
         ("RagingPitL", "FieryGalleryL"): lambda loadout: (
             (jumpAble in loadout) and
@@ -1601,14 +1598,7 @@ area_logic: AreaLogicType = {
             (jumpAble in loadout) and
             (canUsePB in loadout) and
             (varia_or_hell_run(450) in loadout) and
-            (
-                (GravitySuit in loadout) or
-                (Speedball in loadout) or
-                (
-                    (HiJump in loadout) and
-                    (Ice in loadout)
-                    )
-                )
+            (hotSpring in loadout)
         ),
         ("HollowChamberR", "FieryGalleryL"): lambda loadout: (
             (jumpAble in loadout) and
@@ -1642,14 +1632,7 @@ area_logic: AreaLogicType = {
                 (Screw in loadout) or
                 (SpeedBooster in loadout)
                 ) and
-            (
-                (GravitySuit in loadout) or
-                (Speedball in loadout) or
-                (
-                    (HiJump in loadout) and
-                    (Ice in loadout)
-                    )
-                ) and
+            (hotSpring in loadout) and
             (
                 (canBomb in loadout) or
                 (
@@ -1711,14 +1694,7 @@ area_logic: AreaLogicType = {
                         )
                     )
                 ) and
-            (
-                (GravitySuit in loadout) or
-                (Speedball in loadout) or
-                (
-                    (HiJump in loadout) and
-                    (Ice in loadout)
-                    )
-                ) and
+            (hotSpring in loadout) and
             (
                 (canBomb in loadout) or
                 (
@@ -1730,33 +1706,19 @@ area_logic: AreaLogicType = {
         ("SporousNookL", "FieryGalleryL"): lambda loadout: (
             (jumpAble in loadout) and
             (varia_or_hell_run(550) in loadout) and
-            (
-                (GravitySuit in loadout) or
-                (Speedball in loadout) or
-                (
-                    (HiJump in loadout) and
-                    (Ice in loadout)
-                    )
-                ) and
+            (hotSpring in loadout) and
             (
                 (canBomb in loadout) or
                 (Screw in loadout)
-                )
+            )
         ),
         ("SporousNookL", "RagingPitL"): lambda loadout: (
             (jumpAble in loadout) and
             (Super in loadout) and
             (canBomb in loadout) and
             (varia_or_hell_run(450) in loadout) and
-            (
-                (GravitySuit in loadout) or
-                (Speedball in loadout) or
-                (
-                    (HiJump in loadout) and
-                    (Ice in loadout)
-                    )
-                )
-        ), #screw into raging pit?
+            (hotSpring in loadout)
+        ),  # screw into raging pit?
         ("SporousNookL", "HollowChamberR"): lambda loadout: (
             (jumpAble in loadout) and
             (varia_or_hell_run(450) in loadout) and
@@ -1768,14 +1730,7 @@ area_logic: AreaLogicType = {
                 (Screw in loadout) or
                 (SpeedBooster in loadout)
                 ) and
-            (
-                (GravitySuit in loadout) or
-                (Speedball in loadout) or
-                (
-                    (HiJump in loadout) and
-                    (Ice in loadout)
-                    )
-                ) and
+            (hotSpring in loadout) and
             (
                 (canBomb in loadout) or
                 (
@@ -1795,24 +1750,17 @@ area_logic: AreaLogicType = {
                     (
                         (GravitySuit in loadout) or
                         (HiJump in loadout)
-                        )
                     )
-                ) and
-            (
-                (GravitySuit in loadout) or
-                (Speedball in loadout) or
-                (
-                    (HiJump in loadout) and
-                    (Ice in loadout)
-                    )
-                ) and
+                )
+            ) and
+            (hotSpring in loadout) and
             (
                 (canBomb in loadout) or
                 (
                     (GravitySuit in loadout) and
                     (Screw in loadout)
-                    )
                 )
+            )
         ),
     },
 }
@@ -1979,14 +1927,7 @@ location_logic: LocationLogicType = {
         )) and
         (jumpAble in loadout) and
         (canBomb in loadout) and
-        (
-            (GravitySuit in loadout) or
-            (Speedball in loadout) or
-            (
-                (HiJump in loadout) and
-                (Ice in loadout)
-                )
-            )
+        (hotSpring in loadout)
     ),
     "Epiphreatic Crag": lambda loadout: (
         (ConstructionSiteL in loadout) and
@@ -2052,15 +1993,8 @@ location_logic: LocationLogicType = {
         ) or
         (
             (SporousNookL in loadout) and
-            (
-                (GravitySuit in loadout) or
-                (Speedball in loadout) or
-                (
-                    (HiJump in loadout) and
-                    (Ice in loadout)
-                    )
-                )
-            )
+            (hotSpring in loadout)
+        )
     ),
     "Infested Passage": lambda loadout: (
         (jumpAble in loadout) and
@@ -2990,25 +2924,25 @@ location_logic: LocationLogicType = {
             (
                 (FieryGalleryL in loadout) and
                 (varia_or_hell_run(550) in loadout)
-                ) or
+            ) or
             (
                 (SporousNookL in loadout) and
-                (
-                    (GravitySuit in loadout) or
-                    (Speedball in loadout) or
-                    (
-                        (HiJump in loadout) and
-                        (Ice in loadout)
-                        )
-                    )
-                )
+                (hotSpring in loadout)
             )
+        )
     ),
     "Colosseum": lambda loadout: (  # GT
         (ElevatorToMagmaLakeR in loadout) and (jumpAble in loadout) and (Varia in loadout) and (Charge in loadout)
     ),
-    "Lava Pool": lambda loadout: (  # BATH ENERGY COUNT??
-        loadout.has_all(FieryGalleryL, jumpAble, Varia, MetroidSuit, canBomb)
+    "Lava Pool": lambda loadout: (
+        loadout.has_all(jumpAble, varia_or_hell_run(950), MetroidSuit, canBomb) and
+        (
+            (FieryGalleryL in loadout) or
+            (
+                (SporousNookL in loadout) and
+                (hotSpring in loadout)
+            )
+        )
     ),
     "Hive Main Chamber": lambda loadout: (
         (jumpAble in loadout) and

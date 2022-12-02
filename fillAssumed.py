@@ -11,13 +11,13 @@ from solver import solve
 _minor_items = {
     Items.DamageAmp: 6,
     Items.ChargeAmp: 6,
-    Items.Energy: 7,
+    Items.Energy: 4,
     Items.Refuel: 7,
     Items.SpaceJumpBoost: 8,
     Items.SmallAmmo: 38,
     Items.LargeAmmo: 18
 }
-# TODO: verify item counts - I think there are not 18 energy tanks in vanilla subversion
+# TODO: verify item counts
 
 
 class FillAssumed(FillAlgorithm):
@@ -62,7 +62,8 @@ class FillAssumed(FillAlgorithm):
             Items.Hypercharge,
             Items.Xray,
             Items.Energy, Items.Energy, Items.Energy, Items.Energy, Items.Energy,
-            Items.Energy, Items.Energy, Items.Energy, Items.Energy
+            Items.Energy, Items.Energy, Items.Energy, Items.Energy, Items.Energy,
+            Items.Energy, Items.Energy,
         ]
         assert len([it for it in self.prog_items if it != Items.Energy]) + 1 == len(set(self.prog_items)), \
             "duplicate majors?"
