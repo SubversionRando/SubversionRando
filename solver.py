@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import Optional, cast
 
-from connection_data import SunkenNestL
+from connection_data import AreaDoor, SunkenNestL, area_doors
 from game import Game
 from item_data import Items
 from loadout import Loadout
@@ -42,17 +42,30 @@ def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, l
 
     unused_locations = game.all_locations.copy()
     used_locs: set[str] = set()
+    doors_accessed: set[AreaDoor] = set()
 
     loadout = Loadout(game, starting_items)
 
     log_lines = [" - spaceport -"]
+
+    def check_for_new_area_doors() -> None:
+        new_area_doors: list[str] = []
+        for thing in loadout:
+            if thing[3] in area_doors and thing not in doors_accessed:
+                thing = cast(AreaDoor, thing)
+                new_area_doors.append(thing[3])
+                doors_accessed.add(thing)
+        if len(new_area_doors):
+            log_lines.append(f"  new area doors: {', '.join(new_area_doors)}")
+
     # this loop just for spaceport
     stuck = False
     while not stuck:
         prev_loadout_count = len(loadout)
-        log_lines.append("sphere:")
         updateAreaLogic(loadout)
+        check_for_new_area_doors()
         updateLogic(unused_locations, loadout)
+        log_lines.append("sphere:")
         for loc in unused_locations:
             if loc['inlogic']:
                 loc_name = loc['fullitemname']
@@ -88,9 +101,10 @@ def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, l
     stuck = False
     while not stuck:
         prev_loadout_count = len(loadout)
-        log_lines.append("sphere:")
         updateAreaLogic(loadout)
+        check_for_new_area_doors()
         updateLogic(unused_locations, loadout)
+        log_lines.append("sphere:")
         for loc in unused_locations:
             # special case: major/minor can put missiles or grav boots in sandy cache even though it's not in logic
             if loc['fullitemname'] == "Sandy Cache" and loc['item'] in {
