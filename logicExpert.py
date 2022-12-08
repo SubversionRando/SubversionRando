@@ -1684,6 +1684,7 @@ area_logic: AreaLogicType = {
             (jumpAble in loadout) and
             (varia_or_hell_run(450) in loadout) and
             (Morph in loadout) and
+            (pinkDoor in loadout) and
             (
                 (icePod in loadout) or
                 (
@@ -1743,6 +1744,7 @@ area_logic: AreaLogicType = {
             (jumpAble in loadout) and
             (varia_or_hell_run(450) in loadout) and
             (Morph in loadout) and
+            (Super in loadout) and
             (
                 (icePod in loadout) or
                 (
@@ -1785,6 +1787,7 @@ location_logic: LocationLogicType = {
     ),
     "Submarine Nest": lambda loadout: (
         (OceanShoreR in loadout) and
+        (jumpAble in loadout) and
         (pinkDoor in loadout) and
         (
             (GravitySuit in loadout) or
