@@ -1819,6 +1819,7 @@ location_logic: LocationLogicType = {
     ),
     "Benthic Cache Access": lambda loadout: (
         ((OceanShoreR in loadout) or (EleToTurbidPassageR in loadout)) and
+        (jumpAble in loadout) and
         (canUsePB in loadout) and
         (Super in loadout) and
         (
@@ -1837,6 +1838,7 @@ location_logic: LocationLogicType = {
     ), #better underwater escape?
     "Ocean Vent Supply Depot": lambda loadout: (
         ((OceanShoreR in loadout) or (EleToTurbidPassageR in loadout)) and
+        (jumpAble in loadout) and
         (pinkDoor in loadout) and
         (underwater in loadout) and
         (Morph in loadout) and
@@ -1848,9 +1850,9 @@ location_logic: LocationLogicType = {
     "Sediment Flow": lambda loadout: (
         (OceanShoreR in loadout) and
         (jumpAble in loadout) and
-        (underwater in loadout) and
+        (GravitySuit in loadout) and
         (Super in loadout)
-    ), #better underwater logic?
+    ),
     "Harmonic Growth Enhancer": lambda loadout: (
         (FieldAccessL in loadout) and
         (jumpAble in loadout) and
