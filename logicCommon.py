@@ -1,5 +1,10 @@
-from item_data import Items
+from typing import TYPE_CHECKING
+
+from item_data import Item, Items
 from logic_shortcut import LogicShortcut
+
+if TYPE_CHECKING:
+    from loadout import Loadout
 
 STARTING_ENERGY = 99
 ENERGY_PER_TANK = 100
@@ -21,6 +26,33 @@ def energy_req(amount: int) -> LogicShortcut:
     return LogicShortcut(lambda loadout: (
         energy_from_tanks(loadout.count(Items.Energy)) >= amount
     ))
+
+
+_item_to_ammo: dict[Item, int] = {
+    Items.Missile: 10,
+    Items.Super: 10,
+    Items.PowerBomb: 10,
+    Items.LargeAmmo: 10,
+    Items.SmallAmmo: 5,
+}
+
+
+def ammo_in_loadout(loadout: "Loadout") -> int:
+    total = 0
+    for item, value in _item_to_ammo.items():
+        total += loadout.count(item) * value
+    return total
+
+
+def ammo_req(amount: int) -> LogicShortcut:
+    return LogicShortcut(lambda loadout: (
+        ammo_in_loadout(loadout) >= amount
+    ))
+
+
+crystal_flash = LogicShortcut(lambda loadout: (
+    loadout.has_all(canUsePB, ammo_req(100))
+))
 
 
 def varia_or_hell_run(energy: int) -> LogicShortcut:

@@ -11,7 +11,7 @@ sys.path.append(str(root))
 from item_data import Items
 from loadout import Loadout
 from logicCasual import Casual
-from logicCommon import energy_from_tanks, energy_req, varia_or_hell_run
+from logicCommon import ammo_in_loadout, ammo_req, energy_from_tanks, crystal_flash, energy_req, varia_or_hell_run
 from logicExpert import Expert
 from logic_shortcut import LogicShortcut
 
@@ -127,6 +127,74 @@ def test_use_as_bool() -> None:
         _ = (
             can_bomb_jump or (Items.Screw in loadout)
         )
+
+
+def test_ammo_in_loadout() -> None:
+    game = Game(Casual, [], False, [])
+    loadout = Loadout(game)
+
+    assert ammo_in_loadout(loadout) == 0, f"empty loadout has {ammo_in_loadout(loadout)}"
+
+    loadout.append(Items.SmallAmmo)
+
+    assert ammo_in_loadout(loadout) == 5
+
+    loadout.append(Items.LargeAmmo)
+    loadout.append(Items.LargeAmmo)
+    loadout.append(Items.LargeAmmo)
+
+    assert ammo_in_loadout(loadout) == 35
+
+    loadout.append(Items.PowerBomb)
+
+    assert ammo_in_loadout(loadout) == 45
+
+    loadout.append(Items.Missile)
+    loadout.append(Items.Super)
+
+    assert ammo_in_loadout(loadout) == 65
+
+    # TODO: test in game (and then add tests here)
+    # If there are 2 power bombs in pool, will the 2nd pick up give 10 ammo? or 0?
+
+
+def test_ammo_req() -> None:
+    game = Game(Casual, [], False, [])
+    loadout = Loadout(game)
+
+    assert ammo_req(5) not in loadout
+
+    loadout.append(Items.PowerBomb)
+    loadout.append(Items.LargeAmmo)
+    loadout.append(Items.LargeAmmo)
+
+    assert ammo_req(20) in loadout
+    assert ammo_req(30) in loadout
+    assert ammo_req(40) not in loadout
+
+    loadout.append(Items.Missile)
+    loadout.append(Items.Super)
+
+    assert ammo_req(40) in loadout
+    assert ammo_req(50) in loadout
+    assert ammo_req(60) not in loadout
+
+    loadout.append(Items.Morph)
+
+    assert crystal_flash not in loadout
+
+    for _ in range(10):
+        loadout.append(Items.SmallAmmo)
+
+    assert crystal_flash in loadout
+
+    loadout.append(Items.SmallAmmo)
+
+    assert crystal_flash in loadout
+
+    loadout.contents[Items.Morph] -= 1
+
+    assert crystal_flash not in loadout
 
 
 if __name__ == "__main__":
