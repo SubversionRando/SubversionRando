@@ -165,3 +165,8 @@ items_unpackable: Iterable[Item] = (
     Items.Xray, Items.SpaceJump, Items.Energy, Items.Refuel, Items.SmallAmmo, Items.LargeAmmo, Items.DamageAmp,
     Items.ChargeAmp, Items.SpaceJumpBoost, Items.spaceDrop
 )
+
+all_items: dict[str, Item] = {
+    item[0]: item
+    for item in items_unpackable
+}
