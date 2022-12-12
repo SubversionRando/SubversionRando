@@ -119,6 +119,46 @@ waterGardenBottom = LogicShortcut(lambda loadout: (
 ))
 """ get into water garden from wellspring access """
 
+railAccess = LogicShortcut(lambda loadout: (
+    (jumpAble in loadout) and
+    (
+        (WestTerminalAccessL in loadout) or
+        (
+            (MezzanineConcourseL in loadout) and
+            (
+                (
+                    (canFly in loadout) or
+                    (SpeedBooster in loadout) or
+                    (HiJump in loadout) or
+                    (Ice in loadout) or
+                    ((Morph in loadout) and (Speedball in loadout))
+                    )
+                )
+            ) or
+            
+        (
+            (ElevatorToCondenserL in loadout) and
+            (canBomb in loadout) and
+            (breakIce in loadout) and
+            (
+                (
+                    (Ice in loadout) or
+                    (GravitySuit in loadout) or
+                    (Grapple in loadout) or
+                    ((Speedball in loadout) and (HiJump in loadout))
+                    ) and
+                (
+                    (GravitySuit in loadout) or
+                    (Speedball in loadout) or
+                    (HiJump in loadout)
+                    )
+                )
+            )
+        )
+))
+""" access to the Sky Temple elevators at West Terminal and Transit Concourse """
+
+
 area_logic: AreaLogicType = {
     "Early": {
         # using SunkenNestL as the hub for this area, so we don't need a path from every door to every other door
@@ -2191,67 +2231,23 @@ location_logic: LocationLogicType = {
     ),
     "Grand Promenade": lambda loadout: (
         (jumpAble in loadout) and
-        (
-            (WestTerminalAccessL in loadout) or
-            (
-                (MezzanineConcourseL in loadout) and
-                ((canFly in loadout) or
-                 (SpeedBooster in loadout) or
-                 (HiJump in loadout) or
-                 (Ice in loadout) or
-                 ((Morph in loadout) and (Speedball in loadout))
-                 )
-                )
-            )   
+        (railAccess in loadout)
     ),
     "Summit Landing": lambda loadout: (
         (jumpAble in loadout) and
         (canBomb in loadout) and
-        (
-            (WestTerminalAccessL in loadout) or
-            (
-                (MezzanineConcourseL in loadout) and
-                ((canFly in loadout) or
-                 (SpeedBooster in loadout) or
-                 (HiJump in loadout) or
-                 (Ice in loadout) or
-                 ((Morph in loadout) and (Speedball in loadout))
-                 )
-                )
-            )   
+        (railAccess in loadout)   
     ),
     "Snow Cache": lambda loadout: (
         (jumpAble in loadout) and
         (canBomb in loadout) and
-        (
-            (WestTerminalAccessL in loadout) or
-            (
-                (MezzanineConcourseL in loadout) and
-                ((canFly in loadout) or
-                 (SpeedBooster in loadout) or
-                 (HiJump in loadout) or
-                 (Ice in loadout) or
-                 ((Morph in loadout) and (Speedball in loadout))
-                 )
-                )
-            )   
+        (railAccess in loadout)  
     ),
     "Reliquary Access": lambda loadout: (
         (jumpAble in loadout) and
         (Super in loadout) and
         (DarkVisor in loadout) and
-        (
-            (WestTerminalAccessL in loadout) or
-            (
-                (MezzanineConcourseL in loadout) and
-                ((canFly in loadout) or
-                 (SpeedBooster in loadout) or
-                 (HiJump in loadout) or
-                 (Ice in loadout) or
-                 ((Morph in loadout) and (Speedball in loadout))
-                 )
-                )
-            )   
+        (railAccess in loadout)
     ),
     "Syzygy Observatorium": lambda loadout: (
         (jumpAble in loadout) and
@@ -2260,21 +2256,11 @@ location_logic: LocationLogicType = {
             (MetroidSuit in loadout) and
             (energy_req(350) in loadout)
         ) or (
+            (Super in loadout) and
             (Hypercharge in loadout) and
             (Charge in loadout)
         )) and
-        (
-            (WestTerminalAccessL in loadout) or
-            (
-                (MezzanineConcourseL in loadout) and
-                ((canFly in loadout) or
-                 (SpeedBooster in loadout) or
-                 (HiJump in loadout) or
-                 (Ice in loadout) or
-                 ((Morph in loadout) and (Speedball in loadout))
-                 )
-                )
-            )   
+        (railAccess in loadout)   
     ),
     "Armory Cache 2": lambda loadout: (
         (jumpAble in loadout) and
@@ -2283,18 +2269,7 @@ location_logic: LocationLogicType = {
             (canBomb in loadout) and
             (DarkVisor in loadout)
         )) and
-        (
-            (WestTerminalAccessL in loadout) or
-            (
-                (MezzanineConcourseL in loadout) and
-                ((canFly in loadout) or
-                 (SpeedBooster in loadout) or
-                 (HiJump in loadout) or
-                 (Ice in loadout) or
-                 ((Morph in loadout) and (Speedball in loadout))
-                 )
-                )
-            )   
+        (railAccess in loadout) 
     ),
     "Armory Cache 3": lambda loadout: (
         (jumpAble in loadout) and
@@ -2303,34 +2278,12 @@ location_logic: LocationLogicType = {
             (canBomb in loadout) and
             (DarkVisor in loadout)
         )) and
-        (
-            (WestTerminalAccessL in loadout) or
-            (
-                (MezzanineConcourseL in loadout) and
-                ((canFly in loadout) or
-                 (SpeedBooster in loadout) or
-                 (HiJump in loadout) or
-                 (Ice in loadout) or
-                 ((Morph in loadout) and (Speedball in loadout))
-                 )
-                )
-            )   
+        (railAccess in loadout)   
     ),
     "Drawing Room": lambda loadout: (
         (jumpAble in loadout) and
         (Super in loadout) and
-        (
-            (WestTerminalAccessL in loadout) or
-            (
-                (MezzanineConcourseL in loadout) and
-                ((canFly in loadout) or
-                 (SpeedBooster in loadout) or
-                 (HiJump in loadout) or
-                 (Ice in loadout) or
-                 ((Morph in loadout) and (Speedball in loadout))
-                 )
-                )
-            )   
+        (railAccess in loadout)  
     ),
     "Impact Crater Overlook": lambda loadout: (  # TODO: check an area door, don't assume we start in this area
         ((canFly in loadout) or (SpeedBooster in loadout)) and
@@ -2642,32 +2595,12 @@ location_logic: LocationLogicType = {
     "Ice Cave": lambda loadout: (
         (jumpAble in loadout) and
         (breakIce in loadout) and
-        (
-            (WestTerminalAccessL in loadout) or
-            (
-                (MezzanineConcourseL in loadout) and
-                ((canFly in loadout) or
-                 (SpeedBooster in loadout) or
-                 (HiJump in loadout) or
-                 (Ice in loadout) or
-                 ((Morph in loadout) and (Speedball in loadout)))
-                )
-            )
+        (railAccess in loadout)
     ),
     "Antechamber": lambda loadout: (
         (jumpAble in loadout) and
         (canUsePB in loadout) and
-        (
-            (WestTerminalAccessL in loadout) or
-            (
-                (MezzanineConcourseL in loadout) and
-                ((canFly in loadout) or
-                 (SpeedBooster in loadout) or
-                 (HiJump in loadout) or
-                 (Ice in loadout) or
-                 ((Morph in loadout) and (Speedball in loadout)))
-                )
-            )
+        (railAccess in loadout)
     ),
     "Eddy Channels": lambda loadout: (
         (EleToTurbidPassageR in loadout) and
@@ -2891,7 +2824,7 @@ location_logic: LocationLogicType = {
         ))
     ),
     "Grand Chasm": lambda loadout: (
-        (WestTerminalAccessL in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (Screw in loadout)
+        (railAccess in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (Screw in loadout)
     ),
     "Mining Site 1": lambda loadout: (  # (1 = letter Alpha)
         (jumpAble in loadout) and
@@ -3070,17 +3003,7 @@ location_logic: LocationLogicType = {
     "Glacier's Reach": lambda loadout: (
         (jumpAble in loadout) and
         (energy_req(350) in loadout) and
-        (
-            (WestTerminalAccessL in loadout) or
-            (
-                (MezzanineConcourseL in loadout) and
-                ((canFly in loadout) or
-                 (SpeedBooster in loadout) or
-                 (HiJump in loadout) or
-                 (Ice in loadout) or
-                 ((Morph in loadout) and (Speedball in loadout)))
-                )
-            )
+        (railAccess in loadout)
     ),
     "Sitting Room": lambda loadout: (
         (jumpAble in loadout) and
@@ -3089,17 +3012,7 @@ location_logic: LocationLogicType = {
             (Bombs in loadout) or
             (Speedball in loadout)
             ) and
-        (
-            (WestTerminalAccessL in loadout) or
-            (
-                (MezzanineConcourseL in loadout) and
-                ((canFly in loadout) or
-                 (SpeedBooster in loadout) or
-                 (HiJump in loadout) or
-                 (Ice in loadout) or
-                 ((Morph in loadout) and (Speedball in loadout)))
-                )
-            )
+        (railAccess in loadout)
     ),
     "Suzi Ruins Map Station Access": lambda loadout: (
         (TramToSuziIslandR in loadout) and
