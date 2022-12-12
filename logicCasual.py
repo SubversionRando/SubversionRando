@@ -128,6 +128,18 @@ veranda = LogicShortcut(lambda loadout: (
 ))
 """ to get from the bottom of Veranda to the top """
 
+eastCorridor = LogicShortcut(lambda loadout: (
+    (Morph in loadout) and
+    (
+        (Bombs in loadout) or (  # 4 tile morph jump
+            (Speedball in loadout) and
+            ((PowerBomb in loadout) or (wave in loadout))
+            # PB or wave for getting the shot block at the top of east corridor
+        )
+    )
+))
+""" top of East Corridor to get to Foyer """
+
 
 area_logic: AreaLogicType = {
     "Early": {
@@ -2208,13 +2220,19 @@ location_logic: LocationLogicType = {
         (Spazer in loadout) and
         (
             (WestCorridorR in loadout) and
-            ((GravitySuit in loadout) or (HiJump in loadout)) and
-            (pinkDoor in loadout)
-        ) or
-        (
+            ((
+                (pinkDoor in loadout) and
+                ((GravitySuit in loadout) or (
+                    (HiJump in loadout) and
+                    (Ice in loadout)
+                ))
+            ) or (
+                (Super in loadout) and
+                ((GravitySuit in loadout) or (HiJump in loadout))
+            ))
+        ) or (
             (FoyerR in loadout) and
-            (canBomb in loadout) and
-            (Speedball in loadout) and
+            (eastCorridor in loadout) and
             (Screw in loadout)
         )
     ),
@@ -2326,7 +2344,7 @@ location_logic: LocationLogicType = {
             (
                 (GravitySuit in loadout) or (
                     (HiJump in loadout) and
-                    (Ice in loadout)  # to get out if I don't have aqua suit
+                    (Ice in loadout)  # freeze pancake to stand on
                 )
             ) and
             ((
@@ -2339,13 +2357,17 @@ location_logic: LocationLogicType = {
                     (MetroidSuit in loadout)
                 )
             ))
-        ) or
-        (
+        ) or (
             (FoyerR in loadout) and
-            (underwater in loadout) and
+            (eastCorridor in loadout) and
             (Screw in loadout) and
-            (canBomb in loadout) and
-            (Speedball in loadout)
+            (
+                (GravitySuit in loadout) or (
+                    # gravity jump through hydrodynamic chamber door into main hydrology research from central corridor
+                    (HiJump in loadout) and
+                    (Ice in loadout)  # freeze pancake to stand on
+                )
+            )
         )
     ),
     "Weapon Research": lambda loadout: (
