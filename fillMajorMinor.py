@@ -111,13 +111,10 @@ class FillMajorMinor(FillAlgorithm):
                 if (loc['fullitemname'] in majorLocs)
             ]
             if from_items is self.earlyItemList and len(valid_locations) == 0 and (Morph in loadout):
-                for sandySearch in loadout.game.all_locations:
-                    # print("Searching for Sandy Cache: ", sandySearch['fullitemname'])
-                    if sandySearch['fullitemname'] == "Sandy Cache":
-                        # print("   ---   appending sandy cache")
-                        valid_locations.append(sandySearch)
-                        availableLocations.append(sandySearch)
-                        break
+                sandy = loadout.game.all_locations["Sandy Cache"]
+                # print("   ---   appending sandy cache")
+                valid_locations.append(sandy)
+                availableLocations.append(sandy)
             if len(valid_locations) == 0:
                 return None  # fail
 

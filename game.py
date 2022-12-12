@@ -16,7 +16,7 @@ def door_factory() -> dict[AreaDoor, Union[Item, LogicShortcut]]:
 class Game:
     """ a composition of all the components that make up the generated seed """
     logic: Type[LogicInterface]
-    all_locations: list[Location]
+    all_locations: dict[str, Location]
     area_rando: bool
     connections: list[tuple[AreaDoor, AreaDoor]]
     door_data: Mapping[AreaDoor, Union[Item, LogicShortcut]] = field(default_factory=door_factory)

@@ -80,8 +80,8 @@ class FillAssumed(FillAlgorithm):
     def _get_available_locations(self, loadout: Loadout) -> list[Location]:
         return [loc for loc in self._get_accessible_locations(loadout) if loc["item"] is None]
 
-    def _get_empty_locations(self, all_locations: list[Location]) -> list[Location]:
-        return [loc for loc in all_locations if loc["item"] is None]
+    def _get_empty_locations(self, all_locations: dict[str, Location]) -> list[Location]:
+        return [loc for loc in all_locations.values() if loc["item"] is None]
 
     @staticmethod
     def _choose_location(locs: list[Location], spaceport_deprio: int) -> Location:

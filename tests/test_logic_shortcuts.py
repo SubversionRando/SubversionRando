@@ -33,7 +33,7 @@ def test_energy_from_tanks() -> None:
 
 
 def test_energy_req() -> None:
-    game = Game(Casual, [], False, [])
+    game = Game(Casual, {}, False, [])
     loadout = Loadout(game, (Items.Energy for _ in range(10)))
 
     assert energy_req(900) in loadout
@@ -48,7 +48,7 @@ def test_energy_req() -> None:
 
     assert energy_req(900) not in loadout
 
-    game = Game(Expert, [], False, [])
+    game = Game(Expert, {}, False, [])
     loadout = Loadout(game)  # empty
 
     assert energy_req(700) not in loadout
@@ -66,7 +66,7 @@ def test_energy_req() -> None:
 
 
 def test_varia_or_hell_run() -> None:
-    game = Game(Expert, [], False, [])
+    game = Game(Expert, {}, False, [])
     loadout = Loadout(game)
 
     assert varia_or_hell_run(400) not in loadout
@@ -115,7 +115,7 @@ def test_use_as_bool() -> None:
         (Items.Bombs in loadout) and
         (Items.Morph in loadout)
     ))
-    game = Game(Casual, [], False, [])
+    game = Game(Casual, {}, False, [])
     loadout = Loadout(game)
 
     with pytest.raises(TypeError):
@@ -130,7 +130,7 @@ def test_use_as_bool() -> None:
 
 
 def test_ammo_in_loadout() -> None:
-    game = Game(Casual, [], False, [])
+    game = Game(Casual, {}, False, [])
     loadout = Loadout(game)
 
     assert ammo_in_loadout(loadout) == 0, f"empty loadout has {ammo_in_loadout(loadout)}"
@@ -159,7 +159,7 @@ def test_ammo_in_loadout() -> None:
 
 
 def test_ammo_req() -> None:
-    game = Game(Casual, [], False, [])
+    game = Game(Casual, {}, False, [])
     loadout = Loadout(game)
 
     assert ammo_req(5) not in loadout

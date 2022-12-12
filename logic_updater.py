@@ -1,3 +1,4 @@
+from typing import Iterable
 from connection_data import AreaDoor, area_doors
 from loadout import Loadout
 from location_data import Location
@@ -31,8 +32,8 @@ def updateAreaLogic(loadout: Loadout) -> None:
             stuck = True
 
 
-def updateLogic(unusedLocations: list[Location],
-                loadout: Loadout) -> list[Location]:
+def updateLogic(unusedLocations: Iterable[Location],
+                loadout: Loadout) -> Iterable[Location]:
     # print("Updating logic...")
     for thisLoc in unusedLocations:
         thisLoc['inlogic'] = loadout.game.logic.location_logic[thisLoc['fullitemname']](loadout)

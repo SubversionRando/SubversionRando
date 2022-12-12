@@ -21,8 +21,8 @@ from logic_updater import updateAreaLogic, updateLogic
 
 def setup(logic: Type[LogicInterface]) -> tuple[Game, Loadout]:
     """ returns (all locations, vanilla connections, a new loadout) """
-    locations = pullCSV()
-    game = Game(logic, list(locations.values()), False, VanillaAreas())
+    all_locations = pullCSV()
+    game = Game(logic, all_locations, False, VanillaAreas())
     loadout = Loadout(game)
     return game, loadout
 
@@ -32,9 +32,9 @@ def test_start_logic() -> None:
 
     def update_acc() -> list[Location]:
         updateAreaLogic(loadout)
-        updateLogic(game.all_locations, loadout)
+        updateLogic(game.all_locations.values(), loadout)
 
-        return [loc for loc in game.all_locations if loc['inlogic']]
+        return [loc for loc in game.all_locations.values() if loc['inlogic']]
 
     accessible = update_acc()
     assert len(accessible) == 1, f"accessible len {len(accessible)}"
@@ -83,9 +83,9 @@ def test_all_locations(logic: Type[LogicInterface]) -> None:
         loadout.append(Items.Energy)
 
     updateAreaLogic(loadout)
-    updateLogic(game.all_locations, loadout)
+    updateLogic(game.all_locations.values(), loadout)
 
-    accessible = [loc for loc in game.all_locations if loc['inlogic']]
+    accessible = [loc for loc in game.all_locations.values() if loc['inlogic']]
 
     assert len(accessible) == 122, f"acc len {len(accessible)}"
 
@@ -102,9 +102,9 @@ def test_casual_no_hell_runs() -> None:
         loadout.append(Items.Energy)
 
     updateAreaLogic(loadout)
-    updateLogic(game.all_locations, loadout)
+    updateLogic(game.all_locations.values(), loadout)
 
-    accessible = [loc for loc in game.all_locations if loc['inlogic']]
+    accessible = [loc for loc in game.all_locations.values() if loc['inlogic']]
 
     assert len(accessible) < 110, f"acc len {len(accessible)}"
 
@@ -121,14 +121,14 @@ def test_expert_hell_runs() -> None:
         loadout.append(Items.Energy)
 
     updateAreaLogic(loadout)
-    updateLogic(game.all_locations, loadout)
+    updateLogic(game.all_locations.values(), loadout)
 
-    accessible = [loc for loc in game.all_locations if loc['inlogic']]
+    accessible = [loc for loc in game.all_locations.values() if loc['inlogic']]
 
     # 121 because Colosseum requires Varia for expert
     assert len(accessible) >= 121, (
         "expert can't get these without varia: "
-        f"{[loc['fullitemname'] for loc in game.all_locations if not loc['inlogic']]}"
+        f"{[loc['fullitemname'] for loc in game.all_locations.values() if not loc['inlogic']]}"
     )
 
 

@@ -136,7 +136,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     seedComplete = False
     randomizeAttempts = 0
     game = Game(Expert if logicChoice == "E" else Casual,
-                list(csvdict.values()),
+                csvdict,
                 areaA == "A",
                 VanillaAreas())
     while not seedComplete :
@@ -207,7 +207,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
 
 
 def assumed_fill(game: Game, spoilerSave: str) -> tuple[bool, str]:
-    for loc in game.all_locations:
+    for loc in game.all_locations.values():
         loc["item"] = None
     dummy_locations: list[Location] = []
     loadout = Loadout(game)
@@ -245,7 +245,7 @@ def forward_fill(game: Game,
                  fillChoice: Literal["M", "S", "MM"],
                  spoilerSave: str) -> tuple[bool, str]:
     unusedLocations : list[Location] = []
-    unusedLocations.extend(game.all_locations)
+    unusedLocations.extend(game.all_locations.values())
     availableLocations: list[Location] = []
     # visitedLocations = []
     loadout = Loadout(game)

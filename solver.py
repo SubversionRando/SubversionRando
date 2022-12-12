@@ -37,10 +37,10 @@ _progression_items = frozenset([
 
 def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, list[str], list[Location]]:
     """ returns (whether completable, spoiler lines, accessible locations) """
-    for loc in game.all_locations:
+    for loc in game.all_locations.values():
         loc['inlogic'] = False
 
-    unused_locations = game.all_locations.copy()
+    unused_locations = list(game.all_locations.values())
     used_locs: set[str] = set()
     doors_accessed: set[AreaDoor] = set()
 
@@ -93,7 +93,7 @@ def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, l
         #         print("solver: found another way out of spaceport besides Ridley")
         #         print(loadout)
         #         print("but logic doesn't support that yet")
-        return False, log_lines, [loc for loc in game.all_locations if loc["fullitemname"] in used_locs]
+        return False, log_lines, [loc for loc in game.all_locations.values() if loc["fullitemname"] in used_locs]
     loadout.append(Items.spaceDrop)
     loadout.append(SunkenNestL)  # assuming this is where we land
     log_lines.append(" - fall from spaceport -")
@@ -134,5 +134,5 @@ def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, l
     return (
         len(unused_locations) == 0,
         log_lines,
-        [loc for loc in game.all_locations if loc["fullitemname"] in used_locs]
+        [loc for loc in game.all_locations.values() if loc["fullitemname"] in used_locs]
     )
