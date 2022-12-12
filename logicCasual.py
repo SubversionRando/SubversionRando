@@ -140,6 +140,27 @@ eastCorridor = LogicShortcut(lambda loadout: (
 ))
 """ top of East Corridor to get to Foyer """
 
+railAccess = LogicShortcut(lambda loadout: (
+    (jumpAble in loadout) and
+    (
+        (WestTerminalAccessL in loadout) or
+        (
+            (MezzanineConcourseL in loadout) and
+            ((canFly in loadout) or
+             (SpeedBooster in loadout) or
+             (Ice in loadout))
+            ) or
+        (
+            (ElevatorToCondenserL in loadout) and
+            (canBomb in loadout) and
+            (breakIce in loadout) and
+            (underwater in loadout) and
+            ((HiJump in loadout) or (SpaceJump in loadout) or (Bombs in loadout) or (Grapple in loadout))
+            )
+        )        
+))
+""" access to the Sky Temple elevators at West Terminal and Transit Concourse """
+
 
 area_logic: AreaLogicType = {
     "Early": {
@@ -690,7 +711,7 @@ area_logic: AreaLogicType = {
             (canOpen(VulnarCanyonL) in loadout) and
             ((canBomb in loadout) or (Screw in loadout)) and
             (SpeedBooster in loadout)
-        ),  # area test for PB door
+        ),
         ("WestTerminalAccessL", "CanyonPassageR"): lambda loadout: (
             (jumpAble in loadout) and
             ((canBomb in loadout) or (Screw in loadout)) and
@@ -712,20 +733,13 @@ area_logic: AreaLogicType = {
             )
         ),
         ("MezzanineConcourseL", "VulnarCanyonL"): lambda loadout: (
-            (jumpAble in loadout) and (
-                (canFly in loadout) or
-                (SpeedBooster in loadout) or
-                (Ice in loadout)
-                ) and
+            (jumpAble in loadout) and
+            (canOpen(VulnarCanyonL) in loadout) and
             ((canBomb in loadout) or (Screw in loadout)) and
             (SpeedBooster in loadout)
-        ),  # area test for PB door
+        ),
         ("MezzanineConcourseL", "CanyonPassageR"): lambda loadout: (
-            (jumpAble in loadout) and (
-                (canFly in loadout) or
-                (SpeedBooster in loadout) or
-                (Ice in loadout)
-                ) and
+            (jumpAble in loadout) and 
             ((canBomb in loadout) or (Screw in loadout)) and
             (SpeedBooster in loadout)
         ),
@@ -780,7 +794,7 @@ area_logic: AreaLogicType = {
         ("CanyonPassageR", "VulnarCanyonL"): lambda loadout: (
             (jumpAble in loadout) and
             (canOpen(VulnarCanyonL) in loadout)
-        ),  # area test for PB door
+        ),
         ("CanyonPassageR", "ElevatorToCondenserL"): lambda loadout: (
             (jumpAble in loadout) and
             (canBomb in loadout) and
@@ -822,7 +836,7 @@ area_logic: AreaLogicType = {
                 (Bombs in loadout) or
                 (Grapple in loadout)
             )
-        ),  # area test for PB door
+        ),
         ("ElevatorToCondenserL", "CanyonPassageR"): lambda loadout: (
             (jumpAble in loadout) and
             (canBomb in loadout) and
@@ -1684,22 +1698,22 @@ location_logic: LocationLogicType = {
         (canUsePB in loadout)
     ),
     "Grand Promenade": lambda loadout: (
-        (WestTerminalAccessL in loadout) and
+        (railAccess in loadout) and
         (jumpAble in loadout)
     ),
     "Summit Landing": lambda loadout: (
-        (WestTerminalAccessL in loadout) and
+        (railAccess in loadout) and
         (jumpAble in loadout) and
         (canBomb in loadout) and
         (Speedball in loadout)
     ),
     "Snow Cache": lambda loadout: (
-        (WestTerminalAccessL in loadout) and
+        (railAccess in loadout) and
         (jumpAble in loadout) and
         (canBomb in loadout)
     ),
     "Reliquary Access": lambda loadout: (
-        (WestTerminalAccessL in loadout) and
+        (railAccess in loadout) and
         (jumpAble in loadout) and
         (Super in loadout) and
         (DarkVisor in loadout) and
@@ -1709,19 +1723,21 @@ location_logic: LocationLogicType = {
         ))
     ),
     "Syzygy Observatorium": lambda loadout: (
-        (WestTerminalAccessL in loadout) and
+        (railAccess in loadout) and
         (jumpAble in loadout) and
         ((Screw in loadout) or (
             (Super in loadout) and
             (MetroidSuit in loadout) and
             (energy_req(650) in loadout)
         ) or (
+            (Super in loadout) and
             (Hypercharge in loadout) and
-            (Charge in loadout)
+            (Charge in loadout) and
+            (energy_req(350) in loadout)
         ))
     ),
     "Armory Cache 2": lambda loadout: (
-        (WestTerminalAccessL in loadout) and
+        (railAccess in loadout) and
         (jumpAble in loadout) and
         ((Screw in loadout) or (
             (Super in loadout) and
@@ -1734,7 +1750,7 @@ location_logic: LocationLogicType = {
         ))
     ),
     "Armory Cache 3": lambda loadout: (
-        (WestTerminalAccessL in loadout) and
+        (railAccess in loadout) and
         (jumpAble in loadout) and
         ((Screw in loadout) or (
             (Super in loadout) and
@@ -1747,7 +1763,7 @@ location_logic: LocationLogicType = {
         ))
     ),
     "Drawing Room": lambda loadout: (
-        (WestTerminalAccessL in loadout) and
+        (railAccess in loadout) and
         (jumpAble in loadout) and
         (Super in loadout)
     ),
@@ -1991,18 +2007,18 @@ location_logic: LocationLogicType = {
         (norakToLifeTemple in loadout)
     ),
     "Icy Flow": lambda loadout: (
-        (WestTerminalAccessL in loadout) and
+        (railAccess in loadout) and
         (jumpAble in loadout) and
         (SpeedBooster in loadout) and
         (breakIce in loadout)
     ),
     "Ice Cave": lambda loadout: (
-        (WestTerminalAccessL in loadout) and
+        (railAccess in loadout) and
         (jumpAble in loadout) and
         (breakIce in loadout)
     ),
     "Antechamber": lambda loadout: (
-        (WestTerminalAccessL in loadout) and
+        (railAccess in loadout) and
         (jumpAble in loadout) and
         (canUsePB in loadout)
     ),
@@ -2158,7 +2174,7 @@ location_logic: LocationLogicType = {
         )
     ),
     "Grand Chasm": lambda loadout: (
-        (WestTerminalAccessL in loadout) and
+        (railAccess in loadout) and
         (jumpAble in loadout) and
         (canBomb in loadout) and
         (Screw in loadout)
@@ -2264,13 +2280,13 @@ location_logic: LocationLogicType = {
         (canFly in loadout)
     ),
     "Glacier's Reach": lambda loadout: (
-        (WestTerminalAccessL in loadout) and
+        (railAccess in loadout) and
         (jumpAble in loadout) and
         (canBomb in loadout) and
         (energy_req(650) in loadout)
     ),
     "Sitting Room": lambda loadout: (
-        (WestTerminalAccessL in loadout) and
+        (railAccess in loadout) and
         (jumpAble in loadout) and
         (canUsePB in loadout) and
         (Speedball in loadout)
