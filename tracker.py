@@ -15,6 +15,21 @@ from logicExpert import Expert
 from logicInterface import LogicInterface
 from solver import solve
 
+_name_aliases = {
+    "Warrior Shrine: Top": "Warrior Shrine: AmmoTank top",
+    "Warrior Shrine: Bottom": "Warrior Shrine: AmmoTank bottom",
+    "Warrior Shrine: Middle": "Warrior Shrine: ETank",
+    "Briar: Bottom": "Briar: AmmoTank",
+    "Briar: Top": "Briar: SJBoost",
+}
+""" alternate name: location name """
+# If you add an alias, add a unit test for it in test_tracker.py `test_loc_names_from_input()`
+
+# Use capitalization in the aliases - a lowercase version will be made automatically.
+
+# I thought about including vanilla majors as aliases,
+# but I didn't because someone might type in the item they just picked up in the rando.
+
 
 class Tracker:
     empty_locations: dict[str, Location]
@@ -39,8 +54,11 @@ class Tracker:
             everything[loc_name.lower()].add(loc_name)
             everything[loc_name[:len(in_text) + 1]].add(loc_name)
             everything[loc_name[:len(in_text) + 1].lower()].add(loc_name)
-            # TODO: include vanilla majors?
-            # (maybe not, because someone might type in the item they just picked up in the rando)
+        for alias, loc_name in _name_aliases.items():
+            everything[alias].add(loc_name)
+            everything[alias.lower()].add(loc_name)
+            everything[alias[:len(in_text) + 1]].add(loc_name)
+            everything[alias[:len(in_text) + 1].lower()].add(loc_name)
         all_names = list(everything.keys())
         best = get_close_matches(in_text, all_names, n=1, cutoff=0.75)
         return list(everything[best[0]] if len(best) else [])
@@ -78,7 +96,6 @@ class Tracker:
         self.loadout = Loadout(game)
 
     def pickup_location(self, loc_name: str) -> None:
-        # 1st find out if location was in logic
         was_in_logic = self.query(loc_name)
         if not was_in_logic:
             print(f"{loc_name} was not in logic")
@@ -144,22 +161,6 @@ def main() -> None:
                 print(f"unrecognized location name: {command}")
                 if len(name_results):
                     print(f"one of these? {', '.join(name_results)}")
-
-
-def test_loc_names_from_input() -> None:
-    t = Tracker()
-
-    assert len(t.loc_names_from_input("benthic")) == 2  # cache and cache access
-    assert t.loc_names_from_input("benthic access") == ['Benthic Cache Access']
-    assert len(t.loc_names_from_input("briar")) == 2
-    assert t.loc_names_from_input("briar ammo") == ['Briar: AmmoTank']
-    assert len(t.loc_names_from_input("shrine")) == 3
-    assert t.loc_names_from_input("shrine fervor") == ['Shrine Of Fervor']
-    assert t.loc_names_from_input("tower") == ['Tower Rock Lookout']
-    assert t.loc_names_from_input("antilere") == ['Antelier']
-    assert len(t.loc_names_from_input("armory cache")) == 2
-    assert t.loc_names_from_input("benthic cache") == ["Benthic Cache"]
-    assert len(t.loc_names_from_input("List")) == 0
 
 
 if __name__ == "__main__":
