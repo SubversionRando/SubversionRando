@@ -4,7 +4,7 @@ from connection_data import area_doors_unpackable
 from door_logic import canOpen
 from item_data import items_unpackable
 from loadout import Loadout
-from logicCommon import canUsePB, energy_req, varia_or_hell_run
+from logicCommon import ammo_req, canUsePB, energy_req, varia_or_hell_run
 from logicInterface import AreaLogicType, LocationLogicType, LogicInterface
 from logic_shortcut import LogicShortcut
 
@@ -105,6 +105,19 @@ hotSpring = LogicShortcut(lambda loadout: (
 ))
 """ traverse "Hot Spring" between Sporous Nook and Vulnar Depths Elevator W """
 
+waterGardenBottom = LogicShortcut(lambda loadout: (
+    ((GravitySuit in loadout) or (Ice in loadout) or (
+        (HiJump in loadout) and
+        (Speedball in loadout)
+    )) and
+    (canBomb in loadout) and
+    ((Speedball in loadout) or (Bombs in loadout) or (ammo_req(30) in loadout))
+    # TODO: can you do this with only 2 PBs?
+    # (with only gravity boots, ice, morph, PBs)
+    # I bet you can't.
+    # (I bet Bob can.)
+))
+""" get into water garden from wellspring access """
 
 area_logic: AreaLogicType = {
     "Early": {
@@ -1016,13 +1029,13 @@ area_logic: AreaLogicType = {
                     (GravitySuit in loadout) or
                     (Grapple in loadout) or
                     ((Speedball in loadout) and (HiJump in loadout))
-                    ) and
+                ) and
                 (
                     (GravitySuit in loadout) or
                     (Speedball in loadout) or
                     (HiJump in loadout)
-                    )
-                ) and
+                )
+            ) and
             ((HiJump in loadout) or
              (SpaceJump in loadout) or
              (Bombs in loadout) or
@@ -1041,13 +1054,13 @@ area_logic: AreaLogicType = {
                     (GravitySuit in loadout) or
                     (Grapple in loadout) or
                     ((Speedball in loadout) and (HiJump in loadout))
-                    ) and
+                ) and
                 (
                     (GravitySuit in loadout) or
                     (Speedball in loadout) or
                     (HiJump in loadout)
-                    )
                 )
+            )
         ),
         ("ElevatorToCondenserL", "CanyonPassageR"): lambda loadout: (
             (jumpAble in loadout) and
@@ -1061,56 +1074,38 @@ area_logic: AreaLogicType = {
                     (GravitySuit in loadout) or
                     (Grapple in loadout) or
                     ((Speedball in loadout) and (HiJump in loadout))
-                    ) and
+                ) and
                 (
                     (GravitySuit in loadout) or
                     (Speedball in loadout) or
                     (HiJump in loadout)
-                    )
                 )
+            )
         ),
     },
     "LifeTemple": {
         ("ElevatorToWellspringL", "NorakBrookL"): lambda loadout: (
             (jumpAble in loadout) and
-            (canBomb in loadout) and
-            ((GravitySuit in loadout) or
-             (Ice in loadout) or
-             ((HiJump in loadout) and (Speedball in loadout)))
+            (waterGardenBottom in loadout)
         ),
         ("ElevatorToWellspringL", "NorakPerimeterTR"): lambda loadout: (
             (jumpAble in loadout) and
-            (canBomb in loadout) and
-            ((GravitySuit in loadout) or
-             (Ice in loadout) or
-             ((HiJump in loadout) and (Speedball in loadout))) and
+            (waterGardenBottom in loadout) and
             (MetroidSuit in loadout)
         ),
         ("ElevatorToWellspringL", "NorakPerimeterBL"): lambda loadout: (
             (jumpAble in loadout) and
-            (canBomb in loadout) and
-            ((GravitySuit in loadout) or
-             (Ice in loadout) or
-             ((HiJump in loadout) and (Speedball in loadout)))
+            (waterGardenBottom in loadout)
         ),
         ("NorakBrookL", "ElevatorToWellspringL"): lambda loadout: (
             (jumpAble in loadout) and
-            (canBomb in loadout) and
-            ((GravitySuit in loadout) or
-             (Ice in loadout) or
-             ((HiJump in loadout) and (Speedball in loadout)))
+            (waterGardenBottom in loadout)
         ),
         ("NorakBrookL", "NorakPerimeterTR"): lambda loadout: (
             (jumpAble in loadout) and
             (MetroidSuit in loadout) and
             (Morph in loadout) and
-            ((GravitySuit in loadout) or
-             (Ice in loadout) or
-             (HiJump in loadout) or
-             (Speedball in loadout) or
-             (SpaceJump in loadout) or
-             (Bombs in loadout) or
-             (SpeedBooster in loadout))
+            (loadout.has_any(GravitySuit, Ice, HiJump, Speedball, SpaceJump, Bombs, SpeedBooster))
         ),
         ("NorakBrookL", "NorakPerimeterBL"): lambda loadout: (
             (jumpAble in loadout) and
@@ -1119,67 +1114,44 @@ area_logic: AreaLogicType = {
                 (canBomb in loadout) or
                 (Screw in loadout) or
                 (SpeedBooster in loadout)
-                ) and
-            ((GravitySuit in loadout) or
-             (Ice in loadout) or
-             (HiJump in loadout) or
-             (Speedball in loadout) or
-             (SpaceJump in loadout) or
-             (Bombs in loadout) or
-             (SpeedBooster in loadout))
+            ) and
+            (loadout.has_any(GravitySuit, Ice, HiJump, Speedball, SpaceJump, Bombs, SpeedBooster))
         ),
         ("NorakPerimeterTR", "ElevatorToWellspringL"): lambda loadout: (
             (jumpAble in loadout) and
-            (canBomb in loadout) and
-            ((GravitySuit in loadout) or
-             (Ice in loadout) or
-             ((HiJump in loadout) and (Speedball in loadout))) and
+            (waterGardenBottom in loadout) and
             (MetroidSuit in loadout)
         ),
         ("NorakPerimeterTR", "NorakBrookL"): lambda loadout: (
             (jumpAble in loadout) and
             (MetroidSuit in loadout) and
             (Morph in loadout) and
-            ((GravitySuit in loadout) or
-             (Ice in loadout) or
-             (HiJump in loadout) or
-             (Speedball in loadout) or
-             (SpaceJump in loadout) or
-             (Bombs in loadout) or
-             (SpeedBooster in loadout))
+            (loadout.has_any(GravitySuit, Ice, HiJump, Speedball, SpaceJump, Bombs, SpeedBooster))
         ),
         ("NorakPerimeterTR", "NorakPerimeterBL"): lambda loadout: (
             (jumpAble in loadout) and
-            ((canBomb in loadout) or
-             (Screw in loadout) or
-             ((SpeedBooster in loadout) and
-              (Morph in loadout)) and
-            (MetroidSuit in loadout)
-             )
-        ), #Test doing NorakPerimeterBL spark with/out morph
-            
+            # TODO: are these parentheses in the right place? (mixed and/or at the same level)
+            ((canBomb in loadout) or (Screw in loadout) or (
+                (SpeedBooster in loadout) and
+                (Morph in loadout)
+            ) and
+            (MetroidSuit in loadout))
+        ),  # Test doing NorakPerimeterBL spark with/out morph
+
         ("NorakPerimeterBL", "ElevatorToWellspringL"): lambda loadout: (
             (jumpAble in loadout) and
-            (canBomb in loadout) and
-            ((GravitySuit in loadout) or
-             (Ice in loadout) or
-             ((HiJump in loadout) and (Speedball in loadout)))
-        ), 
+            (waterGardenBottom in loadout)
+        ),
         ("NorakPerimeterBL", "NorakBrookL"): lambda loadout: (
             (jumpAble in loadout) and
             (Morph in loadout) and
-            ((GravitySuit in loadout) or
-             (Ice in loadout) or
-             (HiJump in loadout) or
-             (Speedball in loadout) or
-             (SpaceJump in loadout) or
-             (Bombs in loadout) or
-             (SpeedBooster in loadout)) and
+            (loadout.has_any(GravitySuit, Ice, HiJump, Speedball, SpaceJump, Bombs, SpeedBooster)) and
             ((canBomb in loadout) or
              (Screw in loadout) or
              (SpeedBooster in loadout))
-        ), #and? anything else?
+        ),  # and? anything else?
         ("NorakPerimeterBL", "NorakPerimeterTR"): lambda loadout: (
+            # TODO: are these parentheses in the right place? (mixed and/or at the same level)
             (jumpAble in loadout) and
             ((canBomb in loadout) or
              (Screw in loadout) or
@@ -1191,13 +1163,13 @@ area_logic: AreaLogicType = {
     },
     "FireHive": {
         ("VulnarDepthsElevatorEL", "VulnarDepthsElevatorER"): lambda loadout: (
-            True
+            True  # flat hallway to walk across
         ),
         ("VulnarDepthsElevatorER", "VulnarDepthsElevatorEL"): lambda loadout: (
-            True
+            True  # flat hallway to walk across
         ),
         ("VulnarDepthsElevatorER", "HiveBurrowL"): lambda loadout: (
-            False  #One way logic not respected, intended
+            False  # One way logic not respected, intended
         ),
         ("VulnarDepthsElevatorER", "SequesteredInfernoL"): lambda loadout: (
             (jumpAble in loadout) and

@@ -4,7 +4,7 @@ from connection_data import area_doors_unpackable
 from door_logic import canOpen
 from item_data import items_unpackable
 from loadout import Loadout
-from logicCommon import canUsePB, energy_req
+from logicCommon import ammo_req, canUsePB, energy_req
 from logicInterface import AreaLogicType, LocationLogicType, LogicInterface
 from logic_shortcut import LogicShortcut
 
@@ -94,6 +94,39 @@ plasmaWaveGate = LogicShortcut(lambda loadout: (
     ((Hypercharge in loadout) and (Charge in loadout))
 ))
 """ the switches that are blocked by plasma+wave barriers """
+
+waterGardenBottom = LogicShortcut(lambda loadout: (
+    (GravitySuit in loadout) and
+    (canBomb in loadout) and
+    ((Speedball in loadout) or (Bombs in loadout))  # 4-tile morph jump
+))
+""" get into water garden from wellspring access - little morph tunnel with bomb blocks after water """
+
+brook = LogicShortcut(lambda loadout: (
+    (jumpAble in loadout) and
+    (Morph in loadout) and
+    ((GravitySuit in loadout) or (
+        (SpaceJump in loadout) and
+        (HiJump in loadout)
+    ))
+))
+""" to get across Norak Brook (bottom right to left) """
+
+veranda = LogicShortcut(lambda loadout: (
+    loadout.has_any(Morph, HiJump, SpaceJump)
+    # If you don't have HiJump or SpaceJump or Bombs,
+    # you can wall jump off of the wall right above the door to Hopper Nest,
+    # then wall jump off the ledge just outside the door to Jungle Map Station access,
+    # to get to the middle level, then use the Morph tunnel in the top right to get up higher.
+
+    # If you have HiJump and no Morph, then you wall jump off the green wall above the
+    # door to Jungle Map Station Access, or the bricks across from it.
+
+    # Some might think these techs are too advanced for casual,
+    # but I think the combination being very unlikely to be required and not extremely difficult
+    # (not nearly as hard as much of the stuff in expert) makes it ok.
+))
+""" to get from the bottom of Veranda to the top """
 
 
 area_logic: AreaLogicType = {
@@ -773,10 +806,10 @@ area_logic: AreaLogicType = {
             (GravitySuit in loadout) and
             (
                 (HiJump in loadout) or
-                 (SpaceJump in loadout) or
-                 (Bombs in loadout) or
-                 (Grapple in loadout)
-                )
+                (SpaceJump in loadout) or
+                (Bombs in loadout) or
+                (Grapple in loadout)
+            )
         ),  # area test for PB door
         ("ElevatorToCondenserL", "CanyonPassageR"): lambda loadout: (
             (jumpAble in loadout) and
@@ -795,69 +828,70 @@ area_logic: AreaLogicType = {
     "LifeTemple": {
         ("ElevatorToWellspringL", "NorakBrookL"): lambda loadout: (
             (jumpAble in loadout) and
-            (canBomb in loadout) and
-            (GravitySuit in loadout)
+            (brook in loadout) and
+            (veranda in loadout) and
+            (waterGardenBottom in loadout)
+            # Note: If no canFly and no speedbooster,
+            # this requires a wall jump around a 2 tile ledge (in Water Garden)
+            # I think that's not too hard for casual, but some people might not like it.
         ),
         ("ElevatorToWellspringL", "NorakPerimeterTR"): lambda loadout: (
             (jumpAble in loadout) and
-            (underwater in loadout) and
-            (canBomb in loadout) and
+            (veranda in loadout) and
+            (waterGardenBottom in loadout) and
             (MetroidSuit in loadout)
         ),
         ("ElevatorToWellspringL", "NorakPerimeterBL"): lambda loadout: (
             (jumpAble in loadout) and
-            (underwater in loadout) and
-            (canBomb in loadout)
+            (veranda in loadout) and
+            (waterGardenBottom in loadout)
         ),
         ("NorakBrookL", "ElevatorToWellspringL"): lambda loadout: (
             (jumpAble in loadout) and
-            (canBomb in loadout) and
-            (GravitySuit in loadout)
+            (brook in loadout) and
+            (veranda in loadout) and
+            (waterGardenBottom in loadout)
         ),
         ("NorakBrookL", "NorakPerimeterTR"): lambda loadout: (
             (jumpAble in loadout) and
             (MetroidSuit in loadout) and
-            (GravitySuit in loadout) and
-            (Morph in loadout)
+            (brook in loadout)
         ),
         ("NorakBrookL", "NorakPerimeterBL"): lambda loadout: (
             (jumpAble in loadout) and
-            (Morph in loadout) and
-            (GravitySuit in loadout) and
-            ((canBomb in loadout) or
-             (Screw in loadout))
+            (brook in loadout) and
+            ((canBomb in loadout) or (Screw in loadout))
         ),
         ("NorakPerimeterTR", "ElevatorToWellspringL"): lambda loadout: (
             (jumpAble in loadout) and
-            (canBomb in loadout) and
-            (GravitySuit in loadout) and
+            (veranda in loadout) and
+            (waterGardenBottom in loadout) and
             (MetroidSuit in loadout)
         ),
         ("NorakPerimeterTR", "NorakBrookL"): lambda loadout: (
             (jumpAble in loadout) and
             (MetroidSuit in loadout) and
-            (Morph in loadout) and
-            (GravitySuit in loadout)
+            (brook in loadout)
         ),
         ("NorakPerimeterTR", "NorakPerimeterBL"): lambda loadout: (
             (jumpAble in loadout) and
+            (Morph in loadout) and
             ((canBomb in loadout) or (Screw in loadout)) and
             (MetroidSuit in loadout)
         ),
         ("NorakPerimeterBL", "ElevatorToWellspringL"): lambda loadout: (
             (jumpAble in loadout) and
-            (canBomb in loadout) and
-            (GravitySuit in loadout)
+            (veranda in loadout) and
+            (waterGardenBottom in loadout)  # includes canBomb for the bomb blocks in Norak Perimeter
         ),
         ("NorakPerimeterBL", "NorakBrookL"): lambda loadout: (
             (jumpAble in loadout) and
-            ((canBomb in loadout) or
-             (Screw in loadout)) and
-            (Morph in loadout) and
-            (GravitySuit in loadout)
+            ((canBomb in loadout) or (Screw in loadout)) and
+            (brook in loadout)
         ),
         ("NorakPerimeterBL", "NorakPerimeterTR"): lambda loadout: (
             (jumpAble in loadout) and
+            (Morph in loadout) and
             ((canBomb in loadout) or (Screw in loadout)) and
             (MetroidSuit in loadout)
         ),
@@ -1223,6 +1257,21 @@ area_logic: AreaLogicType = {
     },
 }
 
+norakToLifeTemple = LogicShortcut(lambda loadout: (
+    (
+        (NorakBrookL in loadout) and
+        (brook in loadout)
+    ) or (
+        (NorakPerimeterBL in loadout) and
+        (Morph in loadout) and
+        ((canBomb in loadout) or (Screw in loadout))
+    ) or (
+        (NorakPerimeterTR in loadout) and
+        (MetroidSuit in loadout)
+    )
+))
+""" from any of the Norak area doors to Life Temple """
+
 location_logic: LocationLogicType = {
     "Impact Crater: AccelCharge": lambda loadout: (
         (jumpAble in loadout) and
@@ -1250,6 +1299,8 @@ location_logic: LocationLogicType = {
         (jumpAble in loadout) and
         (pinkDoor in loadout) and
         (GravitySuit in loadout) and
+        # TODO: if I don't have dark visor, I need 30 ammo to safely be able to get in and then out
+        # probably only 20, but blocks might respawn to require 30 if too slow
         ((canUsePB in loadout) or (
             (canBomb in loadout) and
             (DarkVisor in loadout)
@@ -1321,7 +1372,7 @@ location_logic: LocationLogicType = {
     "Crypt": lambda loadout: (
         (RuinedConcourseBL in loadout) and
         (jumpAble in loadout) and
-        (canBomb in loadout) and
+        (canBomb in loadout) and  # TODO: if using power bombs, I need 30 ammo to get in and out
         (
             (pinkDoor in loadout) or (
                 (GravitySuit in loadout) and
@@ -1348,6 +1399,7 @@ location_logic: LocationLogicType = {
         (SpeedBooster in loadout)
     ),
     "Sensor Maintenance: ETank": lambda loadout: (  # front
+        # TODO: screw or supers for casual?
         # TODO: check area door, don't assume start location
         (vulnar in loadout) and
         (canBomb in loadout) and
@@ -1386,6 +1438,7 @@ location_logic: LocationLogicType = {
             (SpeedBooster in loadout) or
             (Ice in loadout)
         )
+        # TODO: 4-tile morph jump to get out
     ),
     "Greater Inferno": lambda loadout: (
         (MagmaPumpAccessR in loadout) and
@@ -1560,35 +1613,15 @@ location_logic: LocationLogicType = {
             (canUsePB in loadout)
         )
     ),
-    "Briar: SJBoost": lambda loadout: (  # top
+    "Briar: SJBoost": lambda loadout: (  # PB tube
         (NorakPerimeterBL in loadout) and
         (jumpAble in loadout) and
         (canUsePB in loadout)
     ),
     "Shrine Of Fervor": lambda loadout: (
         (jumpAble in loadout) and
-        (
-            (HiJump in loadout) or
-            (SpaceJump in loadout) or
-            (Morph in loadout)
-        ) and
-        ((
-            (NorakBrookL in loadout) and
-            ((GravitySuit in loadout) or (
-                (SpaceJump in loadout) and
-                (HiJump in loadout)
-            )) and
-            (Morph in loadout)
-        ) or (
-            (NorakPerimeterBL in loadout) and
-            (
-                (canBomb in loadout) or
-                (Screw in loadout)
-            )
-        ) or (
-            (NorakPerimeterTR in loadout) and
-            (MetroidSuit in loadout)
-        ))
+        (veranda in loadout) and
+        (norakToLifeTemple in loadout)
     ),
     "Chamber Of Wind": lambda loadout: (
         (NorakPerimeterBL in loadout) and
@@ -1608,49 +1641,23 @@ location_logic: LocationLogicType = {
     "Water Garden": lambda loadout: (
         (jumpAble in loadout) and
         (SpeedBooster in loadout) and
-        (
-            (HiJump in loadout) or
-            (SpaceJump in loadout) or
-            (Morph in loadout)
-        ) and
-        ((
-            (NorakBrookL in loadout) and
-            (GravitySuit in loadout) and
-            (Morph in loadout)
-        ) or (
-            (NorakPerimeterBL in loadout) and
-            (
-                (canBomb in loadout) or
-                (Screw in loadout)
-            )
-        ) or (
-            (NorakPerimeterTR in loadout) and
-            (MetroidSuit in loadout)
-        ))
+        (veranda in loadout) and
+        (norakToLifeTemple in loadout)
+        # TODO: Might there be a reason to add logic from ElevatorToWellspringL ?
     ),
     "Crocomire's Energy Station": lambda loadout: (
         (jumpAble in loadout) and
         (Super in loadout) and
         (SpeedBooster in loadout) and
-        (
-            (HiJump in loadout) or
-            (SpaceJump in loadout) or
-            (Morph in loadout)
-        ) and
-        ((
-            (NorakBrookL in loadout) and
-            (GravitySuit in loadout) and
-            (Morph in loadout)
-        ) or (
-            (NorakPerimeterBL in loadout) and
+        (  # to get past the bomb blocks in the left side of Croc's room
             (
-                (canBomb in loadout) or
-                (Screw in loadout)
-            )
-        ) or (
-            (NorakPerimeterTR in loadout) and
-            (MetroidSuit in loadout)
-        ))
+                (Morph in loadout) and
+                (Speedball in loadout)
+            ) or (canBomb in loadout) or (Screw in loadout)
+        ) and
+        (veranda in loadout) and
+        (norakToLifeTemple in loadout)
+        # TODO: Might there be a reason to add logic from ElevatorToWellspringL ?
     ),
     "Wellspring Cache": lambda loadout: (
         (ElevatorToWellspringL in loadout) and
@@ -1735,7 +1742,7 @@ location_logic: LocationLogicType = {
     "Impact Crater Overlook": lambda loadout: (  # TODO: check an area door, don't assume we start in this area
         (canFly in loadout) and
         (canBomb in loadout) and
-        ((canUsePB in loadout) or
+        ((canUsePB in loadout) or  # TODO: if all I have is PB, I need 20 ammo
          (Super in loadout))
     ),
     "Magma Lake Cache": lambda loadout: (
@@ -1879,11 +1886,13 @@ location_logic: LocationLogicType = {
         ((Speedball in loadout) or (canBomb in loadout))
     ),
     "Sensor Maintenance: AmmoTank": lambda loadout: (  # back
+        # TODO: screw or supers for casual Way of the Watcher?
+        # or is there a secret to make this easier with just missiles?
+        # (I find it difficult with just missiles.)
         (vulnar in loadout) and
         (canBomb in loadout) and
         (Speedball in loadout) and
-        (LargeAmmo in loadout) and
-        (SmallAmmo in loadout)
+        (ammo_req(25) in loadout)
     ),
     "Causeway Overlook": lambda loadout: (
         (CausewayR in loadout) and
@@ -1967,19 +1976,7 @@ location_logic: LocationLogicType = {
     "Briar: AmmoTank": lambda loadout: (  # bottom
         (jumpAble in loadout) and
         (Morph in loadout) and
-        ((
-            (NorakBrookL in loadout) and
-            (GravitySuit in loadout)
-        ) or (
-            (NorakPerimeterBL in loadout) and
-            (
-                (canBomb in loadout) or
-                (Screw in loadout)
-            )
-        ) or (
-             (NorakPerimeterTR in loadout) and
-             (MetroidSuit in loadout)
-        ))
+        (norakToLifeTemple in loadout)
     ),
     "Icy Flow": lambda loadout: (
         (WestTerminalAccessL in loadout) and
@@ -2109,14 +2106,15 @@ location_logic: LocationLogicType = {
         (jumpAble in loadout) and
         (canUsePB in loadout) and
         (Spazer in loadout) and
-        ((HiJump in loadout) or
-         (SpaceJump in loadout) or
-         (Morph in loadout))
+        (veranda in loadout)
+        # TODO: Might there be a reason to add logic from ElevatorToWellspringL ?
     ),
     "Sandy Burrow: AmmoTank": lambda loadout: (  # bottom
         (OceanShoreR in loadout) and
         (GravitySuit in loadout) and
         (Morph in loadout) and
+        # to get back in hole after getting this item
+        (loadout.has_any(Speedball, Bombs, PowerBomb)) and
         ((HiJump in loadout) or (canFly in loadout))
     ),
     "Trophobiotic Chamber": lambda loadout: (
@@ -2326,7 +2324,10 @@ location_logic: LocationLogicType = {
         (
             (WestCorridorR in loadout) and
             (
-                (GravitySuit in loadout) or (HiJump in loadout)
+                (GravitySuit in loadout) or (
+                    (HiJump in loadout) and
+                    (Ice in loadout)  # to get out if I don't have aqua suit
+                )
             ) and
             ((
                 (pinkDoor in loadout) and
@@ -2367,25 +2368,8 @@ location_logic: LocationLogicType = {
         (jumpAble in loadout) and
         (Super in loadout) and
         (SpeedBooster in loadout) and
-        ((HiJump in loadout) or (SpaceJump in loadout) or (Morph in loadout)) and
-        (
-            (
-                (NorakPerimeterBL in loadout) and
-                (
-                    (canBomb in loadout) or
-                    (Screw in loadout)
-                )
-            ) or
-            (
-                (NorakPerimeterTR in loadout) and
-                (MetroidSuit in loadout)
-            ) or
-            (
-                (NorakBrookL in loadout) and
-                (Morph in loadout) and
-                (GravitySuit in loadout)
-            )
-        )
+        (veranda in loadout) and
+        (norakToLifeTemple in loadout)
     ),
 }
 
