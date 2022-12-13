@@ -153,6 +153,20 @@ def test_crypt_no_bomb_no_wave() -> None:
     assert game.all_locations["Crypt"]["inlogic"]
 
 
+def test_norak_perimeters() -> None:
+    """ test hitting switch in Crypt by following bullet with speedball """
+    game, loadout = setup(Expert)
+
+    loadout.append(area_doors["NorakPerimeterTR"])
+    loadout.append(Items.spaceDrop)
+    loadout.append(Items.GravityBoots)
+    loadout.append(Items.Screw)
+
+    updateLogic(game.all_locations.values(), loadout)
+
+    assert area_doors["NorakPerimeterBL"] not in loadout
+
+
 if __name__ == "__main__":
     test_start_logic()
     test_casual_no_hell_runs()
