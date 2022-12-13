@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 from copy import deepcopy
 from difflib import get_close_matches
 import os
@@ -7,7 +7,7 @@ from typing import Type
 
 from connection_data import AreaDoor, VanillaAreas, area_doors
 from game import Game
-from item_data import Items, all_items
+from item_data import Item, Items, all_items
 from loadout import Loadout
 from location_data import Location, pullCSV, spacePortLocs
 from logicCasual import Casual
@@ -15,6 +15,13 @@ from logicExpert import Expert
 from logicInterface import LogicInterface
 from solver import solve
 
+# TODO: archives right and left, front and back
+# TODO: sensor maintenance top and bottom (sensor top, sensor bot)
+# TODO: docking port 4 omega o, and 3 is gamma y g
+# TODO: spore spawn, kraid, draygon
+# TODO: impact crater (doesn't need "Accel Charge" - there's only 1 item in that room)
+# TODO: mining site alpha a
+# TODO: armory cache b beta, gamma g y
 _name_aliases = {
     "Warrior Shrine: Top": "Warrior Shrine: AmmoTank top",
     "Warrior Shrine: Bottom": "Warrior Shrine: AmmoTank bottom",
@@ -35,6 +42,7 @@ class Tracker:
     empty_locations: dict[str, Location]
     game_state_locations: dict[str, Location]
     loadout: Loadout
+    undo_stack: deque[tuple[Location, Item]]
 
     def __init__(self) -> None:
         logic = Casual
@@ -45,6 +53,8 @@ class Tracker:
         self.game_state_locations = deepcopy(self.empty_locations)
         game = Game(logic, self.empty_locations, area_rando, area_connections)
         self.loadout = Loadout(game)
+
+        self.undo_stack = deque()
 
     def loc_names_from_input(self, in_text: str) -> list[str]:
         everything: dict[str, set[str]] = defaultdict(set)
@@ -103,7 +113,8 @@ class Tracker:
         if item:
             self.loadout.append(item)
             self.game_state_locations[loc_name]["item"] = None
-            # TODO: save undo information
+            # save undo information
+            self.undo_stack.append((self.game_state_locations[loc_name], item))
             print(f"picked up {item[0]} from {loc_name}")
         else:
             print(f"There was no item in {loc_name}")
@@ -124,6 +135,15 @@ class Tracker:
         _, _, accessible_locations = solve(self.loadout.game, self.loadout)
         return self.loadout.game.all_locations[loc_name] in accessible_locations
 
+    def undo(self) -> None:
+        if len(self.undo_stack):
+            loc, item = self.undo_stack.pop()
+            loc["item"] = item
+            self.loadout.contents[item] -= 1
+            print(f"put {item[0]} back in {loc['fullitemname']}")
+        else:
+            print("nothing to undo")
+
 
 def main() -> None:
     t = Tracker()
@@ -133,7 +153,7 @@ def main() -> None:
         print("give path to spoiler: python tracker.py spoilers/SubEDA4939087.sfc.spoiler.txt")
         exit(1)
 
-    print("commands: list, exit, q <loc_name>, <loc_name>")
+    print("commands: list, exit, q <loc_name>, <loc_name>, undo")
     command = ""
     while command.lower() != "exit":
         command = input("> ")
@@ -143,6 +163,8 @@ def main() -> None:
                 print(loc_name)
         elif command.lower() == "exit":
             pass
+        elif command.lower() == "undo":
+            t.undo()
         elif len(command) > 2 and command.lower().startswith("q "):
             loc_name_input = command[2:]
             name_results = t.loc_names_from_input(loc_name_input)

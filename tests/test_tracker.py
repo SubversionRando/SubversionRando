@@ -21,7 +21,13 @@ def test_loc_names_from_input() -> None:
     assert t.loc_names_from_input("antilere") == ['Antelier']
     assert len(t.loc_names_from_input("armory cache")) == 2
     assert t.loc_names_from_input("benthic cache") == ["Benthic Cache"]
+    assert len(t.loc_names_from_input("weapon")) == 2
+
+    # commands
     assert len(t.loc_names_from_input("List")) == 0
+    assert len(t.loc_names_from_input("undo")) == 0
+    assert len(t.loc_names_from_input("exit")) == 0
+    assert len(t.loc_names_from_input("q et")) == 0
 
     # aliases
     assert t.loc_names_from_input("warrior shrine top") == ["Warrior Shrine: AmmoTank top"]
