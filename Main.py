@@ -260,7 +260,6 @@ def forward_fill(game: Game,
         # update logic by updating unusedLocations
         # using helper function, modular for more logic options later
         # unusedLocations[i]['inlogic'] holds the True or False for logic
-        logic_updater.updateAreaLogic(loadout)
         logic_updater.updateLogic(unusedLocations, loadout)
 
         # update unusedLocations and availableLocations

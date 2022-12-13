@@ -16,7 +16,7 @@ from location_data import Location, pullCSV
 from logicCasual import Casual
 from logicExpert import Expert
 from logicInterface import LogicInterface
-from logic_updater import updateAreaLogic, updateLogic
+from logic_updater import updateLogic
 
 
 def setup(logic: Type[LogicInterface]) -> tuple[Game, Loadout]:
@@ -31,7 +31,6 @@ def test_start_logic() -> None:
     game, loadout = setup(Casual)
 
     def update_acc() -> list[Location]:
-        updateAreaLogic(loadout)
         updateLogic(game.all_locations.values(), loadout)
 
         return [loc for loc in game.all_locations.values() if loc['inlogic']]
@@ -82,7 +81,6 @@ def test_all_locations(logic: Type[LogicInterface]) -> None:
     for _ in range(10):
         loadout.append(Items.Energy)
 
-    updateAreaLogic(loadout)
     updateLogic(game.all_locations.values(), loadout)
 
     accessible = [loc for loc in game.all_locations.values() if loc['inlogic']]
@@ -101,7 +99,6 @@ def test_casual_no_hell_runs() -> None:
     for _ in range(16):
         loadout.append(Items.Energy)
 
-    updateAreaLogic(loadout)
     updateLogic(game.all_locations.values(), loadout)
 
     accessible = [loc for loc in game.all_locations.values() if loc['inlogic']]
@@ -120,7 +117,6 @@ def test_expert_hell_runs() -> None:
     for _ in range(16):
         loadout.append(Items.Energy)
 
-    updateAreaLogic(loadout)
     updateLogic(game.all_locations.values(), loadout)
 
     accessible = [loc for loc in game.all_locations.values() if loc['inlogic']]
@@ -146,14 +142,12 @@ def test_crypt_no_bomb_no_wave() -> None:
     loadout.append(Items.Ice)
     loadout.append(Items.GravitySuit)
 
-    updateAreaLogic(loadout)
     updateLogic(game.all_locations.values(), loadout)
 
     assert not game.all_locations["Crypt"]["inlogic"]
 
     loadout.append(Items.Speedball)
 
-    updateAreaLogic(loadout)
     updateLogic(game.all_locations.values(), loadout)
 
     assert game.all_locations["Crypt"]["inlogic"]

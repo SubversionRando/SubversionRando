@@ -5,7 +5,7 @@ from game import Game
 from item_data import Items
 from loadout import Loadout
 from location_data import Location, spacePortLocs
-from logic_updater import updateAreaLogic, updateLogic
+from logic_updater import updateLogic
 
 _progression_items = frozenset([
     Items.Missile,
@@ -62,9 +62,8 @@ def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, l
     stuck = False
     while not stuck:
         prev_loadout_count = len(loadout)
-        updateAreaLogic(loadout)
-        check_for_new_area_doors()
         updateLogic(unused_locations, loadout)
+        check_for_new_area_doors()
         log_lines.append("sphere:")
         for loc in unused_locations:
             if loc['inlogic']:
@@ -101,9 +100,8 @@ def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, l
     stuck = False
     while not stuck:
         prev_loadout_count = len(loadout)
-        updateAreaLogic(loadout)
-        check_for_new_area_doors()
         updateLogic(unused_locations, loadout)
+        check_for_new_area_doors()
         log_lines.append("sphere:")
         for loc in unused_locations:
             # special case: major/minor can put missiles or grav boots in sandy cache even though it's not in logic
