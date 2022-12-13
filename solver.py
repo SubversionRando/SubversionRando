@@ -5,6 +5,7 @@ from game import Game
 from item_data import Items
 from loadout import Loadout
 from location_data import Location, spacePortLocs
+from logicCommon import ammo_req, energy_req
 from logic_updater import updateLogic
 
 _progression_items = frozenset([
@@ -31,7 +32,9 @@ _progression_items = frozenset([
     Items.Charge,
     Items.Hypercharge,
     Items.Xray,
-    Items.Energy
+    Items.Energy,
+    Items.SmallAmmo,
+    Items.LargeAmmo,
 ])
 
 
@@ -115,7 +118,12 @@ def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, l
                 if item:
                     loadout.append(item)
                     if item in _progression_items:
-                        log_lines.append(f"    get {item[0]} from {loc_name}")
+                        # don't need to log more than 9 energy tanks or more than 100 ammo
+                        if not (
+                            (item == Items.Energy and energy_req(1000) in loadout) or
+                            (item in (Items.SmallAmmo, Items.LargeAmmo) and ammo_req(110) in loadout)
+                        ):
+                            log_lines.append(f"    get {item[0]} from {loc_name}")
                 used_locs.add(loc_name)
         # remove used locations
         unused_locations = [loc for loc in unused_locations if loc['fullitemname'] not in used_locs]
