@@ -140,6 +140,9 @@ class Items:
                  b"\x04\xf9",
                  b"\x08\xf9",
                  b"\x0a")
+    # TODO: are damage amp and accel charge swapped?
+    # when spoiler says damage amp, it's accel charge
+    # when spoiler says charge amp, it's damage amp
     DamageAmp = ("Damage Amp",
                  b"\x7e\xf8",
                  b"\x7e\xf8",
