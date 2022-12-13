@@ -8,7 +8,7 @@ file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
 sys.path.append(str(root))
 
-from connection_data import SunkenNestL, VanillaAreas
+from connection_data import SunkenNestL, VanillaAreas, area_doors
 from game import Game
 from item_data import Items, items_unpackable
 from loadout import Loadout
@@ -130,6 +130,33 @@ def test_expert_hell_runs() -> None:
         "expert can't get these without varia: "
         f"{[loc['fullitemname'] for loc in game.all_locations.values() if not loc['inlogic']]}"
     )
+
+
+def test_crypt_no_bomb_no_wave() -> None:
+    """ test hitting switch in Crypt by following bullet with speedball """
+    game, loadout = setup(Expert)
+
+    loadout.append(area_doors["RuinedConcourseBL"])
+    loadout.append(Items.spaceDrop)
+    loadout.append(Items.GravityBoots)
+    loadout.append(Items.Morph)
+    loadout.append(Items.PowerBomb)
+    loadout.append(Items.Missile)
+    loadout.append(Items.HiJump)
+    loadout.append(Items.Ice)
+    loadout.append(Items.GravitySuit)
+
+    updateAreaLogic(loadout)
+    updateLogic(game.all_locations.values(), loadout)
+
+    assert not game.all_locations["Crypt"]["inlogic"]
+
+    loadout.append(Items.Speedball)
+
+    updateAreaLogic(loadout)
+    updateLogic(game.all_locations.values(), loadout)
+
+    assert game.all_locations["Crypt"]["inlogic"]
 
 
 if __name__ == "__main__":
