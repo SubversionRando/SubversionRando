@@ -100,7 +100,7 @@ plasmaWaveGate = LogicShortcut(lambda loadout: (
 
 hotSpring = LogicShortcut(lambda loadout: (
     (GravitySuit in loadout) or
-    (Speedball in loadout) or
+    ((Speedball in loadout) and (Morph in loadout)) or
     ((HiJump in loadout) and (Ice in loadout))
 ))
 """ traverse "Hot Spring" between Sporous Nook and Vulnar Depths Elevator W """
@@ -1893,29 +1893,24 @@ location_logic: LocationLogicType = {
         (RuinedConcourseBL in loadout) and
         (jumpAble in loadout) and
         (canBomb in loadout) and
-        (
-            (pinkDoor in loadout) or
+        ((pinkDoor in loadout) or (
             (
-                (
-                    (HiJump in loadout) or
-                    (SpaceJump in loadout) or
-                    (Speedball in loadout)
-                    ) and
-                    (GravitySuit in loadout) or
-                    (
-                        (HiJump in loadout) and
-                        (
-                            (Speedball in loadout) or
-                            (Ice in loadout)
-                            )
-                        )
-                    )
-             
-                ) and
+                (HiJump in loadout) or
+                (SpaceJump in loadout) or
+                (Speedball in loadout)
+            ) and
+            # TODO: fix parentheses, mixed and/or at same level
+            (GravitySuit in loadout) or
+            (
+                (HiJump in loadout) and
+                ((Speedball in loadout) or (Ice in loadout))
+            )
+        )) and
         (
             (wave in loadout) or
-            (Bombs in loadout)
-            )
+            (Bombs in loadout) or
+            (Speedball in loadout)  # follow your bullet with speedball to hit the switch
+        )
     ),
     "Archives: SpringBall": lambda loadout: (
         (vulnar in loadout) and (Morph in loadout) and (Speedball in loadout)
@@ -1938,13 +1933,14 @@ location_logic: LocationLogicType = {
         (canBomb in loadout)
     ),
     "Hot Spring": lambda loadout: (
-        ((SporousNookL in loadout) or (
-            (EleToTurbidPassageR in loadout) and
-            (varia_or_hell_run(550) in loadout)
-        )) and
+        (SporousNookL in loadout) and
         (jumpAble in loadout) and
         (canBomb in loadout) and
         (hotSpring in loadout)
+        # TODO: verify you can get this item and get out with
+        # hi-jump, ice, morph, pb, gravity boots
+        # (with the 2 tile morph jump?) Does it need?
+        # ((Speedball in loadout) or (GravitySuit in loadout))
     ),
     "Epiphreatic Crag": lambda loadout: (
         (ConstructionSiteL in loadout) and

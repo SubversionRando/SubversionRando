@@ -4,7 +4,7 @@ from connection_data import area_doors_unpackable
 from door_logic import canOpen
 from item_data import items_unpackable
 from loadout import Loadout
-from logicCommon import ammo_req, canUsePB, energy_req
+from logicCommon import ammo_req, canUsePB, energy_req, varia_or_hell_run
 from logicInterface import AreaLogicType, LocationLogicType, LogicInterface
 from logic_shortcut import LogicShortcut
 
@@ -128,6 +128,7 @@ veranda = LogicShortcut(lambda loadout: (
 ))
 """ to get from the bottom of Veranda to the top """
 
+# TODO: put this in more of the places that reference FoyerR
 eastCorridor = LogicShortcut(lambda loadout: (
     (Morph in loadout) and
     (
@@ -386,8 +387,9 @@ area_logic: AreaLogicType = {
             (underwater in loadout) and
             ((
                 (canUsePB in loadout) and
-                (Speedball in loadout)
+                ((Speedball in loadout) or (Bombs in loadout))  # 4 tile morph jump
             ) or (
+                # through central corridor
                 (pinkDoor in loadout) and
                 (Morph in loadout) and
                 (Screw in loadout) and
@@ -1318,7 +1320,11 @@ location_logic: LocationLogicType = {
     "Submarine Nest": lambda loadout: (
         (OceanShoreR in loadout) and
         (pinkDoor in loadout) and
-        (underwater in loadout)
+        (jumpAble in loadout) and
+        ((GravitySuit in loadout) or (
+            (HiJump in loadout) and
+            (Ice in loadout)
+        ))
     ),
     "Shrine Of The Penumbra": lambda loadout: (
         (OceanShoreR in loadout) and
@@ -1425,7 +1431,6 @@ location_logic: LocationLogicType = {
         (SpeedBooster in loadout)
     ),
     "Sensor Maintenance: ETank": lambda loadout: (  # front
-        # TODO: screw or supers for casual?
         # TODO: check area door, don't assume start location
         (vulnar in loadout) and
         (canBomb in loadout) and
@@ -1434,21 +1439,24 @@ location_logic: LocationLogicType = {
         (SmallAmmo in loadout)
     ),
     "Eribium Apparatus Room": lambda loadout: (
-        (FieldAccessL in loadout) and
-        (jumpAble in loadout) and
-        (pinkDoor in loadout) and
-        (canBomb in loadout) and
-        (wave in loadout) and
-        (DarkVisor in loadout)
+        (
+            (FieldAccessL in loadout) and
+            (jumpAble in loadout) and
+            (pinkDoor in loadout) and
+            (canBomb in loadout) and
+            (wave in loadout) and
+            (DarkVisor in loadout)
+        ) or (
+            loadout.has_all(TransferStationR, DarkVisor, jumpAble, canBomb)
+        )
     ),
     "Hot Spring": lambda loadout: (
-        ((SporousNookL in loadout) or (
-            (EleToTurbidPassageR in loadout) and
-            (Varia in loadout)
-        )) and
+        (SporousNookL in loadout) and
         (jumpAble in loadout) and
         (canBomb in loadout) and
-        (GravitySuit in loadout)
+        ((GravitySuit in loadout) or (
+            loadout.has_all(HiJump, Ice, Speedball)
+        ))
     ),
     "Epiphreatic Crag": lambda loadout: (
         (ConstructionSiteL in loadout) and
@@ -1710,7 +1718,8 @@ location_logic: LocationLogicType = {
     "Snow Cache": lambda loadout: (
         (railAccess in loadout) and
         (jumpAble in loadout) and
-        (canBomb in loadout)
+        (canBomb in loadout) and
+        (varia_or_hell_run(350) in loadout)
     ),
     "Reliquary Access": lambda loadout: (
         (railAccess in loadout) and
@@ -1809,6 +1818,7 @@ location_logic: LocationLogicType = {
         True
     ),
     "Extract Storage": lambda loadout: (
+        # TODO: ((energy or (suits for defense)) and ammo) or metroid suit for hyper beam kill
         (canUsePB in loadout) and
         (
             (spaceDrop not in loadout) or (
@@ -1914,9 +1924,6 @@ location_logic: LocationLogicType = {
         ((Speedball in loadout) or (canBomb in loadout))
     ),
     "Sensor Maintenance: AmmoTank": lambda loadout: (  # back
-        # TODO: screw or supers for casual Way of the Watcher?
-        # or is there a secret to make this easier with just missiles?
-        # (I find it difficult with just missiles.)
         (vulnar in loadout) and
         (canBomb in loadout) and
         (Speedball in loadout) and
@@ -1997,9 +2004,12 @@ location_logic: LocationLogicType = {
     "Central Corridor: right": lambda loadout: (
         (FoyerR in loadout) and
         (jumpAble in loadout) and
-        (GravitySuit in loadout) and
+        ((GravitySuit in loadout) or (
+            (HiJump in loadout) and
+            (Ice in loadout)
+        )) and
         (canBomb in loadout) and
-        (Speedball in loadout)
+        (eastCorridor in loadout)
     ),
     "Briar: AmmoTank": lambda loadout: (  # bottom
         (jumpAble in loadout) and
@@ -2283,13 +2293,16 @@ location_logic: LocationLogicType = {
         (railAccess in loadout) and
         (jumpAble in loadout) and
         (canBomb in loadout) and
-        (energy_req(650) in loadout)
+        (varia_or_hell_run(650) in loadout)
     ),
     "Sitting Room": lambda loadout: (
         (railAccess in loadout) and
         (jumpAble in loadout) and
         (canUsePB in loadout) and
         (Speedball in loadout)
+        # TODO: this is missing exit logic - what do you need to get mack to rail?
+        # (at least supers or missiles or screw)
+        # TODO: energy_req or varia
     ),
     "Suzi Ruins Map Station Access": lambda loadout: (
         (TramToSuziIslandR in loadout) and
@@ -2387,6 +2400,7 @@ location_logic: LocationLogicType = {
         )
     ),
     "Weapon Research": lambda loadout: (
+        # TODO: review this location logic
         (jumpAble in loadout) and
         (Speedball in loadout) and
         (Morph in loadout) and
