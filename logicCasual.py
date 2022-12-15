@@ -1883,6 +1883,10 @@ location_logic: LocationLogicType = {
         (OceanShoreR in loadout) and
         (jumpAble in loadout) and
         (GravitySuit in loadout) and
+        ((HiJump in loadout) or (
+            (SpaceJump in loadout) and
+            (SpaceJumpBoost in loadout)  # TODO: sjb in logical fill and maybe a logic shortcut for how many
+        )) and
         (Super in loadout)
     ),
     "Hall Of The Elders": lambda loadout: (
