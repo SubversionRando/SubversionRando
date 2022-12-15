@@ -129,10 +129,9 @@ railAccess = LogicShortcut(lambda loadout: (
                     (HiJump in loadout) or
                     (Ice in loadout) or
                     ((Morph in loadout) and (Speedball in loadout))
-                    )
                 )
-            ) or
-            
+            )
+        ) or
         (
             (ElevatorToCondenserL in loadout) and
             (canBomb in loadout) and
@@ -143,17 +142,26 @@ railAccess = LogicShortcut(lambda loadout: (
                     (GravitySuit in loadout) or
                     (Grapple in loadout) or
                     ((Speedball in loadout) and (HiJump in loadout))
-                    ) and
+                ) and
                 (
                     (GravitySuit in loadout) or
                     (Speedball in loadout) or
                     (HiJump in loadout)
-                    )
                 )
             )
         )
+    )
 ))
 """ access to the Sky Temple elevators at West Terminal and Transit Concourse """
+
+meetingHall = LogicShortcut(lambda loadout: (
+    (Screw in loadout) and  # Grand Promenade entrance to Meeting Hall
+    (Morph in loadout) and
+    ((breakIce in loadout) or (Speedball in loadout) or (can_bomb(1) in loadout))
+    # right to left, use clip by ice blocks and then break bomb block with screw
+    # left to right has a 2 tile space for morph jump if no plasma
+))
+""" Grand Promenade through Meeting Hall to Stair of Twilight """
 
 
 area_logic: AreaLogicType = {
@@ -2244,9 +2252,15 @@ location_logic: LocationLogicType = {
     ),
     "Syzygy Observatorium": lambda loadout: (
         (jumpAble in loadout) and
+        # TODO: verify you can get in and out with no varia and no e-tank
+        # TODO: Can you get in and out with just grav boots and screw? (no morph)
+        # I see how to get in with no morph, but not how to get out.
         ((Screw in loadout) or (
             (Super in loadout) and
             (MetroidSuit in loadout) and
+            # TODO: Metroid suit kills you a lot faster if you don't have varia.
+            # Are you sure you can do it with only 350?
+            # (varia_or_hell_run(1050) in loadout) and
             (energy_req(350) in loadout)
         ) or (
             (Super in loadout) and
@@ -2257,7 +2271,7 @@ location_logic: LocationLogicType = {
     ),
     "Armory Cache 2": lambda loadout: (
         (jumpAble in loadout) and
-        ((Screw in loadout) or (
+        ((meetingHall in loadout) or (
             (Super in loadout) and
             (canBomb in loadout) and
             (DarkVisor in loadout)
@@ -2266,7 +2280,7 @@ location_logic: LocationLogicType = {
     ),
     "Armory Cache 3": lambda loadout: (
         (jumpAble in loadout) and
-        ((Screw in loadout) or (
+        ((meetingHall in loadout) or (
             (Super in loadout) and
             (canBomb in loadout) and
             (DarkVisor in loadout)

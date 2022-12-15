@@ -143,17 +143,31 @@ railAccess = LogicShortcut(lambda loadout: (
             ((canFly in loadout) or
              (SpeedBooster in loadout) or
              (Ice in loadout))
-            ) or
+        ) or
         (
             (ElevatorToCondenserL in loadout) and
             (canBomb in loadout) and
             (breakIce in loadout) and
             (underwater in loadout) and
             ((HiJump in loadout) or (SpaceJump in loadout) or (Bombs in loadout) or (Grapple in loadout))
-            )
-        )        
+        )
+    )
 ))
 """ access to the Sky Temple elevators at West Terminal and Transit Concourse """
+
+meetingHall = LogicShortcut(lambda loadout: (
+    (Screw in loadout) and  # Grand Promenade entrance to Meeting Hall
+    (Morph in loadout) and
+    ((breakIce in loadout) or (
+        (
+            (Speedball in loadout) and
+            (can_bomb(1) in loadout)  # going from right to left, you'll need 1 bomb for the furthest right bomb block
+        ) or (
+            (can_bomb(2) in loadout)  # using bombs for small jumps because no speedball
+        )
+    ))
+))
+""" Grand Promenade through Meeting Hall to Stair of Twilight """
 
 
 area_logic: AreaLogicType = {
@@ -734,7 +748,7 @@ area_logic: AreaLogicType = {
             (SpeedBooster in loadout)
         ),
         ("MezzanineConcourseL", "CanyonPassageR"): lambda loadout: (
-            (jumpAble in loadout) and 
+            (jumpAble in loadout) and
             ((canBomb in loadout) or (Screw in loadout)) and
             (SpeedBooster in loadout)
         ),
@@ -1731,21 +1745,29 @@ location_logic: LocationLogicType = {
     "Syzygy Observatorium": lambda loadout: (
         (railAccess in loadout) and
         (jumpAble in loadout) and
-        ((Screw in loadout) or (
+        ((
+            (Screw in loadout) and
+            (Morph in loadout) and  # can get in without morph, but can't get out
+            (varia_or_hell_run(150) in loadout)
+        ) or (
             (Super in loadout) and
             (MetroidSuit in loadout) and
+            (Varia in loadout) and  # You lose health way too fast with metroid and no varia.
             (energy_req(650) in loadout)
         ) or (
             (Super in loadout) and
             (Hypercharge in loadout) and
             (Charge in loadout) and
+            # 350 with varia, 550 without varia
+            # TODO: Should these numbers depend on damage amp and accel charge?
+            (varia_or_hell_run(550) in loadout) and
             (energy_req(350) in loadout)
         ))
     ),
     "Armory Cache 2": lambda loadout: (
         (railAccess in loadout) and
         (jumpAble in loadout) and
-        ((Screw in loadout) or (
+        ((meetingHall in loadout) or (
             (Super in loadout) and
             (canBomb in loadout) and
             (DarkVisor in loadout) and
@@ -1758,7 +1780,7 @@ location_logic: LocationLogicType = {
     "Armory Cache 3": lambda loadout: (
         (railAccess in loadout) and
         (jumpAble in loadout) and
-        ((Screw in loadout) or (
+        ((meetingHall in loadout) or (
             (Super in loadout) and
             (canBomb in loadout) and
             (DarkVisor in loadout) and
