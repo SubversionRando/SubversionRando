@@ -14,9 +14,10 @@ _minor_items = {
     Items.Energy: 4,
     Items.Refuel: 7,
     Items.SpaceJumpBoost: 8,
-    Items.SmallAmmo: 38,
-    Items.LargeAmmo: 18
+    Items.SmallAmmo: 34,
+    Items.LargeAmmo: 12
 }
+""" items placed without logic """
 # TODO: verify item counts
 
 
@@ -64,9 +65,13 @@ class FillAssumed(FillAlgorithm):
             Items.Energy, Items.Energy, Items.Energy, Items.Energy, Items.Energy,
             Items.Energy, Items.Energy, Items.Energy, Items.Energy, Items.Energy,
             Items.Energy, Items.Energy,
+            Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo,
+            Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo,
+            Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo,
         ]
-        assert len([it for it in self.prog_items if it != Items.Energy]) + 1 == len(set(self.prog_items)), \
-            "duplicate majors?"
+        assert len([
+            it for it in self.prog_items if it not in {Items.Energy, Items.LargeAmmo, Items.SmallAmmo}
+        ]) + 3 == len(set(self.prog_items)), "duplicate majors?"
         self.extra_items = []
         for it, n in _minor_items.items():
             self.extra_items.extend([it for _ in range(n)])

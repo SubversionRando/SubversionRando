@@ -6,6 +6,11 @@ from logic_shortcut import LogicShortcut
 if TYPE_CHECKING:
     from loadout import Loadout
 
+# TODO: Does some logic around Ocean Shore need to be different
+# if Metroid Suit and Supers are in early spaceport?
+# If the ship is crashed,
+# for example, getting from OceanShoreR to Sandy Gully, is harder.
+
 STARTING_ENERGY = 99
 ENERGY_PER_TANK = 100
 FOR_N_TANKS = 12
@@ -57,14 +62,19 @@ def ammo_req(amount: int) -> LogicShortcut:
 
 
 crystal_flash = LogicShortcut(lambda loadout: (
-    loadout.has_all(canUsePB, ammo_req(100))
+    loadout.has_all(Items.Morph, Items.PowerBomb, ammo_req(100))
 ))
 
 
 def varia_or_hell_run(energy: int) -> LogicShortcut:
-    """ needs varia or energy """
+    """ needs varia or energy or (less energy and crystal flash) """
     return LogicShortcut(lambda loadout: (
-        loadout.has_any(Items.Varia, energy_req(energy))
+        (Items.Varia in loadout) or
+        (energy_req(energy) in loadout) or
+        (
+            (energy_req((energy + 100) // 2) in loadout) and
+            (crystal_flash in loadout)
+        )
     ))
 
 
