@@ -4,7 +4,7 @@ from connection_data import area_doors_unpackable
 from door_logic import canOpen
 from item_data import items_unpackable
 from loadout import Loadout
-from logicCommon import ammo_req, canUsePB, energy_req, varia_or_hell_run
+from logicCommon import ammo_req, can_bomb, canBomb, canUsePB, energy_req, varia_or_hell_run
 from logicInterface import AreaLogicType, LocationLogicType, LogicInterface
 from logic_shortcut import LogicShortcut
 
@@ -41,11 +41,6 @@ from logic_shortcut import LogicShortcut
 
 exitSpacePort = LogicShortcut(lambda loadout: (
     True
-    # TODO: Why did one definition have somethings different?
-    # (Morph in loadout) or (Missile in loadout) or (Super in loadout) or (Wave in loadout)
-))
-canBomb = LogicShortcut(lambda loadout: (
-    (Morph in loadout) and loadout.has_any(Bombs, PowerBomb)
 ))
 # TODO: I think there may be places where canBomb is used for bomb jumping
 # even though it might only have PBs
@@ -110,8 +105,10 @@ waterGardenBottom = LogicShortcut(lambda loadout: (
         (HiJump in loadout) and
         (Speedball in loadout)
     )) and
-    (canBomb in loadout) and
-    ((Speedball in loadout) or (Bombs in loadout) or (ammo_req(30) in loadout))
+    ((can_bomb(3) in loadout) or (
+        (can_bomb(1) in loadout) and
+        (Speedball in loadout)
+    ))
     # TODO: can you do this with only 2 PBs?
     # (with only gravity boots, ice, morph, PBs)
     # I bet you can't.

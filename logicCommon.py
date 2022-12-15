@@ -14,6 +14,12 @@ LATER_ENERGY_PER_TANK = 50
 canUsePB = LogicShortcut(lambda loadout: (
     loadout.has_all(Items.Morph, Items.PowerBomb)
 ))
+""" might only have enough ammo for 1 power bomb - can use `can_use_pbs(pbs_needed)` instead """
+
+canBomb = LogicShortcut(lambda loadout: (
+    (Items.Morph in loadout) and loadout.has_any(Items.Bombs, Items.PowerBomb)
+))
+""" might only have enough ammo for 1 power bomb - can use `can_bomb(pbs_needed)` instead """
 
 
 def energy_from_tanks(n: int) -> int:
@@ -59,4 +65,27 @@ def varia_or_hell_run(energy: int) -> LogicShortcut:
     """ needs varia or energy """
     return LogicShortcut(lambda loadout: (
         loadout.has_any(Items.Varia, energy_req(energy))
+    ))
+
+
+def can_use_pbs(pbs_needed: int) -> LogicShortcut:
+    """ How many PBs do you need between opportunities to refill ammo? """
+    return LogicShortcut(lambda loadout: (
+        (Items.Morph in loadout) and
+        (Items.PowerBomb in loadout) and
+        (ammo_req(pbs_needed * 10) in loadout)
+    ))
+
+
+def can_bomb(pbs_needed: int) -> LogicShortcut:
+    """
+    If you don't have bombs, how many PBs do you need?
+    (between opportunities to refill ammo)
+    """
+    return LogicShortcut(lambda loadout: (
+        (Items.Morph in loadout) and
+        ((Items.Bombs in loadout) or (
+            (Items.PowerBomb in loadout) and
+            (ammo_req(pbs_needed * 10) in loadout)
+        ))
     ))

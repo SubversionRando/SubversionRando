@@ -4,7 +4,7 @@ from connection_data import area_doors_unpackable
 from door_logic import canOpen
 from item_data import items_unpackable
 from loadout import Loadout
-from logicCommon import ammo_req, canUsePB, energy_req, varia_or_hell_run
+from logicCommon import ammo_req, can_bomb, canBomb, canUsePB, energy_req, varia_or_hell_run
 from logicInterface import AreaLogicType, LocationLogicType, LogicInterface
 from logic_shortcut import LogicShortcut
 
@@ -41,14 +41,7 @@ from logic_shortcut import LogicShortcut
 
 exitSpacePort = LogicShortcut(lambda loadout: (
     True
-    # TODO: Why did one definition have somethings different?
-    # (Morph in loadout) or (Missile in loadout) or (Super in loadout) or (Wave in loadout)
 ))
-canBomb = LogicShortcut(lambda loadout: (
-    (Morph in loadout) and loadout.has_any(Bombs, PowerBomb)
-))
-# TODO: I think there may be places where canBomb is used for bomb jumping
-# even though it might only have PBs
 jumpAble = LogicShortcut(lambda loadout: (
     loadout.has_all(exitSpacePort, GravityBoots)
 ))
@@ -97,7 +90,7 @@ plasmaWaveGate = LogicShortcut(lambda loadout: (
 
 waterGardenBottom = LogicShortcut(lambda loadout: (
     (GravitySuit in loadout) and
-    (canBomb in loadout) and
+    (can_bomb(1) in loadout) and
     ((Speedball in loadout) or (Bombs in loadout))  # 4-tile morph jump
 ))
 """ get into water garden from wellspring access - little morph tunnel with bomb blocks after water """
@@ -1331,11 +1324,14 @@ location_logic: LocationLogicType = {
         (jumpAble in loadout) and
         (pinkDoor in loadout) and
         (GravitySuit in loadout) and
-        # TODO: if I don't have dark visor, I need 30 ammo to safely be able to get in and then out
-        # probably only 20, but blocks might respawn to require 30 if too slow
-        ((canUsePB in loadout) or (
-            (canBomb in loadout) and
+        # if I don't have dark visor,
+        # I need 3 pbs to safely be able to get in and then out with PBs
+        # probably only 2, but blocks might respawn to require 3 if too slow
+        ((
+            (can_bomb(1) in loadout) and
             (DarkVisor in loadout)
+        ) or (
+            (can_bomb(3) in loadout)
         ))
     ),
     "Benthic Cache Access": lambda loadout: (
