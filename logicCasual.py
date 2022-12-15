@@ -1392,7 +1392,8 @@ location_logic: LocationLogicType = {
         (RuinedConcourseBL in loadout) and
         (jumpAble in loadout) and
         (pinkDoor in loadout) and
-        (canUsePB in loadout)
+        (canUsePB in loadout) and
+        (Speedball in loadout)
     ),
     "Vulnar Caves Entrance": lambda loadout: (
         (vulnar in loadout)

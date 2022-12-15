@@ -153,6 +153,31 @@ def test_crypt_no_bomb_no_wave() -> None:
     assert game.all_locations["Crypt"]["inlogic"]
 
 
+def test_warrior_shrine_speedball() -> None:
+    """ test hitting switch in Crypt by following bullet with speedball """
+    game, loadout = setup(Casual)
+
+    loadout.append(area_doors["RuinedConcourseBL"])
+    loadout.append(Items.spaceDrop)
+    loadout.append(Items.GravityBoots)
+    loadout.append(Items.Morph)
+    loadout.append(Items.PowerBomb)
+    loadout.append(Items.Missile)
+    loadout.append(Items.HiJump)
+    loadout.append(Items.Ice)
+    loadout.append(Items.GravitySuit)
+
+    updateLogic(game.all_locations.values(), loadout)
+
+    assert not game.all_locations["Warrior Shrine: ETank"]["inlogic"]
+
+    loadout.append(Items.Speedball)
+
+    updateLogic(game.all_locations.values(), loadout)
+
+    assert game.all_locations["Warrior Shrine: ETank"]["inlogic"]
+
+
 def test_norak_perimeters() -> None:
     """ test hitting switch in Crypt by following bullet with speedball """
     game, loadout = setup(Expert)
