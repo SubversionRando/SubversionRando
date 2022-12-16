@@ -177,12 +177,12 @@ area_logic: AreaLogicType = {
             (
                 (
                     (SpaceJump in loadout) and (HiJump in loadout)
-                    ) or
+                ) or
                 (SpeedBooster in loadout) or
                 (
                     (Morph in loadout) and (Bombs in loadout)
-                    )
                 )
+            )
         ),
         ("SunkenNestL", "RuinedConcourseBL"): lambda loadout: (
             (jumpAble in loadout) and
@@ -190,8 +190,7 @@ area_logic: AreaLogicType = {
             (Morph in loadout)
         ),
         ("SunkenNestL", "RuinedConcourseTR"): lambda loadout: (
-            loadout.has_all(jumpAble, Missile, Morph, SpeedBooster, energy_req(180))
-            # TODO: Expert needs energy and casual doesn't? And Casual can do it with supers, but expert can't?
+            loadout.has_all(jumpAble, pinkDoor, Morph, SpeedBooster, energy_req(180))
         ),
         ("SunkenNestL", "CausewayR"): lambda loadout: (
             (jumpAble in loadout) and
@@ -209,11 +208,11 @@ area_logic: AreaLogicType = {
                                 (GravitySuit in loadout) or
                                 (HiJump in loadout) or
                                 (Ice in loadout)
-                                )
                             )
                         )
                     )
                 )
+            )
         ),
         ("SunkenNestL", "SporeFieldTR"): lambda loadout: (
             (vulnar in loadout) and
@@ -246,11 +245,11 @@ area_logic: AreaLogicType = {
                                 (GravitySuit in loadout) or
                                 (HiJump in loadout) or
                                 (Ice in loadout)
-                                )
                             )
                         )
                     )
                 )
+            )
         ),
         ("RuinedConcourseTR", "SunkenNestL"): lambda loadout: (
             True  # TODO: put requirements here. Don't assume that we start with Sunken Nest
@@ -284,11 +283,11 @@ area_logic: AreaLogicType = {
                                 (GravitySuit in loadout) or
                                 (HiJump in loadout) or
                                 (Ice in loadout)
-                                )
                             )
                         )
                     )
                 )
+            )
         ),
         ("CausewayR", "RuinedConcourseTR"): lambda loadout: (
             (jumpAble in loadout) and
@@ -313,7 +312,8 @@ area_logic: AreaLogicType = {
             (jumpAble in loadout)
         ),
         ("SporeFieldTR", "CausewayR"): lambda loadout: (
-            (vulnar in loadout) and
+            (jumpAble in loadout) and
+            (pinkDoor in loadout) and
             (Morph in loadout) and
             (
                 (SpeedBooster in loadout) or
@@ -327,11 +327,11 @@ area_logic: AreaLogicType = {
                                 (GravitySuit in loadout) or
                                 (HiJump in loadout) or
                                 (Ice in loadout)
-                                )
                             )
                         )
                     )
                 )
+            )
         ),
         ("SporeFieldBR", "SunkenNestL"): lambda loadout: (
             True  # TODO: put requirements here. Don't assume that we start with Sunken Nest
@@ -364,11 +364,11 @@ area_logic: AreaLogicType = {
                                 (GravitySuit in loadout) or
                                 (HiJump in loadout) or
                                 (Ice in loadout)
-                                )
                             )
                         )
                     )
                 )
+            )
         ),
     },
     "SandLand": {

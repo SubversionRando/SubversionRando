@@ -169,6 +169,37 @@ meetingHall = LogicShortcut(lambda loadout: (
 ))
 """ Grand Promenade through Meeting Hall to Stair of Twilight """
 
+cisternSporefield = LogicShortcut(lambda loadout: (
+    (Morph in loadout) and
+    loadout.has_any(Speedball, Bombs, PowerBomb)
+    # speedball helps you follow your bullet to the shotblock
+))
+"""
+This serves as both the small morph jump at the entrance to Sporefield,
+and the Cistern Access Tunnel with a shotblock in it.
+(In one, the speedball is used for speed, to follow your bullet.
+In the other, the speedball is used for a morphball jump.)
+"""
+
+causeway = LogicShortcut(lambda loadout: (
+    (SpeedBooster in loadout) or (
+        (can_bomb(2) in loadout) and
+        ((Speedball in loadout) or (
+            (GravitySuit in loadout) and
+            (wave in loadout)
+        ))
+    )
+))
+
+concourseShinespark = LogicShortcut(lambda loadout: (
+    (SpeedBooster in loadout) and
+    # less than 180 is needed for this shinespark, (could be done with no energy tank)
+    # but then you're very likely to need more health to shinespark in the next room (when it's not area rando)
+    (energy_req(180) in loadout) and
+    (Morph in loadout)  # back down
+))
+""" access to the top of ruined concourse """
+
 
 area_logic: AreaLogicType = {
     "Early": {
@@ -183,125 +214,94 @@ area_logic: AreaLogicType = {
             (
                 (
                     (SpaceJump in loadout) and (HiJump in loadout)
-                    ) or
+                ) or
                 (SpeedBooster in loadout) or
                 (
                     (Morph in loadout) and (Bombs in loadout)
-                    )
                 )
+            )
         ),  # this location cares about area rando
         ("SunkenNestL", "RuinedConcourseBL"): lambda loadout: (
             (jumpAble in loadout) and
-            (Missile in loadout) and
-            (canBomb in loadout)
+            (pinkDoor in loadout) and  # includes missile barriers
+            (cisternSporefield in loadout)
         ),
         ("SunkenNestL", "RuinedConcourseTR"): lambda loadout: (
-            loadout.has_all(vulnar, canBomb, SpeedBooster, energy_req(180))
-            # TODO: Expert needs energy and casual doesn't? And Casual can do it with supers, but expert can't?
+            loadout.has_all(vulnar, cisternSporefield, concourseShinespark)
         ),
         ("SunkenNestL", "CausewayR"): lambda loadout: (
             (jumpAble in loadout) and
             (pinkDoor in loadout) and
-            (canBomb in loadout) and
-            ((SpeedBooster in loadout) or (Speedball in loadout) or (
-                (GravitySuit in loadout) and
-                (wave in loadout)
-            ))
-            # TODO: Verify?
-            # Casual can get through if they have supers and no missiles,
-            # but expert needs missiles, they can't get through with just supers.
+            (cisternSporefield in loadout) and
+            (causeway in loadout)
         ),
         ("SunkenNestL", "SporeFieldTR"): lambda loadout: (
             (vulnar in loadout) and
-            ((canBomb in loadout) or
-             ((Morph in loadout) and
-              (Speedball in loadout)))
-            # TODO: The old logic files didn't have any logic for going to SporeFieldTR
-            # It only had logic coming from SporeFieldTR
+            (cisternSporefield in loadout)
         ),
         ("SunkenNestL", "SporeFieldBR"): lambda loadout: (
             (vulnar in loadout) and
             (wave in loadout) and
-            ((canBomb in loadout) or
-             ((Morph in loadout) and
-              (Speedball in loadout)))
-            # TODO: The old logic files didn't have any logic for going to SporeFieldBR
-            # It only had logic coming from SporeFieldBR
+            (cisternSporefield in loadout)
         ),
         ("RuinedConcourseBL", "SunkenNestL"): lambda loadout: (
             True  # TODO: put requirements here. Don't assume that we start with Sunken Nest
         ),
         ("RuinedConcourseBL", "RuinedConcourseTR"): lambda loadout: (
             (jumpAble in loadout) and
-            (Morph in loadout) and
-            (SpeedBooster in loadout) and
-            (energy_req(180) in loadout)
+            (concourseShinespark in loadout)
         ),
         ("RuinedConcourseBL", "CausewayR"): lambda loadout: (
             (jumpAble in loadout) and
-            (canBomb in loadout) and
-            ((SpeedBooster in loadout) or (Speedball in loadout) or (
-                (GravitySuit in loadout) and
-                (wave in loadout)
-            ))
-            # TODO: expert can't do it without speedbooster, but casual can do it without speedbooster
+            (causeway in loadout)
         ),
         ("RuinedConcourseTR", "SunkenNestL"): lambda loadout: (
             True  # TODO: put requirements here. Don't assume that we start with Sunken Nest
         ),
         ("RuinedConcourseTR", "RuinedConcourseBL"): lambda loadout: (
             (jumpAble in loadout) and
-            (Morph in loadout) and
-            (SpeedBooster in loadout) and
-            (energy_req(180) in loadout)
+            (concourseShinespark in loadout)
         ),
         ("RuinedConcourseTR", "CausewayR"): lambda loadout: (
             (jumpAble in loadout) and
-            (canBomb in loadout) and
-            (SpeedBooster in loadout) and
-            (Energy in loadout)
+            (causeway in loadout) and
+            (concourseShinespark in loadout)
         ),
         ("CausewayR", "SunkenNestL"): lambda loadout: (
             True  # TODO: put requirements here. Don't assume that we start with Sunken Nest
         ),
         ("CausewayR", "RuinedConcourseBL"): lambda loadout: (
             (jumpAble in loadout) and
-            (canBomb in loadout) and
-            ((SpeedBooster in loadout) or (Speedball in loadout) or ((GravitySuit in loadout) and (wave in loadout)))
+            (causeway in loadout)
         ),
         ("CausewayR", "RuinedConcourseTR"): lambda loadout: (
             (jumpAble in loadout) and
-            (canBomb in loadout) and
-            (SpeedBooster in loadout) and
-            (energy_req(180) in loadout)
+            (causeway in loadout) and
+            (concourseShinespark in loadout)
         ),
         ("SporeFieldTR", "SunkenNestL"): lambda loadout: (
             True  # TODO: put requirements here. Don't assume that we start with Sunken Nest
         ),
         ("SporeFieldTR", "RuinedConcourseBL"): lambda loadout: (
-            (vulnar in loadout) and
-            (canBomb in loadout)
+            (jumpAble in loadout) and
+            (pinkDoor in loadout) and
+            (cisternSporefield in loadout)
         ),
         ("SporeFieldTR", "RuinedConcourseTR"): lambda loadout: (
-            (vulnar in loadout) and
-            (canBomb in loadout) and
-            (SpeedBooster in loadout) and
-            (energy_req(180) in loadout)
+            (jumpAble in loadout) and
+            (pinkDoor in loadout) and
+            (cisternSporefield in loadout) and
+            (concourseShinespark in loadout)
         ),
         ("SporeFieldTR", "SporeFieldBR"): lambda loadout: (
             (jumpAble in loadout) and
-            (wave in loadout) and
-            (DarkVisor in loadout)
+            (wave in loadout)
         ),
         ("SporeFieldTR", "CausewayR"): lambda loadout: (
             (jumpAble in loadout) and
             (pinkDoor in loadout) and
-            ((SpeedBooster in loadout) or (Speedball in loadout) or (
-                (GravitySuit in loadout) and
-                (wave in loadout)
-            )) and
-            (canBomb in loadout)
-            # TODO: this difference between casual and expert doesn't look right
+            (causeway in loadout) and
+            (cisternSporefield in loadout)
         ),
         ("SporeFieldBR", "SunkenNestL"): lambda loadout: (
             True  # TODO: put requirements here. Don't assume that we start with Sunken Nest
@@ -309,29 +309,26 @@ area_logic: AreaLogicType = {
         ("SporeFieldBR", "RuinedConcourseBL"): lambda loadout: (
             (jumpAble in loadout) and
             (wave in loadout) and
-            (canBomb in loadout)
+            (pinkDoor in loadout) and
+            (cisternSporefield in loadout)
         ),
         ("SporeFieldBR", "RuinedConcourseTR"): lambda loadout: (
+            (wave in loadout) and
             (jumpAble in loadout) and
-            (canBomb in loadout) and
-            (SpeedBooster in loadout) and
-            (energy_req(180) in loadout)
+            (pinkDoor in loadout) and
+            (cisternSporefield in loadout) and
+            (concourseShinespark in loadout)
         ),
         ("SporeFieldBR", "SporeFieldTR"): lambda loadout: (
             (jumpAble in loadout) and
-            (wave in loadout) and
-            (DarkVisor in loadout)
+            (wave in loadout)
         ),
         ("SporeFieldBR", "CausewayR"): lambda loadout: (
+            (wave in loadout) and
             (jumpAble in loadout) and
             (pinkDoor in loadout) and
-            ((SpeedBooster in loadout) or (Speedball in loadout) or (
-                (GravitySuit in loadout) and
-                (wave in loadout)
-            )) and
-            (canBomb in loadout) and
-            (wave in loadout)
-            # TODO: this difference between casual and expert doesn't look right
+            (cisternSporefield in loadout) and
+            (causeway in loadout)
         ),
     },
     "SandLand": {
@@ -586,9 +583,7 @@ area_logic: AreaLogicType = {
             ((
                 (wave in loadout) and
                 (Bombs in loadout)
-            ) or
-             (Screw in loadout)
-            )
+            ) or (Screw in loadout))
         ),
         ("AlluringCenoteR", "WestCorridorR"): lambda loadout: (
             (jumpAble in loadout) and
@@ -766,11 +761,12 @@ area_logic: AreaLogicType = {
             (SpeedBooster in loadout)
         ),
         ("VulnarCanyonL", "MezzanineConcourseL"): lambda loadout: (
-            (jumpAble in loadout) and (
+            (jumpAble in loadout) and
+            (
                 (canFly in loadout) or
                 (SpeedBooster in loadout) or
                 (Ice in loadout)
-                ) and
+            ) and
             (jumpAble in loadout) and
             ((canBomb in loadout) or (Screw in loadout)) and
             (SpeedBooster in loadout)
