@@ -182,9 +182,9 @@ def RandomizeAreas() -> list[tuple[AreaDoor, AreaDoor]]:
                 OpenNodesL.remove(randomNode)
                 # Now add the area to the visitedareas
                 # and all nodes from that area
-                VisitedAreas = VisitedAreas+[selectedDoor[2]]
+                VisitedAreas = VisitedAreas+[selectedDoor.area_name]
                 for doorSearch in RightSideDoorsList :
-                    if doorSearch[2] in VisitedAreas :
+                    if doorSearch.area_name in VisitedAreas :
                         OpenNodesR += [doorSearch]
                 for doorClean in OpenNodesR :
                     if doorClean in RightSideDoorsList :
@@ -202,9 +202,9 @@ def RandomizeAreas() -> list[tuple[AreaDoor, AreaDoor]]:
                 OpenNodesR.remove(randomNode)
                 # Now add the area to the visitedareas
                 # and all nodes from that area
-                VisitedAreas = VisitedAreas + [selectedDoor[2]]  # add the area string
+                VisitedAreas = VisitedAreas + [selectedDoor.area_name]  # add the area string
                 for doorSearch in LeftSideDoorsList :
-                    if doorSearch[2] in VisitedAreas :
+                    if doorSearch.area_name in VisitedAreas :
                         OpenNodesL += [doorSearch]
                 for doorClean in OpenNodesL :
                     if doorClean in LeftSideDoorsList :
@@ -270,12 +270,12 @@ def write_area_doors(Connections: list[tuple[AreaDoor, AreaDoor]], romWriter : R
         node1 = pair[0]
         node2 = pair[1]
         # place data for node1 sending
-        romWriter.writeBytes(int(node1[0], 16), int(node2[1], 16).to_bytes(12, 'big'))
+        romWriter.writeBytes(int(node1.address, 16), int(node2.data, 16).to_bytes(12, 'big'))
         # place data for node2 sending
-        romWriter.writeBytes(int(node2[0], 16), int(node1[1], 16).to_bytes(12, 'big'))
-        if node1[4] != node2[4] :
-            romWriter.writeBytes(int(node1[0], 16)+2, b"\x40")
-            romWriter.writeBytes(int(node2[0], 16)+2, b"\x40")
+        romWriter.writeBytes(int(node2.address, 16), int(node1.data, 16).to_bytes(12, 'big'))
+        if node1.region != node2.region:
+            romWriter.writeBytes(int(node1.address, 16)+2, b"\x40")
+            romWriter.writeBytes(int(node2.address, 16)+2, b"\x40")
 
     # Area rando done?
 

@@ -1,6 +1,6 @@
-from typing import Optional, cast
+from typing import Optional
 
-from connection_data import AreaDoor, SunkenNestL, area_doors
+from connection_data import AreaDoor, SunkenNestL
 from game import Game
 from item_data import Items
 from loadout import Loadout
@@ -54,9 +54,8 @@ def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, l
     def check_for_new_area_doors() -> None:
         new_area_doors: list[str] = []
         for thing in loadout:
-            if thing[3] in area_doors and thing not in doors_accessed:
-                thing = cast(AreaDoor, thing)
-                new_area_doors.append(thing[3])
+            if isinstance(thing, AreaDoor) and thing not in doors_accessed:
+                new_area_doors.append(thing.name)
                 doors_accessed.add(thing)
         if len(new_area_doors):
             log_lines.append(f"  new area doors: {', '.join(new_area_doors)}")

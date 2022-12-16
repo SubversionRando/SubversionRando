@@ -11,7 +11,7 @@ def otherDoor(door: AreaDoor, Connections: list[tuple[AreaDoor, AreaDoor]]) -> A
             if door == other :
                 other = pair[1]
             return other
-    raise ValueError(f"door {door} is not in Connections {[(c[0][3], c[1][3]) for c in Connections]}")
+    raise ValueError(f"door {door} is not in Connections {[(c0.name, c1.name) for c0, c1 in Connections]}")
 
 
 def _updateAreaLogic(loadout: Loadout) -> None:

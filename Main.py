@@ -159,7 +159,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     # add area transitions to spoiler
     if game.area_rando:
         for door1, door2 in game.connections:
-            spoilerSave += f"{door1[2]} {door1[3]} << >> {door2[2]} {door2[3]}\n"
+            spoilerSave += f"{door1.area_name} {door1.name} << >> {door2.area_name} {door2.name}\n"
 
     _completable, solve_lines, _locs = solve(game)
 
