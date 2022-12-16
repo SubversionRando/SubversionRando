@@ -138,7 +138,40 @@ def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, l
     # note: the reason for making a new list from all_locations rather than used_locs,
     # is that used_locs is a `set`, so iterating through it is not deterministic, so seeds wouldn't be reproducible
     return (
-        len(unused_locations) == 0,
+        game.logic.can_win(loadout),
+        # len(unused_locations) == 0,
         log_lines,
         [loc for loc in game.all_locations.values() if loc["fullitemname"] in used_locs]
     )
+
+
+def hard_required_locations(game: Game) -> list[str]:
+    """ list of names of hard required locations in progression order """
+    completable, log_lines, _ = solve(game)
+    if not completable:
+        # not sure what I want to do with this function if I pass a game that isn't completable
+        # maybe exception
+        return []
+
+    locations: list[str] = []
+    for line in log_lines:
+        if line.startswith("    get "):
+            _beg, loc_name = line.split(" from ")
+            locations.append(loc_name)
+
+    log_locations = frozenset(locations)
+    for loc in game.all_locations.values():
+        if loc['fullitemname'] not in log_locations:
+            locations.append(loc['fullitemname'])
+
+    req_locs: list[str] = []
+    for excluded_loc_name in locations:
+        excluded_loc = game.all_locations[excluded_loc_name]
+        saved_item = excluded_loc['item']
+        excluded_loc['item'] = None
+        completable, _, _ = solve(game)
+        if not completable:
+            req_locs.append(excluded_loc_name)
+        excluded_loc['item'] = saved_item
+
+    return req_locs

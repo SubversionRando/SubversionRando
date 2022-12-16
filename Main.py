@@ -18,7 +18,7 @@ import fillAssumed
 import fillSpeedrun
 import areaRando
 from romWriter import RomWriter
-from solver import solve
+from solver import hard_required_locations, solve
 
 
 def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
@@ -158,10 +158,10 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
 
     # add area transitions to spoiler
     if game.area_rando:
-        for item in game.connections:
-            spoilerSave += f"{item[0][2]} {item[0][3]} << >> {item[1][2]} {item[1][3]}\n"
+        for door1, door2 in game.connections:
+            spoilerSave += f"{door1[2]} {door1[3]} << >> {door2[2]} {door2[3]}\n"
 
-    _got_all, solve_lines, _locs = solve(game)
+    _completable, solve_lines, _locs = solve(game)
 
     if game.area_rando:
         areaRando.write_area_doors(game.connections, romWriter)
@@ -194,6 +194,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     #   use by writing 0x18 to the high byte of a gray door plm param, OR'ed with the low bit of the 9-low-bits id part
     romWriter.writeBytes(0x23e33, b"\x38\x38\x38\x38")  # set the carry bit (a lot)
     romWriter.finalizeRom()
+
     print("Done!")
     print(f"Filename is {rom_name}")
     with open(f"spoilers/{rom_name}.spoiler.txt", "w") as spoiler_file:
@@ -203,7 +204,20 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         spoiler_file.write('\n\n')
         for solve_line in solve_lines:
             spoiler_file.write(solve_line + '\n')
+        spoiler_file.write('\n\n')
+        spoiler_file.write(required_locations_spoiler(game))
+        spoiler_file.write('\n')
     print(f"Spoiler file is spoilers/{rom_name}.spoiler.txt")
+
+
+def required_locations_spoiler(game: Game) -> str:
+    spoiler_text = "hard required locations:\n"
+    req_locs = hard_required_locations(game)
+    for loc_name in req_locs:
+        item = game.all_locations[loc_name]['item']
+        item_name = item[0] if item else "Nothing"
+        spoiler_text += f"  {loc_name}  --  {item_name}\n"
+    return spoiler_text
 
 
 def assumed_fill(game: Game, spoilerSave: str) -> tuple[bool, str]:
@@ -232,11 +246,12 @@ def assumed_fill(game: Game, spoilerSave: str) -> tuple[bool, str]:
             # Normally, assumed fill will always make a valid playthrough,
             # but dropping from spaceport can mess that up,
             # so it needs to be checked again.
-            completable, _, _ = solve(game)
-            if completable:
+            completable, _, accessible_locations = solve(game)
+            done = completable and len(accessible_locations) == len(game.all_locations)
+            if done:
                 print("Item placements successful.")
                 spoilerSave += "Item placements successful.\n"
-            return completable, spoilerSave
+            return done, spoilerSave
 
     return False, spoilerSave
 
