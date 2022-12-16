@@ -192,7 +192,61 @@ def test_norak_perimeters() -> None:
     assert area_doors["NorakPerimeterBL"] not in loadout
 
 
+_unique_items = [
+    Items.Missile,
+    Items.Morph,
+    Items.GravityBoots,
+    Items.Super,
+    Items.Grapple,
+    Items.PowerBomb,
+    Items.Speedball,
+    Items.Bombs,
+    Items.HiJump,
+    Items.GravitySuit,
+    Items.DarkVisor,
+    Items.Wave,
+    Items.SpeedBooster,
+    Items.Spazer,
+    Items.Varia,
+    Items.Ice,
+    Items.MetroidSuit,
+    Items.Plasma,
+    Items.Screw,
+    Items.SpaceJump,
+    Items.Charge,
+    Items.Hypercharge,
+    Items.Xray,
+]
+
+
+def test_hard_required_items() -> None:
+    for logic in (Casual, Expert):
+        print(f" - {logic.__name__}")
+        for excluded_item in _unique_items:
+            game, loadout = setup(logic)
+            loadout.append(SunkenNestL)
+            loadout.append(Items.spaceDrop)
+            for item in items_unpackable:
+                if item != excluded_item:
+                    loadout.append(item)
+
+            # some of the non-unique that can help in logic
+            for _ in range(12):
+                loadout.append(Items.Energy)
+                loadout.append(Items.LargeAmmo)
+            loadout.append(Items.SpaceJumpBoost)
+
+            updateLogic(game.all_locations.values(), loadout)
+
+            if logic.can_win(loadout):
+                assert excluded_item not in logic.hard_required_items, \
+                    f"{excluded_item[0]} in {logic.__name__} hard required items"
+                print(f"{excluded_item[0]} not")
+            else:
+                assert excluded_item in logic.hard_required_items, \
+                    f"{excluded_item[0]} missing from {logic.__name__} hard required items"
+                print(f"{excluded_item[0]}  - - - - hard required")
+
+
 if __name__ == "__main__":
-    test_start_logic()
-    test_casual_no_hell_runs()
-    test_expert_hell_runs()
+    test_hard_required_items()

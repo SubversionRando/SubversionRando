@@ -2,9 +2,9 @@ from typing import ClassVar
 
 from connection_data import area_doors_unpackable
 from door_logic import canOpen
-from item_data import items_unpackable
+from item_data import Item, items_unpackable
 from loadout import Loadout
-from logicCommon import ammo_req, can_bomb, canBomb, canUsePB, energy_req, varia_or_hell_run
+from logicCommon import ammo_req, can_bomb, can_use_pbs, canBomb, canUsePB, energy_req, varia_or_hell_run
 from logicInterface import AreaLogicType, LocationLogicType, LogicInterface
 from logic_shortcut import LogicShortcut
 
@@ -2452,7 +2452,69 @@ location_logic: LocationLogicType = {
 class Casual(LogicInterface):
     area_logic: ClassVar[AreaLogicType] = area_logic
     location_logic: ClassVar[LocationLogicType] = location_logic
+    hard_required_items: ClassVar[list[Item]] = [
+        Morph, GravityBoots, Super, PowerBomb, MetroidSuit, Screw, Grapple
+    ]
 
     @staticmethod
     def can_fall_from_spaceport(loadout: Loadout) -> bool:
         return loadout.has_any(Morph, Missile, wave, Super)
+
+    @staticmethod
+    def _can_crash_spaceport(loadout: Loadout) -> bool:
+        return (
+            (spaceDrop not in loadout) and
+            (MetroidSuit in loadout) and
+            (Super in loadout)
+        ) or (
+            (spaceDrop in loadout) and
+            (MetroidSuit in loadout) and
+            (Super in loadout) and
+            (Grapple in loadout) and  # spaceport grapple gates
+            (LoadingDockSecurityAreaL in loadout) and
+            (GravityBoots in loadout)
+        )
+
+    @staticmethod
+    def can_win(loadout: Loadout) -> bool:
+        """
+        returns whether I can detonate Daphne and get back to the ship
+
+        this should call `_can_crash_spaceport`
+        """
+        return Casual._can_crash_spaceport(loadout) and (
+            (RockyRidgeTrailL in loadout) and
+            (GravityBoots in loadout) and
+            (Screw in loadout) and
+            (pinkDoor in loadout) and  # top entrance to MB
+            (can_use_pbs(1) in loadout) and  # to enter detonator room
+            # 1 because there's an enemy in the room where you need 2 pbs, that normally drops 10 ammo
+
+            # This next part for leaving the detonator room
+            # (aqua suit because of the acid that starts rising up)
+            # (4 PBs is mostly for getting out after MB2, but also
+            # because there was no opportunity to refill after the last one you used to get in)
+            ((Speedball in loadout) or (GravitySuit in loadout) or (can_bomb(4) in loadout)) and
+            # MB1, zebs, and glass (separate from pinkDoor to prepare for door cap rando)
+            (missileDamage in loadout) and
+            # kill MB 2
+            (
+                (energy_req(350) in loadout) and
+                (
+                    # all the different ways to do damage
+                    (
+                        (Super in loadout) and
+                        (ammo_req(365) in loadout)  # these numbers padded for the PB logic getting in and out
+                    ) or (
+                        (Missile in loadout) and
+                        (ammo_req(230) in loadout)  # these numbers padded for the PB logic getting in and out
+                    ) or (
+                        (electricHyper in loadout)
+                    ) or (
+                        (Charge in loadout)  # and some damage amp?
+                    )
+                )
+            ) and
+            # back to ship
+            ((SunkenNestL in loadout) or (CraterR in loadout))
+        )
