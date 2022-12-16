@@ -3009,7 +3009,7 @@ location_logic: LocationLogicType = {
     ), #might not always have room for speed
     "Glacier's Reach": lambda loadout: (
         (jumpAble in loadout) and
-        (energy_req(350) in loadout) and
+        (varia_or_hell_run(350) in loadout) and
         (railAccess in loadout)
     ),
     "Sitting Room": lambda loadout: (
