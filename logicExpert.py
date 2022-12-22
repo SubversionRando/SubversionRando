@@ -2901,6 +2901,7 @@ location_logic: LocationLogicType = {
         (jumpAble in loadout) and
         (varia_or_hell_run(950) in loadout) and
         (MetroidSuit in loadout) and
+        (icePod in loadout) and  # for getting out
         ((
             (VulnarDepthsElevatorEL in loadout) and
             ((Ice in loadout) or ((Hypercharge in loadout) and (Charge in loadout)))

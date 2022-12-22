@@ -1566,6 +1566,7 @@ location_logic: LocationLogicType = {
             (pinkDoor in loadout) and
             (Varia in loadout)
         ))
+        # TODO: include path from CollapsedPassageR?
     ),
     "Ancient Shaft": lambda loadout: (
         (jumpAble in loadout) and
@@ -2256,9 +2257,12 @@ location_logic: LocationLogicType = {
     "Slag Heap": lambda loadout: (  # No Metroid-less lava baths in casual
         (canBomb in loadout) and
         (jumpAble in loadout) and
+        (icePod in loadout) and
         (Varia in loadout) and
         (MetroidSuit in loadout) and
         (SequesteredInfernoL in loadout)
+        # TODO: include paths from other doors?
+        # unit test works from CollapsedPassageR
     ),
     "Hydrodynamic Chamber": lambda loadout: (  # one of the only intended water rooms
         (Morph in loadout) and

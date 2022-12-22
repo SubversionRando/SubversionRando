@@ -179,7 +179,6 @@ def test_warrior_shrine_speedball() -> None:
 
 
 def test_norak_perimeters() -> None:
-    """ test hitting switch in Crypt by following bullet with speedball """
     game, loadout = setup(Expert)
 
     loadout.append(area_doors["NorakPerimeterTR"])
@@ -190,6 +189,32 @@ def test_norak_perimeters() -> None:
     updateLogic(game.all_locations.values(), loadout)
 
     assert area_doors["NorakPerimeterBL"] not in loadout
+
+
+@pytest.mark.parametrize("logic", (Casual, Expert))
+def test_slag_heap_escape(logic: Type[LogicInterface]) -> None:
+    """ getting out of slag heap requires getting through ice pods """
+    game, loadout = setup(logic)
+
+    loadout.append(area_doors["CollapsedPassageR"])
+    loadout.append(Items.spaceDrop)
+    loadout.append(Items.GravityBoots)
+    loadout.append(Items.MetroidSuit)
+    loadout.append(Items.Varia)
+    loadout.append(Items.Missile)
+    loadout.append(Items.Wave)
+    loadout.append(Items.Morph)
+    loadout.append(Items.Bombs)
+
+    updateLogic(game.all_locations.values(), loadout)
+
+    assert not game.all_locations["Slag Heap"]["inlogic"]
+
+    loadout.append(Items.Ice)
+
+    updateLogic(game.all_locations.values(), loadout)
+
+    assert game.all_locations["Slag Heap"]["inlogic"]
 
 
 _unique_items = [
