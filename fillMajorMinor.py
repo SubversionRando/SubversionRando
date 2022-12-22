@@ -110,7 +110,11 @@ class FillMajorMinor(FillAlgorithm):
                 for loc in availableLocations
                 if (loc['fullitemname'] in majorLocs)
             ]
-            if from_items is self.earlyItemList and len(valid_locations) == 0 and (Morph in loadout):
+            if from_items is self.earlyItemList and len(valid_locations) == 0 and (
+                (Morph in loadout) or (
+                    (GravityBoots in loadout) and (Missile in loadout)
+                )
+            ):
                 sandy = loadout.game.all_locations["Sandy Cache"]
                 # print("   ---   appending sandy cache")
                 valid_locations.append(sandy)

@@ -1317,8 +1317,14 @@ location_logic: LocationLogicType = {
     "Sandy Cache": lambda loadout: (
         (OceanShoreR in loadout) and
         (jumpAble in loadout) and
-        (Missile in loadout) and
-        ((Morph in loadout) or (GravitySuit in loadout))
+        ((
+            # top path
+            (pinkDoor in loadout)  # Ocean Shallows left
+        ) or (
+            # bottom path (no pink door needed)
+            (Morph in loadout) and
+            ((GravitySuit in loadout) or (HiJump in loadout))
+        ))
     ),
     "Submarine Nest": lambda loadout: (
         (OceanShoreR in loadout) and
@@ -1906,7 +1912,7 @@ location_logic: LocationLogicType = {
             (SpaceJump in loadout) and
             (SpaceJumpBoost in loadout)  # TODO: sjb in logical fill and maybe a logic shortcut for how many
         )) and
-        (Super in loadout)
+        (Super in loadout)  # including pink door to get back
     ),
     "Hall Of The Elders": lambda loadout: (
         (RuinedConcourseBL in loadout) and

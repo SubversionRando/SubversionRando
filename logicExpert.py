@@ -1799,8 +1799,15 @@ location_logic: LocationLogicType = {
     "Sandy Cache": lambda loadout: (
         (OceanShoreR in loadout) and
         (jumpAble in loadout) and
-        (pinkDoor in loadout) and
-        ((Morph in loadout) or (GravitySuit in loadout))
+        ((
+            # top path
+            (pinkDoor in loadout)  # Ocean Shallows left
+        ) or (
+            # bottom path (no pink door needed)
+            (Morph in loadout) and
+            ((GravitySuit in loadout) or (HiJump in loadout) or (Speedball in loadout))
+            # TODO: confirm springball jump can get you back through bottom path
+        ))
     ),
     "Submarine Nest": lambda loadout: (
         (OceanShoreR in loadout) and
@@ -1812,8 +1819,8 @@ location_logic: LocationLogicType = {
             (
                 (Morph in loadout) and
                 (Speedball in loadout)
-                )
             )
+        )
     ),
     "Shrine Of The Penumbra": lambda loadout: (
         (OceanShoreR in loadout) and
