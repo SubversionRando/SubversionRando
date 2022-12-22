@@ -2423,20 +2423,20 @@ location_logic: LocationLogicType = {
              (Speedball in loadout)
              )
          )
-    ), #check for speedball+ice entry
+    ),  # TODO: check for speedball+ice entry
     "Sediment Floor": lambda loadout: (
         (OceanShoreR in loadout) and
         (jumpAble in loadout) and
-        (Morph in loadout) and
         (Super in loadout) and
         (
             (GravitySuit in loadout) or
             (HiJump in loadout) or
             (
+                (Morph in loadout) and
                 (Speedball in loadout) and
                 (Ice in loadout)
-                )
             )
+        )
     ),
     "Sandy Gully": lambda loadout: (
         (OceanShoreR in loadout) and (underwater in loadout) and (Super in loadout)

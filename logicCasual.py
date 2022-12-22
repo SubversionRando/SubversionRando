@@ -1891,16 +1891,15 @@ location_logic: LocationLogicType = {
     "Sediment Floor": lambda loadout: (
         (jumpAble in loadout) and
         (GravitySuit in loadout) and
-        (Morph in loadout) and
         (
             (OceanShoreR in loadout) and
-            ((
-                (DarkVisor in loadout) and
-                (pinkDoor in loadout)
-            ) or (Super in loadout))
+            (Super in loadout)
         ) or (
             (EleToTurbidPassageR in loadout) and
+            (Morph in loadout) and
             (Super in loadout) and
+            # TODO: confirm super needed from this way (or just pink door)
+            # Is this because of an assumption that someone will fall into Eddy Channel?
             (Speedball in loadout)
         )
     ),
