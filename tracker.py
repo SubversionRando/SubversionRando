@@ -109,7 +109,7 @@ class Tracker:
     def pickup_location(self, loc_name: str) -> None:
         was_in_logic = self.query(loc_name)
         if not was_in_logic:
-            print(f"{loc_name} was not in logic")
+            print(f" - {loc_name} was not in logic - ")
         item = self.game_state_locations[loc_name]["item"]
         if item:
             self.loadout.append(item)
