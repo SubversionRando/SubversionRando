@@ -110,6 +110,34 @@ meetingHall = LogicShortcut(lambda loadout: (
 ))
 """ Grand Promenade through Meeting Hall to Stair of Twilight """
 
+constructionLToElevator = LogicShortcut(lambda loadout: (
+    (GravityBoots in loadout) and
+    ((Screw in loadout) or (can_bomb(1) in loadout)) and  # through wall
+    (  # through the passage lined with screw blocks
+        (
+            (GravitySuit in loadout) and
+            (Morph in loadout) and
+            (Tricks.morph_jump_4_tile in loadout)
+        ) or (
+            (Screw in loadout)
+        ) or (
+            ((Speedball in loadout) or (
+                (Bombs in loadout) and (GravitySuit in loadout)  # normal bomb jumping if have aqua
+            )) and
+            ((Bombs in loadout) or (GravitySuit)) and  # if no aqua, a combination of bouncing and bombs is easy
+            (Morph in loadout)
+        ) or (
+            (Tricks.movement_moderate in loadout) and
+            (can_bomb(1) in loadout) and
+            (HiJump in loadout) and
+            # I tried a single (pb) bomb jump without hi jump and couldn't get it to work.
+            # If it does work, it's probably `movement_zoast` (pixel perfect?).
+            (Speedball in loadout)
+        )
+    )
+))
+""" from ConstructionSiteL door to the elevator that is under construction """
+
 location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Impact Crater: AccelCharge": lambda loadout: (
         (SunkenNestL in loadout) and
@@ -189,7 +217,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # out of benthic shaft without aqua before the balls block you in
             (Tricks.movement_moderate in loadout) and
             # submarine crevice
-            ((Tricks.crouch_precise in loadout) or (Tricks.sbj_underwater_w_hjb) or (Tricks.uwu_2_tile in loadout))
+            ((Tricks.crouch_precise in loadout) or (Tricks.sbj_underwater_w_hjb in loadout) or (Tricks.uwu_2_tile in loadout))
         )) and
         ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
     ),
@@ -224,7 +252,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (DarkVisor in loadout) and
             (pinkDoor in loadout)  # between east spore field and ESF access
         )) and
-        ((DarkVisor in loadout) or (Tricks.dark_easy)) and
+        ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
         (can_bomb(1) in loadout) and
         (Morph in loadout) and
         (GravityBoots in loadout) and
@@ -273,7 +301,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
                     ((Tricks.movement_moderate in loadout) or (SpaceJump in loadout))
                     # tight wall jump from lower chozo statue to higher chozo statue
                 ) or (
-                    (Tricks.sbj_underwater_w_hjb) and  # TODO: verify this
+                    (Tricks.sbj_underwater_w_hjb in loadout) and  # TODO: verify this
                     ((Tricks.movement_moderate in loadout) or (SpaceJump in loadout))
                 )
                 # TODO: more tricks for coming through cistern without aqua suit?
@@ -318,7 +346,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((Tricks.mockball_hard in loadout) or (Speedball in loadout)) and
         ((Tricks.morph_jump_3_tile in loadout) or (Speedball in loadout) or (
             (can_bomb(4) in loadout) and
-            ((Tricks.morph_jump_4_tile) or (Bombs in loadout))
+            ((Tricks.morph_jump_4_tile in loadout) or (Bombs in loadout))
         ))
     ),
     "Eribium Apparatus Room": lambda loadout: (
@@ -326,7 +354,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (can_bomb(1) in loadout) and
         ((
             (FieldAccessL in loadout) and
-            ((DarkVisor in loadout) or (Tricks.dark_easy)) and
+            ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
             ((shootThroughWalls in loadout) or (Tricks.wave_gate_glitch in loadout)) and
             (pinkDoor in loadout)  # between east spore field and ESF access
         ) or (
@@ -342,13 +370,34 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((GravitySuit in loadout) or (Speedball in loadout))  # 2-tile morph jump
     ),
     "Epiphreatic Crag": lambda loadout: (
-            # Casual: (ConstructionSiteL in loadout) and (jumpAble in loadout) and (Morph in loadout) and (GravitySuit in loadout))
-            # Expert: (ConstructionSiteL in loadout) and (jumpAble in loadout) and (Morph in loadout) and ( (GravitySuit in loadout) or ( (Screw in loadout) and ( (canBomb in loadout) or (Speedball in loadout) ) ) or ( (Speedball in loadout) and (HiJump in loadout) ) )))
+        (GravityBoots in loadout) and
+        ((
+            (ConstructionSiteL in loadout) and
+            (constructionLToElevator in loadout)
+        ) or (
+            (ExcavationSiteL in loadout) and
+            (can_use_pbs(1) in loadout)
+        )) and
+        (Morph in loadout) and
+        ((GravitySuit in loadout) or (
+            (HiJump in loadout) and  # crouch down grab into first small platform
+            (Speedball in loadout) and  # ball jump up from there
+            (Tricks.crouch_or_downgrab in loadout)
+        ))
     ),
     "Mezzanine Concourse": lambda loadout: (
-            # Casual: (MezzanineConcourseL in loadout) and (jumpAble in loadout) and ( (canFly in loadout) or (SpeedBooster in loadout) or (Ice in loadout) ))
-            # Expert: (MezzanineConcourseL in loadout) and (jumpAble in loadout) and (Morph in loadout) and ( (canFly in loadout) or (SpeedBooster in loadout) or (HiJump in loadout) or (Ice in loadout) or (Speedball in loadout) )))
-    ),  # TODO: 4-tile morph jump to get out
+        (MezzanineConcourseL in loadout) and
+        (GravityBoots in loadout) and
+        (Morph in loadout) and
+        (
+            (canFly in loadout) or
+            (SpeedBooster in loadout) or
+            ((HiJump in loadout) and (Tricks.movement_moderate in loadout)) or  # wall jump around 3 tiles
+            (Ice in loadout) or
+            ((Speedball in loadout) and (Tricks.sbj_wall in loadout))
+        ) and
+        ((Tricks.morph_jump_4_tile in loadout) or (Bombs in loadout) or (Speedball in loadout))
+    ),
     "Greater Inferno": lambda loadout: (
             # Casual: (MagmaPumpAccessR in loadout) and (jumpAble in loadout) and (canUsePB in loadout) and (Super in loadout) and (GravitySuit in loadout) and (Varia in loadout) and (MetroidSuit in loadout) and ( (wave in loadout) or (plasmaWaveGate in loadout) ))
             # Expert: (MagmaPumpAccessR in loadout) and (jumpAble in loadout) and (canUsePB in loadout) and (Super in loadout) and (varia_or_hell_run(850) in loadout) and (MetroidSuit in loadout) and ( (GravitySuit in loadout) or (Speedball in loadout) )))

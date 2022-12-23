@@ -9,6 +9,9 @@ class Tricks:
     sbj_underwater_w_hjb = Trick(Items.Morph, Items.Speedball, Items.HiJump)
     """ underwater springball jump with hi jump boots """
 
+    sbj_wall = Trick(Items.Morph, Items.Speedball)
+    """ springball jump off of a wall jump - not underwater """
+
     uwu_2_tile = Trick()
     """ underwater wall jumps between left and right in a 2-tile wide space """
 
