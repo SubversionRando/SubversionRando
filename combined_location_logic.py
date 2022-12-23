@@ -4,7 +4,7 @@ from connection_data import area_doors_unpackable
 from door_logic import canOpen
 from item_data import Item, items_unpackable
 from loadout import Loadout
-from logicCommon import can_bomb, can_use_pbs, varia_or_hell_run, canUsePB
+from logicCommon import ammo_req, can_bomb, can_use_pbs, varia_or_hell_run, canUsePB
 from logic_shortcut import LogicShortcut
 from trick_data import Tricks
 
@@ -57,6 +57,58 @@ electricHyper = LogicShortcut(lambda loadout: (
     )
 ))
 """ hyper beam when electricity is available """
+
+sunkenNestToVulnar = LogicShortcut(lambda loadout: (
+    (SunkenNestL in loadout) and
+    (GravityBoots in loadout) and
+    (pinkDoor in loadout) and  # impact crater bottom right
+    (missileDamage in loadout)  # missile barriers
+))
+""" from sunken nest area door to entrance of vulnar caves """
+
+plasmaWaveGate = LogicShortcut(lambda loadout: (
+    ((Plasma in loadout) and (Wave in loadout)) or
+    ((Hypercharge in loadout) and (Charge in loadout))
+))
+""" the switches that are blocked by plasma+wave barriers """
+
+hotSpring = LogicShortcut(lambda loadout: (
+    (GravitySuit in loadout) or
+    (Tricks.sbj_underwater_no_hjb in loadout) or
+    ((HiJump in loadout) and (Ice in loadout))
+))
+""" traverse "Hot Spring" between Sporous Nook and Vulnar Depths Elevator W """
+
+waterGardenBottom = LogicShortcut(lambda loadout: (
+    ((GravitySuit in loadout) or (Ice in loadout) or (Tricks.sbj_underwater_w_hjb in loadout)) and
+    ((
+        (Tricks.morph_jump_4_tile in loadout) and
+        (can_bomb(3) in loadout)
+    ) or (
+        (Tricks.morph_jump_4_tile in loadout) and
+        (can_bomb(1) in loadout) and
+        (Speedball in loadout)
+    ) or (
+        (can_bomb(1) in loadout) and
+        ((Speedball in loadout) or (Bombs in loadout))
+    ))
+))
+""" get into water garden from wellspring access """
+
+meetingHall = LogicShortcut(lambda loadout: (
+    (Screw in loadout) and  # Grand Promenade entrance to Meeting Hall
+    (Morph in loadout) and
+    ((breakIce in loadout) or (
+        (Speedball in loadout) and
+        ((Tricks.clip_crouch in loadout) or (can_bomb(1) in loadout))
+    ) or (
+        (can_bomb(1) in loadout) and
+        ((Tricks.morph_jump_3_tile in loadout) or (can_bomb(2) in loadout))
+    ))
+    # right to left, use clip by ice blocks or bomb furthest right block and then break bomb block with screw
+    # left to right has a 2 tile space for morph jump if no plasma
+))
+""" Grand Promenade through Meeting Hall to Stair of Twilight """
 
 location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Impact Crater: AccelCharge": lambda loadout: (
@@ -180,20 +232,14 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (pinkDoor in loadout)  # between spore collection and spore generator access
     ),
     "Upper Vulnar Power Node": lambda loadout: (
-        (SunkenNestL in loadout) and
-        (GravityBoots in loadout) and
-        (pinkDoor in loadout) and  # impact crater bottom right
-        (missileDamage in loadout) and  # missile barrier
+        (sunkenNestToVulnar in loadout) and
         # if you don't have (grapple or can fly), you can get up on the right wall with screw
         (Screw in loadout) and
         (can_use_pbs(2) in loadout) and  # if 20 ammo, you'll need to get drops from red balls
         (MetroidSuit in loadout)
     ),
     "Grand Vault": lambda loadout: (
-        (SunkenNestL in loadout) and
-        (GravityBoots in loadout) and
-        (pinkDoor in loadout) and  # impact crater bottom right
-        (missileDamage in loadout) and  # missile barrier
+        (sunkenNestToVulnar in loadout) and
         (Grapple in loadout)
     ),
     "Cistern": lambda loadout: (
@@ -208,10 +254,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((Speedball in loadout) or (Tricks.mockball_hard in loadout))
     ),
     "Vulnar Caves Entrance": lambda loadout: (
-        (SunkenNestL in loadout) and
-        (GravityBoots in loadout) and
-        (pinkDoor in loadout) and  # impact crater bottom right
-        (missileDamage in loadout)  # missile barrier
+        (sunkenNestToVulnar in loadout)
     ),
     "Crypt": lambda loadout: (
         (RuinedConcourseBL in loadout) and
@@ -246,34 +289,58 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         )
     ),
     "Archives: SpringBall": lambda loadout: (
-        (SunkenNestL in loadout) and
-        (GravityBoots in loadout) and
-        (pinkDoor in loadout) and  # a few
-        (missileDamage in loadout) and  # missile barriers
+        (sunkenNestToVulnar in loadout) and
+        (pinkDoor in loadout) and  # into way of the watcher
         (Morph in loadout) and
         (Speedball in loadout)
     ),
     "Archives: SJBoost": lambda loadout: (
-        (SunkenNestL in loadout) and
-        (GravityBoots in loadout) and
-        (pinkDoor in loadout) and  # a few
-        (missileDamage in loadout) and  # missile barrier
+        (sunkenNestToVulnar in loadout) and
+        (pinkDoor in loadout) and  # into way of the watcher
         (Morph in loadout) and
         (Speedball in loadout) and
         (SpeedBooster in loadout)
     ),
-    "Sensor Maintenance: ETank": lambda loadout: (
-            # Casual: ( (vulnar in loadout) and (canBomb in loadout) and (Speedball in loadout) and (LargeAmmo in loadout) and (SmallAmmo in loadout) ))
-            # Expert: (vulnar in loadout) and (Morph in loadout) and ( (Super in loadout) or (canUsePB in loadout) )))
-    ),  # front  front  TODO: check area door, don't assume start location
+    "Sensor Maintenance: ETank": lambda loadout: (  # front
+        (sunkenNestToVulnar in loadout) and
+        (pinkDoor in loadout) and  # into way of the watcher
+        ((  # way of the watcher grey door
+            (Missile in loadout) and
+            (ammo_req(25) in loadout) and
+            (Tricks.movement_moderate in loadout)
+        ) or (
+            (Super in loadout) and
+            (ammo_req(45) in loadout)
+        ) or (
+            (Screw in loadout)
+        )) and
+        (Morph in loadout) and
+        ((Tricks.mockball_hard in loadout) or (Speedball in loadout)) and
+        ((Tricks.morph_jump_3_tile in loadout) or (Speedball in loadout) or (
+            (can_bomb(4) in loadout) and
+            ((Tricks.morph_jump_4_tile) or (Bombs in loadout))
+        ))
+    ),
     "Eribium Apparatus Room": lambda loadout: (
-            # Casual: ((FieldAccessL in loadout) and (jumpAble in loadout) and (pinkDoor in loadout) and (canBomb in loadout) and (wave in loadout) and (DarkVisor in loadout) ) or ( loadout.has_all(TransferStationR ))
-            # Expert: (FieldAccessL in loadout) and (jumpAble in loadout) and (pinkDoor in loadout) and (canBomb in loadout)))
+        (GravityBoots in loadout) and
+        (can_bomb(1) in loadout) and
+        ((
+            (FieldAccessL in loadout) and
+            ((DarkVisor in loadout) or (Tricks.dark_easy)) and
+            ((shootThroughWalls in loadout) or (Tricks.wave_gate_glitch in loadout)) and
+            (pinkDoor in loadout)  # between east spore field and ESF access
+        ) or (
+            (TransferStationR in loadout) and
+            (DarkVisor in loadout)
+        ))
     ),
     "Hot Spring": lambda loadout: (
-            # Casual: (SporousNookL in loadout) and (jumpAble in loadout) and (canBomb in loadout) and ((GravitySuit in loadout) or ( loadout.has_all(HiJump )))
-            # Expert: (SporousNookL in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (hotSpring in loadout)))
-    ),  # TODO: verify you can get this item and get out with  hi-jump, ice, morph, pb, gravity boots  (with the 2 tile morph jump?) Does it need?  ((Speedball in loadout) or (GravitySuit in loadout))
+        (SporousNookL in loadout) and
+        (GravityBoots in loadout) and
+        (can_bomb(2) in loadout) and
+        (hotSpring in loadout) and
+        ((GravitySuit in loadout) or (Speedball in loadout))  # 2-tile morph jump
+    ),
     "Epiphreatic Crag": lambda loadout: (
             # Casual: (ConstructionSiteL in loadout) and (jumpAble in loadout) and (Morph in loadout) and (GravitySuit in loadout))
             # Expert: (ConstructionSiteL in loadout) and (jumpAble in loadout) and (Morph in loadout) and ( (GravitySuit in loadout) or ( (Screw in loadout) and ( (canBomb in loadout) or (Speedball in loadout) ) ) or ( (Speedball in loadout) and (HiJump in loadout) ) )))
@@ -324,7 +391,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Loading Dock Storage Area": lambda loadout: (
         (LoadingDockSecurityAreaL in loadout )
-    ),
+    )_,
     "Containment Area": lambda loadout: (
             # Casual: (jumpAble in loadout) and ( (FoyerR in loadout) and (canBomb in loadout) and (Speedball in loadout) and ( (MetroidSuit in loadout) or (Screw in loadout) ) ) or ( (AlluringCenoteR in loadout) and (Grapple in loadout) and (SpeedBooster in loadout) and (Speedball in loadout) and (canUsePB in loadout) ))
             # Expert: (jumpAble in loadout) and (( (FoyerR in loadout) and (canBomb in loadout) and ((MetroidSuit in loadout) or (Screw in loadout)) ) or ( (AlluringCenoteR in loadout) and (Grapple in loadout) and (SpeedBooster in loadout) and (Speedball in loadout) and (canUsePB in loadout) ))))
@@ -466,19 +533,19 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # Expert: (RuinedConcourseBL in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (pinkDoor in loadout)))
     ),
     "Path Of Swords": lambda loadout: (
-            # Casual: (vulnar in loadout) and ((canBomb in loadout) or ((Morph in loadout) and (Screw in loadout))))
-            # Expert: (vulnar in loadout) and ( (canBomb in loadout) or ( (Morph in loadout) and (Screw in loadout) ) )))
+            # Casual: (sunkenNestToVulnar in loadout) and ((canBomb in loadout) or ((Morph in loadout) and (Screw in loadout))))
+            # Expert: (sunkenNestToVulnar in loadout) and ( (canBomb in loadout) or ( (Morph in loadout) and (Screw in loadout) ) )))
     ),
     "Auxiliary Pump Room": lambda loadout: (
-        (vulnar in loadout) and (canBomb in loadout)
+        (sunkenNestToVulnar in loadout) and (canBomb in loadout)
     ),
     "Monitoring Station": lambda loadout: (
-            # Casual: (vulnar in loadout) and (Morph in loadout) and ((Speedball in loadout) or (canBomb in loadout)))
-            # Expert: (vulnar in loadout) and (Morph in loadout)))
+            # Casual: (sunkenNestToVulnar in loadout) and (Morph in loadout) and ((Speedball in loadout) or (canBomb in loadout)))
+            # Expert: (sunkenNestToVulnar in loadout) and (Morph in loadout)))
     ),  # TODO: check an area door, don't assume that we start by vulnar  TODO: check an area door, don't assume that we start by vulnar
     "Sensor Maintenance: AmmoTank": lambda loadout: (
-            # Casual: (vulnar in loadout) and (canBomb in loadout) and (Speedball in loadout) and (ammo_req(25) in loadout))
-            # Expert: (vulnar in loadout) and (canBomb in loadout) and ( (Super in loadout) or (canUsePB in loadout) )))
+            # Casual: (sunkenNestToVulnar in loadout) and (canBomb in loadout) and (Speedball in loadout) and (ammo_req(25) in loadout))
+            # Expert: (sunkenNestToVulnar in loadout) and (canBomb in loadout) and ( (Super in loadout) or (canUsePB in loadout) )))
     ),  # back  back
     "Causeway Overlook": lambda loadout: (
         (CausewayR in loadout) and (jumpAble in loadout) and (canBomb in loadout)
@@ -579,7 +646,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # Expert: (OceanShoreR in loadout) and (jumpAble in loadout) and (Morph in loadout) and ( (GravitySuit in loadout) or ( (HiJump in loadout) and ( (Speedball in loadout) or (Ice in loadout) ) ) )))
     ),  # bottom  bottom  to get back in hole after getting this item
     "Trophobiotic Chamber": lambda loadout: (
-        (vulnar in loadout) and (Morph in loadout) and (Speedball in loadout)
+        (sunkenNestToVulnar in loadout) and (Morph in loadout) and (Speedball in loadout)
     ),
     "Waste Processing": lambda loadout: (
             # Casual: (SpeedBooster in loadout) and (jumpAble in loadout) and ( ( (SubbasementFissureL in loadout) and (canUsePB in loadout) ) or ( (CellarR in loadout) and (pinkDoor in loadout) and (canBomb in loadout) and (underwater in loadout) and (DarkVisor in loadout) ) or ( (TransferStationR in loadout) and (DarkVisor in loadout) and (wave in loadout) and (canBomb in loadout) ) ))
@@ -654,8 +721,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # Expert: (RuinedConcourseBL in loadout) and (jumpAble in loadout) and ( (pinkDoor in loadout) or ( ( (HiJump in loadout) or (SpaceJump in loadout) or ((Speedball in loadout) and (Morph in loadout)) ) and (GravitySuit in loadout) or ( (HiJump in loadout) and ( ((Speedball in loadout) and (Morph in loadout)) or (Ice in loadout) ) ) ) )))
     ),
     "West Spore Field": lambda loadout: (
-            # Casual: (vulnar in loadout) and ((canBomb in loadout) or ( (Morph in loadout) and (Screw in loadout) )) and (Super in loadout) and (Speedball in loadout) and (GravitySuit in loadout))
-            # Expert: (vulnar in loadout) and (Super in loadout) and ( (canBomb in loadout) or ( (Morph in loadout) and (Screw in loadout) ) ) and ( (GravitySuit in loadout) or ( (SpaceJump in loadout) and ( (HiJump in loadout) or (Speedball in loadout) ) ) )))
+            # Casual: (sunkenNestToVulnar in loadout) and ((canBomb in loadout) or ( (Morph in loadout) and (Screw in loadout) )) and (Super in loadout) and (Speedball in loadout) and (GravitySuit in loadout))
+            # Expert: (sunkenNestToVulnar in loadout) and (Super in loadout) and ( (canBomb in loadout) or ( (Morph in loadout) and (Screw in loadout) ) ) and ( (GravitySuit in loadout) or ( (SpaceJump in loadout) and ( (HiJump in loadout) or (Speedball in loadout) ) ) )))
     ),
     "Magma Chamber": lambda loadout: (
             # Casual: (ElevatorToMagmaLakeR in loadout) and (jumpAble in loadout) and (pinkDoor in loadout) and (canUsePB in loadout) and (Varia in loadout) and ((Charge in loadout) or (MetroidSuit in loadout)))
