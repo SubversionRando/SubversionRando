@@ -1347,7 +1347,7 @@ location_logic: LocationLogicType = {
             (can_bomb(1) in loadout) and
             (DarkVisor in loadout)
         ) or (
-            (can_bomb(3) in loadout)
+            (can_use_pbs(3) in loadout)
         ))
     ),
     "Benthic Cache Access": lambda loadout: (
