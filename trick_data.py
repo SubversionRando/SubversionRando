@@ -21,6 +21,12 @@ class Tricks:
     mockball_hard = Trick(Items.Morph)
     """ short hop or short run (warrior shrine) """
 
+    morph_jump_3_tile = Trick(Items.Morph)
+    """ mid-air morph in a 3-tile-high space (no water) """
+
+    morph_jump_4_tile = Trick(Items.Morph)
+    """ mid-air morph in a 4-tile-high space (no water) """
+
     crouch_or_downgrab = Trick()
     """ use crouch jump and/or down-grab to jump to higher ledge """
 
@@ -45,3 +51,6 @@ class Tricks:
 
     wave_gate_glitch = Trick()
     """ shoot a normal beam through a wave gate """
+
+    clip_crouch = Trick()
+    """ jump into a 2-tile high space crouched to clip through the ceiling """

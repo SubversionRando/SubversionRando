@@ -1,4 +1,4 @@
-from typing import Iterator
+from typing import Iterator, NoReturn
 from item_data import Item
 
 
@@ -19,3 +19,7 @@ class Trick:
     def __iter__(self) -> Iterator[Item]:
         for item in self._items:
             yield item
+
+    def __bool__(self) -> NoReturn:
+        # TODO: unit test for this like the one for logic shortcut
+        raise TypeError("cannot interpret Trick as bool - did you forget `in loadout`?")
