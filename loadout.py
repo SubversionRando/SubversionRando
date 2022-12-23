@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any, Iterable, Iterator, Optional, Union
 from connection_data import AreaDoor
 from item_data import Item
 from logic_shortcut import LogicShortcut
+from trick import Trick
 
 if TYPE_CHECKING:
     from game import Game
@@ -41,9 +42,11 @@ class Loadout:
             (self.game is __o.game)
         )
 
-    def __contains__(self, x: Union[Item, AreaDoor, LogicShortcut]) -> bool:
+    def __contains__(self, x: Union[Item, AreaDoor, LogicShortcut, Trick]) -> bool:
         if isinstance(x, LogicShortcut):
             return x.access(self)
+        elif isinstance(x, Trick):
+            return all(self.contents[item] > 0 for item in x) and x in self.game.logic.tricks_or_something
         return self.contents[x] > 0
 
     def __iter__(self) -> Iterator[Union[Item, AreaDoor]]:
@@ -63,10 +66,10 @@ class Loadout:
     def append(self, item: Union[Item, AreaDoor]) -> None:
         self.contents[item] += 1
 
-    def has_all(self, *items: Union[Item, AreaDoor, LogicShortcut]) -> bool:
+    def has_all(self, *items: Union[Item, AreaDoor, LogicShortcut, Trick]) -> bool:
         return all(x in self for x in items)
 
-    def has_any(self, *items: Union[Item, AreaDoor, LogicShortcut]) -> bool:
+    def has_any(self, *items: Union[Item, AreaDoor, LogicShortcut, Trick]) -> bool:
         return any(x in self for x in items)
 
     def copy(self) -> "Loadout":
