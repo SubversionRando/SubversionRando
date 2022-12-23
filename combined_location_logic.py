@@ -4,7 +4,7 @@ from connection_data import area_doors_unpackable
 from door_logic import canOpen
 from item_data import Item, items_unpackable
 from loadout import Loadout
-from logicCommon import ammo_req, can_bomb, can_use_pbs, varia_or_hell_run, canUsePB
+from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, varia_or_hell_run, canUsePB
 from logic_shortcut import LogicShortcut
 from trick_data import Tricks
 
@@ -57,14 +57,6 @@ electricHyper = LogicShortcut(lambda loadout: (
     )
 ))
 """ hyper beam when electricity is available """
-
-sunkenNestToVulnar = LogicShortcut(lambda loadout: (
-    (SunkenNestL in loadout) and
-    (GravityBoots in loadout) and
-    (pinkDoor in loadout) and  # impact crater bottom right
-    (missileDamage in loadout)  # missile barriers
-))
-""" from sunken nest area door to entrance of vulnar caves """
 
 plasmaWaveGate = LogicShortcut(lambda loadout: (
     ((Plasma in loadout) and (Wave in loadout)) or
@@ -137,6 +129,158 @@ constructionLToElevator = LogicShortcut(lambda loadout: (
     )
 ))
 """ from ConstructionSiteL door to the elevator that is under construction """
+
+brook = LogicShortcut(lambda loadout: (
+    (GravityBoots in loadout) and
+    (Morph in loadout) and
+    ((
+        (GravitySuit in loadout)
+    ) or (
+        (SpaceJump in loadout) and
+        (HiJump in loadout)
+    ) or (
+        (Ice in loadout) and
+        (Tricks.freeze_hard in loadout)
+    ) or (
+        (HiJump in loadout) and
+        (Tricks.movement_moderate in loadout)
+    ) or (
+        (Speedball in loadout) and
+        (Tricks.sbj_underwater_no_hjb in loadout)  # is this harder at the surface of the water?
+    ) or (
+        (SpaceJump in loadout) and
+        (Tricks.movement_moderate in loadout)
+    ) or (
+        (Bombs in loadout) and
+        (Tricks.movement_zoast in loadout)  # TODO: I don't know what trick this is
+    ) or (
+        (SpeedBooster in loadout) and  # 1-tap short charge from norak perimeter
+        (Tricks.movement_moderate in loadout)
+    ))
+))
+""" to get across Norak Brook (bottom right to left) """
+
+perimBL = LogicShortcut(lambda loadout: (
+    (GravityBoots in loadout) and
+    ((Morph in loadout) or (
+        (Tricks.movement_zoast in loadout)
+        # This isn't that hard, but I'm making it movement_zoast because
+        # if you don't have morph, you're likely to softlock trying to do it.
+        # TODO: You're not softlocked with the super-sink (slopekiller) trick.
+    )) and
+    ((can_bomb(1) in loadout) or (Screw in loadout) or (
+        (Tricks.short_charge_2 in loadout) and
+        ((
+            (Tricks.movement_zoast in loadout) and
+            (Morph in loadout)
+        ) or (
+            (Tricks.movement_moderate in loadout) and
+            (Morph in loadout) and (Speedball in loadout)
+        ))
+    ))
+))
+""" between Norak Perimeter bottom left and main area of norak perimeter """
+
+veranda = LogicShortcut(lambda loadout: (
+    ((  # bottom to top
+        (Tricks.short_charge_3 in loadout)
+        # TODO: a patience trick with bomb jumping all the way?
+    ) or (
+        (  # bottom to middle
+            ((
+                (Tricks.movement_moderate in loadout)
+                # If you don't have anything,
+                # you can wall jump off of the wall right above the door to Hopper Nest,
+                # then wall jump off the ledge just outside the door to Jungle Map Station access,
+                # to get to the middle level.
+            ) or (
+                (HiJump in loadout)
+            ) or (
+                (canFly in loadout)
+            ))
+        ) and
+        (  # middle to top
+            (Morph in loadout) or  # morph tunnel in top right
+            (canFly in loadout) or
+            ((HiJump in loadout) and (Tricks.movement_moderate in loadout))
+            # If you have HiJump and no Morph, then you wall jump off the green wall above the
+            # door to Jungle Map Station Access, or the bricks across from it.
+        )
+    )) and
+    (GravityBoots in loadout)
+))
+""" to get from the bottom of Veranda to the top """
+
+mezzanineShaft = LogicShortcut(lambda loadout: (
+    (canFly in loadout) or
+    (SpeedBooster in loadout) or
+    ((HiJump in loadout) and (Tricks.movement_moderate in loadout)) or  # wall jump around 3 tiles
+    (Ice in loadout) or
+    ((Speedball in loadout) and (Tricks.sbj_wall in loadout))
+))
+""" up mezzanine concourse """
+
+# above this should not include any shortcuts that reference doors
+# so they can be used in the area door logic
+# below this cannot be used in area door logic, only location logic
+
+sunkenNestToVulnar = LogicShortcut(lambda loadout: (
+    (SunkenNestL in loadout) and
+    (GravityBoots in loadout) and
+    (pinkDoor in loadout) and  # impact crater bottom right
+    (missileDamage in loadout)  # missile barriers
+))
+""" from sunken nest area door to entrance of vulnar caves """
+
+norakToLifeTemple = LogicShortcut(lambda loadout: (
+    (
+        (NorakBrookL in loadout) and
+        (brook in loadout)
+    ) or (
+        (NorakPerimeterBL in loadout) and
+        (perimBL in loadout)
+    ) or (
+        (NorakPerimeterTR in loadout) and
+        (MetroidSuit in loadout) and
+        (GravityBoots in loadout)
+    )
+))
+""" from any of the Norak area doors to Life Temple """
+
+railAccess = LogicShortcut(lambda loadout: (
+    (GravityBoots in loadout) and
+    (
+        (WestTerminalAccessL in loadout) or (
+            (MezzanineConcourseL in loadout) and
+            (mezzanineShaft in loadout)
+        ) or (
+            (ElevatorToCondenserL in loadout) and
+            (canBomb in loadout) and
+            (breakIce in loadout) and
+            (
+                (
+                    (Ice in loadout) or
+                    (GravitySuit in loadout) or
+                    (Grapple in loadout) or
+                    ((Speedball in loadout) and (HiJump in loadout))
+                ) and
+                (
+                    (GravitySuit in loadout) or
+                    (Speedball in loadout) or
+                    (HiJump in loadout)
+                )
+            )
+            and
+            # casual:
+            (ElevatorToCondenserL in loadout) and
+            (canBomb in loadout) and
+            (breakIce in loadout) and
+            (underwater in loadout) and
+            ((HiJump in loadout) or (SpaceJump in loadout) or (Bombs in loadout) or (Grapple in loadout))
+        )
+    )
+))
+""" access to the Sky Temple elevators at West Terminal and Transit Concourse """
 
 location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Impact Crater: AccelCharge": lambda loadout: (
@@ -389,13 +533,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (MezzanineConcourseL in loadout) and
         (GravityBoots in loadout) and
         (Morph in loadout) and
-        (
-            (canFly in loadout) or
-            (SpeedBooster in loadout) or
-            ((HiJump in loadout) and (Tricks.movement_moderate in loadout)) or  # wall jump around 3 tiles
-            (Ice in loadout) or
-            ((Speedball in loadout) and (Tricks.sbj_wall in loadout))
-        ) and
+        (mezzanineShaft in loadout) and
         ((Tricks.morph_jump_4_tile in loadout) or (Bombs in loadout) or (Speedball in loadout))
     ),
     "Greater Inferno": lambda loadout: (
@@ -439,41 +577,83 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # Expert: (jumpAble in loadout) and (Morph in loadout) and (( (ReservoirMaintenanceTunnelR in loadout) and (canBomb in loadout) and ((GravitySuit in loadout) or (HiJump in loadout) or (Ice in loadout)) and (Screw in loadout) ) or ( (ThermalReservoir1R in loadout) and (varia_or_hell_run(350) in loadout) and (MetroidSuit in loadout) ) or ( (GeneratorAccessTunnelL in loadout) and (canUsePB in loadout) and (MetroidSuit in loadout) ))))
     ),
     "Loading Dock Storage Area": lambda loadout: (
-        (LoadingDockSecurityAreaL in loadout )
-    )_,
+        (LoadingDockSecurityAreaL in loadout)  # no gravity boots needed
+    ),
     "Containment Area": lambda loadout: (
             # Casual: (jumpAble in loadout) and ( (FoyerR in loadout) and (canBomb in loadout) and (Speedball in loadout) and ( (MetroidSuit in loadout) or (Screw in loadout) ) ) or ( (AlluringCenoteR in loadout) and (Grapple in loadout) and (SpeedBooster in loadout) and (Speedball in loadout) and (canUsePB in loadout) ))
             # Expert: (jumpAble in loadout) and (( (FoyerR in loadout) and (canBomb in loadout) and ((MetroidSuit in loadout) or (Screw in loadout)) ) or ( (AlluringCenoteR in loadout) and (Grapple in loadout) and (SpeedBooster in loadout) and (Speedball in loadout) and (canUsePB in loadout) ))))
     ),
-    "Briar: SJBoost": lambda loadout: (
-        (NorakPerimeterBL in loadout) and (jumpAble in loadout) and (canUsePB in loadout)
-    ),  # top  PB tube
+    "Briar: SJBoost": lambda loadout: (  # top  PB tube
+        (NorakPerimeterBL in loadout) and
+        (GravityBoots in loadout) and
+        (canUsePB in loadout)
+    ),
     "Shrine Of Fervor": lambda loadout: (
-            # Casual: (jumpAble in loadout) and (veranda in loadout) and (norakToLifeTemple in loadout))
-            # Expert: (jumpAble in loadout) and ( ( (NorakBrookL in loadout) and (Morph in loadout) and ((GravitySuit in loadout) or (Ice in loadout) or (HiJump in loadout) or (Speedball in loadout) or (SpaceJump in loadout) or (Bombs in loadout) or (SpeedBooster in loadout)) ) or ( (NorakPerimeterTR in loadout) and (MetroidSuit in loadout) ) or ( (NorakPerimeterBL in loadout) and ((canBomb in loadout) or (Screw in loadout) or (SpeedBooster in loadout)) ) )))
+        (GravityBoots in loadout) and
+        (norakToLifeTemple in loadout) and
+        (veranda in loadout)
     ),
     "Chamber Of Wind": lambda loadout: (
-            # Casual: (NorakPerimeterBL in loadout) and (jumpAble in loadout) and (pinkDoor in loadout) and (canFly in loadout) and (SpeedBooster in loadout) and ( (canBomb in loadout) or ( (Screw in loadout) and (Speedball in loadout) and (Morph in loadout) ) ))
-            # Expert: (NorakPerimeterBL in loadout) and (jumpAble in loadout) and (pinkDoor in loadout) and (SpeedBooster in loadout) and ( (canBomb in loadout) or ( (Screw in loadout) and (Speedball in loadout) and (Morph in loadout) ) )))
+        (GravityBoots in loadout) and
+        (norakToLifeTemple in loadout) and
+        (veranda in loadout) and
+        (pinkDoor in loadout) and
+        ((can_bomb(2) in loadout) or (Screw in loadout)) and  # wall outside the door
+        # Chamber of Wind Access both ways
+        (SpeedBooster in loadout) and
+        ((can_bomb(2) in loadout) or (
+            (Speedball in loadout) and
+            (Morph in loadout)
+        )) and
+        # get out of chamber of wind
+        ((Tricks.short_charge_2 in loadout) or (canFly in loadout))
     ),
     "Water Garden": lambda loadout: (
-            # Casual: (jumpAble in loadout) and (SpeedBooster in loadout) and (veranda in loadout) and (norakToLifeTemple in loadout))
-            # Expert: (NorakPerimeterBL in loadout) and (jumpAble in loadout) and (SpeedBooster in loadout)))
-    ),  # TODO: Might there be a reason to add logic from ElevatorToWellspringL ?
+        (GravityBoots in loadout) and
+        (norakToLifeTemple in loadout) and
+        (veranda in loadout) and
+        (SpeedBooster in loadout) and
+        (energy_req(163) in loadout)
+        # TODO: chamber of stone logic
+        # TODO: Might there be a reason to add logic from ElevatorToWellspringL ?
+    ),
     "Crocomire's Energy Station": lambda loadout: (
-            # Casual: (jumpAble in loadout) and (Super in loadout) and (SpeedBooster in loadout) and ( ( (Morph in loadout) and (Speedball in loadout) ) or (canBomb in loadout) or (Screw in loadout) ) and (veranda in loadout) and (norakToLifeTemple in loadout))
-            # Expert: (NorakPerimeterBL in loadout) and (jumpAble in loadout) and (Super in loadout) and (SpeedBooster in loadout)))
-    ),  # to get past the bomb blocks in the left side of Croc's room  TODO: Might there be a reason to add logic from ElevatorToWellspringL ?
+        (GravityBoots in loadout) and
+        (norakToLifeTemple in loadout) and
+        (veranda in loadout) and
+        (SpeedBooster in loadout) and
+        (Super in loadout) and  # door to elevator to jungle's heart
+        ((  # to get past the bomb blocks in the left side of Croc's room (can't use shinespark for exit)
+            (Morph in loadout) and
+            (Speedball in loadout)
+        ) or (can_bomb(2) in loadout) or (Screw in loadout) or (Tricks.morph_jump_3_tile in loadout))
+    ),  # TODO: Might there be a reason to add logic from ElevatorToWellspringL ?
     "Wellspring Cache": lambda loadout: (
-            # Casual: (ElevatorToWellspringL in loadout) and (jumpAble in loadout) and (GravitySuit in loadout) and (Super in loadout) and (Morph in loadout))
-            # Expert: (ElevatorToWellspringL in loadout) and (jumpAble in loadout) and loadout.has_any(HiJump (Super in loadout) and (Morph in loadout)))
+        (ElevatorToWellspringL in loadout) and
+        (GravityBoots in loadout) and
+        (Super in loadout) and
+        (Morph in loadout) and
+        ((
+            (GravitySuit in loadout)
+        ) or (
+            (HiJump in loadout) and
+            (Tricks.crouch_or_downgrab in loadout)
+        ) or (
+            (Speedball in loadout) and
+            (Tricks.sbj_underwater_no_hjb in loadout)
+        ) or (
+            (Ice in loadout) and
+            (ammo_req(20) in loadout) and  # a few supers to knock worm off the wall
+            (Tricks.freeze_hard in loadout)
+        ))
     ),
     "Frozen Lake Wall: DamageAmp": lambda loadout: (
-        (ElevatorToCondenserL in loadout) and (jumpAble in loadout) and (canUsePB in loadout)
+        (ElevatorToCondenserL in loadout) and
+        (GravityBoots in loadout) and
+        (canUsePB in loadout)
     ),
     "Grand Promenade": lambda loadout: (
-            # Casual: (railAccess in loadout) and (jumpAble in loadout))
-            # Expert: (jumpAble in loadout) and (railAccess in loadout)))
+        (railAccess in loadout) and (GravityBoots in loadout)
     ),
     "Summit Landing": lambda loadout: (
             # Casual: (railAccess in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (Speedball in loadout))
@@ -557,7 +737,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             ) or (
                 (HiJump in loadout) and
                 (
-                    ((Tricks.uwu_2_tile in loadout) and (Tricks.crouch_precise)) or
+                    ((Tricks.uwu_2_tile in loadout) and (Tricks.crouch_precise in loadout)) or
                     (Tricks.freeze_hard in loadout)
                 )
             ) or (

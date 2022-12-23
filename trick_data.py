@@ -57,3 +57,12 @@ class Tricks:
 
     clip_crouch = Trick()
     """ jump into a 2-tile high space crouched to clip through the ceiling """
+
+    short_charge_2 = Trick(Items.SpeedBooster)
+    """ charge shinespark in smaller running space - 2 tap """
+
+    short_charge_3 = Trick(Items.SpeedBooster)
+    """ charge shinespark in smaller running space - 3 tap """
+
+    short_charge_4 = Trick(Items.SpeedBooster)
+    """ charge shinespark in smaller running space - 4 tap """
