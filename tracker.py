@@ -23,6 +23,7 @@ from solver import solve
 # TODO: mining site alpha a
 # TODO: armory cache b beta, gamma g y
 # TODO: sandy burrow top and bottom
+# TODO: shrines last word (penumbra, fervor)
 _name_aliases = {
     "Warrior Shrine: Top": "Warrior Shrine: AmmoTank top",
     "Warrior Shrine: Bottom": "Warrior Shrine: AmmoTank bottom",

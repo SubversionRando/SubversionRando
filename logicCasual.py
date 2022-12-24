@@ -10,10 +10,15 @@ from logic_shortcut import LogicShortcut
 
 # TODO: There are a bunch of places where where Expert logic needed energy tanks even if they had Varia suit.
 # Need to make sure everything is right in those places.
-# (They will probably work right when they're combined like this,
-#  but they wouldn't have worked right when casual was separated from expert.)
 
 # TODO: There are also a bunch of places where casual used icePod, where expert only used Ice. Is that right?
+
+# TODO: Make sure everything in fire temple and slag heap
+# has paths from (sequestered, elevator to vulnar depths, collapsed passage)
+# none of the logic will cancel out others
+# (one needs wave, one needs metroid suit or energy, one needs the restrictive top of crossways)
+
+# TODO: check logic: water garden required a tricky jump to get up to the start of the speedbooster lane
 
 (
     CraterR, SunkenNestL, RuinedConcourseBL, RuinedConcourseTR, CausewayR,
@@ -199,6 +204,41 @@ concourseShinespark = LogicShortcut(lambda loadout: (
     (Morph in loadout)  # back down
 ))
 """ access to the top of ruined concourse """
+
+infernalSequestration = LogicShortcut(lambda loadout: (
+    (GravityBoots in loadout) and
+    ((MetroidSuit in loadout) or (
+        # passage underneath laser
+        (Charge in loadout) and
+        (Hypercharge in loadout) and
+        # This is kind of like electricHyper,
+        # except you can't use it without morph and breaking bomb blocks and jumping in lava.
+        (Morph in loadout) and
+        ((Screw in loadout) or (can_bomb(1) in loadout)) and
+        # have to go in lava to get to this passage
+        (Varia in loadout) and
+        (energy_req(250) in loadout)  # with varia
+    )) and
+    (Varia in loadout) and
+    (electricHyper in loadout)
+))
+""" sequestered infernal to the bottom of hive crossways """
+
+crossways = LogicShortcut(lambda loadout: (
+    # The speedway is not in logic because it's one-way
+    ((
+        (Ice in loadout)  # freeze enemies to stand on
+    ) or (
+        (SpaceJump in loadout)
+    ) or (
+        # kill the enemies and bomb jump up
+        ((Super in loadout) or (PowerBomb in loadout) or (Screw in loadout) or loadout.has_all(Charge, Hypercharge)) and
+        (canFly in loadout)
+    )) and
+    (Morph in loadout) and  # required for either bottom or east hive tunnel
+    (GravityBoots in loadout)
+))
+""" top of hive crossways """
 
 
 area_logic: AreaLogicType = {
@@ -943,7 +983,8 @@ area_logic: AreaLogicType = {
             (canBomb in loadout) and
             (icePod in loadout) and
             (Varia in loadout) and
-            (electricHyper in loadout)
+            (crossways in loadout) and
+            (infernalSequestration in loadout)
         ),
         ("VulnarDepthsElevatorER", "CollapsedPassageR"): lambda loadout: (
             (canBomb in loadout) and
@@ -969,13 +1010,14 @@ area_logic: AreaLogicType = {
             (pinkDoor in loadout) and
             (canBomb in loadout) and
             (Varia in loadout) and
-            (electricHyper in loadout)
+            (crossways in loadout) and
+            (infernalSequestration in loadout)
         ),
         ("SequesteredInfernoL", "HiveBurrowL"): lambda loadout: (
             False  # One way Hive Burrow not in logic
         ),
         ("SequesteredInfernoL", "CollapsedPassageR"): lambda loadout: (
-            loadout.has_all(jumpAble, canBomb, Super, Varia, electricHyper)
+            loadout.has_all(jumpAble, canBomb, wave, Super, Varia, infernalSequestration)
         ),
         ("CollapsedPassageR", "VulnarDepthsElevatorER"): lambda loadout: (
             (Varia in loadout) and
@@ -988,7 +1030,7 @@ area_logic: AreaLogicType = {
             False  # One way hive burrow not in logic
         ),
         ("CollapsedPassageR", "SequesteredInfernoL"): lambda loadout: (
-            loadout.has_all(jumpAble, canBomb, pinkDoor, Varia, electricHyper)
+            loadout.has_all(jumpAble, canBomb, wave, pinkDoor, Varia, infernalSequestration)
         ),
     },
     "Geothermal": {
@@ -1531,12 +1573,13 @@ location_logic: LocationLogicType = {
             (canBomb in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and
-            (electricHyper in loadout) and
-            (Morph in loadout) and
+            (crossways in loadout) and
+            (infernalSequestration in loadout) and
             (icePod in loadout)
         )
     ),
     "Fire's Boon Shrine": lambda loadout: (
+        (wave in loadout) and
         (
             (VulnarDepthsElevatorEL in loadout) and
             (jumpAble in loadout) and
@@ -1544,10 +1587,10 @@ location_logic: LocationLogicType = {
             (pinkDoor in loadout) and
             (Varia in loadout) and
             (icePod in loadout) and
-            (wave in loadout)
+            (crossways in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and
-            (electricHyper in loadout) and
+            (infernalSequestration in loadout) and
             (pinkDoor in loadout) and
             (Varia in loadout)
         ) or (
@@ -1563,16 +1606,17 @@ location_logic: LocationLogicType = {
         (Morph in loadout) and
         ((
             (VulnarDepthsElevatorEL in loadout) and
+            (crossways in loadout) and
             (canBomb in loadout) and
             (pinkDoor in loadout) and
             (Varia in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and
-            (electricHyper in loadout) and
+            (infernalSequestration in loadout) and
             (pinkDoor in loadout) and
             (Varia in loadout)
         ))
-        # TODO: include path from CollapsedPassageR?
+        # TODO: include path from CollapsedPassageR
     ),
     "Ancient Shaft": lambda loadout: (
         (jumpAble in loadout) and
@@ -1582,10 +1626,11 @@ location_logic: LocationLogicType = {
         (
             (VulnarDepthsElevatorEL in loadout) and
             (canBomb in loadout) and
-            (icePod in loadout)
+            (icePod in loadout) and
+            (crossways in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and
-            (electricHyper in loadout)
+            (infernalSequestration in loadout)
         )
     ),
     "Gymnasium": lambda loadout: (
@@ -1595,11 +1640,13 @@ location_logic: LocationLogicType = {
         ((
             (VulnarDepthsElevatorEL in loadout) and
             (canBomb in loadout) and
-            (icePod in loadout)
+            (icePod in loadout) and
+            (crossways in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and
-            (electricHyper in loadout) and
-            (Morph in loadout)
+            (infernalSequestration in loadout) and
+            (Morph in loadout) and
+            (can_bomb(1) in loadout)  # either the bomb blocks in ancient basin, or the pb blocks in ancient shaft
         ))
     ),
     "Electromechanical Engine": lambda loadout: (
@@ -1799,6 +1846,8 @@ location_logic: LocationLogicType = {
         (Super in loadout)
     ),
     "Impact Crater Overlook": lambda loadout: (  # TODO: check an area door, don't assume we start in this area
+        (SunkenNestL in loadout) and
+        (jumpAble in loadout) and
         (canFly in loadout) and
         (canBomb in loadout) and
         ((canUsePB in loadout) or  # TODO: if all I have is PB, I need 20 ammo
@@ -1869,8 +1918,9 @@ location_logic: LocationLogicType = {
         (OceanShoreR in loadout) and
         (jumpAble in loadout) and
         (GravitySuit in loadout) and
-        ((Screw in loadout) or (canBomb in loadout)) and
-        ((HiJump in loadout) or (SpaceJump in loadout))
+        (Morph in loadout) and
+        ((Screw in loadout) or (can_bomb(2) in loadout))
+        # can_bomb(2) because the blocks respawn pretty fast
     ),
     "Submarine Alcove": lambda loadout: (
         (jumpAble in loadout) and
@@ -2013,16 +2063,18 @@ location_logic: LocationLogicType = {
             (jumpAble in loadout) and
             (canBomb in loadout) and
             (pinkDoor in loadout) and
-            (icePod in loadout)
+            (icePod in loadout) and
+            (crossways in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and
-            (electricHyper in loadout) and
+            (infernalSequestration in loadout) and
             (pinkDoor in loadout) and
-            (Morph in loadout)
+            (Morph in loadout) and
+            (can_bomb(1) in loadout)  # either the bomb blocks in ancient basin, or the pb blocks in ancient shaft
         ) or (
             (CollapsedPassageR in loadout) and
-            (Super in loadout) and
-            (canUsePB in loadout) and
+            (pinkDoor in loadout) and
+            (canBomb in loadout) and
             (wave in loadout)
         ))
     ),
@@ -2174,11 +2226,11 @@ location_logic: LocationLogicType = {
     ),
     "Sandy Burrow: AmmoTank": lambda loadout: (  # bottom
         (OceanShoreR in loadout) and
+        (jumpAble in loadout) and
         (GravitySuit in loadout) and
         (Morph in loadout) and
         # to get back in hole after getting this item
-        (loadout.has_any(Speedball, Bombs, PowerBomb)) and
-        ((HiJump in loadout) or (canFly in loadout))
+        (loadout.has_any(Speedball, Bombs, PowerBomb))
     ),
     "Trophobiotic Chamber": lambda loadout: (
         (vulnar in loadout) and
@@ -2251,7 +2303,8 @@ location_logic: LocationLogicType = {
             (icePod in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and
-            (electricHyper in loadout)
+            (infernalSequestration in loadout) and
+            (crossways in loadout)
         ) or (
             (CollapsedPassageR in loadout) and
             (pinkDoor in loadout) and
@@ -2265,9 +2318,11 @@ location_logic: LocationLogicType = {
         (icePod in loadout) and
         (Varia in loadout) and
         (MetroidSuit in loadout) and
-        (SequesteredInfernoL in loadout)
+        (SequesteredInfernoL in loadout) and
+        (infernalSequestration in loadout)
         # TODO: include paths from other doors?
         # unit test works from CollapsedPassageR
+        # It looks like it shouldn't because you need wave to go through collapsed passage
     ),
     "Hydrodynamic Chamber": lambda loadout: (  # one of the only intended water rooms
         (Morph in loadout) and
