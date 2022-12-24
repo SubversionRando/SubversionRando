@@ -3,7 +3,7 @@ from typing import Callable
 from connection_data import area_doors_unpackable
 from item_data import items_unpackable
 from loadout import Loadout
-from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, varia_or_hell_run, canUsePB
+from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, lava_run, varia_or_hell_run, canUsePB
 from logic_shortcut import LogicShortcut
 from trick_data import Tricks
 
@@ -621,12 +621,42 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((Tricks.morph_jump_4_tile in loadout) or (Bombs in loadout) or (Speedball in loadout))
     ),
     "Greater Inferno": lambda loadout: (
-            # Casual: (MagmaPumpAccessR in loadout) and (jumpAble in loadout) and (canUsePB in loadout) and (Super in loadout) and (GravitySuit in loadout) and (Varia in loadout) and (MetroidSuit in loadout) and ( (wave in loadout) or (plasmaWaveGate in loadout) ))
-            # Expert: (MagmaPumpAccessR in loadout) and (jumpAble in loadout) and (canUsePB in loadout) and (Super in loadout) and (varia_or_hell_run(850) in loadout) and (MetroidSuit in loadout) and ( (GravitySuit in loadout) or (Speedball in loadout) )))
+        (MagmaPumpAccessR in loadout) and
+        (GravityBoots in loadout) and
+        (can_use_pbs(1) in loadout) and  # door
+        (Super in loadout) and
+        # getting through the heat
+        (lava_run(850, 1850) in loadout) and
+        # hell run without aqua will require crystal flash
+        (MetroidSuit in loadout) and
+        # open gate
+        ((  # with switch
+            (
+                (GravitySuit in loadout) and
+                (can_bomb(2) in loadout)
+            ) or (
+                # no aqua
+                (Speedball in loadout) and
+                (can_bomb(2) in loadout)  # for getting stuck in crumbles
+            )
+        ) or (  # shoot through gate
+            (Tricks.wave_gate_glitch in loadout) and
+            # This is not the normal usage of this trick, but I don't want to make a trick just for this.
+            (shootThroughWalls in loadout)
+        )) and
+        ((GravitySuit in loadout) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_lava in loadout))  # exit
     ),
     "Burning Depths Cache": lambda loadout: (
-            # Casual: (MagmaPumpAccessR in loadout) and (jumpAble in loadout) and (canUsePB in loadout) and (GravitySuit in loadout) and (Varia in loadout) and (MetroidSuit in loadout) and (Spazer in loadout))
-            # Expert: (MagmaPumpAccessR in loadout) and (jumpAble in loadout) and (canUsePB in loadout) and (varia_or_hell_run(550) in loadout) and (MetroidSuit in loadout) and ((Spazer in loadout) or (Wave in loadout) or ( (Charge in loadout) and (Bombs in loadout) ))))
+        (MagmaPumpAccessR in loadout) and
+        (GravityBoots in loadout) and
+        (can_use_pbs(1) in loadout) and
+        (lava_run(550, 1250) in loadout) and
+        (MetroidSuit in loadout) and 
+        (Morph in loadout) and
+        ((Spazer in loadout) or (
+            (Tricks.searing_gate_tricks in loadout) and
+            ((Wave in loadout) or ((Charge in loadout) and (Bombs in loadout)))
+        ))
     ),
     "Mining Cache": lambda loadout: (
             # Casual: (( (EleToTurbidPassageR in loadout) and (Varia in loadout) ) or ( (SporousNookL in loadout) and (GravitySuit in loadout) ) ) and (jumpAble in loadout) and (Super in loadout) and (canBomb in loadout))

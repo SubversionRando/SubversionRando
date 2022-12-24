@@ -90,6 +90,19 @@ def varia_or_hell_run(energy: int) -> LogicShortcut:
     ))
 
 
+def lava_run(energy_with_aqua: int, energy_no_aqua: int) -> LogicShortcut:
+    """ varia_or_hell_run in lava, because it slows you down and hurts more if you don't have aqua suit """
+    return LogicShortcut(lambda loadout: (
+        (
+            (Items.GravitySuit in loadout) and
+            (varia_or_hell_run(energy_with_aqua) in loadout)
+        ) or (
+            # no aqua
+            (varia_or_hell_run(energy_no_aqua) in loadout)
+        )
+    ))
+
+
 def can_use_pbs(pbs_needed: int) -> LogicShortcut:
     """ How many PBs do you need between opportunities to refill ammo? """
     return LogicShortcut(lambda loadout: (
