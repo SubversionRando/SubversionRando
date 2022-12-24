@@ -2299,7 +2299,9 @@ location_logic: LocationLogicType = {
         (Super in loadout) and
         (railAccess in loadout)  
     ),
-    "Impact Crater Overlook": lambda loadout: (  # TODO: check an area door, don't assume we start in this area
+    "Impact Crater Overlook": lambda loadout: (
+        (SunkenNestL in loadout) and
+        (jumpAble in loadout) and
         ((canFly in loadout) or (SpeedBooster in loadout)) and
         (canBomb in loadout) and
         ((canUsePB in loadout) or (Super in loadout))
@@ -2382,6 +2384,7 @@ location_logic: LocationLogicType = {
     "Sandy Burrow: ETank": lambda loadout: (  # top
         (OceanShoreR in loadout) and
         (underwater in loadout) and
+        (Morph in loadout) and
         ((
             (GravitySuit in loadout) and
             ((Screw in loadout) or (canBomb in loadout))

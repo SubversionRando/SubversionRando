@@ -1799,6 +1799,8 @@ location_logic: LocationLogicType = {
         (Super in loadout)
     ),
     "Impact Crater Overlook": lambda loadout: (  # TODO: check an area door, don't assume we start in this area
+        (SunkenNestL in loadout) and
+        (jumpAble in loadout) and
         (canFly in loadout) and
         (canBomb in loadout) and
         ((canUsePB in loadout) or  # TODO: if all I have is PB, I need 20 ammo
@@ -1869,8 +1871,9 @@ location_logic: LocationLogicType = {
         (OceanShoreR in loadout) and
         (jumpAble in loadout) and
         (GravitySuit in loadout) and
-        ((Screw in loadout) or (canBomb in loadout)) and
-        ((HiJump in loadout) or (SpaceJump in loadout))
+        (Morph in loadout) and
+        ((Screw in loadout) or (can_bomb(2) in loadout))
+        # can_bomb(2) because the blocks respawn pretty fast
     ),
     "Submarine Alcove": lambda loadout: (
         (jumpAble in loadout) and
@@ -2174,11 +2177,11 @@ location_logic: LocationLogicType = {
     ),
     "Sandy Burrow: AmmoTank": lambda loadout: (  # bottom
         (OceanShoreR in loadout) and
+        (jumpAble in loadout) and
         (GravitySuit in loadout) and
         (Morph in loadout) and
         # to get back in hole after getting this item
-        (loadout.has_any(Speedball, Bombs, PowerBomb)) and
-        ((HiJump in loadout) or (canFly in loadout))
+        (loadout.has_any(Speedball, Bombs, PowerBomb))
     ),
     "Trophobiotic Chamber": lambda loadout: (
         (vulnar in loadout) and
