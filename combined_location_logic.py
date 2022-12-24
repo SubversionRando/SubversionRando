@@ -220,6 +220,80 @@ mezzanineShaft = LogicShortcut(lambda loadout: (
 ))
 """ up mezzanine concourse """
 
+infernalSequestration = LogicShortcut(lambda loadout: (
+    (GravityBoots in loadout) and
+    ((MetroidSuit in loadout) or (
+        # passage underneath laser
+        (Charge in loadout) and
+        (Hypercharge in loadout) and
+        # This is kind of like electricHyper,
+        # except you can't use it without morph and breaking bomb blocks and jumping in lava.
+        (Morph in loadout) and
+        ((Screw in loadout) or (can_bomb(1) in loadout)) and
+        # have to go in lava to get to this passage
+        (varia_or_hell_run(650) in loadout) and  # without varia
+        (energy_req(250) in loadout)  # with varia
+        # hell run tips without metroid suit:
+        #   from left to right:
+        #     hold charge beam and dash as you run in
+        #     run off the edge without jumping
+        #     release charge beam to kill ki hunter
+        #     land on platform
+        #     jump into lava as far right as possible
+        #       should have to touch spikes only once before getting out of lava
+        #     (if you need to crystal flash, do it on the slope as soon as you get out of the lava)
+        #     go through hyper beam and bomb block passage
+        #     platform - wall jump - door
+        #   from right to left:
+        #     unequip hi jump boots before entering
+        #     hold charge beam and dash as you run in
+        #     fall straight down off the edge
+        #     face right
+        #     land on platform
+        #     release charge beam to kill red ball
+        #     go through hyper beam and bomb block passage
+        #     (if you need to crystal flash, do it on the slope next to the lava or in the corner)
+        #     With dash and jump (no hi jump boots),
+        #       you can jump over all the spikes and land where there are no spikes.
+        #     then wall jump up to the door
+        #     
+        # from right to left with no suits can be done using only 450 energy, but that requires movement_zoast
+        # for a good non-zoast player, about 650
+    )) and
+    (varia_or_hell_run(150) in loadout) and  # with metroid suit
+    (electricHyper in loadout)
+))
+""" sequestered infernal to the bottom of hive crossways """
+
+crossways = LogicShortcut(lambda loadout: (
+    # The speedway is not in logic because it's one-way
+    ((
+        # freeze enemies to stand on
+        (Ice in loadout)
+    ) or (
+        # dodging enemies
+        (Tricks.movement_moderate in loadout) and
+        (
+            (Tricks.wall_jump_delayed in loadout) or
+            (SpaceJump in loadout)
+            # no SJB needed with easy wall jumps - 1 space jump can get you to the long walls
+        )
+    ) or (
+        # kill the enemies so you don't have to dodge them
+        (
+            (Super in loadout) or
+            (PowerBomb in loadout) or
+            (Screw in loadout) or
+            loadout.has_all(Charge, Hypercharge)
+        ) and
+        ((canFly in loadout) or (Tricks.wall_jump_delayed in loadout))
+        # no SJB needed with easy wall jumps - 1 space jump can get you to the long walls
+    )) and
+    (Morph in loadout) and  # required for either bottom or east hive tunnel
+    (GravityBoots in loadout)
+))
+""" top of hive crossways """
+
 # above this should not include any shortcuts that reference doors
 # so they can be used in the area door logic
 # below this cannot be used in area door logic, only location logic
@@ -549,24 +623,95 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # Expert: (jumpAble in loadout) and (Super in loadout) and (canBomb in loadout) and ( (EleToTurbidPassageR in loadout) and (varia_or_hell_run(550) in loadout) ) or ( (SporousNookL in loadout) and (hotSpring in loadout) )))
     ),
     "Infested Passage": lambda loadout: (
-            # Casual: (jumpAble in loadout) and (Varia in loadout) and ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) ) or ( (SequesteredInfernoL in loadout) and (electricHyper in loadout) and (Morph in loadout) and (icePod in loadout) ))
-            # Expert: (jumpAble in loadout) and ( ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (varia_or_hell_run(450) in loadout) ) or ( (SequesteredInfernoL in loadout) and (electricHyper in loadout) and (Morph in loadout) and (icePod in loadout) and (varia_or_hell_run(250) in loadout) ) )))
+            # Casual: (jumpAble in loadout) and (Varia in loadout) and ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (Morph in loadout) and (icePod in loadout) ))
+            # Expert: (jumpAble in loadout) and ( ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (varia_or_hell_run(450) in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (Morph in loadout) and (icePod in loadout) and (varia_or_hell_run(250) in loadout) ) )))
+        (
+        ) or (
+            (SequesteredInfernoL in loadout) and
+            (crossways in loadout) and
+            (infernalSequestration in loadout) and
+            (icePod in loadout)
+        )
     ),
     "Fire's Boon Shrine": lambda loadout: (
-            # Casual: ((VulnarDepthsElevatorEL in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (pinkDoor in loadout) and (Varia in loadout) and (icePod in loadout) and (wave in loadout) ) or ( (SequesteredInfernoL in loadout) and (electricHyper in loadout) and (pinkDoor in loadout) and (Varia in loadout) ) or ( (CollapsedPassageR in loadout) and (Super in loadout) and (Varia in loadout) and (canBomb in loadout) ))
-            # Expert: (jumpAble in loadout) and (pinkDoor in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (varia_or_hell_run(450) in loadout) and (icePod in loadout) ) or ( (SequesteredInfernoL in loadout) and (electricHyper in loadout) and (varia_or_hell_run(350) in loadout) and (Morph in loadout) ) or ( (CollapsedPassageR in loadout) and (varia_or_hell_run(750) in loadout) and (canBomb in loadout) and (wave in loadout) ))))
+            # Casual: ((VulnarDepthsElevatorEL in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (pinkDoor in loadout) and (Varia in loadout) and (icePod in loadout) and (wave in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (pinkDoor in loadout) and (Varia in loadout) ) or ( (CollapsedPassageR in loadout) and (Super in loadout) and (Varia in loadout) and (canBomb in loadout) ))
+            # Expert: (jumpAble in loadout) and (pinkDoor in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (varia_or_hell_run(450) in loadout) and (icePod in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (varia_or_hell_run(350) in loadout) and (Morph in loadout) ) or ( (CollapsedPassageR in loadout) and (varia_or_hell_run(750) in loadout) and (canBomb in loadout) and (wave in loadout) ))))
+        # TODO: this is just a copy paste - verify
+        (wave in loadout) and  # TODO: logic for glitch - harder than others because of spikes - can be done with missiles or supers
+        (
+            (VulnarDepthsElevatorEL in loadout) and
+            (jumpAble in loadout) and
+            (canBomb in loadout) and
+            (pinkDoor in loadout) and
+            (Varia in loadout) and
+            (icePod in loadout) and
+            (crossways in loadout)
+        ) or (
+            (SequesteredInfernoL in loadout) and
+            (infernalSequestration in loadout) and
+            (pinkDoor in loadout) and
+            (Varia in loadout)
+        ) or (
+            (CollapsedPassageR in loadout) and
+            (Super in loadout) and
+            (Varia in loadout) and
+            (canBomb in loadout)
+        )
     ),
     "Fire's Bane Shrine": lambda loadout: (
-            # Casual: (icePod in loadout) and (jumpAble in loadout) and (Morph in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (pinkDoor in loadout) and (Varia in loadout) ) or ( (SequesteredInfernoL in loadout) and (electricHyper in loadout) and (pinkDoor in loadout) and (Varia in loadout) )))
-            # Expert: (icePod in loadout) and (jumpAble in loadout) and (Morph in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (pinkDoor in loadout) and (varia_or_hell_run(450) in loadout) ) or ( (SequesteredInfernoL in loadout) and (electricHyper in loadout) and (pinkDoor in loadout) and (varia_or_hell_run(350) in loadout) ))))
-    ),  # TODO: include path from CollapsedPassageR?
+            # Casual: (icePod in loadout) and (jumpAble in loadout) and (Morph in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (pinkDoor in loadout) and (Varia in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (pinkDoor in loadout) and (Varia in loadout) )))
+            # Expert: (icePod in loadout) and (jumpAble in loadout) and (Morph in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (pinkDoor in loadout) and (varia_or_hell_run(450) in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (pinkDoor in loadout) and (varia_or_hell_run(350) in loadout) ))))
+        (icePod in loadout) and
+        (jumpAble in loadout) and
+        (Morph in loadout) and
+        ((
+            (VulnarDepthsElevatorEL in loadout) and
+            (crossways in loadout) and
+            (canBomb in loadout) and
+            (pinkDoor in loadout) and
+            (Varia in loadout)
+        ) or (
+            (SequesteredInfernoL in loadout) and
+            (infernalSequestration in loadout) and
+            (pinkDoor in loadout) and
+            (Varia in loadout)
+        ))
+    ),  # TODO: include path from CollapsedPassageR
     "Ancient Shaft": lambda loadout: (
-            # Casual: (jumpAble in loadout) and (canBomb in loadout) and (Varia in loadout) and (MetroidSuit in loadout) and ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (icePod in loadout) ) or ( (SequesteredInfernoL in loadout) and (electricHyper in loadout) ))
-            # Expert: (jumpAble in loadout) and (canBomb in loadout) and (varia_or_hell_run(650) in loadout) and ( (MetroidSuit in loadout) or (energy_req(1250) in loadout) or ( (Varia in loadout) and (energy_req(650) in loadout) ) ) and ( ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (icePod in loadout) ) or ( (SequesteredInfernoL in loadout) and (electricHyper in loadout) ) )))
+            # Casual: (jumpAble in loadout) and (canBomb in loadout) and (Varia in loadout) and (MetroidSuit in loadout) and ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (icePod in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) ))
+            # Expert: (jumpAble in loadout) and (canBomb in loadout) and (varia_or_hell_run(650) in loadout) and ( (MetroidSuit in loadout) or (energy_req(1250) in loadout) or ( (Varia in loadout) and (energy_req(650) in loadout) ) ) and ( ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (icePod in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) ) )))
+        (jumpAble in loadout) and
+        (canBomb in loadout) and
+        (Varia in loadout) and
+        (MetroidSuit in loadout) and
+        (
+            (VulnarDepthsElevatorEL in loadout) and
+            (canBomb in loadout) and
+            (icePod in loadout) and
+            (crossways in loadout)
+        ) or (
+            (SequesteredInfernoL in loadout) and
+            (infernalSequestration in loadout)
+        )
     ),
     "Gymnasium": lambda loadout: (
-            # Casual: (jumpAble in loadout) and (Varia in loadout) and (Grapple in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (icePod in loadout) ) or ( (SequesteredInfernoL in loadout) and (electricHyper in loadout) and (Morph in loadout) )))
-            # Expert: (jumpAble in loadout) and (Grapple in loadout) and ( ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (icePod in loadout) and (varia_or_hell_run(450) in loadout) ) or ( (SequesteredInfernoL in loadout) and (electricHyper in loadout) and (Morph in loadout) and (varia_or_hell_run(250) in loadout) ) )))
+            # Casual: (jumpAble in loadout) and (Varia in loadout) and (Grapple in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (icePod in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (Morph in loadout) )))
+            # Expert: (jumpAble in loadout) and (Grapple in loadout) and ( ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (icePod in loadout) and (varia_or_hell_run(450) in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (Morph in loadout) and (varia_or_hell_run(250) in loadout) ) )))
+        (jumpAble in loadout) and
+        (Varia in loadout) and
+        (Grapple in loadout) and
+        ((
+            (VulnarDepthsElevatorEL in loadout) and
+            (canBomb in loadout) and
+            (icePod in loadout) and
+            (crossways in loadout)
+        ) or (
+            (SequesteredInfernoL in loadout) and
+            (infernalSequestration in loadout) and
+            (Morph in loadout) and
+            (varia_or_hell_run(250) in loadout) and
+            (can_bomb(1) in loadout)  # either the bomb blocks in ancient basin, or the pb blocks in ancient shaft
+        ))
     ),
     "Electromechanical Engine": lambda loadout: (
             # Casual: (jumpAble in loadout) and (Grapple in loadout) and (Varia in loadout) and (Morph in loadout) and (( (ReservoirMaintenanceTunnelR in loadout) and (canBomb in loadout) and (GravitySuit in loadout) and (Screw in loadout) ) or ( (ThermalReservoir1R in loadout) and (MetroidSuit in loadout) ) or ( (GeneratorAccessTunnelL in loadout) and (canUsePB in loadout) and (MetroidSuit in loadout) )))
@@ -686,6 +831,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Impact Crater Overlook": lambda loadout: (
             # Casual: (canFly in loadout) and (canBomb in loadout) and ((canUsePB in loadout) or (Super in loadout)))
             # Expert: ((canFly in loadout) or (SpeedBooster in loadout)) and (canBomb in loadout) and ((canUsePB in loadout) or (Super in loadout))))
+        (SunkenNestL in loadout) and
+        (jumpAble in loadout) and
     ),  # TODO: check an area door, don't assume we start in this area  TODO: check an area door, don't assume we start in this area  TODO: if all I have is PB, I need 20 ammo
     "Magma Lake Cache": lambda loadout: (
         (ElevatorToMagmaLakeR in loadout) and (jumpAble in loadout) and (icePod in loadout) and (Morph in loadout)
@@ -722,6 +869,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Sandy Burrow: ETank": lambda loadout: (
             # Casual: (OceanShoreR in loadout) and (jumpAble in loadout) and (GravitySuit in loadout) and ((Screw in loadout) or (canBomb in loadout)) and ((HiJump in loadout) or (SpaceJump in loadout)))
             # Expert: (OceanShoreR in loadout) and (underwater in loadout) and (( (GravitySuit in loadout) and ((Screw in loadout) or (canBomb in loadout)) ) or ( ((Speedball in loadout) or (HiJump in loadout)) and (canBomb in loadout) ))))
+        (Morph in loadout)
+
+        # can_bomb(2) because the blocks respawn pretty fast
     ),  # top  top
     "Submarine Alcove": lambda loadout: (
             # Casual: (jumpAble in loadout) and (DarkVisor in loadout) and ( (OceanShoreR in loadout) and (underwater in loadout) and (Morph in loadout) and (pinkDoor in loadout) ) or ( (EleToTurbidPassageR in loadout) and (Super in loadout) and (underwater in loadout) and (Morph in loadout) and (Speedball in loadout) ))
@@ -802,6 +952,27 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Ancient Basin": lambda loadout: (
             # Casual: (Varia in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (pinkDoor in loadout) and (icePod in loadout) ) or ( (SequesteredInfernoL in loadout) and (electricHyper in loadout) and (pinkDoor in loadout) and (Morph in loadout) ) or ( (CollapsedPassageR in loadout) and (Super in loadout) and (canUsePB in loadout) and (wave in loadout) )))
             # Expert: (jumpAble in loadout) and (pinkDoor in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (icePod in loadout) and (varia_or_hell_run(450) in loadout) ) or ( (SequesteredInfernoL in loadout) and (electricHyper in loadout) and (Morph in loadout) and (varia_or_hell_run(350) in loadout) ) or ( (CollapsedPassageR in loadout) and (canBomb in loadout) and (wave in loadout) and (varia_or_hell_run(750) in loadout) ))))
+        (Varia in loadout) and
+        ((
+            (VulnarDepthsElevatorEL in loadout) and
+            (jumpAble in loadout) and
+            (canBomb in loadout) and
+            (pinkDoor in loadout) and
+            (icePod in loadout) and
+            (crossways in loadout)
+        ) or (
+            (SequesteredInfernoL in loadout) and
+            (infernalSequestration in loadout) and
+            (pinkDoor in loadout) and
+            (Morph in loadout) and
+            (varia_or_hell_run(350) in loadout) and
+            (can_bomb(1) in loadout)  # either the bomb blocks in ancient basin, or the pb blocks in ancient shaft
+        ) or (
+            (CollapsedPassageR in loadout) and
+            (pinkDoor in loadout) and
+            (canBomb in loadout) and
+            (wave in loadout)
+        ))
     ),
     "Central Corridor: right": lambda loadout: (
             # Casual: (FoyerR in loadout) and (jumpAble in loadout) and ((GravitySuit in loadout) or ( (HiJump in loadout) and (Ice in loadout) )) and (canBomb in loadout) and (eastCorridor in loadout))
@@ -871,7 +1042,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # Expert: (jumpAble in loadout) and (canUsePB in loadout) and (Spazer in loadout) and (NorakPerimeterBL in loadout)))
     ),  # TODO: Might there be a reason to add logic from ElevatorToWellspringL ?
     "Sandy Burrow: AmmoTank": lambda loadout: (
-            # Casual: (OceanShoreR in loadout) and (GravitySuit in loadout) and (Morph in loadout) and  (loadout.has_any(Speedball ((HiJump in loadout) or (canFly in loadout)))
+            # Casual: (OceanShoreR in loadout) and (jumpAble in loadout) and (Morph in loadout) and  (GravitySuit in loadout) and (loadout.has_any(Speedball, Bombs, PowerBomb)
             # Expert: (OceanShoreR in loadout) and (jumpAble in loadout) and (Morph in loadout) and ( (GravitySuit in loadout) or ( (HiJump in loadout) and ( (Speedball in loadout) or (Ice in loadout) ) ) )))
     ),  # bottom  bottom  to get back in hole after getting this item
     "Trophobiotic Chamber": lambda loadout: (
@@ -896,17 +1067,25 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # Expert: (loadout.has_all(jumpAble ( (FieryGalleryL in loadout) or ( (SporousNookL in loadout) and (hotSpring in loadout) ) ) )))
     ),  # No bath count in casual
     "Hive Main Chamber": lambda loadout: (
+        (infernalSequestration in loadout)
             # Casual: (VulnarDepthsElevatorEL in loadout) and (jumpAble in loadout) and (Varia in loadout) and (canBomb in loadout))
             # Expert: (jumpAble in loadout) and ( ( (VulnarDepthsElevatorEL in loadout) and (varia_or_hell_run(650) in loadout) and (canBomb in loadout) ) or ( (SequesteredInfernoL in loadout) and (varia_or_hell_run(250) in loadout) and (Morph in loadout) and (icePod in loadout) ) )))
     ),
     "Crossway Cache": lambda loadout: (
             # Casual: (jumpAble in loadout) and (Varia in loadout) and ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (icePod in loadout) ) or ( (SequesteredInfernoL in loadout) and (electricHyper in loadout) ) or ( (CollapsedPassageR in loadout) and (pinkDoor in loadout) and (canBomb in loadout) and (wave in loadout) ))
             # Expert: (jumpAble in loadout) and ( (VulnarDepthsElevatorEL in loadout) and (varia_or_hell_run(650) in loadout) and (canBomb in loadout) and (icePod in loadout) ) or ( (SequesteredInfernoL in loadout) and (varia_or_hell_run(350) in loadout) and (electricHyper in loadout) ) or ( (CollapsedPassageR in loadout) and (Super in loadout) and (varia_or_hell_run(750) in loadout) and (canBomb in loadout) and (wave in loadout) )))
+        ) or (
+            (SequesteredInfernoL in loadout) and
+            (varia_or_hell_run(350) in loadout) and
+            (infernalSequestration in loadout) and
+            (crossways in loadout)
+        ) or (
     ),
     "Slag Heap": lambda loadout: (
+        (infernalSequestration in loadout)
             # Casual: (canBomb in loadout) and (jumpAble in loadout) and (icePod in loadout) and (Varia in loadout) and (MetroidSuit in loadout) and (SequesteredInfernoL in loadout))
             # Expert: (canBomb in loadout) and (jumpAble in loadout) and (varia_or_hell_run(950) in loadout) and (MetroidSuit in loadout) and (icePod in loadout) and (( (VulnarDepthsElevatorEL in loadout) and ((Ice in loadout) or ((Hypercharge in loadout) and (Charge in loadout))) ) or ( (SequesteredInfernoL in loadout) and (electricHyper in loadout) ) or ( (CollapsedPassageR in loadout) and (Super in loadout) and (canBomb in loadout) and (wave in loadout) ))))
-    ),  # Consider bath counts  for getting out  No Metroid-less lava baths in casual  TODO: include paths from other doors?  unit test works from CollapsedPassageR
+    ),  # Consider bath counts  for getting out  No Metroid-less lava baths in casual  TODO: include paths from other doors?  unit test works from CollapsedPassageR, but it shouldn't because that requires wave
     "Hydrodynamic Chamber": lambda loadout: (
             # Casual: (Morph in loadout) and (Spazer in loadout) and ( (WestCorridorR in loadout) and (( (pinkDoor in loadout) and ((GravitySuit in loadout) or ( (HiJump in loadout) and (Ice in loadout) )) ) or ( (Super in loadout) and ((GravitySuit in loadout) or (HiJump in loadout)) )) ) or ( (FoyerR in loadout) and (eastCorridor in loadout) and (Screw in loadout) ))
             # Expert: (jumpAble in loadout) and (Spazer in loadout) and (Morph in loadout) and ( ( (ConstructionSiteL in loadout) and ((wave in loadout) or (Spazer in loadout)) and (Bombs in loadout) and (Screw in loadout) ) or ( (WestCorridorR in loadout) and (pinkDoor in loadout) and ( (GravitySuit in loadout) or (HiJump in loadout) or (Ice in loadout) or ((Morph in loadout) and (Speedball in loadout)) ) ) or ( (FoyerR in loadout) and (canBomb in loadout) and (Screw in loadout) ) )))
@@ -932,6 +1111,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Sitting Room": lambda loadout: (
             # Casual: (railAccess in loadout) and (jumpAble in loadout) and (canUsePB in loadout) and (Speedball in loadout))
             # Expert: (jumpAble in loadout) and (canUsePB in loadout) and ( (Bombs in loadout) or (Speedball in loadout) ) and (railAccess in loadout)))
+        # joonie did ok here without bombs or speedball, had varia though
     ),  # TODO: this is missing exit logic - what do you need to get mack to rail?  (at least supers or missiles or screw)  TODO: energy_req or varia
     "Suzi Ruins Map Station Access": lambda loadout: (
             # Casual: (TramToSuziIslandR in loadout) and (jumpAble in loadout) and (energy_req(650) in loadout) and (canUsePB in loadout) and (Super in loadout))

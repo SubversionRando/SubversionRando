@@ -15,11 +15,29 @@ class Tricks:
     uwu_2_tile = Trick()
     """ underwater wall jumps between left and right in a 2-tile wide space """
 
+    hell_run_hard = Trick()
+    """ heated or cold without varia hell runs requiring the minimum amount of energy """
+
+    hell_run_medium = Trick()
+    """ heated or cold without varia hell runs requiring 1.5x energy """
+
+    hell_run_easy = Trick()
+    """ heated or cold without varia hell runs requiring 2x energy """
+
     movement_moderate = Trick()
     """ moderately fast/precise movement """
 
     movement_zoast = Trick()
     """ difficult fast/precise movement """
+
+    wall_jump_delayed = Trick()
+    """
+    need to jump as far from the wall as possible
+    (like top of hive crossways left side, or vanilla getting up to gauntlet)
+    """
+
+    wall_jump_precise = Trick()
+    """ around wide ledges (2 tiles without hjb, 3 tiles with hjb) """
 
     mockball_hard = Trick(Items.Morph)
     """ short hop or short run (warrior shrine) """

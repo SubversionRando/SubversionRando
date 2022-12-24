@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from item_data import Item, Items
 from logic_shortcut import LogicShortcut
+from trick_data import Tricks
 
 if TYPE_CHECKING:
     from loadout import Loadout
@@ -66,13 +67,24 @@ crystal_flash = LogicShortcut(lambda loadout: (
 ))
 
 
+def _hell_run_energy(min_energy: int, loadout: Loadout) -> int:
+    """ based on tricks """
+    if Tricks.hell_run_hard in loadout:
+        return min_energy
+    if Tricks.hell_run_medium in loadout:
+        return (min_energy * 3) // 2
+    if Tricks.hell_run_easy in loadout:
+        return min_energy * 2
+    return 9001
+
+
 def varia_or_hell_run(energy: int) -> LogicShortcut:
     """ needs varia or energy or (less energy and crystal flash) """
     return LogicShortcut(lambda loadout: (
         (Items.Varia in loadout) or
-        (energy_req(energy) in loadout) or
+        (energy_req(_hell_run_energy(energy, loadout)) in loadout) or
         (
-            (energy_req((energy + 100) // 2) in loadout) and
+            (energy_req(_hell_run_energy((energy + 100) // 2, loadout)) in loadout) and
             (crystal_flash in loadout)
         )
     ))
