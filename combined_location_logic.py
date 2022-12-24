@@ -1,8 +1,7 @@
 from typing import Callable
 
 from connection_data import area_doors_unpackable
-from door_logic import canOpen
-from item_data import Item, items_unpackable
+from item_data import items_unpackable
 from loadout import Loadout
 from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, varia_or_hell_run, canUsePB
 from logic_shortcut import LogicShortcut
@@ -211,10 +210,23 @@ veranda = LogicShortcut(lambda loadout: (
 ))
 """ to get from the bottom of Veranda to the top """
 
+killRippers = LogicShortcut(lambda loadout: (
+    (Super in loadout) or
+    (PowerBomb in loadout) or
+    (Screw in loadout) or
+    loadout.has_all(Charge, Hypercharge)
+))
+""" GET OUT OF MY WAY!! """
+
 mezzanineShaft = LogicShortcut(lambda loadout: (
-    (canFly in loadout) or
+    (SpaceJump in loadout) or
+    ((
+        (killRippers in loadout) or
+        (Tricks.movement_moderate in loadout)
+        # using movement_moderate to control speed of bomb jumping to not run into rippers
+    ) and (canFly in loadout)) or
     (SpeedBooster in loadout) or
-    ((HiJump in loadout) and (Tricks.movement_moderate in loadout)) or  # wall jump around 3 tiles
+    ((HiJump in loadout) and (Tricks.wall_jump_precise in loadout)) or  # wall jump around 3 tiles
     (Ice in loadout) or
     ((Speedball in loadout) and (Tricks.sbj_wall in loadout))
 ))
@@ -280,12 +292,7 @@ crossways = LogicShortcut(lambda loadout: (
         )
     ) or (
         # kill the enemies so you don't have to dodge them
-        (
-            (Super in loadout) or
-            (PowerBomb in loadout) or
-            (Screw in loadout) or
-            loadout.has_all(Charge, Hypercharge)
-        ) and
+        (killRippers in loadout) and
         ((canFly in loadout) or (Tricks.wall_jump_delayed in loadout))
         # no SJB needed with easy wall jumps - 1 space jump can get you to the long walls
     )) and
@@ -293,6 +300,28 @@ crossways = LogicShortcut(lambda loadout: (
     (GravityBoots in loadout)
 ))
 """ top of hive crossways """
+
+condenser = LogicShortcut(lambda loadout: (
+    (  # up into the door from the platform below the door
+        (GravitySuit in loadout) or
+        ((Speedball in loadout) and (Tricks.sbj_underwater_no_hjb in loadout)) or
+        (HiJump in loadout)
+    ) and
+    (
+        ((Ice in loadout) and (Tricks.movement_moderate in loadout)) or
+        # movement just because there are so many enemies in the room
+        (
+            (GravitySuit in loadout) and
+            # aqua suit alone won't do it
+            (loadout.has_any(Tricks.gravity_jump, HiJump, Ice, Grapple, canFly, Tricks.short_charge_2))
+            # Yes. Some day we will find that person that can't do a gravity jump, but can do a 2-tap short charge.
+        ) or
+        ((Grapple in loadout) and (Tricks.movement_moderate in loadout)) or
+        (Tricks.sbj_underwater_w_hjb in loadout)
+    ) and
+    (GravityBoots in loadout) and
+    (varia_or_hell_run(90) in loadout)  # hell_run_hard won't need any tanks, but others will
+))
 
 # above this should not include any shortcuts that reference doors
 # so they can be used in the area door logic
@@ -329,28 +358,9 @@ railAccess = LogicShortcut(lambda loadout: (
             (mezzanineShaft in loadout)
         ) or (
             (ElevatorToCondenserL in loadout) and
-            (canBomb in loadout) and
+            (Morph in loadout) and
             (breakIce in loadout) and
-            (
-                (
-                    (Ice in loadout) or
-                    (GravitySuit in loadout) or
-                    (Grapple in loadout) or
-                    ((Speedball in loadout) and (HiJump in loadout))
-                ) and
-                (
-                    (GravitySuit in loadout) or
-                    (Speedball in loadout) or
-                    (HiJump in loadout)
-                )
-            )
-            and
-            # casual:
-            (ElevatorToCondenserL in loadout) and
-            (canBomb in loadout) and
-            (breakIce in loadout) and
-            (underwater in loadout) and
-            ((HiJump in loadout) or (SpaceJump in loadout) or (Bombs in loadout) or (Grapple in loadout))
+            (condenser in loadout)
         )
     )
 ))

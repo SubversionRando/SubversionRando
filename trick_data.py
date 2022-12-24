@@ -15,6 +15,9 @@ class Tricks:
     uwu_2_tile = Trick()
     """ underwater wall jumps between left and right in a 2-tile wide space """
 
+    gravity_jump = Trick(Items.GravitySuit)
+    """ remove aqua suit right after jumping for extra jump height in water """
+
     hell_run_hard = Trick()
     """ heated or cold without varia hell runs requiring the minimum amount of energy """
 
