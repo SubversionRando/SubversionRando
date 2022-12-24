@@ -18,6 +18,8 @@ from logic_shortcut import LogicShortcut
 # none of the logic will cancel out others
 # (one needs wave, one needs metroid suit or energy, one needs the restrictive top of crossways)
 
+# TODO: check logic: water garden required a tricky jump to get up to the start of the speedbooster lane
+
 (
     CraterR, SunkenNestL, RuinedConcourseBL, RuinedConcourseTR, CausewayR,
     SporeFieldTR, SporeFieldBR, OceanShoreR, EleToTurbidPassageR, PileAnchorL,

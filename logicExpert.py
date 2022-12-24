@@ -15,6 +15,10 @@ from logic_shortcut import LogicShortcut
 
 # TODO: There are also a bunch of places where casual used icePod, where expert only used Ice. Is that right?
 
+# TODO: logic for moonfall clip into sandy world?
+
+# TODO: spazer diagonal shot opens collapsed passage
+
 (
     CraterR, SunkenNestL, RuinedConcourseBL, RuinedConcourseTR, CausewayR,
     SporeFieldTR, SporeFieldBR, OceanShoreR, EleToTurbidPassageR, PileAnchorL,
@@ -3047,7 +3051,7 @@ location_logic: LocationLogicType = {
     "Sitting Room": lambda loadout: (
         (jumpAble in loadout) and
         (canUsePB in loadout) and
-        (
+        (  # joonie did ok here without bombs or speedball, had varia though
             (Bombs in loadout) or
             (Speedball in loadout)
             ) and
