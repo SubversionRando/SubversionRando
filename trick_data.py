@@ -79,6 +79,9 @@ class Tricks:
     wave_gate_glitch = Trick()
     """ shoot a normal beam through a wave gate """
 
+    ggg = Trick()
+    """ green gate glitch - shoot missiles or super missiles through a gate from right to left """
+
     clip_crouch = Trick()
     """ jump into a 2-tile high space crouched to clip through the ceiling """
 

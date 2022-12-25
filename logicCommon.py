@@ -68,18 +68,27 @@ crystal_flash = LogicShortcut(lambda loadout: (
 
 
 def _hell_run_energy(min_energy: int, loadout: Loadout) -> int:
-    """ based on tricks """
+    """ based on tricks, and whether aqua can reduce my damage taken """
+    if Items.GravitySuit in loadout:
+        min_energy = (min_energy * 3) // 4
+    # not checking Metroid Suit because we would need to separate heat from cold
     if Tricks.hell_run_hard in loadout:
         return min_energy
     if Tricks.hell_run_medium in loadout:
         return (min_energy * 3) // 2
     if Tricks.hell_run_easy in loadout:
         return min_energy * 2
-    return 9001
+    return 90001
 
 
 def varia_or_hell_run(energy: int) -> LogicShortcut:
-    """ needs varia or energy or (less energy and crystal flash) """
+    """
+    needs varia or energy or (less energy and crystal flash)
+
+    should be the amount you need if you don't have any suits
+
+    (use lava_run for hell runs in lava)
+    """
     return LogicShortcut(lambda loadout: (
         (Items.Varia in loadout) or
         (energy_req(_hell_run_energy(energy, loadout)) in loadout) or
@@ -91,11 +100,16 @@ def varia_or_hell_run(energy: int) -> LogicShortcut:
 
 
 def lava_run(energy_with_aqua: int, energy_no_aqua: int) -> LogicShortcut:
-    """ varia_or_hell_run in lava, because it slows you down and hurts more if you don't have aqua suit """
+    """
+    varia_or_hell_run in lava, because it slows you down if you don't have aqua suit
+
+    This does not check for Metroid Suit.
+    """
     return LogicShortcut(lambda loadout: (
         (
             (Items.GravitySuit in loadout) and
-            (varia_or_hell_run(energy_with_aqua) in loadout)
+            (varia_or_hell_run((energy_with_aqua * 4) // 3) in loadout)
+            # this math will be reversed when that function sees I have aqua suit
         ) or (
             # no aqua
             (varia_or_hell_run(energy_no_aqua) in loadout)
