@@ -102,6 +102,21 @@ def test_varia_or_hell_run() -> None:
     assert varia_or_hell_run(1400) in loadout
 
 
+def test_other_suit_hell_runs() -> None:
+    game = Game(Expert, {}, False, [])
+    loadout = Loadout(game)
+    loadout.append(Items.MetroidSuit)
+    loadout.append(Items.GravitySuit)
+    for _ in range(6):
+        loadout.append(Items.Energy)
+
+    assert varia_or_hell_run(1450, heat_and_metroid_suit_not_required=True) not in loadout
+
+    loadout.append(Items.Energy)
+
+    assert varia_or_hell_run(1450, heat_and_metroid_suit_not_required=True) in loadout
+
+
 def test_use_as_bool() -> None:
     """
     `LogicShortcut` must have a connection to a `Loadout`,

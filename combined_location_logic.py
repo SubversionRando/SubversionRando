@@ -3,7 +3,7 @@ from typing import Callable
 from connection_data import area_doors_unpackable
 from item_data import items_unpackable
 from loadout import Loadout
-from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, lava_run, varia_or_hell_run, canUsePB
+from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, hell_run_energy, lava_run, varia_or_hell_run, canUsePB
 from logic_shortcut import LogicShortcut
 from trick_data import Tricks
 
@@ -346,6 +346,18 @@ crossways = LogicShortcut(lambda loadout: (
 ))
 """ top of hive crossways """
 
+crosswaysToCourtyard = LogicShortcut(lambda loadout: (
+    # east hive tunnel
+    (Morph in loadout) and
+    (pinkDoor in loadout) and  # this also serves to kill the red pirate on a platform we might need
+    (varia_or_hell_run(366, heat_and_metroid_suit_not_required=True) in loadout)
+
+    # going through the guard station takes about the same energy, but also requires PBs
+    # (requires more energy if you use normal bombs)
+    # so it's not worth writing logic for
+))
+""" middle of hive crossways (bug farm) to fire temple courtyard """
+
 hiveEntrance = LogicShortcut(lambda loadout: (
     ((can_bomb(4) in loadout) or (
         (Speedball in loadout) and
@@ -356,9 +368,9 @@ hiveEntrance = LogicShortcut(lambda loadout: (
     # which means double the hell run energy cost
     ((
         (crossways in loadout) and
-        (varia_or_hell_run(550) in loadout)
+        (varia_or_hell_run(550, heat_and_metroid_suit_not_required=True) in loadout)
     ) or (
-        (varia_or_hell_run(1050) in loadout)
+        (varia_or_hell_run(1050, heat_and_metroid_suit_not_required=True) in loadout)
     )) and
     (GravityBoots in loadout)
 ))
@@ -413,6 +425,28 @@ sunkenNestToVulnar = LogicShortcut(lambda loadout: (
 ))
 """ from sunken nest area door to entrance of vulnar caves """
 
+sensorMaintenance = LogicShortcut(lambda loadout: (
+    (sunkenNestToVulnar in loadout) and
+    (pinkDoor in loadout) and  # into way of the watcher
+    ((  # way of the watcher grey door
+        (Missile in loadout) and
+        (ammo_req(25) in loadout) and
+        (Tricks.movement_moderate in loadout)
+    ) or (
+        (Super in loadout) and
+        (ammo_req(45) in loadout)
+    ) or (
+        (Screw in loadout)
+    )) and
+    (Morph in loadout) and
+    ((Tricks.mockball_hard in loadout) or (Speedball in loadout)) and
+    ((Tricks.morph_jump_3_tile in loadout) or (Speedball in loadout) or (
+        (can_bomb(4) in loadout) and
+        ((Tricks.morph_jump_4_tile in loadout) or (Bombs in loadout))
+    ))
+))
+""" logic is almost the same for the 2 sensor maintenance items """
+
 norakToLifeTemple = LogicShortcut(lambda loadout: (
     (
         (NorakBrookL in loadout) and
@@ -443,6 +477,38 @@ railAccess = LogicShortcut(lambda loadout: (
     )
 ))
 """ access to the Sky Temple elevators at West Terminal and Transit Concourse """
+
+collapsedHive = LogicShortcut(lambda loadout: (
+    (CollapsedPassageR in loadout) and
+    (pinkDoor in loadout) and
+    (ancientBasinAccess in loadout) and
+    (  # ripper above fire temple courtyard door
+        (killRippers in loadout) or
+        (HiJump in loadout) or
+        (SpaceJump in loadout) or
+        (Tricks.movement_moderate in loadout)
+    ) and
+    (GravityBoots in loadout) and
+    (varia_or_hell_run(850, heat_and_metroid_suit_not_required=True) in loadout)  # collapsed passage to fire temple courtyard
+    # TODO: patience or more energy, because farming in fire temple courtyard would be really slow
+))
+""" collapsed passage door to anything beyond fire temple courtyard """
+
+enterSuzi = LogicShortcut(lambda loadout: (
+    (TramToSuziIslandR in loadout) and
+    (GravityBoots in loadout) and
+    (shootThroughWalls in loadout) and
+    ((
+        (energy_req(350) in loadout) and
+        (Tricks.movement_zoast in loadout)
+    ) or (
+        (energy_req(550) in loadout) and
+        (Tricks.movement_moderate in loadout)
+    ) or (
+        (energy_req(750) in loadout)
+    ))
+))
+""" from suzi area door to inside with energy requirement """
 
 location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Impact Crater: AccelCharge": lambda loadout: (
@@ -636,24 +702,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (SpeedBooster in loadout)
     ),
     "Sensor Maintenance: ETank": lambda loadout: (  # front
-        (sunkenNestToVulnar in loadout) and
-        (pinkDoor in loadout) and  # into way of the watcher
-        ((  # way of the watcher grey door
-            (Missile in loadout) and
-            (ammo_req(25) in loadout) and
-            (Tricks.movement_moderate in loadout)
-        ) or (
-            (Super in loadout) and
-            (ammo_req(45) in loadout)
-        ) or (
-            (Screw in loadout)
-        )) and
-        (Morph in loadout) and
-        ((Tricks.mockball_hard in loadout) or (Speedball in loadout)) and
-        ((Tricks.morph_jump_3_tile in loadout) or (Speedball in loadout) or (
-            (can_bomb(4) in loadout) and
-            ((Tricks.morph_jump_4_tile in loadout) or (Bombs in loadout))
-        ))
+        (sensorMaintenance in loadout)
     ),
     "Eribium Apparatus Room": lambda loadout: (
         (GravityBoots in loadout) and
@@ -742,7 +791,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((can_bomb(2) in loadout) or loadout.has_all(can_bomb(1), Speedball)) and
         (
             (FieryGalleryL in loadout) and
-            (varia_or_hell_run(550) in loadout)
+            (varia_or_hell_run(550, heat_and_metroid_suit_not_required=True) in loadout)
         ) or (
             (SporousNookL in loadout) and
             (hotSpring in loadout)
@@ -774,75 +823,107 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (crossways in loadout) and
             (pinkDoor in loadout) and
             # TODO: something that can kill red pirates, in case door color changes
-            (varia_or_hell_run(850) in loadout)  # crossways to item and back to crossways
+            (varia_or_hell_run(850, heat_and_metroid_suit_not_required=True) in loadout)  # crossways to item and back to crossways
         ) or (
             (SequesteredInfernoL in loadout) and
             (infernalSequestration in loadout) and
             (pinkDoor in loadout) and
             # TODO: something that can kill red pirates, in case door color changes
-            (varia_or_hell_run(850) in loadout)  # crossways to item and back to crossways
+            (varia_or_hell_run(850, heat_and_metroid_suit_not_required=True) in loadout)  # crossways to item and back to crossways
         ) or (
-            (CollapsedPassageR in loadout) and
-            (pinkDoor in loadout) and
-            (ancientBasinAccess in loadout) and
-            (varia_or_hell_run(850) in loadout)  # collapsed passage to fire temple courtyard
-            # TODO: patience or more energy, because farming in fire temple courtyard would be really slow
+            (collapsedHive in loadout)
         )) and
         (GravityBoots in loadout)
+        # TODO: from west: or hell run to fire temple courtyard and patience for slow refill
     ),
     "Fire's Bane Shrine": lambda loadout: (
-            # Casual: (icePod in loadout) and (jumpAble in loadout) and (Morph in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (pinkDoor in loadout) and (Varia in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (pinkDoor in loadout) and (Varia in loadout) )))
-            # Expert: (icePod in loadout) and (jumpAble in loadout) and (Morph in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (pinkDoor in loadout) and (varia_or_hell_run(450) in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (pinkDoor in loadout) and (varia_or_hell_run(350) in loadout) ))))
         (icePod in loadout) and
-        (jumpAble in loadout) and
+        (GravityBoots in loadout) and
         (Morph in loadout) and
+        ((can_bomb(1) in loadout) or (Speedball in loadout)) and
+        # hell run from farm in outer chamber to item and back to farm
+        (varia_or_hell_run(650, heat_and_metroid_suit_not_required=True) in loadout) and
         ((
             (VulnarDepthsElevatorEL in loadout) and
-            (crossways in loadout) and
-            (canBomb in loadout) and
-            (pinkDoor in loadout) and
-            (Varia in loadout)
-        ) or (
-            (SequesteredInfernoL in loadout) and
-            (infernalSequestration in loadout) and
-            (pinkDoor in loadout) and
-            (Varia in loadout)
-        ))
-    ),  # TODO: include path from CollapsedPassageR
-    "Ancient Shaft": lambda loadout: (
-            # Casual: (jumpAble in loadout) and (canBomb in loadout) and (Varia in loadout) and (MetroidSuit in loadout) and ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (icePod in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) ))
-            # Expert: (jumpAble in loadout) and (canBomb in loadout) and (varia_or_hell_run(650) in loadout) and ( (MetroidSuit in loadout) or (energy_req(1250) in loadout) or ( (Varia in loadout) and (energy_req(650) in loadout) ) ) and ( ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (icePod in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) ) )))
-        (jumpAble in loadout) and
-        (canBomb in loadout) and
-        (Varia in loadout) and
-        (MetroidSuit in loadout) and
-        (
-            (VulnarDepthsElevatorEL in loadout) and
-            (canBomb in loadout) and
+            (hiveEntrance in loadout) and
             (icePod in loadout) and
             (crossways in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and
             (infernalSequestration in loadout)
-        )
+        ) or (
+            (collapsedHive in loadout)
+        ))
     ),
-    "Gymnasium": lambda loadout: (
-            # Casual: (jumpAble in loadout) and (Varia in loadout) and (Grapple in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (icePod in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (Morph in loadout) )))
-            # Expert: (jumpAble in loadout) and (Grapple in loadout) and ( ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (icePod in loadout) and (varia_or_hell_run(450) in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (Morph in loadout) and (varia_or_hell_run(250) in loadout) ) )))
-        (jumpAble in loadout) and
-        (Varia in loadout) and
-        (Grapple in loadout) and
+    "Ancient Shaft": lambda loadout: (
+        ((
+            (MetroidSuit in loadout) and
+            (varia_or_hell_run(450) in loadout)
+        ) or (
+            # no metroid suit
+            ((
+                (Varia in loadout) and
+                (GravitySuit in loadout) and
+                (energy_req(hell_run_energy(450, loadout)) in loadout)
+            ) or (
+                (Varia in loadout) and
+                # no aqua
+                (energy_req(hell_run_energy(1250, loadout)) in loadout)
+            ) or (
+                (GravitySuit in loadout) and
+                # no varia
+                (energy_req(hell_run_energy(850, loadout)) in loadout)
+            ))  # no suits not possible
+        )) and
+        (GravityBoots in loadout) and
+        (
+            (GravitySuit in loadout) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_water in loadout)
+        ) and
+        (can_bomb(4) in loadout) and
         ((
             (VulnarDepthsElevatorEL in loadout) and
-            (canBomb in loadout) and
+            (hiveEntrance in loadout) and
             (icePod in loadout) and
-            (crossways in loadout)
+            (crossways in loadout) and
+            (crosswaysToCourtyard in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and
             (infernalSequestration in loadout) and
             (Morph in loadout) and
-            (varia_or_hell_run(250) in loadout) and
-            (can_bomb(1) in loadout)  # either the bomb blocks in ancient basin, or the pb blocks in ancient shaft
+            (crosswaysToCourtyard in loadout)
+        ) or (
+            (collapsedHive in loadout)
+        ))
+    ),
+    "Gymnasium": lambda loadout: (  # similar to ancient basin
+        (Grapple in loadout) and
+        (GravityBoots in loadout) and
+        ((  # from west
+            ((
+                (VulnarDepthsElevatorEL in loadout) and
+                (hiveEntrance in loadout) and
+                (icePod in loadout) and
+                (crossways in loadout) and
+                (crosswaysToCourtyard in loadout)
+            ) or (
+                (SequesteredInfernoL in loadout) and
+                (infernalSequestration in loadout) and
+                (crosswaysToCourtyard in loadout)
+            ) or (
+                (collapsedHive in loadout)  # using fire temple courtyard as a pit stop
+            )) and
+            # from fire temple courtyard to gymnasium
+            (loadout.has_any(killRippers, Varia, Tricks.movement_zoast)) and  # just outside courtyard
+            ((  # through power bomb blocks
+                (can_use_pbs(3) in loadout) and
+                (varia_or_hell_run(507, heat_and_metroid_suit_not_required=True) in loadout)
+            ) or (  # through ancient basin
+                (can_bomb(3) in loadout) and
+                (varia_or_hell_run(869, heat_and_metroid_suit_not_required=True) in loadout)
+            ))
+        ) or (  # from east, no fire temple courtyard
+            (collapsedHive in loadout) and
+            (varia_or_hell_run(1450, heat_and_metroid_suit_not_required=True) in loadout)
         ))
     ),
     "Electromechanical Engine": lambda loadout: (
@@ -1051,13 +1132,14 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (sunkenNestToVulnar in loadout) and (canBomb in loadout)
     ),
     "Monitoring Station": lambda loadout: (
-            # Casual: (sunkenNestToVulnar in loadout) and (Morph in loadout) and ((Speedball in loadout) or (canBomb in loadout)))
-            # Expert: (sunkenNestToVulnar in loadout) and (Morph in loadout)))
-    ),  # TODO: check an area door, don't assume that we start by vulnar  TODO: check an area door, don't assume that we start by vulnar
-    "Sensor Maintenance: AmmoTank": lambda loadout: (
-            # Casual: (sunkenNestToVulnar in loadout) and (canBomb in loadout) and (Speedball in loadout) and (ammo_req(25) in loadout))
-            # Expert: (sunkenNestToVulnar in loadout) and (canBomb in loadout) and ( (Super in loadout) or (canUsePB in loadout) )))
-    ),  # back  back
+        (sunkenNestToVulnar in loadout) and
+        (Morph in loadout) and
+        ((Speedball in loadout) or (can_bomb(1) in loadout) or (Tricks.movement_zoast))
+    ),
+    "Sensor Maintenance: AmmoTank": lambda loadout: (  # back
+        (sensorMaintenance in loadout) and
+        (can_bomb(2) in loadout)  # TODO: confirm this is the only difference from the other sensor maintenance item
+    ),
     "Causeway Overlook": lambda loadout: (
         (CausewayR in loadout) and (jumpAble in loadout) and (canBomb in loadout)
     ),
@@ -1081,73 +1163,84 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # Casual: (ElevatorToMagmaLakeR in loadout) and (jumpAble in loadout) and (canBomb in loadout) and ((canFly in loadout) or (SpeedBooster in loadout) or (HiJump in loadout)) and (DarkVisor in loadout))
             # Expert: (ElevatorToMagmaLakeR in loadout) and (jumpAble in loadout) and (canBomb in loadout) and ((canFly in loadout) or (SpeedBooster in loadout) or (HiJump in loadout))))
     ),
-    "Ancient Basin": lambda loadout: (
-            # Casual: (Varia in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (pinkDoor in loadout) and (icePod in loadout) ) or ( (SequesteredInfernoL in loadout) and (electricHyper in loadout) and (pinkDoor in loadout) and (Morph in loadout) ) or ( (CollapsedPassageR in loadout) and (Super in loadout) and (canUsePB in loadout) and (wave in loadout) )))
-            # Expert: (jumpAble in loadout) and (pinkDoor in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (icePod in loadout) and (varia_or_hell_run(450) in loadout) ) or ( (SequesteredInfernoL in loadout) and (electricHyper in loadout) and (Morph in loadout) and (varia_or_hell_run(350) in loadout) ) or ( (CollapsedPassageR in loadout) and (canBomb in loadout) and (wave in loadout) and (varia_or_hell_run(750) in loadout) ))))
-        (Varia in loadout) and
-        ((
-            (VulnarDepthsElevatorEL in loadout) and
-            (jumpAble in loadout) and
-            (canBomb in loadout) and
-            (pinkDoor in loadout) and
-            (icePod in loadout) and
-            (crossways in loadout)
-        ) or (
-            (SequesteredInfernoL in loadout) and
-            (infernalSequestration in loadout) and
-            (pinkDoor in loadout) and
-            (Morph in loadout) and
-            (varia_or_hell_run(350) in loadout) and
-            (can_bomb(1) in loadout)  # either the bomb blocks in ancient basin, or the pb blocks in ancient shaft
-        ) or (
-            (CollapsedPassageR in loadout) and
-            (pinkDoor in loadout) and
-            (canBomb in loadout) and
-            (wave in loadout)
+    "Ancient Basin": lambda loadout: (  # similar to gymnasium
+        (GravityBoots in loadout) and
+        ((  # from west
+            ((
+                (VulnarDepthsElevatorEL in loadout) and
+                (hiveEntrance in loadout) and
+                (icePod in loadout) and
+                (crossways in loadout) and
+                (crosswaysToCourtyard in loadout)
+            ) or (
+                (SequesteredInfernoL in loadout) and
+                (infernalSequestration in loadout) and
+                (crosswaysToCourtyard in loadout)
+            ) or (
+                (collapsedHive in loadout)  # using fire temple courtyard as a pit stop
+            )) and
+            # from fire temple courtyard to item in ancient basin
+            (loadout.has_any(killRippers, Varia, Tricks.movement_zoast)) and  # just outside courtyard
+            ((  # through power bomb blocks
+                (can_use_pbs(3) in loadout) and
+                (varia_or_hell_run(444, heat_and_metroid_suit_not_required=True) in loadout)
+            ) or (  # through ancient basin
+                (can_bomb(3) in loadout) and
+                (loadout.has_any(Tricks.crumble_jump, SpaceJump, Speedball, Grapple)) and
+                (varia_or_hell_run(661, heat_and_metroid_suit_not_required=True) in loadout)
+            ))
+        ) or (  # from east, no fire temple courtyard
+            (collapsedHive in loadout) and
+            (loadout.has_any(Tricks.crumble_jump, SpaceJump, Speedball, Grapple)) and
+            (varia_or_hell_run(1216, heat_and_metroid_suit_not_required=True) in loadout)
         ))
     ),
     "Central Corridor: right": lambda loadout: (
             # Casual: (FoyerR in loadout) and (jumpAble in loadout) and ((GravitySuit in loadout) or ( (HiJump in loadout) and (Ice in loadout) )) and (canBomb in loadout) and (eastCorridor in loadout))
             # Expert: (jumpAble in loadout) and (canBomb in loadout) and ( (FoyerR in loadout) or ( (ConstructionSiteL in loadout) and ((wave in loadout) or (Spazer in loadout)) and (Bombs in loadout) ) or ( (WestCorridorR in loadout) and (Screw in loadout) and (pinkDoor in loadout) and ( (GravitySuit in loadout) or (HiJump in loadout) or (Ice in loadout) or (Speedball in loadout) ) ) )))
     ),
-    "Briar: AmmoTank": lambda loadout: (
-            # Casual: (jumpAble in loadout) and (Morph in loadout) and (norakToLifeTemple in loadout))
-            # Expert: (jumpAble in loadout) and (Morph in loadout) and (( (NorakBrookL in loadout) and ( (GravitySuit in loadout) or (Ice in loadout) or (HiJump in loadout) or (Speedball in loadout) or (SpaceJump in loadout) or (Bombs in loadout) or (SpeedBooster in loadout) ) ) or ( (NorakPerimeterTR in loadout) and (MetroidSuit in loadout) ) or ( (NorakPerimeterBL in loadout) and (canBomb in loadout) ) )))
-    ),  # bottom  bottom
+    "Briar: AmmoTank": lambda loadout: (  # bottom
+        (norakToLifeTemple in loadout) and
+        (Morph in loadout) and
+        (GravityBoots in loadout)
+    ),
     "Icy Flow": lambda loadout: (
-            # Casual: (railAccess in loadout) and (jumpAble in loadout) and (SpeedBooster in loadout) and (breakIce in loadout))
-            # Expert: (MezzanineConcourseL in loadout) and (jumpAble in loadout) and (SpeedBooster in loadout) and (breakIce in loadout)))
+        (railAccess in loadout) and (GravityBoots in loadout) and (SpeedBooster in loadout) and (breakIce in loadout)
     ),
     "Ice Cave": lambda loadout: (
-            # Casual: (railAccess in loadout) and (jumpAble in loadout) and (breakIce in loadout))
-            # Expert: (jumpAble in loadout) and (breakIce in loadout) and (railAccess in loadout)))
+        (railAccess in loadout) and (GravityBoots in loadout) and (breakIce in loadout)
     ),
     "Antechamber": lambda loadout: (
-            # Casual: (railAccess in loadout) and (jumpAble in loadout) and (canUsePB in loadout))
-            # Expert: (jumpAble in loadout) and (canUsePB in loadout) and (railAccess in loadout)))
+        (railAccess in loadout) and (GravityBoots in loadout) and (canUsePB in loadout)
     ),
     "Eddy Channels": lambda loadout: (
             # Casual: (EleToTurbidPassageR in loadout) and (GravitySuit in loadout) and (DarkVisor in loadout) and (Morph in loadout) and (Speedball in loadout) and (Super in loadout))
             # Expert: (EleToTurbidPassageR in loadout) and ( (GravitySuit in loadout) or (HiJump in loadout) or (Ice in loadout) ) and (Morph in loadout) and (Speedball in loadout) and (Super in loadout)))
     ),
     "Tram To Suzi Island": lambda loadout: (
-        (TramToSuziIslandR in loadout) and (jumpAble in loadout) and (Spazer in loadout) and (Morph in loadout)
+        (TramToSuziIslandR in loadout) and (GravityBoots in loadout) and (Spazer in loadout) and (Morph in loadout)
     ),
     "Portico": lambda loadout: (
-            # Casual: (TramToSuziIslandR in loadout) and (jumpAble in loadout) and (Super in loadout) and (energy_req(650) in loadout))
-            # Expert: (TramToSuziIslandR in loadout) and (jumpAble in loadout) and (wave in loadout) and (Super in loadout) and (energy_req(350) in loadout)))
+        (enterSuzi in loadout) and
+        (Super in loadout)
     ),
     "Tower Rock Lookout": lambda loadout: (
-            # Casual: (TramToSuziIslandR in loadout) and (jumpAble in loadout) and (pinkDoor in loadout) and (energy_req(650) in loadout) and (GravitySuit in loadout) and (SpaceJump in loadout) and (HiJump in loadout))
-            # Expert: (TramToSuziIslandR in loadout) and (jumpAble in loadout) and (wave in loadout) and (pinkDoor in loadout) and (energy_req(350) in loadout) and (GravitySuit in loadout) and ( ( (SpaceJump in loadout) and (HiJump in loadout) ) or ( (Bombs in loadout) and (Morph in loadout) ) or (SpeedBooster in loadout) )))
+            # Casual: (pinkDoor in loadout) and (GravitySuit in loadout) and (SpaceJump in loadout) and (HiJump in loadout))
+            # Expert: (pinkDoor in loadout) and (GravitySuit in loadout) and ( ( (SpaceJump in loadout) and (HiJump in loadout) ) or ( (Bombs in loadout) and (Morph in loadout) ) or (SpeedBooster in loadout) )))
+        (enterSuzi in loadout) and
+        ()
     ),
     "Reef Nook": lambda loadout: (
-            # Casual: (TramToSuziIslandR in loadout) and (jumpAble in loadout) and (pinkDoor in loadout) and (energy_req(650) in loadout) and (GravitySuit in loadout) and (SpaceJump in loadout) and (HiJump in loadout))
-            # Expert: (TramToSuziIslandR in loadout) and (jumpAble in loadout) and (wave in loadout) and (pinkDoor in loadout) and (energy_req(350) in loadout) and (GravitySuit in loadout) and (Morph in loadout) and ( ( (SpaceJump in loadout) and (HiJump in loadout) ) or (Bombs in loadout) or (SpeedBooster in loadout) )))
+            # Casual: (pinkDoor in loadout) and (GravitySuit in loadout) and (SpaceJump in loadout) and (HiJump in loadout))
+            # Expert: (pinkDoor in loadout) and (GravitySuit in loadout) and (Morph in loadout) and ( ( (SpaceJump in loadout) and (HiJump in loadout) ) or (Bombs in loadout) or (SpeedBooster in loadout) )))
+        (enterSuzi in loadout) and
+        ()
     ),
     "Saline Cache": lambda loadout: (
-            # Casual: (TramToSuziIslandR in loadout) and (jumpAble in loadout) and (Super in loadout) and (energy_req(650) in loadout) and (GravitySuit in loadout) and (canFly in loadout))
-            # Expert: (TramToSuziIslandR in loadout) and (jumpAble in loadout) and (wave in loadout) and (Super in loadout) and (energy_req(350) in loadout) and ( (GravitySuit in loadout) or ( (HiJump in loadout) and (Speedball in loadout) and (Morph in loadout) ) )))
+            # Casual: (Super in loadout) and (GravitySuit in loadout) and (canFly in loadout))
+            # Expert: (Super in loadout) and ( (GravitySuit in loadout) or ( (HiJump in loadout) and (Speedball in loadout) and (Morph in loadout) ) )))
+        (enterSuzi in loadout) and
+        ()
     ),
     "Enervation Chamber": lambda loadout: (
             # Casual: (TramToSuziIslandR in loadout) and (suzi in loadout) and (energy_req(650) in loadout) and (canFly in loadout) and (Hypercharge in loadout) and (Charge in loadout))
@@ -1281,7 +1374,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # Expert: (jumpAble in loadout) and ((wave in loadout) or (MetroidSuit in loadout)) and ((canBomb in loadout) or ((Spazer in loadout) and (Morph in loadout))) and ( ( (ConstructionSiteL in loadout) and (Morph in loadout) and ((wave in loadout) or (Spazer in loadout)) and (Bombs in loadout) ) or ( (WestCorridorR in loadout) and (Screw in loadout) and (pinkDoor in loadout) and (Morph in loadout) and ( (GravitySuit in loadout) or (HiJump in loadout) or (Ice in loadout) or ((Morph in loadout) and (Speedball in loadout)) ) ) or ( (FoyerR in loadout) and (canBomb in loadout) ) )))
     ),  # TODO: review this location logic
     "Crocomire's Lair": lambda loadout: (
-            # Casual: ((jumpAble in loadout) and (Super in loadout) and (SpeedBooster in loadout) and (veranda in loadout) and (norakToLifeTemple in loadout) ) }   class Casual(LogicInterface):)
-            # Expert: ((NorakPerimeterBL in loadout) and (jumpAble in loadout) and (Super in loadout) and (SpeedBooster in loadout) ) }   class Expert(LogicInterface):))
+            # Casual: ((jumpAble in loadout) and (Super in loadout) and (SpeedBooster in loadout) and (veranda in loadout) and (norakToLifeTemple in loadout) ) 
+            # Expert: ((NorakPerimeterBL in loadout) and (jumpAble in loadout) and (Super in loadout) and (SpeedBooster in loadout) )
     ),
 }

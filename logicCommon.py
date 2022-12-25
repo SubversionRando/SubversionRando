@@ -67,10 +67,12 @@ crystal_flash = LogicShortcut(lambda loadout: (
 ))
 
 
-def _hell_run_energy(min_energy: int, loadout: Loadout) -> int:
-    """ based on tricks, and whether aqua can reduce my damage taken """
-    if Items.GravitySuit in loadout:
-        min_energy = (min_energy * 3) // 4
+def hell_run_energy(min_energy: int, loadout: Loadout) -> int:
+    """
+    utility function used in other hell run functions
+
+    based on tricks
+    """
     # not checking Metroid Suit because we would need to separate heat from cold
     if Tricks.hell_run_hard in loadout:
         return min_energy
@@ -81,19 +83,37 @@ def _hell_run_energy(min_energy: int, loadout: Loadout) -> int:
     return 90001
 
 
-def varia_or_hell_run(energy: int) -> LogicShortcut:
+def _adjust_for_other_suits(energy_required: int, loadout: Loadout, heat_and_metroid_suit_not_required: bool) -> int:
+    helping_suit_count = (
+        int(Items.GravitySuit in loadout) +
+        int(heat_and_metroid_suit_not_required and (Items.MetroidSuit in loadout))
+    )
+    return (energy_required * (4 - helping_suit_count)) // 4
+
+
+def varia_or_hell_run(energy: int, *, heat_and_metroid_suit_not_required: bool = False) -> LogicShortcut:
     """
     needs varia or energy or (less energy and crystal flash)
 
-    should be the amount you need if you don't have any suits
+    should be the amount you need if you don't have any suits (unless metroid suit is required)
 
     (use lava_run for hell runs in lava)
+
+    `heat_and_metroid_suit_not_required` means this hell run is in heat (not cold)
+    and the energy amount given is what it takes with 0 suits
+
+    if `heat_and_metroid_suit_not_required` is false, then you can check for metroid suit in the logic
+    and give an energy amount for doing the hell run with metroid suit
     """
     return LogicShortcut(lambda loadout: (
         (Items.Varia in loadout) or
-        (energy_req(_hell_run_energy(energy, loadout)) in loadout) or
+        (energy_req(hell_run_energy(
+            _adjust_for_other_suits(energy, loadout, heat_and_metroid_suit_not_required), loadout
+        )) in loadout) or
         (
-            (energy_req(_hell_run_energy((energy + 100) // 2, loadout)) in loadout) and
+            (energy_req(hell_run_energy(
+                _adjust_for_other_suits((energy + 100) // 2, loadout, heat_and_metroid_suit_not_required), loadout
+            )) in loadout) and
             (crystal_flash in loadout)
         )
     ))
@@ -101,7 +121,11 @@ def varia_or_hell_run(energy: int) -> LogicShortcut:
 
 def lava_run(energy_with_aqua: int, energy_no_aqua: int) -> LogicShortcut:
     """
-    varia_or_hell_run in lava, because it slows you down if you don't have aqua suit
+    for hell runs in laval that require metroid suit,
+    because it slows you down if you don't have aqua suit
+
+    This is not for lava baths without Metroid Suit.
+    It's for going in lava with Metroid Suit and without Varia Suit.
 
     This does not check for Metroid Suit.
     """
