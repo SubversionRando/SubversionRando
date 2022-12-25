@@ -2036,7 +2036,7 @@ location_logic: LocationLogicType = {
         (Super in loadout) and
         (canBomb in loadout) and
         (
-            (EleToTurbidPassageR in loadout) and
+            (FieryGalleryL in loadout) and
             (varia_or_hell_run(550) in loadout)
         ) or
         (
