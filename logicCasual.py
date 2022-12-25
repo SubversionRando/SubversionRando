@@ -1554,7 +1554,7 @@ location_logic: LocationLogicType = {
     "Mining Cache": lambda loadout: (
         (
             (
-                (EleToTurbidPassageR in loadout) and
+                (FieryGalleryL in loadout) and
                 (Varia in loadout)
             ) or (
                 (SporousNookL in loadout) and
@@ -2272,7 +2272,7 @@ location_logic: LocationLogicType = {
         (jumpAble in loadout) and
         (pinkDoor in loadout) and
         ((
-            (EleToTurbidPassageR in loadout) and
+            (FieryGalleryL in loadout) and
             (Varia in loadout)
         ) or (
             (SporousNookL in loadout) and
@@ -2286,7 +2286,7 @@ location_logic: LocationLogicType = {
         (Charge in loadout)
     ),
     "Lava Pool": lambda loadout: (  # No bath count in casual
-        loadout.has_all(EleToTurbidPassageR, jumpAble, Varia, MetroidSuit, canBomb)
+        loadout.has_all(FieryGalleryL, jumpAble, Varia, MetroidSuit, canBomb)
     ),
     "Hive Main Chamber": lambda loadout: (
         (VulnarDepthsElevatorEL in loadout) and
