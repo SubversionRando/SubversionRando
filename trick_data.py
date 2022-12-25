@@ -51,9 +51,8 @@ class Tricks:
     morph_jump_4_tile = Trick(Items.Morph)
     """ mid-air morph in a 4-tile-high space (no water) """
 
-    morph_jump_3_tile_lava = Trick(Items.Morph)
-    """ mid-air morph in a 3-tile-high space in lava """
-    # TODO: make sure this is more difficult than in water, and I'm not just imagining it
+    morph_jump_3_tile_water = Trick(Items.Morph)
+    """ mid-air morph in a 3-tile-high space in water """
 
     crouch_or_downgrab = Trick()
     """ use crouch jump and/or down-grab to jump to higher ledge """
