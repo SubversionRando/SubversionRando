@@ -64,11 +64,53 @@ plasmaWaveGate = LogicShortcut(lambda loadout: (
 """ the switches that are blocked by plasma+wave barriers """
 
 hotSpring = LogicShortcut(lambda loadout: (
-    (GravitySuit in loadout) or
-    (Tricks.sbj_underwater_no_hjb in loadout) or
-    ((HiJump in loadout) and (Ice in loadout))
+    # which hole you use in the top of hot spring determines
+    # how much ammo you need if you need to use power bombs for the verdite mines entrance blocks
+    # and whether you need morph and the 3 tile morph jump
+    ((
+        (Super in loadout) and
+        ((
+            (Morph in loadout) and
+            (Bombs in loadout)
+        ) or (
+            (Screw in loadout)
+        ) or (
+            (PowerBomb in loadout) and
+            (Morph in loadout) and
+            (ammo_req(25) in loadout)
+        ))
+    ) or (
+        (breakIce in loadout) and
+        (Morph in loadout) and
+        ((
+            (GravitySuit in loadout) and
+            ((can_bomb(3) in loadout) or loadout.has_all(Screw, can_bomb(1)))
+        ) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_water in loadout)) and
+        ((
+            (can_bomb(2) in loadout)
+        ) or (
+            (Screw in loadout)
+        ))
+    ) or (
+        # bomb block hole
+        (Morph in loadout) and
+        ((
+            (GravitySuit in loadout) and
+            ((can_bomb(3) in loadout) or loadout.has_all(Screw, can_bomb(1)))
+        ) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_water in loadout)) and
+        ((
+            (can_bomb(3) in loadout)
+        ) or (
+            (Screw in loadout)
+        ))
+    )) and
+    (
+        (GravitySuit in loadout) or
+        (Tricks.sbj_underwater_no_hjb in loadout) or
+        ((HiJump in loadout) and (Ice in loadout))
+    )
 ))
-""" traverse "Hot Spring" between Sporous Nook and Vulnar Depths Elevator W """
+""" traverse "Hot Spring" between Sporous Nook and Verdite Mines """
 
 waterGardenBottom = LogicShortcut(lambda loadout: (
     ((GravitySuit in loadout) or (Ice in loadout) or (Tricks.sbj_underwater_w_hjb in loadout)) and
@@ -644,7 +686,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # This is not the normal usage of this trick, but I don't want to make a trick just for this.
             (shootThroughWalls in loadout)
         )) and
-        ((GravitySuit in loadout) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_lava in loadout))  # exit
+        ((GravitySuit in loadout) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_water in loadout))  # exit
     ),
     "Burning Depths Cache": lambda loadout: (
         (MagmaPumpAccessR in loadout) and
@@ -659,8 +701,16 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ))
     ),
     "Mining Cache": lambda loadout: (
-            # Casual: (( (EleToTurbidPassageR in loadout) and (Varia in loadout) ) or ( (SporousNookL in loadout) and (GravitySuit in loadout) ) ) and (jumpAble in loadout) and (Super in loadout) and (canBomb in loadout))
-            # Expert: (jumpAble in loadout) and (Super in loadout) and (canBomb in loadout) and ( (EleToTurbidPassageR in loadout) and (varia_or_hell_run(550) in loadout) ) or ( (SporousNookL in loadout) and (hotSpring in loadout) )))
+        (GravityBoots in loadout) and
+        (Super in loadout) and
+        ((can_bomb(2) in loadout) or loadout.has_all(can_bomb(1), Speedball)) and
+        (
+            (FieryGalleryL in loadout) and
+            (varia_or_hell_run(550) in loadout)
+        ) or (
+            (SporousNookL in loadout) and
+            (hotSpring in loadout)
+        )
     ),
     "Infested Passage": lambda loadout: (
             # Casual: (jumpAble in loadout) and (Varia in loadout) and ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (Morph in loadout) and (icePod in loadout) ))
