@@ -42,6 +42,9 @@ class Tricks:
     wall_jump_precise = Trick()
     """ around wide ledges (2 tiles without hjb, 3 tiles with hjb) """
 
+    crumble_jump = Trick()
+    """ jump off of crumble blocks """
+
     mockball_hard = Trick(Items.Morph)
     """ short hop or short run (warrior shrine) """
 
