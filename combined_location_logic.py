@@ -48,6 +48,9 @@ pinkDoor = LogicShortcut(lambda loadout: (
 pinkSwitch = LogicShortcut(lambda loadout: (
     missileDamage in loadout
 ))
+icePod = LogicShortcut(lambda loadout: (
+    ((Ice in loadout) and (missileDamage in loadout)) or ((Charge in loadout) and (Hypercharge in loadout))
+))
 
 electricHyper = LogicShortcut(lambda loadout: (
     (MetroidSuit in loadout) or (
@@ -343,6 +346,38 @@ crossways = LogicShortcut(lambda loadout: (
 ))
 """ top of hive crossways """
 
+hiveEntrance = LogicShortcut(lambda loadout: (
+    ((can_bomb(4) in loadout) or (
+        (Speedball in loadout) and
+        (can_bomb(3) in loadout)
+    )) and
+    # if I don't have access to crossways farm,
+    # I have to turn around and come back,
+    # which means double the hell run energy cost
+    ((
+        (crossways in loadout) and
+        (varia_or_hell_run(550) in loadout)
+    ) or (
+        (varia_or_hell_run(1050) in loadout)
+    )) and
+    (GravityBoots in loadout)
+))
+""" from elevator to infested passage """
+
+ancientBasinAccess = LogicShortcut(lambda loadout: (
+    (
+        (can_bomb(3) in loadout) or
+        ((Speedball in loadout) and (can_bomb(2) in loadout))
+    ) and
+    (shootThroughWalls in loadout)
+    # from the right, it can be opened with most of the beams, but not from the left
+))
+"""
+collapsed passage and ancient basin access
+
+doesn't include hell runs, because that will need to be measured separately to wherever you're going
+"""
+
 condenser = LogicShortcut(lambda loadout: (
     (  # up into the door from the platform below the door
         (GravitySuit in loadout) or
@@ -364,6 +399,7 @@ condenser = LogicShortcut(lambda loadout: (
     (GravityBoots in loadout) and
     (varia_or_hell_run(90) in loadout)  # hell_run_hard won't need any tanks, but others will
 ))
+""" traverse condenser room """
 
 # above this should not include any shortcuts that reference doors
 # so they can be used in the area door logic
@@ -713,40 +749,46 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         )
     ),
     "Infested Passage": lambda loadout: (
-            # Casual: (jumpAble in loadout) and (Varia in loadout) and ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (Morph in loadout) and (icePod in loadout) ))
-            # Expert: (jumpAble in loadout) and ( ( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (varia_or_hell_run(450) in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (Morph in loadout) and (icePod in loadout) and (varia_or_hell_run(250) in loadout) ) )))
-        (
+        (GravityBoots in loadout) and
+        ((
+            (VulnarDepthsElevatorEL in loadout) and
+            (hiveEntrance in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and
             (crossways in loadout) and
             (infernalSequestration in loadout) and
             (icePod in loadout)
-        )
+        ))
     ),
     "Fire's Boon Shrine": lambda loadout: (
-            # Casual: ((VulnarDepthsElevatorEL in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (pinkDoor in loadout) and (Varia in loadout) and (icePod in loadout) and (wave in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (pinkDoor in loadout) and (Varia in loadout) ) or ( (CollapsedPassageR in loadout) and (Super in loadout) and (Varia in loadout) and (canBomb in loadout) ))
-            # Expert: (jumpAble in loadout) and (pinkDoor in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (varia_or_hell_run(450) in loadout) and (icePod in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (varia_or_hell_run(350) in loadout) and (Morph in loadout) ) or ( (CollapsedPassageR in loadout) and (varia_or_hell_run(750) in loadout) and (canBomb in loadout) and (wave in loadout) ))))
-        # TODO: this is just a copy paste - verify
-        (wave in loadout) and  # TODO: logic for glitch - harder than others because of spikes - can be done with missiles or supers
-        (
+        ((shootThroughWalls in loadout) or (
+            (Tricks.ggg in loadout) and
+            (Varia in loadout) and  # hell run ggg over spikes not in logic
+            (missileDamage in loadout)
+            # TODO: another trick because this is harder than others? because of spikes
+        )) and
+        ((
             (VulnarDepthsElevatorEL in loadout) and
-            (jumpAble in loadout) and
-            (canBomb in loadout) and
-            (pinkDoor in loadout) and
-            (Varia in loadout) and
+            (hiveEntrance in loadout) and
             (icePod in loadout) and
-            (crossways in loadout)
+            (crossways in loadout) and
+            (pinkDoor in loadout) and
+            # TODO: something that can kill red pirates, in case door color changes
+            (varia_or_hell_run(850) in loadout)  # crossways to item and back to crossways
         ) or (
             (SequesteredInfernoL in loadout) and
             (infernalSequestration in loadout) and
             (pinkDoor in loadout) and
-            (Varia in loadout)
+            # TODO: something that can kill red pirates, in case door color changes
+            (varia_or_hell_run(850) in loadout)  # crossways to item and back to crossways
         ) or (
             (CollapsedPassageR in loadout) and
-            (Super in loadout) and
-            (Varia in loadout) and
-            (canBomb in loadout)
-        )
+            (pinkDoor in loadout) and
+            (ancientBasinAccess in loadout) and
+            (varia_or_hell_run(850) in loadout)  # collapsed passage to fire temple courtyard
+            # TODO: patience or more energy, because farming in fire temple courtyard would be really slow
+        )) and
+        (GravityBoots in loadout)
     ),
     "Fire's Bane Shrine": lambda loadout: (
             # Casual: (icePod in loadout) and (jumpAble in loadout) and (Morph in loadout) and (( (VulnarDepthsElevatorEL in loadout) and (canBomb in loadout) and (pinkDoor in loadout) and (Varia in loadout) ) or ( (SequesteredInfernoL in loadout) and (infernalSequestration in loadout) and (pinkDoor in loadout) and (Varia in loadout) )))
