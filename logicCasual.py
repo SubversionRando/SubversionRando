@@ -2521,7 +2521,7 @@ class Casual(LogicInterface):
         return loadout.has_any(Morph, Missile, wave, Super)
 
     @staticmethod
-    def _can_crash_spaceport(loadout: Loadout) -> bool:
+    def can_crash_spaceport(loadout: Loadout) -> bool:
         return (
             (spaceDrop not in loadout) and
             (MetroidSuit in loadout) and
@@ -2542,7 +2542,7 @@ class Casual(LogicInterface):
 
         this should call `_can_crash_spaceport`
         """
-        return Casual._can_crash_spaceport(loadout) and (
+        return Casual.can_crash_spaceport(loadout) and (
             (RockyRidgeTrailL in loadout) and
             (GravityBoots in loadout) and
             (Screw in loadout) and
