@@ -18,6 +18,8 @@ from logicExpert import Expert
 from logicInterface import LogicInterface
 from logic_updater import updateLogic
 
+# TODO: test that all locations are obtainable with no tricks
+
 
 def setup(logic: Type[LogicInterface]) -> tuple[Game, Loadout]:
     """ returns (all locations, vanilla connections, a new loadout) """
