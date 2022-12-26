@@ -536,6 +536,50 @@ sensorMaintenance = LogicShortcut(lambda loadout: (
 ))
 """ logic is almost the same for the 2 sensor maintenance items """
 
+ruinedConcourseBDoorToEldersBottom = LogicShortcut(lambda loadout: (
+    (RuinedConcourseBL in loadout) and
+    (GravityBoots in loadout) and
+    ((
+        (pinkDoor in loadout)  # pink gate switch
+    ) or (
+        # through cistern
+        ((
+            (GravitySuit in loadout) and
+            (
+                (HiJump in loadout) or (canFly in loadout) or (Tricks.gravity_jump in loadout)
+            )
+        ) or (
+            (HiJump in loadout) and
+            (Ice in loadout)  # freeze fish
+        ) or (
+            (Tricks.sbj_underwater_w_hjb in loadout)  # TODO: verify this
+        ))
+        # TODO: more tricks for coming through cistern without aqua suit?
+    ))
+))
+
+ruinedConcourseBDoorToEldersTop = LogicShortcut(lambda loadout: (
+    (ruinedConcourseBDoorToEldersBottom in loadout) and
+    ((
+        (missileDamage in loadout)
+    ) or (
+        ((HiJump in loadout) and (Tricks.wall_jump_delayed in loadout))
+        # tight wall jump from lower chozo statue to higher chozo statue))
+    ) or (
+        (SpaceJump in loadout)
+    ) or (
+        (GravitySuit in loadout) and (canFly in loadout)
+        # bomb jump from in water
+    )) and
+    (  # exit gate
+        (shootThroughWalls in loadout) or
+        (can_bomb(1) in loadout) or
+        (Tricks.wave_gate_glitch in loadout) or
+        (Screw in loadout)
+    )
+))
+""" ruinedConcourseBDoorToEldersBottom + getting to the door at the top of the room """
+
 norakToLifeTemple = LogicShortcut(lambda loadout: (
     (
         (NorakBrookL in loadout) and
@@ -742,9 +786,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (RuinedConcourseBL in loadout) and (GravityBoots in loadout) and (can_bomb(1) in loadout)
     ),
     "Warrior Shrine: ETank": lambda loadout: (
-        (RuinedConcourseBL in loadout) and
-        (GravityBoots in loadout) and
-        (pinkSwitch in loadout) and  # TODO: logic for other paths if doors change colors (beneath missile barriers)
+        (ruinedConcourseBDoorToEldersTop in loadout) and
         (pinkDoor in loadout) and  # to warrior shrine access
         (can_use_pbs(1) in loadout) and  # PB placement is important if you only have 10 ammo
         ((Speedball in loadout) or (Tricks.mockball_hard in loadout))
@@ -753,28 +795,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (sunkenNestToVulnar in loadout)
     ),
     "Crypt": lambda loadout: (
-        (RuinedConcourseBL in loadout) and
-        (GravityBoots in loadout) and
+        (ruinedConcourseBDoorToEldersTop in loadout) and
         (can_bomb(3) in loadout) and
-        (
-            (pinkDoor in loadout) or (
-                (
-                    (GravitySuit in loadout) and
-                    (
-                        (HiJump in loadout) or (canFly in loadout)
-                    )
-                ) or (
-                    (HiJump in loadout) and
-                    (Ice in loadout) and  # freeze fish
-                    ((Tricks.movement_moderate in loadout) or (SpaceJump in loadout))
-                    # tight wall jump from lower chozo statue to higher chozo statue
-                ) or (
-                    (Tricks.sbj_underwater_w_hjb in loadout) and  # TODO: verify this
-                    ((Tricks.movement_moderate in loadout) or (SpaceJump in loadout))
-                )
-                # TODO: more tricks for coming through cistern without aqua suit?
-            )
-        ) and
         (
             (shootThroughWalls in loadout) or
             (Bombs in loadout) or
@@ -1423,34 +1445,50 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         # I don't see how.
     ),
     "Hall Of The Elders": lambda loadout: (
-            # Casual: (RuinedConcourseBL in loadout) and (jumpAble in loadout) and (( (GravitySuit in loadout) and ((HiJump in loadout) or (canFly in loadout)) ) or (pinkDoor in loadout)))
-            # Expert: (RuinedConcourseBL in loadout) and ((GravitySuit in loadout) or ( (HiJump in loadout) and (Ice in loadout) ) or (pinkDoor in loadout))))
+        (ruinedConcourseBDoorToEldersBottom in loadout) and
+        (
+            (missileDamage in loadout) or
+            (GravitySuit in loadout) or
+            (HiJump in loadout) or
+            (
+                (Ice in loadout) and
+                (Tricks.freeze_hard in loadout)
+            ) or
+            (SpaceJump in loadout) or  # no SJ boost needed
+            (Tricks.sbj_underwater_no_hjb in loadout)
+        )
     ),
     "Warrior Shrine: AmmoTank bottom": lambda loadout: (
-        (RuinedConcourseBL in loadout) and (jumpAble in loadout) and (Morph in loadout) and (pinkDoor in loadout)
+        (ruinedConcourseBDoorToEldersTop in loadout) and
+        (Morph in loadout) and
+        (pinkDoor in loadout)
     ),
     "Warrior Shrine: AmmoTank top": lambda loadout: (
-            # Casual: (RuinedConcourseBL in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (pinkDoor in loadout) and (Speedball in loadout))
-            # Expert: (RuinedConcourseBL in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (pinkDoor in loadout)))
+        (ruinedConcourseBDoorToEldersTop in loadout) and
+        (pinkDoor in loadout) and  # to warrior shrine access
+        (can_bomb(1) in loadout) and  # PB placement is important if you only have 10 ammo
+        ((Speedball in loadout) or (Tricks.mockball_hard in loadout))
     ),
     "Path Of Swords": lambda loadout: (
-            # Casual: (sunkenNestToVulnar in loadout) and ((canBomb in loadout) or ((Morph in loadout) and (Screw in loadout))))
-            # Expert: (sunkenNestToVulnar in loadout) and ( (canBomb in loadout) or ( (Morph in loadout) and (Screw in loadout) ) )))
+        (sunkenNestToVulnar in loadout) and
+        ((can_bomb(1) in loadout) or (
+            (Morph in loadout) and (Screw in loadout)
+        ))
     ),
     "Auxiliary Pump Room": lambda loadout: (
-        (sunkenNestToVulnar in loadout) and (canBomb in loadout)
+        (sunkenNestToVulnar in loadout) and (can_bomb(1) in loadout)
     ),
     "Monitoring Station": lambda loadout: (
         (sunkenNestToVulnar in loadout) and
         (Morph in loadout) and
-        ((Speedball in loadout) or (can_bomb(1) in loadout) or (Tricks.movement_zoast))
+        ((Speedball in loadout) or (can_bomb(1) in loadout) or (Tricks.movement_zoast in loadout))
     ),
     "Sensor Maintenance: AmmoTank": lambda loadout: (  # back
         (sensorMaintenance in loadout) and
         (can_bomb(2) in loadout)  # TODO: confirm this is the only difference from the other sensor maintenance item
     ),
     "Causeway Overlook": lambda loadout: (
-        (CausewayR in loadout) and (jumpAble in loadout) and (canBomb in loadout)
+        (CausewayR in loadout) and (GravityBoots in loadout) and (can_bomb(1) in loadout)
     ),
     "Placid Pool": lambda loadout: (
             # Casual: (PlacidPoolR in loadout) and (jumpAble in loadout) and (canUsePB in loadout) and (icePod in loadout) and (GravitySuit in loadout))
@@ -1619,7 +1657,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         )
     ),
     "Trophobiotic Chamber": lambda loadout: (
-        (sunkenNestToVulnar in loadout) and (Morph in loadout) and (Speedball in loadout)
+        (sunkenNestToVulnar in loadout) and (Morph in loadout) and (Speedball in loadout)  # or Tricks.bob
     ),
     "Waste Processing": lambda loadout: (
             # Casual: (SpeedBooster in loadout) and (jumpAble in loadout) and ( ( (SubbasementFissureL in loadout) and (canUsePB in loadout) ) or ( (CellarR in loadout) and (pinkDoor in loadout) and (canBomb in loadout) and (underwater in loadout) and (DarkVisor in loadout) ) or ( (TransferStationR in loadout) and (DarkVisor in loadout) and (wave in loadout) and (canBomb in loadout) ) ))
@@ -1699,8 +1737,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # Expert: ((spaceDrop not in loadout) and (Grapple in loadout) ) or ( (spaceDrop in loadout) and (LoadingDockSecurityAreaL in loadout) and (jumpAble in loadout) and (MetroidSuit in loadout) )))
     ),  # (3 = letter Gamma)  (3 = letter Gamma)
     "Arena": lambda loadout: (
-            # Casual: (RuinedConcourseBL in loadout) and (jumpAble in loadout) and (canBomb in loadout) and ( (pinkDoor in loadout) or ( (GravitySuit in loadout) and ( (HiJump in loadout) or (SpaceJump in loadout) or (Bombs in loadout) ) ) ))
-            # Expert: (RuinedConcourseBL in loadout) and (jumpAble in loadout) and ( (pinkDoor in loadout) or ( ( (HiJump in loadout) or (SpaceJump in loadout) or ((Speedball in loadout) and (Morph in loadout)) ) and (GravitySuit in loadout) or ( (HiJump in loadout) and ( ((Speedball in loadout) and (Morph in loadout)) or (Ice in loadout) ) ) ) )))
+        (ruinedConcourseBDoorToEldersTop in loadout)
     ),
     "West Spore Field": lambda loadout: (
             # Casual: (sunkenNestToVulnar in loadout) and ((canBomb in loadout) or ( (Morph in loadout) and (Screw in loadout) )) and (Super in loadout) and (Speedball in loadout) and (GravitySuit in loadout))
