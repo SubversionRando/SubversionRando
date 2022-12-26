@@ -413,6 +413,29 @@ condenser = LogicShortcut(lambda loadout: (
 ))
 """ traverse condenser room """
 
+thermalResAlpha = LogicShortcut(lambda loadout: (
+    (MetroidSuit in loadout) and  # just outside left door
+    (varia_or_hell_run(140) in loadout) and
+    (
+        (Tricks.wall_jump_precise in loadout) or
+        (SpeedBooster in loadout) or
+        (SpaceJump in loadout) or
+        (Grapple in loadout) or
+        (loadout.has_all(GravitySuit, Morph, Bombs)) or
+        ((GravitySuit in loadout) and (Tricks.gravity_jump in loadout))
+    )
+))
+
+thermalResBeta = LogicShortcut(lambda loadout: (
+    ((GravitySuit in loadout) or (
+        (Tricks.freeze_hard in loadout) and
+        (Ice in loadout) and
+        ((Tricks.movement_zoast in loadout) or (HiJump in loadout)) and
+        (can_bomb(1) in loadout)
+    )) and
+    (varia_or_hell_run(80) in loadout)  # cold room
+))
+
 # above this should not include any shortcuts that reference doors
 # so they can be used in the area door logic
 # below this cannot be used in area door logic, only location logic
@@ -927,19 +950,89 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ))
     ),
     "Electromechanical Engine": lambda loadout: (
-            # Casual: (jumpAble in loadout) and (Grapple in loadout) and (Varia in loadout) and (Morph in loadout) and (( (ReservoirMaintenanceTunnelR in loadout) and (canBomb in loadout) and (GravitySuit in loadout) and (Screw in loadout) ) or ( (ThermalReservoir1R in loadout) and (MetroidSuit in loadout) ) or ( (GeneratorAccessTunnelL in loadout) and (canUsePB in loadout) and (MetroidSuit in loadout) )))
-            # Expert: (jumpAble in loadout) and (Grapple in loadout) and (varia_or_hell_run(350) in loadout) and (canBomb in loadout) and (( (ReservoirMaintenanceTunnelR in loadout) and ( (GravitySuit in loadout) or (HiJump in loadout) or (Ice in loadout) ) and (Screw in loadout) ) or ( (ThermalReservoir1R in loadout) and (MetroidSuit in loadout) ) or ( (GeneratorAccessTunnelL in loadout) and (canUsePB in loadout) and (MetroidSuit in loadout) ))))
+        (Grapple in loadout) and
+        (Morph in loadout) and
+        (GravityBoots in loadout) and
+        # this isn't the same as a morph_jump_3_tile, but I don't know if it's worth making another trick
+        ((Tricks.morph_jump_3_tile in loadout) or (Speedball in loadout) or (can_bomb(1) in loadout)) and
+        # which area door to come from
+        ((
+            (ReservoirMaintenanceTunnelR in loadout) and
+            (Screw in loadout) and
+            (can_bomb(1) in loadout) and
+            ((GravitySuit in loadout) or (
+                (Tricks.freeze_hard in loadout) and
+                (Ice in loadout) and
+                ((Tricks.movement_zoast in loadout) or (HiJump in loadout))
+            )) and
+            (varia_or_hell_run(80) in loadout) and  # cold room
+            # not requiring metroid suit
+            ((  # security matrix
+                loadout.has_all(MetroidSuit, DarkVisor, shootThroughWalls, varia_or_hell_run(311))
+            ) or (  # main boiler
+                (
+                    # not fall in lava (or have metroid suit)
+                    (loadout.has_any(MetroidSuit, SpaceJump, Grapple, Tricks.wall_jump_delayed)) and
+                    # difficult wall jumps to not fall in lava
+                    (varia_or_hell_run(849, heat_and_metroid_suit_not_required=True) in loadout)
+                    # TODO: patience and refill in room with red pirates (low drop rate)
+                ) or (
+                    # fall in lava
+                    (loadout.has_any(HiJump, canFly, Grapple, Ice)) and  # left side of main boiler
+                    (varia_or_hell_run(1250, heat_and_metroid_suit_not_required=True) in loadout)
+                    # TODO: patience and refill in room with red pirates (low drop rate)
+                )
+            ))
+        ) or (
+            # The ways that come in the top of central corridor require metroid suit
+            (MetroidSuit in loadout) and
+            ((  # security matrix
+                loadout.has_all(DarkVisor, shootThroughWalls, varia_or_hell_run(311))
+            ) or (  # main boiler
+                (loadout.has_any(HiJump, canFly, Grapple, Ice)) and  # left side of main boiler
+                (varia_or_hell_run(871) in loadout)
+                # TODO: patience and refill in room with red pirates (low drop rate)
+            )) and
+            (
+                (ThermalReservoir1R in loadout) and
+                (MetroidSuit in loadout) and
+                (thermalResAlpha in loadout)
+            ) or (
+                (GeneratorAccessTunnelL in loadout) and
+                (MetroidSuit in loadout) and  # top laser puzzles are 1 way w/o metroid suit
+                (can_use_pbs(3) in loadout)
+            )
+        ))
     ),
     "Depressurization Valve": lambda loadout: (
-            # Casual: (jumpAble in loadout) and (Morph in loadout) and (( (ReservoirMaintenanceTunnelR in loadout) and (canBomb in loadout) and (GravitySuit in loadout) and (Screw in loadout) ) or ( (ThermalReservoir1R in loadout) and (Varia in loadout) and (MetroidSuit in loadout) ) or ( (GeneratorAccessTunnelL in loadout) and (canUsePB in loadout) and (MetroidSuit in loadout) )))
-            # Expert: (jumpAble in loadout) and (Morph in loadout) and (( (ReservoirMaintenanceTunnelR in loadout) and (canBomb in loadout) and ((GravitySuit in loadout) or (HiJump in loadout) or (Ice in loadout)) and (Screw in loadout) ) or ( (ThermalReservoir1R in loadout) and (varia_or_hell_run(350) in loadout) and (MetroidSuit in loadout) ) or ( (GeneratorAccessTunnelL in loadout) and (canUsePB in loadout) and (MetroidSuit in loadout) ))))
+        (GravityBoots in loadout) and
+        # which area door to come from
+        ((
+            (ReservoirMaintenanceTunnelR in loadout) and
+            (Screw in loadout) and
+            (can_bomb(1) in loadout) and
+            (thermalResBeta in loadout) and
+            ((True) or (Grapple in loadout) or (MetroidSuit in loadout))
+            # This `True` represents the ability to turn the power off and back on again (requiring Screw)
+            # It's here in case we disable turning off the power.
+        ) or (
+            (ThermalReservoir1R in loadout) and
+            (MetroidSuit in loadout) and
+            (thermalResAlpha in loadout)
+        ) or (
+            (GeneratorAccessTunnelL in loadout) and
+            (MetroidSuit in loadout) and  # top laser puzzles are 1 way w/o metroid suit
+            (can_use_pbs(3) in loadout)
+        ))
+        # TODO: add MagmaPumpL access
+        # (because it can be done with neither metroid suit nor bombs)
     ),
     "Loading Dock Storage Area": lambda loadout: (
         (LoadingDockSecurityAreaL in loadout)  # no gravity boots needed
     ),
     "Containment Area": lambda loadout: (
-            # Casual: (jumpAble in loadout) and ( (FoyerR in loadout) and (canBomb in loadout) and (Speedball in loadout) and ( (MetroidSuit in loadout) or (Screw in loadout) ) ) or ( (AlluringCenoteR in loadout) and (Grapple in loadout) and (SpeedBooster in loadout) and (Speedball in loadout) and (canUsePB in loadout) ))
-            # Expert: (jumpAble in loadout) and (( (FoyerR in loadout) and (canBomb in loadout) and ((MetroidSuit in loadout) or (Screw in loadout)) ) or ( (AlluringCenoteR in loadout) and (Grapple in loadout) and (SpeedBooster in loadout) and (Speedball in loadout) and (canUsePB in loadout) ))))
+            # Casual: (jumpAble in loadout) and  ( (FoyerR in loadout) and (canBomb in loadout) and (Speedball in loadout) and ( (MetroidSuit in loadout) or (Screw in loadout) ) ) or ( (AlluringCenoteR in loadout) and (Grapple in loadout) and (SpeedBooster in loadout) and (Speedball in loadout) and (canUsePB in loadout) ))
+            # Expert: (jumpAble in loadout) and (( (FoyerR in loadout) and (canBomb in loadout) and                            ( (MetroidSuit in loadout) or (Screw in loadout) ) ) or ( (AlluringCenoteR in loadout) and (Grapple in loadout) and (SpeedBooster in loadout) and (Speedball in loadout) and (canUsePB in loadout) ))
     ),
     "Briar: SJBoost": lambda loadout: (  # top  PB tube
         (NorakPerimeterBL in loadout) and
@@ -1152,8 +1245,27 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # Expert: (ElevatorToMagmaLakeR in loadout) and (jumpAble in loadout) and (canUsePB in loadout) and (varia_or_hell_run(850) in loadout) and (MetroidSuit in loadout)))
     ),
     "Generator Manifold": lambda loadout: (
-            # Casual: (jumpAble in loadout) and (Super in loadout) and (canBomb in loadout) and (( (ReservoirMaintenanceTunnelR in loadout) and (GravitySuit in loadout) ) or ( (GeneratorAccessTunnelL in loadout) and (canUsePB in loadout) and (MetroidSuit in loadout) and (Screw in loadout) ) or ( (ThermalReservoir1R in loadout) and (Varia in loadout) and (MetroidSuit in loadout) and (Screw in loadout) )))
+            # Casual: (jumpAble in loadout) and (Super in loadout) and (canBomb in loadout) and (( (ReservoirMaintenanceTunnelR in loadout) and (GravitySuit in loadout) )                                              or ( (GeneratorAccessTunnelL in loadout) and (canUsePB in loadout) and (MetroidSuit in loadout) and (Screw in loadout) ) or ( (ThermalReservoir1R in loadout) and (Varia in loadout)                  and (MetroidSuit in loadout) and (Screw in loadout) )))
             # Expert: (jumpAble in loadout) and (Super in loadout) and (canBomb in loadout) and (( (ReservoirMaintenanceTunnelR in loadout) and ((GravitySuit in loadout) or (HiJump in loadout) or (Ice in loadout)) ) or ( (GeneratorAccessTunnelL in loadout) and (canUsePB in loadout) and (MetroidSuit in loadout) and (Screw in loadout) ) or ( (ThermalReservoir1R in loadout) and (varia_or_hell_run(250) in loadout) and (MetroidSuit in loadout) and (Screw in loadout) ))))
+        # I think this is done, just look over it after I get code analysis here.
+        (Super in loadout) and
+        (GravityBoots in loadout) and
+        (can_bomb(4) in loadout) and
+        ((
+            (ReservoirMaintenanceTunnelR in loadout) and
+            (can_bomb(1) in loadout) and
+            (thermalResBeta in loadout)
+        ) or (
+            (GeneratorAccessTunnelL in loadout) and
+            (MetroidSuit in loadout) and  # top laser puzzles are 1 way w/o metroid suit
+            (Screw in loadout) and
+            (can_use_pbs(3) in loadout)
+        ) or (
+            (ThermalReservoir1R in loadout) and
+            (MetroidSuit in loadout) and
+            (Screw in loadout) and
+            (thermalResAlpha in loadout)
+        ))
     ),
     "Fiery Crossing Cache": lambda loadout: (
             # Casual: (RagingPitL in loadout) and (jumpAble in loadout) and (Varia in loadout) and (canUsePB in loadout))
