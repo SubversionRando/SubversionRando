@@ -3224,7 +3224,7 @@ class Expert(LogicInterface):
         return True
 
     @staticmethod
-    def _can_crash_spaceport(loadout: Loadout) -> bool:
+    def can_crash_spaceport(loadout: Loadout) -> bool:
         return (
             (spaceDrop not in loadout) and
             (MetroidSuit in loadout) and
@@ -3249,7 +3249,7 @@ class Expert(LogicInterface):
 
         this should call `_can_crash_spaceport`
         """
-        return Expert._can_crash_spaceport(loadout) and (
+        return Expert.can_crash_spaceport(loadout) and (
             (RockyRidgeTrailL in loadout) and
             (GravityBoots in loadout) and
             (Screw in loadout) and

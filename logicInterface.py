@@ -41,7 +41,7 @@ class LogicInterface:
         raise NotImplementedError("can_fall_from_spaceport")
 
     @staticmethod
-    def _can_crash_spaceport(loadout: Loadout) -> bool:
+    def can_crash_spaceport(loadout: Loadout) -> bool:
         """ returns whether I can crash the spaceport with this loadout """
         raise NotImplementedError("can_fall_from_spaceport")
 
