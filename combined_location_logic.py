@@ -72,7 +72,7 @@ plasmaWaveGate = LogicShortcut(lambda loadout: (
 
 killRippers = LogicShortcut(lambda loadout: (
     (Super in loadout) or
-    (PowerBomb in loadout) or
+    (can_use_pbs(1) in loadout) or
     (Screw in loadout) or
     loadout.has_all(Charge, Hypercharge)
 ))
@@ -660,6 +660,35 @@ class SpacePort:
         (Grapple in loadout) or
         loadout.game.logic.can_crash_spaceport(loadout)
     ))
+
+
+class Suzi:
+    crossOceans = LogicShortcut(lambda loadout: (
+        ((
+            (SpaceJump in loadout) and
+            (HiJump in loadout) and
+            (SpaceJumpBoost in loadout)
+            # TODO: how many sjb required?
+            # TODO: how many sjb required without hjb?
+        ) or (
+            (Bombs in loadout) and
+            (Morph in loadout) and
+            (Tricks.movement_moderate in loadout)
+            # TODO: how hard is this in spine reef? Do we need separate for spine reef and moughra lagoon?
+        ) or (
+            (SpeedBooster in loadout) and
+            (Tricks.movement_moderate in loadout)
+            # There are places to shinespark from the bottom of the big ocean rooms.
+            # TODO: check if they require short charge
+        ))
+    ))
+
+    cyphers = LogicShortcut(lambda loadout: (
+        loadout.has_all(
+            GravityBoots, SpeedBooster, Super, shootThroughWalls, canUsePB, GravitySuit, pinkDoor, Suzi.crossOceans
+        )
+    ))
+    """ get all of the cyphers """
 
 
 # above this should not include any shortcuts that reference doors
@@ -1573,7 +1602,10 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Drawing Room": lambda loadout: (
         (Super in loadout) and
         (GravityBoots in loadout) and
-        (railAccess in loadout)
+        (railAccess in loadout) and
+        (Morph in loadout) and  # exit
+        (pinkDoor in loadout) and  # bottom of stair of dawn
+        (varia_or_hell_run(90) in loadout)  # This might require getting i-frames from enemies to avoid spike damage
     ),
     "Impact Crater Overlook": lambda loadout: (
         (SunkenNestL in loadout) and
@@ -1589,9 +1621,23 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (ElevatorToMagmaLakeR in loadout) and (GravityBoots in loadout) and (icePod in loadout) and (Morph in loadout)
     ),
     "Shrine Of The Animate Spark": lambda loadout: (
-        # Casual: (TramToSuziIslandR in loadout) and (suzi in loadout) and (Hypercharge in loadout) and (Charge in loadout) and (canFly in loadout)
-        # Expert: (TramToSuziIslandR in loadout) and (suzi in loadout) and (Hypercharge in loadout) and (Charge in loadout) and (energy_req(350) in loadout)
-        y
+        (enterSuzi in loadout) and
+        (Suzi.cyphers in loadout) and
+        ((
+            (Hypercharge in loadout) and
+            (Charge in loadout)
+        ) or (
+            (Charge in loadout) and
+            (energy_req(
+                750
+                if (Tricks.movement_zoast in loadout)
+                else (
+                    1050
+                    if (Tricks.movement_moderate in loadout)
+                    else 1350
+                )
+            ) in loadout)
+        ))
     ),
     "Docking Port 4": lambda loadout: (  # (4 = letter Omega)
         # copy and paste docking port 3
@@ -1890,28 +1936,44 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (Super in loadout)
     ),
     "Tower Rock Lookout": lambda loadout: (
-            # Casual: (pinkDoor in loadout) and (GravitySuit in loadout) and (SpaceJump in loadout) and (HiJump in loadout))
-            # Expert: (pinkDoor in loadout) and (GravitySuit in loadout) and ( ( (SpaceJump in loadout) and (HiJump in loadout) ) or ( (Bombs in loadout) and (Morph in loadout) ) or (SpeedBooster in loadout) )))
         (enterSuzi in loadout) and
-        (y)
+        (pinkDoor in loadout) and
+        (GravitySuit in loadout) and
+        ((
+            (SpaceJump in loadout) and
+            (HiJump in loadout) and
+            (SpaceJumpBoost in loadout)
+            # TODO: how many sjb required?
+        ) or (
+            (Bombs in loadout) and
+            (Morph in loadout) and
+            (Tricks.movement_moderate in loadout)
+        ) or (
+            (SpeedBooster in loadout) and
+            (Tricks.movement_moderate in loadout)
+        ))
     ),
     "Reef Nook": lambda loadout: (
-            # Casual: (pinkDoor in loadout) and (GravitySuit in loadout) and (SpaceJump in loadout) and (HiJump in loadout))
-            # Expert: (pinkDoor in loadout) and (GravitySuit in loadout) and (Morph in loadout) and ( ( (SpaceJump in loadout) and (HiJump in loadout) ) or (Bombs in loadout) or (SpeedBooster in loadout) )))
         (enterSuzi in loadout) and
-        (y)
+        (pinkDoor in loadout) and
+        (GravitySuit in loadout) and
+        (Morph in loadout) and
+        (Suzi.crossOceans in loadout)
     ),
     "Saline Cache": lambda loadout: (
-            # Casual: (Super in loadout) and (GravitySuit in loadout) and (canFly in loadout))
-            # Expert: (Super in loadout) and ( (GravitySuit in loadout) or ( (HiJump in loadout) and (Speedball in loadout) and (Morph in loadout) ) )))
         (enterSuzi in loadout) and
-        (y)
+        (Super in loadout) and
+        (
+            ((GravitySuit in loadout) and (canFly in loadout)) or
+            (Tricks.gravity_jump in loadout) or
+            (Tricks.sbj_underwater_w_hjb in loadout)
+        )
     ),
     "Enervation Chamber": lambda loadout: (
-            # Casual: (TramToSuziIslandR in loadout) and (suzi in loadout) and (energy_req(650) in loadout) and (canFly in loadout) and (Hypercharge in loadout) and (Charge in loadout))
-            # Expert: (TramToSuziIslandR in loadout) and (suzi in loadout) and (Hypercharge in loadout) and (Charge in loadout)))
         (enterSuzi in loadout) and
-        (y)
+        (Suzi.cyphers in loadout) and
+        (Hypercharge in loadout) and
+        (Charge in loadout)
     ),
     "Weapon Locker": lambda loadout: (
         (Missile in loadout) and
@@ -2124,24 +2186,33 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Norak Escarpment": lambda loadout: (
         (NorakBrookL in loadout) and (GravityBoots in loadout) and (canFly in loadout)
     ),
-}
-x = {
     "Glacier's Reach": lambda loadout: (
-            # Casual: (railAccess in loadout) and (jumpAble in loadout) and (canBomb in loadout) and (varia_or_hell_run(650) in loadout))
-            # Expert: (jumpAble in loadout) and (varia_or_hell_run(350) in loadout) and (railAccess in loadout)))
+        (railAccess in loadout) and
+        (GravityBoots in loadout) and
+        ((can_bomb(1) in loadout) or (breakIce in loadout)) and
+        (varia_or_hell_run(252) in loadout)
     ),
     "Sitting Room": lambda loadout: (
-            # Casual: (railAccess in loadout) and (jumpAble in loadout) and (canUsePB in loadout) and (Speedball in loadout))
-            # Expert: (jumpAble in loadout) and (canUsePB in loadout) and ( (Bombs in loadout) or (Speedball in loadout) ) and (railAccess in loadout)))
-        # joonie did ok here without bombs or speedball, had varia though
-    ),  # TODO: this is missing exit logic - what do you need to get mack to rail?  (at least supers or missiles or screw)  TODO: energy_req or varia
+        (can_use_pbs(1) in loadout) and  # might have to farm after opening door
+        (GravityBoots in loadout) and
+        (railAccess in loadout) and
+        (Morph in loadout) and  # exit
+        (pinkDoor in loadout) and  # bottom of stair of dawn  # TODO: or get out by killing Phantoon
+        (varia_or_hell_run(98) in loadout) and
+        ((Speedball in loadout) or (Bombs in loadout) or (
+            loadout.has_all(Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile)
+        ) or (
+            loadout.has_all(Tricks.morph_jump_4_tile, can_bomb(6))
+        ))
+    ),
     "Suzi Ruins Map Station Access": lambda loadout: (
-            # Casual: (TramToSuziIslandR in loadout) and (jumpAble in loadout) and (energy_req(650) in loadout) and (canUsePB in loadout) and (Super in loadout))
-            # Expert: (TramToSuziIslandR in loadout) and (jumpAble in loadout) and (wave in loadout) and (energy_req(350) in loadout) and (canUsePB in loadout) and (Super in loadout)))
+        (enterSuzi in loadout) and
+        (can_use_pbs(1) in loadout) and
+        (Super in loadout)
     ),
     "Obscured Vestibule": lambda loadout: (
-            # Casual: (TramToSuziIslandR in loadout) and (jumpAble in loadout) and (energy_req(650) in loadout) and (canBomb in loadout))
-            # Expert: (TramToSuziIslandR in loadout) and (jumpAble in loadout) and (wave in loadout) and (energy_req(350) in loadout) and (canBomb in loadout)))
+        (enterSuzi in loadout) and
+        (can_bomb(1) in loadout)
     ),
     "Docking Port 3": lambda loadout: (  # (3 = letter Gamma)
         # copy and paste docking port 4
@@ -2159,8 +2230,19 @@ x = {
         (ruinedConcourseBDoorToEldersTop in loadout)
     ),
     "West Spore Field": lambda loadout: (
-            # Casual: (sunkenNestToVulnar in loadout) and ((canBomb in loadout) or ( (Morph in loadout) and (Screw in loadout) )) and (Super in loadout) and (Speedball in loadout) and (GravitySuit in loadout))
-            # Expert: (sunkenNestToVulnar in loadout) and (Super in loadout) and ( (canBomb in loadout) or ( (Morph in loadout) and (Screw in loadout) ) ) and ( (GravitySuit in loadout) or ( (SpaceJump in loadout) and ( (HiJump in loadout) or (Speedball in loadout) ) ) )))
+        (sunkenNestToVulnar in loadout) and
+        (pinkDoor in loadout) and  # into spore field
+        (Super in loadout) and  # door into great spore hall
+        ((shootThroughWalls in loadout) or (Tricks.ggg in loadout) or (Tricks.wave_gate_glitch in loadout)) and
+        ((can_bomb(1) in loadout) or ((Morph in loadout) and (Screw in loadout))) and  # great spore hall
+        (pinkSwitch in loadout) and  # return through great spore hall
+        # get in to item
+        (
+            (Speedball in loadout) or
+            loadout.has_all(GravitySuit, SpaceJump, SpaceJumpBoost, Tricks.movement_moderate)
+        ) and
+        # get out (of water)
+        ((GravitySuit in loadout) or (HiJump in loadout) or (Tricks.sbj_underwater_no_hjb in loadout))
     ),
     "Magma Chamber": lambda loadout: (
         (ElevatorToMagmaLakeR in loadout) and
@@ -2187,7 +2269,7 @@ x = {
             (GravitySuit in loadout) or
             (HiJump in loadout) or
             (can_bomb(1) in loadout) or
-            (Tricks.sbj_underwater_no_hjb)
+            (Tricks.sbj_underwater_no_hjb in loadout)
         ) and
         ((Morph in loadout) or (MetroidSuit in loadout))
     ),
@@ -2207,7 +2289,8 @@ x = {
             loadout.has_any(GravitySuit, HiJump, Tricks.sbj_underwater_no_hjb) and
             (PirateLab.exitMainHydrologyResearch in loadout)
         ))
-        # can gravity jump (no gravity suit) through hydrodynamic chamber door into main hydrology research from central corridor
+        # can gravity jump (no gravity suit)
+        # through hydrodynamic chamber door into main hydrology research from central corridor
     ),
     "Weapon Research": lambda loadout: (
         (GravityBoots in loadout) and
@@ -2222,6 +2305,6 @@ x = {
         (norakToLifeTemple in loadout) and
         (LifeTemple.veranda in loadout) and
         (SpeedBooster in loadout) and
-        (Super in loadout) and  # door to elevator to jungle's heart
+        (Super in loadout)  # door to elevator to jungle's heart
     ),
 }
