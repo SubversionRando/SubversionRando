@@ -17,6 +17,7 @@ ENERGY_PER_TANK = 100
 FOR_N_TANKS = 12
 LATER_ENERGY_PER_TANK = 50
 
+# TODO: delete this after this logic merge is done
 canUsePB = LogicShortcut(lambda loadout: (
     loadout.has_all(Items.Morph, Items.PowerBomb)
 ))
