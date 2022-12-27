@@ -64,7 +64,11 @@ class Tricks:
     """ crouch jump along with some precision movement (not just straight up and over at the top) """
 
     dark_easy = Trick()
-    """ without dark visor, move through darker rooms where walls are light-colored (Spore Field) """
+    """
+    without dark visor, move through darker rooms where walls are light-colored (Spore Field)
+
+    This is also used for killing the invisible enemies in the Cellar.
+    """
 
     dark_medium = Trick()
     """ without dark visor, move through darker rooms where walls are NOT light-colored (Meandering Passage) """
@@ -97,5 +101,10 @@ class Tricks:
     short_charge_4 = Trick(Items.SpeedBooster)
     """ charge shinespark in smaller running space - 4 tap """
 
+    # specific location tricks
+
     searing_gate_tricks = Trick(Items.Morph)
     """ "It's a secret to everybody." """
+
+    spazer_into_lower_pirate_lab = Trick(Items.Spazer)
+    """ She's made of wood! """

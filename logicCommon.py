@@ -121,7 +121,7 @@ def varia_or_hell_run(energy: int, *, heat_and_metroid_suit_not_required: bool =
 
 def lava_run(energy_with_aqua: int, energy_no_aqua: int) -> LogicShortcut:
     """
-    for hell runs in laval that require metroid suit,
+    for hell runs in lava that require metroid suit,
     because it slows you down if you don't have aqua suit
 
     This is not for lava baths without Metroid Suit.
