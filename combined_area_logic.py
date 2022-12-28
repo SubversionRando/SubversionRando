@@ -557,123 +557,110 @@ area_logic: AreaLogicType = {
         ),
         ("WestTerminalAccessL", "ElevatorToCondenserL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canBomb in loadout) and
+            (Morph in loadout) and
             (breakIce in loadout) and
-            condenser
+            (SkyWorld.condenser in loadout)
         ),
         ("MezzanineConcourseL", "WestTerminalAccessL"): lambda loadout: (
             (canOpen(WestTerminalAccessL) in loadout) and
-            (GravityBoots in loadout) and (
-                (canFly in loadout) or
-                (SpeedBooster in loadout) or
-                (Ice in loadout) or
-                (HiJump in loadout) or  # expert add
-                ((Morph in loadout) and (Speedball in loadout))  # expert add
-            )
+            (GravityBoots in loadout) and
+            (SkyWorld.mezzanineShaft in loadout)
         ),
         ("MezzanineConcourseL", "VulnarCanyonL"): lambda loadout: (
             (GravityBoots in loadout) and
             (canOpen(VulnarCanyonL) in loadout) and
-            ((canBomb in loadout) or (Screw in loadout)) and
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and
             (SpeedBooster in loadout)
         ),
         ("MezzanineConcourseL", "CanyonPassageR"): lambda loadout: (
             (GravityBoots in loadout) and
-            ((canBomb in loadout) or (Screw in loadout)) and
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and
             (SpeedBooster in loadout)
         ),
         ("MezzanineConcourseL", "ElevatorToCondenserL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canBomb in loadout) and
+            (SkyWorld.mezzanineShaft in loadout) and
+            (Morph in loadout) and
             (breakIce in loadout) and
-            condenser and
-              # expert add this v ?
-            ((HiJump in loadout) or
-             (SpaceJump in loadout) or
-             (Bombs in loadout) or
-             (Grapple in loadout) or
-             (Speedball in loadout))
+            (SkyWorld.condenser in loadout)
         ),
         ("VulnarCanyonL", "WestTerminalAccessL"): lambda loadout: (
             (GravityBoots in loadout) and
             (canOpen(WestTerminalAccessL) in loadout) and
-            ((canBomb in loadout) or (Screw in loadout)) and
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and
             (SpeedBooster in loadout)
         ),
         ("VulnarCanyonL", "MezzanineConcourseL"): lambda loadout: (
-            casual need (canFly or SpeedBooster or Ice)
             (GravityBoots in loadout) and
-            ((canBomb in loadout) or (Screw in loadout)) and
-            (SpeedBooster in loadout)
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and
+            (SpeedBooster in loadout) and
+            (SkyWorld.mezzanineShaft in loadout)
         ),
         ("VulnarCanyonL", "CanyonPassageR"): lambda loadout: (
             GravityBoots in loadout
         ),
         ("VulnarCanyonL", "ElevatorToCondenserL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canBomb in loadout) and
-            (breakIce in loadout) and  # expert add
             (SpeedBooster in loadout) and
-            condenser
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and
+            (Morph in loadout) and
+            (breakIce in loadout) and
+            (SkyWorld.condenser in loadout)
         ),
         ("CanyonPassageR", "WestTerminalAccessL"): lambda loadout: (
             (GravityBoots in loadout) and
             (canOpen(WestTerminalAccessL) in loadout) and
-            ((canBomb in loadout) or (Screw in loadout)) and
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and
             (SpeedBooster in loadout)
         ),
         ("CanyonPassageR", "MezzanineConcourseL"): lambda loadout: (
             (GravityBoots in loadout) and
             (SpeedBooster in loadout) and
-            ((canBomb in loadout) or (Screw in loadout))
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and
+            (SkyWorld.mezzanineShaft in loadout)
         ),
         ("CanyonPassageR", "VulnarCanyonL"): lambda loadout: (
             (GravityBoots in loadout) and
             (canOpen(VulnarCanyonL) in loadout)
-            # canOpen needed?  There was also a canOpen a little bit above here that expert didn't have
         ),
         ("CanyonPassageR", "ElevatorToCondenserL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canBomb in loadout) and
             (SpeedBooster in loadout) and
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and
+            (Morph in loadout) and
             (breakIce in loadout) and
-            condenser
+            (SkyWorld.condenser in loadout)
         ),
         ("ElevatorToCondenserL", "WestTerminalAccessL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canOpen(WestTerminalAccessL) in loadout) and
-            (canBomb in loadout) and
+            (Morph in loadout) and
             (breakIce in loadout) and
-            condenser
+            (SkyWorld.condenser in loadout) and
+            (canOpen(WestTerminalAccessL) in loadout)
         ),
         ("ElevatorToCondenserL", "MezzanineConcourseL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canBomb in loadout) and
+            (Morph in loadout) and
             (breakIce in loadout) and
-            condenser and
-
-            # expert add v
-            ((HiJump in loadout) or
-             (SpaceJump in loadout) or
-             (Bombs in loadout) or
-             (Grapple in loadout) or
-             (Speedball in loadout))
+            (SkyWorld.condenser in loadout) and
+            (SkyWorld.mezzanineShaft in loadout)
         ),
         ("ElevatorToCondenserL", "VulnarCanyonL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canOpen(VulnarCanyonL) in loadout) and
-            (canBomb in loadout) and
-            (SpeedBooster in loadout) and
+            (Morph in loadout) and
             (breakIce in loadout) and
-            condenser
+            (SkyWorld.condenser in loadout) and
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and
+            (SpeedBooster in loadout) and
+            (canOpen(VulnarCanyonL) in loadout)
         ),
         ("ElevatorToCondenserL", "CanyonPassageR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canOpen(VulnarCanyonL) in loadout) and  # epxert add
-            (canBomb in loadout) and
-            (SpeedBooster in loadout) and
+            (Morph in loadout) and
             (breakIce in loadout) and
-            condenser
+            (SkyWorld.condenser in loadout) and
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and
+            (SpeedBooster in loadout)
         ),
     },
     "LifeTemple": {
