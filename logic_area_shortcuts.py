@@ -553,6 +553,35 @@ class LifeTemple:
     ))
     """ get into water garden from wellspring access """
 
+    # TODO: use this in relevant location logic
+    waterToVeranda = LogicShortcut(lambda loadout: (
+        # need either bottom of chamber of life
+        (GravityBoots in loadout) and
+        ((  # bottom of chamber of life
+            (
+                ((can_bomb(1) in loadout) and (Tricks.movement_moderate in loadout)) or
+                (can_bomb(2) in loadout)
+            ) and
+            (
+                (Tricks.movement_moderate in loadout) or
+                loadout.has_all(HiJump, Speedball)
+            )
+        ) or (  # left-middle of chamber of stone
+            loadout.has_any(HiJump, canFly, Tricks.freeze_hard) or
+            loadout.has_all(Tricks.short_charge_4, Tricks.movement_zoast)
+        )) and
+        # top of chamber of stone to middle of water garden
+        (
+            (SpeedBooster in loadout) or  # top door
+            (HiJump in loadout) or
+            (Tricks.wall_jump_precise in loadout) or  # around 2-tile ledge with no hjb
+            ((SpaceJump in loadout) and (SpaceJumpBoost in loadout)) or
+            (loadout.has_all(Morph, Bombs) and loadout.has_any(GravitySuit, Tricks.movement_moderate))
+            # have to start bomb jump mid-air if no aqua
+        )
+    ))
+    """ middle of water garden to bottom of veranda (top of chamber of stone) """
+
     brook = LogicShortcut(lambda loadout: (
         (GravityBoots in loadout) and
         (Morph in loadout) and

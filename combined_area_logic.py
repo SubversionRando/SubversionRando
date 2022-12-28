@@ -666,91 +666,75 @@ area_logic: AreaLogicType = {
     "LifeTemple": {
         ("ElevatorToWellspringL", "NorakBrookL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (brook in loadout) and  # casual add
-            (veranda in loadout) and  # casual add
-            (waterGardenBottom in loadout)
-            # Note: If no canFly and no speedbooster,
-            # this requires a wall jump around a 2 tile ledge (in Water Garden)
-            # I think that's not too hard for casual, but some people might not like it.
+            (LifeTemple.brook in loadout) and
+            (LifeTemple.veranda in loadout) and
+            (LifeTemple.waterToVeranda in loadout) and
+            (LifeTemple.waterGardenBottom in loadout)
         ),
         ("ElevatorToWellspringL", "NorakPerimeterTR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (veranda in loadout) and  # casual add
-            (waterGardenBottom in loadout) and
+            (LifeTemple.veranda in loadout) and
+            (LifeTemple.waterToVeranda in loadout) and
+            (LifeTemple.waterGardenBottom in loadout) and
             (MetroidSuit in loadout)
         ),
         ("ElevatorToWellspringL", "NorakPerimeterBL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (veranda in loadout) and  # casual add
-            (waterGardenBottom in loadout)
+            (LifeTemple.perimBL in loadout) and
+            (LifeTemple.veranda in loadout) and
+            (LifeTemple.waterToVeranda in loadout) and
+            (LifeTemple.waterGardenBottom in loadout)
         ),
         ("NorakBrookL", "ElevatorToWellspringL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (brook in loadout) and  # casual add
-            (veranda in loadout) and  # casual add
-            (waterGardenBottom in loadout)
+            (LifeTemple.brook in loadout) and
+            (LifeTemple.veranda in loadout) and
+            (LifeTemple.waterToVeranda in loadout) and
+            (LifeTemple.waterGardenBottom in loadout)
         ),
         ("NorakBrookL", "NorakPerimeterTR"): lambda loadout: (
             (GravityBoots in loadout) and
             (MetroidSuit in loadout) and
-            (Morph in loadout) and  # expert brook
-            (loadout.has_any(GravitySuit, Ice, HiJump, Speedball, SpaceJump, Bombs, SpeedBooster))  # expert brook
+            (LifeTemple.brook in loadout)
         ),
         ("NorakBrookL", "NorakPerimeterBL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Morph in loadout) and  # expert brook
-            (
-                (canBomb in loadout) or
-                (Screw in loadout) or
-                (SpeedBooster in loadout)  # expert add
-            ) and
-            (loadout.has_any(GravitySuit, Ice, HiJump, Speedball, SpaceJump, Bombs, SpeedBooster))  # expert brook
+            (LifeTemple.brook in loadout) and
+            (LifeTemple.perimBL in loadout)
         ),
         ("NorakPerimeterTR", "ElevatorToWellspringL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (veranda in loadout) and  # casual add
-            (waterGardenBottom in loadout) and
-            (MetroidSuit in loadout)
+            (MetroidSuit in loadout) and
+            (LifeTemple.veranda in loadout) and
+            (LifeTemple.waterToVeranda in loadout) and
+            (LifeTemple.waterGardenBottom in loadout)
         ),
         ("NorakPerimeterTR", "NorakBrookL"): lambda loadout: (
             (GravityBoots in loadout) and
             (MetroidSuit in loadout) and
-            (Morph in loadout) and  # expert brook
-            (loadout.has_any(GravitySuit, Ice, HiJump, Speedball, SpaceJump, Bombs, SpeedBooster))  # expert brook
+            (LifeTemple.brook in loadout)
         ),
         ("NorakPerimeterTR", "NorakPerimeterBL"): lambda loadout: (
             (GravityBoots in loadout) and
-            redo
-            # TODO: are these parentheses in the right place? (mixed and/or at the same level)
-            ((canBomb in loadout) or (Screw in loadout) or (
-                (SpeedBooster in loadout) and
-                (Morph in loadout)
-            ) and
-            (MetroidSuit in loadout))
-        ),  # Test doing NorakPerimeterBL spark with/out morph
-
+            (MetroidSuit in loadout) and
+            (LifeTemple.perimBL in loadout)
+        ),
         ("NorakPerimeterBL", "ElevatorToWellspringL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (veranda in loadout) and  # casual add
-            (waterGardenBottom in loadout)  # includes canBomb for the bomb blocks in Norak Perimeter
+            (LifeTemple.perimBL in loadout) and
+            (LifeTemple.veranda in loadout) and
+            (LifeTemple.waterToVeranda in loadout) and
+            (LifeTemple.waterGardenBottom in loadout)
         ),
         ("NorakPerimeterBL", "NorakBrookL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Morph in loadout) and  # expert brook
-            (loadout.has_any(GravitySuit, Ice, HiJump, Speedball, SpaceJump, Bombs, SpeedBooster)) and  # expert brook
-            ((canBomb in loadout) or
-             (Screw in loadout) or
-             (SpeedBooster in loadout))  # expert add
-        ),  # and? anything else?
+            (LifeTemple.perimBL in loadout) and
+            (LifeTemple.brook in loadout)
+        ),
         ("NorakPerimeterBL", "NorakPerimeterTR"): lambda loadout: (
-            # TODO: are these parentheses in the right place? (mixed and/or at the same level)
             (GravityBoots in loadout) and
-            ((canBomb in loadout) or
-             (Screw in loadout) or
-             ((SpeedBooster in loadout) and
-              (Morph in loadout)) and
+            (LifeTemple.perimBL in loadout) and
             (MetroidSuit in loadout)
-             ) redo
         ),
     },
     "FireHive": {
