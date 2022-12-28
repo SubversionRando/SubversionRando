@@ -33,6 +33,177 @@ from trick_data import Tricks
 ) = items_unpackable
 
 
+class Early:
+    cisternAccessTunnel = LogicShortcut(lambda loadout: (
+        (Morph in loadout) and
+        loadout.has_any(Speedball, Bombs, PowerBomb, Tricks.movement_moderate)
+        # speedball or fast morph helps you follow your bullet to the shotblock
+    ))
+    """ Cistern Access Tunnel with a shot block in it """
+
+    causeway = LogicShortcut(lambda loadout: (
+        (SpeedBooster in loadout) or (
+            (can_bomb(2) in loadout) and
+            ((Speedball in loadout) or (
+                (shootThroughWalls in loadout) and
+                ((GravitySuit in loadout) or (
+                    (Tricks.crouch_or_downgrab in loadout) and
+                    ((HiJump in loadout) or (Ice in loadout))
+                ))
+            ))
+        )
+    ))
+
+    concourseShinespark = LogicShortcut(lambda loadout: (
+        (SpeedBooster in loadout) and
+        # less than 180 is needed for this shinespark, (could be done with no energy tank)
+        # but then you're very likely to need more health to shinespark in the next room (when it's not area rando)
+        (energy_req(180) in loadout) and
+        (Morph in loadout)  # back down
+    ))
+    """ access to the top of ruined concourse """
+
+    sporeFieldEntrance = LogicShortcut(lambda loadout: (
+        (Morph in loadout) and
+        (
+            (Tricks.morph_jump_3_tile_up_1 in loadout) or
+            (Speedball in loadout) or
+            (Bombs in loadout) or
+            (PowerBomb in loadout)
+        )
+    ))
+    """ through the small morph tunnel before entering spore field """
+
+
+# TODO: SandLand location logic doesn't use these shortcuts as much as they should
+class SandLand:
+    """ not including any colored doors that are different colors in different directions """
+
+    # Some SandLand logic shortcuts are chosen carefully to make a graph that can be connected at junctions
+    # to make all the paths between Ocean Shore and Turbid Passage for the area logic.
+
+    #                      * ocean shore
+    #                     /
+    #                  - *  green moon
+    #         shaft  /   |
+    #             - * -- *  canyon
+    #           /        |
+    #    lower * ------- *  sed floor
+    #        /            \
+    #       *              * turbid passage
+    #    pile anchor
+
+    lowerLowerToSedFloor = LogicShortcut(lambda loadout: (
+        (GravityBoots in loadout) and
+        (  # bottom to Dark Hollow
+            (GravitySuit in loadout) or
+            ((HiJump in loadout) and (Tricks.crouch_precise in loadout)) or
+            (Tricks.sbj_underwater_no_hjb in loadout) or
+            (Tricks.freeze_hard in loadout)  # crab
+            # not very hard, but each to miss, then you have to look for another crab
+        ) and
+        (pinkDoor in loadout) and  # between submarine crevice and murky gallery
+        (  # murky gallery and submarine crevice
+            (GravitySuit in loadout) or
+            (
+                (HiJump in loadout) and
+                (Tricks.crouch_or_downgrab in loadout) and  # up from murky gallery
+                (Tricks.movement_moderate in loadout) and  # left from murky gallery
+                (  # up from submarine crevice
+                    (Tricks.uwu_2_tile in loadout) or
+                    ((Super in loadout) and (Tricks.freeze_hard in loadout))  # super to knock crab off wall and freeze
+                )
+            )
+        ) and
+        (  # to not get stuck in sediment sand pits
+            (GravitySuit in loadout) or
+            (HiJump in loadout)
+        )
+    ))
+    """ bottom-right of sea caves lower hall to middle of sediment floor """
+
+    sedFloorToCanyon = LogicShortcut(lambda loadout: (
+        (GravityBoots in loadout) and
+        (pinkDoor in loadout) and  # between sediment floor and sediment canyon
+        (  # to not get stuck in sand pit
+            (GravitySuit in loadout) or
+            (HiJump in loadout)
+        )
+    ))
+    """ middle of sediment floor to bottom-left of sediment canyon """
+
+    canyonToGreenMoon = LogicShortcut(lambda loadout: (
+        (GravityBoots in loadout) and
+        (
+            (GravitySuit in loadout) or
+            (
+                (HiJump in loadout) and
+                (
+                    ((Tricks.uwu_2_tile in loadout) and (Tricks.crouch_precise in loadout)) or
+                    (Tricks.freeze_hard in loadout) or
+                    (Tricks.sbj_underwater_w_hjb in loadout)
+                )
+            )
+        )
+    ))
+    """ bottom-left of sediment canyon to ocean shallows above green door """
+
+    canyonToShaft = LogicShortcut(lambda loadout: (
+        loadout.has_all(GravitySuit, Speedball, Morph, GravityBoots, Super)
+        # door between Sediment Tunnel and Ocean Shallows
+    ))
+    """ bottom-left of sediment canyon to sea cave shaft """
+
+    shaftToGreenMoon = LogicShortcut(lambda loadout: (
+        (GravityBoots in loadout) and
+        ((
+            # top path
+            (pinkDoor in loadout)  # Ocean Shallows left
+        ) or (
+            # bottom path (no pink door needed)
+            (Morph in loadout) and
+            ((GravitySuit in loadout) or (HiJump in loadout) or (Tricks.sbj_underwater_no_hjb in loadout))
+            # TODO: confirm springball jump can get you back through bottom path
+        ))
+    ))
+    """ sea cave shaft to ocean shallows above green door """
+
+    shaftToLowerLower = LogicShortcut(lambda loadout: (
+        (GravityBoots in loadout) and
+        (pinkDoor in loadout) and  # between shaft and sea cave narrows
+        ((GravitySuit in loadout) or (HiJump in loadout) or (Tricks.sbj_underwater_no_hjb in loadout)) and
+        # TODO: confirm springball jump can get you over narrows
+        (pinkDoor in loadout) and  # between sea caves upper and sea caves lower
+        (  # top of lower hall, to bottom-right of lower hall
+            ((GravitySuit in loadout) and (Screw in loadout)) or
+            (
+                (DarkVisor in loadout) and
+                (Morph in loadout) and
+                (
+                    (Speedball in loadout) or
+                    ((GravitySuit in loadout) and (can_bomb(1) in loadout))
+                )
+            )
+        )
+    ))
+    """ sea cave shaft to bottom-right of sea caves lower hall """
+
+    turbidToSedFloor = LogicShortcut(lambda loadout: (
+        (GravityBoots in loadout) and
+        (Morph in loadout) and
+        ((GravitySuit in loadout) or (
+            (HiJump in loadout) and
+            ((Tricks.movement_zoast in loadout) or (
+                (Super in loadout) and
+                (Speedball in loadout)
+                # If no aqua suit, assume the player will fall into eddy channels
+                # Speedball to get out of eddy, and Supers to get back into Sediment Floor
+            ))
+        ))
+    ))
+    """ from turbid passage to the middle of sediment floor """
+
+
 class Verdite:
     hotSpring = LogicShortcut(lambda loadout: (
         # which hole you use in the top of hot spring determines
@@ -339,6 +510,15 @@ class PirateLab:
         )
     ))
     """ top of East Corridor to get to Foyer """
+
+    cenote = LogicShortcut(lambda loadout: (
+        (Grapple in loadout) and
+        (SpeedBooster in loadout) and
+        (Morph in loadout) and
+        (Speedball in loadout) and
+        (can_use_pbs(1) in loadout)
+    ))
+    """ use the cenote passage into pirate lab (not past the item) """
 
 
 class LifeTemple:
