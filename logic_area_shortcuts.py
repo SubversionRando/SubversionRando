@@ -744,6 +744,7 @@ class FireHive:
     """ middle of hive crossways (bug farm) to fire temple courtyard """
 
     hiveEntrance = LogicShortcut(lambda loadout: (
+        (pinkDoor in loadout) and  # between hive entrance and elevator
         ((can_bomb(4) in loadout) or (
             (Speedball in loadout) and
             (can_bomb(3) in loadout)
@@ -772,8 +773,25 @@ class FireHive:
     """
     collapsed passage and ancient basin access
 
+    This is contained in courtyardToCollapsed
+
     doesn't include hell runs, because that will need to be measured separately to wherever you're going
     """
+
+    courtyardToCollapsed = LogicShortcut(lambda loadout: (
+        (FireHive.ancientBasinAccess in loadout) and
+        (  # ripper above fire temple courtyard door
+            (killRippers in loadout) or
+            (HiJump in loadout) or
+            (SpaceJump in loadout) or
+            (Tricks.movement_moderate in loadout)
+        ) and
+        (GravityBoots in loadout) and
+        # collapsed passage to fire temple courtyard
+        (varia_or_hell_run(850, heat_and_metroid_suit_not_required=True) in loadout)
+        # TODO: patience or more energy, because farming in fire temple courtyard would be really slow
+    ))
+    """ Fire Temple Courtyard to Collapsed Passage (no doors included because it depends on direction) """
 
 
 class Geothermal:
