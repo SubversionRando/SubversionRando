@@ -1,13 +1,11 @@
 from connection_data import area_doors_unpackable
 from door_logic import canOpen
 from item_data import items_unpackable
-from loadout import Loadout
 from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, \
     hell_run_energy, lava_run, varia_or_hell_run
-from logic_area_shortcuts import SandLand, ServiceSector, SpacePort, LifeTemple, SkyWorld, FireHive, \
-    PirateLab, Verdite, Geothermal, Suzi, DrayLand, Early
+from logic_area_shortcuts import SandLand, ServiceSector, LifeTemple, \
+    SkyWorld, FireHive, PirateLab, Verdite, Geothermal, DrayLand, Early
 from logicInterface import AreaLogicType
-from logic_shortcut import LogicShortcut
 from logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor, pinkSwitch,
     missileBarrier, icePod, electricHyper, killRippers, killGreenPirates
@@ -544,26 +542,18 @@ area_logic: AreaLogicType = {
     "SkyWorld": {
         ("WestTerminalAccessL", "MezzanineConcourseL"): lambda loadout: (
             (GravityBoots in loadout) and
-            ((canFly in loadout) or
-             (SpeedBooster in loadout) or
-             (HiJump in loadout) or  # expert add
-             (Ice in loadout) or
-             ((Morph in loadout) and (Speedball in loadout))  # expert add
-             )
+            (SkyWorld.mezzanineShaft in loadout)
         ),
         ("WestTerminalAccessL", "VulnarCanyonL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canOpen(VulnarCanyonL) in loadout) and
             (SpeedBooster in loadout) and
-            ((canBomb in loadout) or (Screw in loadout))
+            (canOpen(VulnarCanyonL) in loadout) and
+            ((can_bomb(1) in loadout) or (Screw in loadout))
         ),
         ("WestTerminalAccessL", "CanyonPassageR"): lambda loadout: (
             (GravityBoots in loadout) and
             (SpeedBooster in loadout) and
-            (
-                (canBomb in loadout) or
-                (Screw in loadout)
-                )
+            ((can_bomb(1) in loadout) or (Screw in loadout))
         ),
         ("WestTerminalAccessL", "ElevatorToCondenserL"): lambda loadout: (
             (GravityBoots in loadout) and
