@@ -6,7 +6,8 @@ from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, varia_or_he
 from logic_shortcut import LogicShortcut
 from logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor,
-    missileBarrier, electricHyper, killRippers
+    missileBarrier, electricHyper, killRippers, killYellowPirates,
+    plasmaWaveGate
 )
 from trick_data import Tricks
 
@@ -807,6 +808,7 @@ class Geothermal:
             ((GravitySuit in loadout) and (Tricks.gravity_jump in loadout))
         )
     ))
+    """ includes metroid suit for laser right outside left door """
 
     thermalResBeta = LogicShortcut(lambda loadout: (
         ((GravitySuit in loadout) or (
@@ -817,6 +819,40 @@ class Geothermal:
         )) and
         (varia_or_hell_run(80) in loadout)  # cold room
     ))
+
+    thermalResGamma = LogicShortcut(lambda loadout: (
+        (GravityBoots in loadout) and
+        (plasmaWaveGate in loadout) and
+        ((
+            # Subversion's full halfie
+            # can shinespark across both ways,
+            # but getting the right height (from the left) is tricky
+            (killYellowPirates in loadout) and
+            (Tricks.short_charge_3 in loadout) and
+            (Tricks.movement_zoast in loadout) and
+            (varia_or_hell_run(289) in loadout) and
+            (energy_req(142) in loadout)
+        ) or (
+            ((varia_or_hell_run(318) in loadout) and (Tricks.wall_jump_precise in loadout)) or
+            (varia_or_hell_run(529) in loadout)
+        ))
+    ))
+    """ top left of Magma Pump to middle of Reservoir Maintenance Tunnel (includes plasma+wave gate) """
+
+    intakePump = LogicShortcut(lambda loadout: (
+        (Geothermal.thermalResBeta in loadout) and
+        (
+            (GravitySuit in loadout) or
+            loadout.has_all(HiJump, Tricks.freeze_hard, Tricks.movement_moderate)  # uwu 1 tile wide
+        ) and
+        (can_use_pbs(2) in loadout) and
+        (varia_or_hell_run(150) in loadout) and
+        (
+            ((MetroidSuit in loadout) and (energy_req(250) in loadout)) or
+            ((Screw in loadout) and (breakIce in loadout))
+        )
+    ))
+    """ including thermalResBeta """
 
 
 class DrayLand:

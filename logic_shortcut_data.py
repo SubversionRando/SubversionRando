@@ -1,7 +1,7 @@
 from connection_data import area_doors_unpackable
 from item_data import items_unpackable
 from logic_shortcut import LogicShortcut
-from logicCommon import can_bomb, can_use_pbs
+from logicCommon import ammo_req, can_bomb, can_use_pbs
 
 (
     CraterR, SunkenNestL, RuinedConcourseBL, RuinedConcourseTR, CausewayR,
@@ -82,4 +82,13 @@ killGreenPirates = LogicShortcut(lambda loadout: (
     (can_bomb(1) in loadout) or
     (Spazer in loadout) or
     (Screw in loadout)
+))
+
+killYellowPirates = LogicShortcut(lambda loadout: (
+    (Charge in loadout) or
+    (Missile in loadout) or
+    ((Super in loadout) and (ammo_req(15) in loadout)) or
+    (can_use_pbs(3) in loadout) or
+    (Screw in loadout) or
+    ((Morph in loadout) and (Bombs in loadout))  # TODO: and patience
 ))
