@@ -1,3 +1,5 @@
+""" This is for logic shortcuts that apply only to 1 specific area. """
+
 from connection_data import area_doors_unpackable
 from item_data import items_unpackable
 from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, varia_or_hell_run
@@ -202,6 +204,19 @@ class SandLand:
         ))
     ))
     """ from turbid passage to the middle of sediment floor """
+
+
+class ServiceSector:
+    wasteProcessingTraverse = LogicShortcut(lambda loadout: (
+        ((HiJump in loadout) and (Ice in loadout) and (Tricks.wall_jump_precise in loadout)) or
+        (Tricks.sbj_w_hjb in loadout) or
+        ((SpaceJump in loadout) and (
+            loadout.has_any(SpaceJumpBoost, HiJump)
+        )) or
+        (SpeedBooster in loadout) or
+        (Bombs in loadout)
+    ))
+    """ traverse from one door of waste processing to the other (not including colored door) """
 
 
 class Verdite:
@@ -782,6 +797,7 @@ class SpacePort:
     spaceportTopFromElevator = LogicShortcut(lambda loadout: (
         (Grapple in loadout) or
         loadout.game.logic.can_crash_spaceport(loadout)
+        # TODO: if I get up with xray, or (ice and super), then i can get back down with moonfall
     ))
 
 

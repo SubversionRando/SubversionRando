@@ -4,7 +4,7 @@ from item_data import items_unpackable
 from loadout import Loadout
 from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, \
     hell_run_energy, lava_run, varia_or_hell_run
-from logic_area_shortcuts import SandLand, SpacePort, LifeTemple, SkyWorld, FireHive, \
+from logic_area_shortcuts import SandLand, ServiceSector, SpacePort, LifeTemple, SkyWorld, FireHive, \
     PirateLab, Verdite, Geothermal, Suzi, DrayLand, Early
 from logicInterface import AreaLogicType
 from logic_shortcut import LogicShortcut
@@ -457,118 +457,88 @@ area_logic: AreaLogicType = {
     },
     "ServiceSector": {
         ("FieldAccessL", "TransferStationR"): lambda loadout: (
-            loadout.has_all(GravityBoots, pinkDoor, DarkVisor, wave, canBomb)
+            loadout.has_all(GravityBoots, pinkDoor, DarkVisor, shootThroughWalls, can_bomb(1))
         ),
         ("FieldAccessL", "CellarR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Super in loadout) and
-            casual dark visor and gravity suit
+            (Super in loadout) and  # door from crumbling basement to cellar, and field access pink door
+            ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
+            # If you fall in the water with nothing, it's a tight jump to get out.
+            # But if you don't want to do that tight jump, then don't fall in the water.
+            # It's not worth putting in logic that something is required when it's not required,
+            # just for the case that someone falls in the water without it.
             (shootThroughWalls in loadout) and
-            (canBomb in loadout)
+            (can_bomb(1) in loadout)
         ),
         ("FieldAccessL", "SubbasementFissureL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Super in loadout) and
-            (canBomb in loadout) and
-            casual dark visor
+            (Super in loadout) and  # door into exhaust vent, and pink door in field access
+            (can_bomb(1) in loadout) and  # can screw down, but not up
+            ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
             (shootThroughWalls in loadout) and
-            (
-                # expert
-                ((HiJump in loadout) and (Ice in loadout)) or
-                ((HiJump in loadout) and (Speedball in loadout)) or
-                # casual and expert
-                (SpaceJump in loadout) or
-                (SpeedBooster in loadout) or
-                # expert
-                (Bombs in loadout)
-                ) 
+            (ServiceSector.wasteProcessingTraverse in loadout)
         ),
         ("TransferStationR", "FieldAccessL"): lambda loadout: (
-            loadout.has_all(GravityBoots, pinkDoor, DarkVisor, wave, canBomb)
+            loadout.has_all(GravityBoots, pinkDoor, DarkVisor, can_bomb(1))
+            # not putting shootThroughWalls in requirements here, don't close the door behind you
         ),
         ("TransferStationR", "CellarR"): lambda loadout: (
             (GravityBoots in loadout) and
             (Super in loadout) and
-            (canBomb in loadout) and
+            (can_bomb(1) in loadout) and
             (DarkVisor in loadout) and
-            (shootThroughWalls in loadout)  and casual underwater
+            (shootThroughWalls in loadout)
         ),
         ("TransferStationR", "SubbasementFissureL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Super in loadout) and
-            (canBomb in loadout) and
             (DarkVisor in loadout) and
+            (Super in loadout) and  # door to exhaust vent
+            (can_bomb(1) in loadout) and
             (shootThroughWalls in loadout) and
-            (
-                # expert
-                ((HiJump in loadout) and (Ice in loadout)) or
-                ((HiJump in loadout) and (Speedball in loadout)) or
-                # casual and expert
-                (SpaceJump in loadout) or
-                (SpeedBooster in loadout) or
-                # expert
-                (Bombs in loadout)
-                )
+            (ServiceSector.wasteProcessingTraverse in loadout)
         ),
         ("CellarR", "FieldAccessL"): lambda loadout: (
-            loadout.has_all(GravityBoots, pinkDoor, canBomb, wave) and casual dark visor
+            (GravityBoots in loadout) and
+            (pinkDoor in loadout) and  # cellar to crumbling, and field access pink door
+            ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
+            (shootThroughWalls in loadout) and
+            (can_bomb(1) in loadout)
         ),
         ("CellarR", "TransferStationR"): lambda loadout: (
-            loadout.has_all(GravityBoots, pinkDoor, canBomb, DarkVisor, wave)
+            loadout.has_all(GravityBoots, pinkDoor, can_bomb(1), DarkVisor, shootThroughWalls)
+            # door from cellar to crumbling
         ),
         ("CellarR", "SubbasementFissureL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Super in loadout) and
-            (canBomb in loadout) and
-            (DarkVisor in loadout) and casual underwater and (spacejump or SpeedBooster)
+            (Super in loadout) and  # door into exhaust vent, and pink door to crumbling
+            (can_bomb(1) in loadout) and
+            (ServiceSector.wasteProcessingTraverse in loadout) and
+            ((DarkVisor in loadout) or (Tricks.dark_easy in loadout))
+            # TODO: why did expert logic say dark visor was hard required here?
         ),
         ("SubbasementFissureL", "FieldAccessL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Super in loadout) and casual replaced super with wave
-            (canBomb in loadout) and casual needed pb
-            (DarkVisor in loadout) and
-            (
-                # expert
-                ((HiJump in loadout) and (Ice in loadout)) or
-                ((HiJump in loadout) and (Speedball in loadout)) or
-                # casual and expert
-                (SpaceJump in loadout) or
-                (SpeedBooster in loadout) or
-                # expert
-                (Bombs in loadout)
-                )
+            (can_use_pbs(1) in loadout) and  # door to waste
+            (ServiceSector.wasteProcessingTraverse in loadout) and
+            (shootThroughWalls in loadout) and  # return logic
+            (pinkDoor in loadout) and  # into field access
+            ((DarkVisor in loadout) or (Tricks.dark_easy in loadout))
+            # TODO: why did expert logic say dark visor was hard required here?
         ),
         ("SubbasementFissureL", "TransferStationR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canUsePB in loadout) and
+            (can_use_pbs(1) in loadout) and  # door to waste
+            (ServiceSector.wasteProcessingTraverse in loadout) and
             (shootThroughWalls in loadout) and
-             casual darkvisor
-            (
-                # expert
-                ((HiJump in loadout) and (Ice in loadout)) or
-                ((HiJump in loadout) and (Speedball in loadout)) or
-                # casual and expert
-                (SpaceJump in loadout) or
-                (SpeedBooster in loadout) or
-                # expert
-                (Bombs in loadout)
-                )
+            (DarkVisor in loadout)
         ),
         ("SubbasementFissureL", "CellarR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Super in loadout) and
-            (canUsePB in loadout) and
-            casual DarkVisor and underwater
-            (
-                # expert
-                ((HiJump in loadout) and (Ice in loadout)) or
-                ((HiJump in loadout) and (Speedball in loadout)) or
-                # casual and expert
-                (SpaceJump in loadout) or
-                (SpeedBooster in loadout) or
-                # expert
-                (Bombs in loadout)
-                )
+            (can_use_pbs(1) in loadout) and  # door to waste
+            (ServiceSector.wasteProcessingTraverse in loadout) and
+            (Super in loadout) and  # door into cellar access
+            ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
+            (can_bomb(1) in loadout)
         ),
     },
     "SkyWorld": {

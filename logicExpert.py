@@ -3229,6 +3229,7 @@ class Expert(LogicInterface):
             (spaceDrop not in loadout) and
             (MetroidSuit in loadout) and
             (Super in loadout)
+            # This is dangerous because it messes up ocean logic.
         ) or (
             (spaceDrop in loadout) and
             (MetroidSuit in loadout) and
