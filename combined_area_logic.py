@@ -1,3 +1,4 @@
+from math import comb
 from connection_data import area_doors_unpackable
 from door_logic import canOpen
 from item_data import items_unpackable
@@ -811,248 +812,136 @@ area_logic: AreaLogicType = {
     },
     "Geothermal": {
         ("MagmaPumpL", "ReservoirMaintenanceTunnelR"): lambda loadout: (
-            # matched (cept varia)
             (GravityBoots in loadout) and
-            (plasmaWaveGate in loadout) and
-            (varia_or_hell_run(350) in loadout) and
-            (canBomb in loadout)
+            (Geothermal.thermalResGamma in loadout) and
+            (can_bomb(1) in loadout)
         ),
         ("MagmaPumpL", "IntakePumpR"): lambda loadout: (
             (GravityBoots in loadout) and
-            ((GravitySuit in loadout) or  # casual need gravity
-             (HiJump in loadout)) and
-            (plasmaWaveGate in loadout) and
-            (varia_or_hell_run(350) in loadout) and
-            (canUsePB in loadout) and
-            (
-                ((MetroidSuit in loadout) and (energy_req(250) in loadout)) or
-                (Screw in loadout)
-                )
+            (Geothermal.thermalResGamma in loadout) and
+            (Geothermal.intakePump in loadout)
         ),
         ("MagmaPumpL", "ThermalReservoir1R"): lambda loadout: (
             (GravityBoots in loadout) and
-            (
-                (GravitySuit in loadout) or  # casual needed
-                (
-                    (canBomb in loadout) and
-                    (
-                        (HiJump in loadout) or
-                        (Ice in loadout)
-                        )
-                    )
-                ) and
-            (plasmaWaveGate in loadout) and
-            (varia_or_hell_run(350) in loadout) and
+            (Geothermal.thermalResGamma in loadout) and
+            (Geothermal.thermalResBeta in loadout) and
+            (Screw in loadout) and
             (MetroidSuit in loadout) and
-            (Screw in loadout)
+            (Geothermal.thermalResAlpha in loadout)
         ),
         ("MagmaPumpL", "GeneratorAccessTunnelL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canUsePB in loadout) and
-            (
-                (GravitySuit in loadout) or  # casual needed
-                (canBomb in loadout) and
-                (LargeAmmo in loadout) and
-                (
-                     (HiJump in loadout) or
-                     (Ice in loadout)
-                     )
-                ) and
-            (plasmaWaveGate in loadout) and
-            (varia_or_hell_run(350) in loadout) and
+            (Geothermal.thermalResGamma in loadout) and
+            (Geothermal.thermalResBeta in loadout) and
+            (Screw in loadout) and
             (MetroidSuit in loadout) and
-            (Screw in loadout)
+            (can_use_pbs(2) in loadout)
         ),
         ("ReservoirMaintenanceTunnelR", "MagmaPumpL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (plasmaWaveGate in loadout) and
-            (varia_or_hell_run(350) in loadout) and
-            (canBomb in loadout)
+            (Geothermal.thermalResGamma in loadout) and
+            (can_bomb(1) in loadout)
         ),
         ("ReservoirMaintenanceTunnelR", "IntakePumpR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canUsePB in loadout) and
-            ((GravitySuit in loadout) or  # casual gravity
-             (HiJump in loadout)) and
-            (
-                ((MetroidSuit in loadout) and (energy_req(250) in loadout)) or
-                (
-                    (breakIce in loadout) and
-                    (Screw in loadout)
-                    )
-                )
+            (can_bomb(1) in loadout) and
+            (Geothermal.intakePump in loadout)
         ),
         ("ReservoirMaintenanceTunnelR", "ThermalReservoir1R"): lambda loadout: (
             (GravityBoots in loadout) and
-            (
-                (GravitySuit in loadout) or
-                (
-                    (canBomb in loadout and
-                     (
-                         (HiJump in loadout) or
-                         (Ice in loadout)
-                         )
-                     )
-                    ) 
-                ) and
-            (varia_or_hell_run(350) in loadout) and
+            (can_bomb(1) in loadout) and
+            (Geothermal.thermalResBeta in loadout) and
+            (Screw in loadout) and
             (MetroidSuit in loadout) and
-            (Screw in loadout)
-            # TODO: canBomb discrepancy?
+            (Geothermal.thermalResAlpha in loadout)
         ),
         ("ReservoirMaintenanceTunnelR", "GeneratorAccessTunnelL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (
-                (GravitySuit in loadout) or  # casual need
-                (
-                    (HiJump in loadout) or
-                    (Ice in loadout)
-                    )
-                ) and
-            (canUsePB in loadout) and
+            (can_bomb(1) in loadout) and
+            (Geothermal.thermalResBeta in loadout) and
+            (Screw in loadout) and
             (MetroidSuit in loadout) and
-            (Screw in loadout)
+            (can_use_pbs(2) in loadout)
         ),
         ("IntakePumpR", "MagmaPumpL"): lambda loadout: (
             (GravityBoots in loadout) and
-            ((GravitySuit in loadout) or  # casual need
-             (HiJump in loadout)) and
-            (plasmaWaveGate in loadout) and
-            (varia_or_hell_run(350) in loadout) and
-            (canUsePB in loadout) and
-            (
-                ((MetroidSuit in loadout) and (energy_req(250) in loadout))or
-                (Screw in loadout)
-                )
+            (Geothermal.intakePump in loadout) and
+            (Geothermal.thermalResGamma in loadout)
         ),
         ("IntakePumpR", "ReservoirMaintenanceTunnelR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canUsePB in loadout) and
-            ((GravitySuit in loadout) or # casual need
-            # TODO: varia discrepancy?
-             (HiJump in loadout)) and
-            (
-                ((MetroidSuit in loadout) and (energy_req(250) in loadout)) or
-                (
-                    (breakIce in loadout) and
-                    (Screw in loadout)
-                    )
-                )
+            (Geothermal.intakePump in loadout) and
+            (can_bomb(1) in loadout)
         ),
         ("IntakePumpR", "ThermalReservoir1R"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canUsePB in loadout) and
-            ((GravitySuit in loadout) or # c
-             (HiJump in loadout)) and
+            (Geothermal.intakePump in loadout) and
             (Screw in loadout) and
             (MetroidSuit in loadout) and
-            (# expert add
-                (energy_req(250) in loadout) or
-                (breakIce in loadout)
-                ) and  
-            (varia_or_hell_run(350) in loadout)
+            (Geothermal.thermalResAlpha in loadout)
         ),
         ("IntakePumpR", "GeneratorAccessTunnelL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canUsePB in loadout) and
-            ((GravitySuit in loadout) or (HiJump in loadout)) and #c
+            (Geothermal.intakePump in loadout) and
             (Screw in loadout) and
             (MetroidSuit in loadout) and
-            (# expert add
-                (energy_req(250) in loadout) or
-                (breakIce in loadout)  
-                )
+            (can_use_pbs(2) in loadout)
         ),
         ("ThermalReservoir1R", "MagmaPumpL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (
-                (GravitySuit in loadout) or#c
-                (
-                    (canBomb in loadout) and
-                    (
-                        (HiJump in loadout) or
-                        (Ice in loadout)
-                     )
-                 )
-                ) and
-            (plasmaWaveGate in loadout) and
-            (varia_or_hell_run(350) in loadout) and
+            (Geothermal.thermalResAlpha in loadout) and
             (MetroidSuit in loadout) and
-            (Screw in loadout)
+            (Screw in loadout) and
+            (Geothermal.thermalResBeta in loadout) and
+            (Geothermal.thermalResGamma in loadout)
         ),
         ("ThermalReservoir1R", "ReservoirMaintenanceTunnelR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (
-                (GravitySuit in loadout) or#c
-                (canBomb in loadout) and
-                 (
-                     (HiJump in loadout) or
-                     (Ice in loadout)
-                     )
-                ) and
-            (varia_or_hell_run(350) in loadout) and
+            (Geothermal.thermalResAlpha in loadout) and
             (MetroidSuit in loadout) and
-            (Screw in loadout)
+            (Screw in loadout) and
+            (Geothermal.thermalResBeta in loadout) and
+            (can_bomb(1) in loadout)
         ),
         ("ThermalReservoir1R", "IntakePumpR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canUsePB in loadout) and
-            ((GravitySuit in loadout) or#c
-             (HiJump in loadout)) and
-            (Screw in loadout) and
+            (Geothermal.thermalResAlpha in loadout) and
             (MetroidSuit in loadout) and
-            (#expert add
-                (energy_req(250) in loadout) or
-                (breakIce in loadout)
-                ) and
-            (varia_or_hell_run(350) in loadout)
+            (Screw in loadout) and
+            (Geothermal.intakePump in loadout)
         ),
         ("ThermalReservoir1R", "GeneratorAccessTunnelL"): lambda loadout: (
-            loadout.has_all(GravityBoots, canUsePB, MetroidSuit, varia_or_hell_run(350))
+            (GravityBoots in loadout) and
+            (Geothermal.thermalResAlpha in loadout) and
+            (can_use_pbs(2) in loadout)
         ),
         ("GeneratorAccessTunnelL", "MagmaPumpL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canUsePB in loadout) and
-            (
-                (GravitySuit in loadout) or#c
-                (canBomb in loadout) and
-                (
-                     (HiJump in loadout) or
-                     (Ice in loadout)
-                     )
-                ) and
-            (plasmaWaveGate in loadout) and
-            (varia_or_hell_run(350) in loadout) and
+            (can_use_pbs(2) in loadout) and
             (MetroidSuit in loadout) and
-            (Screw in loadout)
+            (Screw in loadout) and
+            (Geothermal.thermalResBeta in loadout) and
+            (Geothermal.thermalResGamma in loadout)
         ),
         ("GeneratorAccessTunnelL", "ReservoirMaintenanceTunnelR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (
-                (GravitySuit in loadout) or#c
-                (canBomb in loadout) and
-                (
-                     (HiJump in loadout) or
-                     (Ice in loadout)
-                     )
-                ) and
-            (canUsePB in loadout) and
+            (can_use_pbs(2) in loadout) and
             (MetroidSuit in loadout) and
-            (Screw in loadout)
+            (Screw in loadout) and
+            (Geothermal.thermalResBeta in loadout) and
+            (can_bomb(1) in loadout)
         ),
         ("GeneratorAccessTunnelL", "IntakePumpR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canUsePB in loadout) and
-            ((GravitySuit in loadout) or (HiJump in loadout)) and#c
-            (Screw in loadout) and
+            (can_use_pbs(2) in loadout) and
             (MetroidSuit in loadout) and
-            (#expert add
-                (energy_req(250) in loadout) or
-                (breakIce in loadout)
-                )
+            (Screw in loadout) and
+            (Geothermal.intakePump in loadout)
         ),
         ("GeneratorAccessTunnelL", "ThermalReservoir1R"): lambda loadout: (
-            loadout.has_all(GravityBoots, canUsePB, MetroidSuit, varia_or_hell_run(350))
+            (GravityBoots in loadout) and
+            (can_use_pbs(2) in loadout) and
+            (Geothermal.thermalResAlpha in loadout)
         ),
     },
     "DrayLand": {
