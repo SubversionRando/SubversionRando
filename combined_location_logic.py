@@ -5,7 +5,7 @@ from item_data import items_unpackable
 from loadout import Loadout
 from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, \
     hell_run_energy, lava_run, varia_or_hell_run
-from logic_area_shortcuts import SpacePort, LifeTemple, SkyWorld, FireHive, \
+from logic_area_shortcuts import SandLand, SpacePort, LifeTemple, SkyWorld, FireHive, \
     PirateLab, Verdite, Geothermal, Suzi, DrayLand
 from logic_shortcut import LogicShortcut
 from logic_shortcut_data import (
@@ -255,11 +255,7 @@ doorsToCentralCorridorBottom = LogicShortcut(lambda loadout: (
         (PirateLab.epiphreaticCrag in loadout)
     ) or (
         (AlluringCenoteR in loadout) and
-        (Grapple in loadout) and
-        (SpeedBooster in loadout) and
-        (Morph in loadout) and
-        (Speedball in loadout) and
-        (can_use_pbs(1) in loadout) and
+        (PirateLab.cenote in loadout) and
         ((Screw in loadout) or (MetroidSuit in loadout)) and
         (PirateLab.centralCorridorWater in loadout)
     ) or (
@@ -299,11 +295,7 @@ doorsToCentralCorridorMid = LogicShortcut(lambda loadout: (
         (PirateLab.centralCorridorWater in loadout)
     ) or (
         (AlluringCenoteR in loadout) and
-        (Grapple in loadout) and
-        (SpeedBooster in loadout) and
-        (Morph in loadout) and
-        (Speedball in loadout) and
-        (can_use_pbs(1) in loadout) and
+        (PirateLab.cenote in loadout) and
         ((Screw in loadout) or (MetroidSuit in loadout))
     ) or (
         (FoyerR in loadout) and
@@ -326,16 +318,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Sandy Cache": lambda loadout: (
         (OceanShoreR in loadout) and
-        (GravityBoots in loadout) and
-        ((
-            # top path
-            (pinkDoor in loadout)  # Ocean Shallows left
-        ) or (
-            # bottom path (no pink door needed)
-            (Morph in loadout) and
-            ((GravitySuit in loadout) or (HiJump in loadout) or (Tricks.sbj_underwater_no_hjb in loadout))
-            # TODO: confirm springball jump can get you back through bottom path
-        ))
+        (SandLand.shaftToGreenMoon in loadout)
     ),
     "Submarine Nest": lambda loadout: (
         (OceanShoreR in loadout) and
@@ -793,10 +776,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             ((MetroidSuit in loadout) or (Screw in loadout))
         ) or (
             (AlluringCenoteR in loadout) and
-            (Grapple in loadout) and
-            (SpeedBooster in loadout) and
-            (Speedball in loadout) and
-            (can_use_pbs(1) in loadout)
+            (PirateLab.cenote in loadout)
         ))
     ),
     "Briar: SJBoost": lambda loadout: (  # top  PB tube
@@ -1081,6 +1061,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
                 (Tricks.freeze_hard in loadout)
             )
         )
+        # TODO: logic from turbid passage (because no super needed)?
     ),
     "Sandy Gully": lambda loadout: (
         (OceanShoreR in loadout) and

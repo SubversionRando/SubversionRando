@@ -54,6 +54,10 @@ class Tricks:
     morph_jump_4_tile = Trick(Items.Morph)
     """ mid-air morph in a 4-tile-high space (no water) """
 
+    # TODO: I think morph_jump_3_tile or 4 may have been used where it should be this.
+    morph_jump_3_tile_up_1 = Trick(Items.Morph)
+    """ mid-air morph in a 3-tile-high space into 1 tile higher than where you started (no water) """
+
     morph_jump_3_tile_water = Trick(Items.Morph)
     """ mid-air morph in a 3-tile-high space in water """
 
