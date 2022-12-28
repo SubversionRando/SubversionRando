@@ -748,24 +748,20 @@ area_logic: AreaLogicType = {
             False  # One way logic not respected, intended
         ),
         ("VulnarDepthsElevatorER", "SequesteredInfernoL"): lambda loadout: (
-            redo
             (GravityBoots in loadout) and
-            (pinkDoor in loadout) and
-            (canBomb in loadout) and
+            (FireHive.hiveEntrance in loadout) and
             (icePod in loadout) and
-            (varia_or_hell_run(450) in loadout) and
-            (infernalSequestration in loadout)
+            (FireHive.crossways in loadout) and
+            (FireHive.infernalSequestration in loadout)
         ),
         ("VulnarDepthsElevatorER", "CollapsedPassageR"): lambda loadout: (
-            redo
             (GravityBoots in loadout) and
-            (canBomb in loadout) and
-            (Super in loadout) and
-            (varia_or_hell_run(750) in loadout) and  # TODO: want to make expert require less energy than casual?
-            (electricHyper in loadout)
-        ),
-        ("HiveBurrowL", "VulnarDepthsElevatorEL"): lambda loadout: (  # TODO: expert deleted this entry from the dict?
-            False  # One way logic not respected, intended
+            (FireHive.hiveEntrance in loadout) and
+            (icePod in loadout) and
+            (FireHive.crossways in loadout) and
+            (FireHive.crosswaysToCourtyard in loadout) and
+            (Super in loadout) and  # door to ancient basin access
+            (FireHive.courtyardToCollapsed in loadout)
         ),
         ("HiveBurrowL", "VulnarDepthsElevatorER"): lambda loadout: (
             False  # One way
@@ -776,49 +772,41 @@ area_logic: AreaLogicType = {
         ("HiveBurrowL", "CollapsedPassageR"): lambda loadout: (
             False  # One way
         ),
-        ("SequesteredInfernoL", "VulnarDepthsElevatorEL"): lambda loadout: (  # expert added entry to dict
-            (GravityBoots in loadout) and
-            (pinkDoor in loadout) and
-            (canBomb in loadout) and
-            (icePod in loadout) and
-            (varia_or_hell_run(450) in loadout) and
-            (infernalSequestration in loadout)
-        ),
         ("SequesteredInfernoL", "VulnarDepthsElevatorER"): lambda loadout: (
-            redo
             (GravityBoots in loadout) and
-            (pinkDoor in loadout) and
-            (canBomb in loadout) and
+            (FireHive.infernalSequestration in loadout) and
+            (FireHive.crossways in loadout) and
             (icePod in loadout) and
-            (varia_or_hell_run(450) in loadout) and
-            (infernalSequestration in loadout)
+            (FireHive.hiveEntrance in loadout)
         ),
         ("SequesteredInfernoL", "HiveBurrowL"): lambda loadout: (
             False  # One way Hive Burrow not in logic
         ),
         ("SequesteredInfernoL", "CollapsedPassageR"): lambda loadout: (
-            redo
-            loadout.has_all(GravityBoots, canBomb, Super, varia_or_hell_run(750), infernalSequestration)
-        ),
-        ("CollapsedPassageR", "VulnarDepthsElevatorEL"): lambda loadout: ( need entry?
             (GravityBoots in loadout) and
-            (canBomb in loadout) and
-            (Super in loadout) and
-            (energy_req(750) in loadout)
+            (FireHive.infernalSequestration in loadout) and
+            (FireHive.crosswaysToCourtyard in loadout) and
+            (Super in loadout) and  # door to ancient basin access
+            (FireHive.courtyardToCollapsed in loadout)
         ),
         ("CollapsedPassageR", "VulnarDepthsElevatorER"): lambda loadout: (
-            redo
             (GravityBoots in loadout) and
-            (canUsePB in loadout) and
-            (Super in loadout) and
-            (energy_req(750) in loadout)
+            (FireHive.courtyardToCollapsed in loadout) and
+            (pinkDoor in loadout) and  # into ancient basin
+            (FireHive.crosswaysToCourtyard in loadout) and
+            (FireHive.crossways in loadout) and
+            (icePod in loadout) and
+            (FireHive.hiveEntrance in loadout)
         ),
         ("CollapsedPassageR", "HiveBurrowL"): lambda loadout: (
             False  # One way hive burrow not in logic
         ),
         ("CollapsedPassageR", "SequesteredInfernoL"): lambda loadout: (
-            redo
-            loadout.has_all(GravityBoots, canBomb, pinkDoor, varia_or_hell_run(750), infernalSequestration)
+            (GravityBoots in loadout) and
+            (FireHive.courtyardToCollapsed in loadout) and
+            (pinkDoor in loadout) and  # into ancient basin
+            (FireHive.crosswaysToCourtyard in loadout) and
+            (FireHive.infernalSequestration in loadout)
         ),
     },
     "Geothermal": {

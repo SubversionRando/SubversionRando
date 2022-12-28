@@ -162,17 +162,7 @@ railAccess = LogicShortcut(lambda loadout: (
 collapsedHive = LogicShortcut(lambda loadout: (
     (CollapsedPassageR in loadout) and
     (pinkDoor in loadout) and
-    (FireHive.ancientBasinAccess in loadout) and
-    (  # ripper above fire temple courtyard door
-        (killRippers in loadout) or
-        (HiJump in loadout) or
-        (SpaceJump in loadout) or
-        (Tricks.movement_moderate in loadout)
-    ) and
-    (GravityBoots in loadout) and
-    # collapsed passage to fire temple courtyard
-    (varia_or_hell_run(850, heat_and_metroid_suit_not_required=True) in loadout)
-    # TODO: patience or more energy, because farming in fire temple courtyard would be really slow
+    (FireHive.courtyardToCollapsed in loadout)
 ))
 """ collapsed passage door to anything beyond fire temple courtyard """
 
