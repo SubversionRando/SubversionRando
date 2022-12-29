@@ -179,6 +179,59 @@ def hard_required_locations(game: Game) -> list[str]:
     return req_locs
 
 
+def _excluded_tricks(t: Trick) -> set[Trick]:
+    """
+    all of the tricks that should be excluded to exclude this trick
+
+    "If you can't do the easier one, then you can't do the harder one."
+    """
+    data = {
+        Tricks.hell_run_easy:
+            {Tricks.hell_run_easy, Tricks.hell_run_medium, Tricks.hell_run_hard},
+        Tricks.hell_run_medium:
+            {Tricks.hell_run_medium, Tricks.hell_run_hard},
+
+        Tricks.dark_easy:
+            {Tricks.dark_easy, Tricks.dark_medium, Tricks.dark_hard},
+        Tricks.dark_medium:
+            {Tricks.dark_medium, Tricks.dark_hard},
+
+        Tricks.movement_moderate:
+            {Tricks.movement_moderate, Tricks.movement_zoast},
+
+        Tricks.sbj_underwater_w_hjb:
+            {Tricks.sbj_underwater_w_hjb, Tricks.sbj_underwater_no_hjb},
+
+        Tricks.wall_jump_precise:
+            {Tricks.wall_jump_precise, Tricks.wall_jump_delayed},
+
+        Tricks.morph_jump_4_tile:
+            {Tricks.morph_jump_4_tile, Tricks.morph_jump_3_tile},
+
+        Tricks.crouch_or_downgrab:
+            {Tricks.crouch_or_downgrab, Tricks.crouch_precise},
+
+        Tricks.short_charge_2:
+            {Tricks.short_charge_2, Tricks.short_charge_3, Tricks.short_charge_4}
+    }
+    if t in data:
+        return data[t]
+    return {t}
+
+
+def obsoletes(t: str) -> set[str]:
+    data = {
+        "hell_run_hard": {"hell_run_medium", "hell_run_easy"},
+        "hell_run_medium": {"hell_run_easy"},
+        "dark_hard": {"dark_medium", "dark_easy"},
+        "dark_medium": {"dark_easy"},
+        "movement_zoast": {"movement_moderate"},
+    }
+    if t in data:
+        return data[t]
+    return set()
+
+
 def required_tricks(game: Game) -> tuple[list[str], list[str]]:
     """ lists of names of (tricks required to win, tricks required to get all locations) """
     completable, _, _ = solve(game)
@@ -192,11 +245,21 @@ def required_tricks(game: Game) -> tuple[list[str], list[str]]:
     all_tricks = {t: n for n, t in vars(Tricks).items() if isinstance(t, Trick)}
     tricks_allowed = game.logic
     for excluded_trick in tricks_allowed:
-        game.logic = tricks_allowed - {excluded_trick}
+        game.logic = tricks_allowed - _excluded_tricks(excluded_trick)
         completable, _, locs = solve(game)
         if not completable:
             req_for_win.append(all_tricks[excluded_trick])
         if len(locs) != 122:
             req_for_locs.append(all_tricks[excluded_trick])
+
+    obsoleted: set[str] = set()
+    for trick_name in req_for_win:
+        obsoleted.update(obsoletes(trick_name))
+    req_for_win = [trick_name for trick_name in req_for_win if trick_name not in obsoleted]
+
+    obsoleted = set()
+    for trick_name in req_for_locs:
+        obsoleted.update(obsoletes(trick_name))
+    req_for_locs = [trick_name for trick_name in req_for_locs if trick_name not in obsoleted]
 
     return req_for_win, req_for_locs
