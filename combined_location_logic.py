@@ -539,7 +539,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((can_bomb(2) in loadout) or loadout.has_all(can_bomb(1), Speedball)) and
         (
             (FieryGalleryL in loadout) and
-            (varia_or_hell_run(550, heat_and_metroid_suit_not_required=True) in loadout)
+            (Verdite.fieryTrail in loadout)
         ) or (
             (SporousNookL in loadout) and
             (Verdite.hotSpring in loadout)
@@ -1398,7 +1398,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (loadout.has_any(Ice, killRippers, Tricks.movement_moderate)) and
         ((
             (FieryGalleryL in loadout) and
-            (varia_or_hell_run(550, heat_and_metroid_suit_not_required=True) in loadout)
+            (Verdite.fieryTrail in loadout)
         ) or (
             (SporousNookL in loadout) and
             (Verdite.hotSpring in loadout)
@@ -1411,7 +1411,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         loadout.has_all(GravityBoots, lava_run(664, 1258), MetroidSuit, can_bomb(1)) and
         ((
             (FieryGalleryL in loadout) and
-            (varia_or_hell_run(550, heat_and_metroid_suit_not_required=True) in loadout)
+            (Verdite.fieryTrail in loadout)
         ) or (
             (SporousNookL in loadout) and
             (Verdite.hotSpring in loadout)
