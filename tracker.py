@@ -3,17 +3,15 @@ from copy import deepcopy
 from difflib import get_close_matches
 import os
 import sys
-from typing import Type
 
 from connection_data import AreaDoor, VanillaAreas, area_doors
 from game import Game
 from item_data import Item, Items, all_items
 from loadout import Loadout
 from location_data import Location, pullCSV, spacePortLocs
-from logicCasual import Casual
-from logicExpert import Expert
-from logicInterface import LogicInterface
+from logic_presets import casual, expert
 from solver import solve
+from trick import Trick
 
 # TODO: archives right and left, front and back
 # TODO: sensor maintenance top and bottom (sensor top, sensor bot)
@@ -47,7 +45,7 @@ class Tracker:
     undo_stack: deque[tuple[Location, Item]]
 
     def __init__(self) -> None:
-        logic = Casual
+        logic = casual
         area_rando = False
         area_connections = VanillaAreas()
 
@@ -77,14 +75,14 @@ class Tracker:
 
     def set_spoiler(self, filename: str) -> None:
         file_only = os.path.basename(filename)
-        logic: Type[LogicInterface]
+        logic: frozenset[Trick]
         if file_only[3] == "C":
-            logic = Casual
+            logic = casual
         elif file_only[3] == "E":
-            logic = Expert
+            logic = expert
         else:
             print(f"can't find logic letter in filename {file_only}")
-            logic = Expert
+            logic = expert
 
         area_rando = False
         connections: list[tuple[AreaDoor, AreaDoor]] = []

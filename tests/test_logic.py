@@ -1,9 +1,9 @@
-# import hacks, because this project is not a python package
+from collections import defaultdict
 import sys
 from pathlib import Path
-from typing import Type
 import pytest
 
+# import hacks, because this project is not a python package
 file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
 sys.path.append(str(root))
@@ -13,15 +13,15 @@ from game import Game
 from item_data import Items, items_unpackable
 from loadout import Loadout
 from location_data import Location, pullCSV
-from logicCasual import Casual
-from logicExpert import Expert
-from logicInterface import LogicInterface
+from logic_presets import casual, expert
+from logic_shortcut_data import can_win
 from logic_updater import updateLogic
+from trick import Trick
 
 # TODO: test that all locations are obtainable with no tricks
 
 
-def setup(logic: Type[LogicInterface]) -> tuple[Game, Loadout]:
+def setup(logic: frozenset[Trick]) -> tuple[Game, Loadout]:
     """ returns (all locations, vanilla connections, a new loadout) """
     all_locations = pullCSV()
     game = Game(logic, all_locations, False, VanillaAreas())
@@ -30,7 +30,7 @@ def setup(logic: Type[LogicInterface]) -> tuple[Game, Loadout]:
 
 
 def test_start_logic() -> None:
-    game, loadout = setup(Casual)
+    game, loadout = setup(casual)
 
     def update_acc() -> list[Location]:
         updateLogic(game.all_locations.values(), loadout)
@@ -55,7 +55,7 @@ def test_start_logic() -> None:
         print(loc["fullitemname"])
     assert len(accessible) == 4, "add Ocean Shore: bottom"
 
-    game, _ = setup(Expert)
+    game, _ = setup(expert)
     loadout = Loadout(game, loadout.contents)
 
     accessible = update_acc()
@@ -72,8 +72,8 @@ def test_start_logic() -> None:
     assert len(accessible) == 7
 
 
-@pytest.mark.parametrize("logic", (Casual, Expert))
-def test_all_locations(logic: Type[LogicInterface]) -> None:
+@pytest.mark.parametrize("logic", (casual, expert))
+def test_all_locations(logic: frozenset[Trick]) -> None:
     game, loadout = setup(logic)
 
     loadout.append(SunkenNestL)
@@ -91,7 +91,7 @@ def test_all_locations(logic: Type[LogicInterface]) -> None:
 
 
 def test_casual_no_hell_runs() -> None:
-    game, loadout = setup(Casual)
+    game, loadout = setup(casual)
 
     loadout.append(SunkenNestL)
     loadout.append(Items.spaceDrop)
@@ -109,7 +109,7 @@ def test_casual_no_hell_runs() -> None:
 
 
 def test_expert_hell_runs() -> None:
-    game, loadout = setup(Expert)
+    game, loadout = setup(expert)
 
     loadout.append(SunkenNestL)
     loadout.append(Items.spaceDrop)
@@ -132,7 +132,7 @@ def test_expert_hell_runs() -> None:
 
 def test_crypt_no_bomb_no_wave() -> None:
     """ test hitting switch in Crypt by following bullet with speedball """
-    game, loadout = setup(Expert)
+    game, loadout = setup(expert)
 
     loadout.append(area_doors["RuinedConcourseBL"])
     loadout.append(Items.spaceDrop)
@@ -140,6 +140,7 @@ def test_crypt_no_bomb_no_wave() -> None:
     loadout.append(Items.Morph)
     loadout.append(Items.PowerBomb)
     loadout.append(Items.Missile)
+    loadout.append(Items.LargeAmmo)
     loadout.append(Items.HiJump)
     loadout.append(Items.Ice)
     loadout.append(Items.GravitySuit)
@@ -157,7 +158,7 @@ def test_crypt_no_bomb_no_wave() -> None:
 
 def test_warrior_shrine_speedball() -> None:
     """ test hitting switch in Crypt by following bullet with speedball """
-    game, loadout = setup(Casual)
+    game, loadout = setup(casual)
 
     loadout.append(area_doors["RuinedConcourseBL"])
     loadout.append(Items.spaceDrop)
@@ -181,7 +182,7 @@ def test_warrior_shrine_speedball() -> None:
 
 
 def test_norak_perimeters() -> None:
-    game, loadout = setup(Expert)
+    game, loadout = setup(expert)
 
     loadout.append(area_doors["NorakPerimeterTR"])
     loadout.append(Items.spaceDrop)
@@ -193,8 +194,8 @@ def test_norak_perimeters() -> None:
     assert area_doors["NorakPerimeterBL"] not in loadout
 
 
-@pytest.mark.parametrize("logic", (Casual, Expert))
-def test_slag_heap_escape(logic: Type[LogicInterface]) -> None:
+@pytest.mark.parametrize("logic", (casual, expert))
+def test_slag_heap_escape(logic: frozenset[Trick]) -> None:
     """ getting out of slag heap requires getting through ice pods """
     game, loadout = setup(logic)
 
@@ -247,8 +248,9 @@ _unique_items = [
 
 
 def test_hard_required_items() -> None:
-    for logic in (Casual, Expert):
-        print(f" - {logic.__name__}")
+    for logic in (casual, expert):
+        logic_name = 'casual' if logic is casual else 'expert'
+        print(f" - {logic_name}")
         for excluded_item in _unique_items:
             game, loadout = setup(logic)
             loadout.append(SunkenNestL)
@@ -265,15 +267,130 @@ def test_hard_required_items() -> None:
 
             updateLogic(game.all_locations.values(), loadout)
 
-            if logic.can_win(loadout):
-                assert excluded_item not in logic.hard_required_items, \
-                    f"{excluded_item[0]} in {logic.__name__} hard required items"
+            if can_win in loadout:
+                # assert excluded_item not in logic.hard_required_items, \
+                #     f"{excluded_item[0]} in {logic_name} hard required items"
                 print(f"{excluded_item[0]} not")
             else:
-                assert excluded_item in logic.hard_required_items, \
-                    f"{excluded_item[0]} missing from {logic.__name__} hard required items"
+                # assert excluded_item in logic.hard_required_items, \
+                #     f"{excluded_item[0]} missing from {logic_name} hard required items"
                 print(f"{excluded_item[0]}  - - - - hard required")
+
+
+_possible_places = {
+    Items.Morph: frozenset([
+        "Docking Port 3",
+        "Docking Port 4",
+        "Gantry",
+        "Ready Room",
+        "Torpedo Bay",
+        "Weapon Locker",
+
+        "Ocean Shore: bottom",
+        "Ocean Shore: top",
+        "Sandy Cache",
+        "Sandy Gully",
+        "Sediment Floor",
+        "Sediment Flow",
+        "Submarine Nest",
+        "Subterranean Burrow",
+        "Grand Vault",
+        "Vulnar Caves Entrance",
+    ]),
+    Items.GravityBoots: frozenset([
+        "Aft Battery",
+        "Docking Port 3",
+        "Docking Port 4",
+        "Extract Storage",
+        "Forward Battery",
+        "Gantry",
+        "Ready Room",
+        "Torpedo Bay",
+        "Weapon Locker",
+
+        "Ocean Shore: bottom",
+        "Subterranean Burrow",
+    ])
+}
+
+
+@pytest.mark.parametrize("logic", (casual, expert))
+def test_restrictive_item_locations(logic: frozenset[Trick]) -> None:
+    for excluded_item in _possible_places:
+        print(f"  -- {excluded_item[0]}")
+        game, loadout = setup(logic)
+
+        for item in items_unpackable:
+            if item != excluded_item and item != Items.spaceDrop:
+                loadout.append(item)
+
+        # some of the non-unique that can help in logic
+        for _ in range(12):
+            loadout.append(Items.Energy)
+            loadout.append(Items.LargeAmmo)
+        loadout.append(Items.SpaceJumpBoost)
+
+        found: dict[str, bool] = defaultdict(bool)
+
+        def this_loadout() -> None:
+            updateLogic(game.all_locations.values(), loadout)
+
+            for loc_name, loc in game.all_locations.items():
+                if loc["inlogic"]:
+                    found[loc_name] = True
+                    assert loc_name in _possible_places[excluded_item], \
+                        f"logic thinks {excluded_item[0]} can be at {loc_name}"
+                    print(loc_name)
+
+        this_loadout()
+        print(" -- space drop")
+        loadout.append(SunkenNestL)
+        loadout.append(Items.spaceDrop)
+        this_loadout()
+
+        for loc_name in _possible_places[excluded_item]:
+            assert found[loc_name], f"logic thinks {excluded_item[0]} can't be at {loc_name}"
+
+
+@pytest.mark.parametrize("logic", (casual, expert))
+def test_restrictive_item_locations_area_rando(logic: frozenset[Trick]) -> None:
+    for excluded_item in _possible_places:
+        print(f"  -- {excluded_item[0]}")
+        game, loadout = setup(logic)
+
+        for item in items_unpackable:
+            if item != excluded_item and item != Items.spaceDrop:
+                loadout.append(item)
+
+        # some of the non-unique that can help in logic
+        for _ in range(12):
+            loadout.append(Items.Energy)
+            loadout.append(Items.LargeAmmo)
+        loadout.append(Items.SpaceJumpBoost)
+
+        for door in area_doors.values():
+            loadout.append(door)
+
+        loadout.append(Items.spaceDrop)
+
+        found: dict[str, bool] = defaultdict(bool)
+
+        def this_loadout() -> None:
+            updateLogic(game.all_locations.values(), loadout)
+
+            for loc_name, loc in game.all_locations.items():
+                if loc["inlogic"]:
+                    found[loc_name] = True
+                    # assert loc_name in _possible_places[excluded_item], \
+                    #     f"logic thinks {excluded_item[0]} can be at {loc_name}"
+                    print(loc_name)
+
+        this_loadout()
+
+        # for loc_name in _possible_places[excluded_item]:
+        #     assert found[loc_name], f"logic thinks {excluded_item[0]} can't be at {loc_name}"
 
 
 if __name__ == "__main__":
     test_hard_required_items()
+    # test_restrictive_item_locations_area_rando(expert)

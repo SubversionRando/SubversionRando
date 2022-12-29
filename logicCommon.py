@@ -17,17 +17,6 @@ ENERGY_PER_TANK = 100
 FOR_N_TANKS = 12
 LATER_ENERGY_PER_TANK = 50
 
-# TODO: delete this after this logic merge is done
-canUsePB = LogicShortcut(lambda loadout: (
-    loadout.has_all(Items.Morph, Items.PowerBomb)
-))
-""" might only have enough ammo for 1 power bomb - can use `can_use_pbs(pbs_needed)` instead """
-
-canBomb = LogicShortcut(lambda loadout: (
-    (Items.Morph in loadout) and loadout.has_any(Items.Bombs, Items.PowerBomb)
-))
-""" might only have enough ammo for 1 power bomb - can use `can_bomb(pbs_needed)` instead """
-
 
 def energy_from_tanks(n: int) -> int:
     first_tanks = min(FOR_N_TANKS, n) * ENERGY_PER_TANK
@@ -68,7 +57,7 @@ crystal_flash = LogicShortcut(lambda loadout: (
 ))
 
 
-def hell_run_energy(min_energy: int, loadout: Loadout) -> int:
+def hell_run_energy(min_energy: int, loadout: "Loadout") -> int:
     """
     utility function used in other hell run functions
 
@@ -84,7 +73,7 @@ def hell_run_energy(min_energy: int, loadout: Loadout) -> int:
     return 90001
 
 
-def _adjust_for_other_suits(energy_required: int, loadout: Loadout, heat_and_metroid_suit_not_required: bool) -> int:
+def _adjust_for_other_suits(energy_required: int, loadout: "Loadout", heat_and_metroid_suit_not_required: bool) -> int:
     helping_suit_count = (
         int(Items.GravitySuit in loadout) +
         int(heat_and_metroid_suit_not_required and (Items.MetroidSuit in loadout))

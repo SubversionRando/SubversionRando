@@ -1,4 +1,7 @@
 from typing import Iterable
+
+from combined_area_logic import area_logic
+from combined_location_logic import location_logic
 from connection_data import AreaDoor, area_doors
 from loadout import Loadout
 from location_data import Location
@@ -18,7 +21,7 @@ def _updateAreaLogic(loadout: Loadout) -> None:
     stuck = False  # check if loadout keeps increasing
     while not stuck:
         prev_loadout = loadout.copy()
-        for _area, paths in loadout.game.logic.area_logic.items():
+        for _area, paths in area_logic.items():
             for path, access in paths.items():
                 origin, destination = path
                 if area_doors[destination] not in loadout:
@@ -37,6 +40,6 @@ def updateLogic(unusedLocations: Iterable[Location],
     _updateAreaLogic(loadout)
     # print("Updating logic...")
     for thisLoc in unusedLocations:
-        thisLoc['inlogic'] = loadout.game.logic.location_logic[thisLoc['fullitemname']](loadout)
+        thisLoc['inlogic'] = location_logic[thisLoc['fullitemname']](loadout)
 
     return unusedLocations

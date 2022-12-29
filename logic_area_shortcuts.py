@@ -7,7 +7,7 @@ from logic_shortcut import LogicShortcut
 from logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor,
     missileBarrier, electricHyper, killRippers, killYellowPirates,
-    plasmaWaveGate, icePod
+    plasmaWaveGate, icePod, can_crash_spaceport
 )
 from trick_data import Tricks
 
@@ -834,7 +834,8 @@ class FireHive:
 
     courtyardToCollapsed = LogicShortcut(lambda loadout: (
         (FireHive.ancientBasinAccess in loadout) and
-        (  # ripper above fire temple courtyard door
+        (  # ripper above fire temple courtyard door makes it hard to hell run
+            (Varia in loadout) or
             (killRippers in loadout) or
             (HiJump in loadout) or
             (SpaceJump in loadout) or
@@ -932,7 +933,7 @@ class DrayLand:
 class SpacePort:
     spaceportTopFromElevator = LogicShortcut(lambda loadout: (
         (Grapple in loadout) or
-        loadout.game.logic.can_crash_spaceport(loadout)
+        (can_crash_spaceport in loadout)
         # TODO: if I get up with xray, or (ice and super), then i can get back down with moonfall
     ))
 
