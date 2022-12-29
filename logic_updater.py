@@ -1,7 +1,7 @@
 from typing import Iterable
 
-from combined_area_logic import area_logic
-from combined_location_logic import location_logic
+from logic_area import area_logic
+from logic_locations import location_logic
 from connection_data import AreaDoor, area_doors
 from loadout import Loadout
 from location_data import Location
