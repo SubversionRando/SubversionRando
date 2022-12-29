@@ -8,17 +8,21 @@ from loadout import Loadout
 from location_data import Location, spacePortLocs
 from solver import solve
 
-_minor_items = {
+_minor_logic_items = {
     Items.DamageAmp: 6,
     Items.ChargeAmp: 6,
-    Items.Energy: 4,
-    Items.Refuel: 7,
+    Items.Energy: 16,
     Items.SpaceJumpBoost: 8,
-    Items.SmallAmmo: 34,
-    Items.LargeAmmo: 12
+    Items.SmallAmmo: 12,
+    Items.LargeAmmo: 18
+}
+""" minors placed with logic """
+
+_minor_non_logic_items = {
+    Items.Refuel: 7,
+    Items.SmallAmmo: 26,
 }
 """ items placed without logic """
-# TODO: verify item counts
 
 
 class FillAssumed(FillAlgorithm):
@@ -62,18 +66,13 @@ class FillAssumed(FillAlgorithm):
             Items.Charge,
             Items.Hypercharge,
             Items.Xray,
-            Items.Energy, Items.Energy, Items.Energy, Items.Energy, Items.Energy,
-            Items.Energy, Items.Energy, Items.Energy, Items.Energy, Items.Energy,
-            Items.Energy, Items.Energy,
-            Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo,
-            Items.LargeAmmo, Items.LargeAmmo, Items.LargeAmmo,
-            Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo, Items.SmallAmmo,
         ]
-        assert len([
-            it for it in self.prog_items if it not in {Items.Energy, Items.LargeAmmo, Items.SmallAmmo}
-        ]) + 3 == len(set(self.prog_items)), "duplicate majors?"
+        assert len(self.prog_items) == len(set(self.prog_items)), "duplicate majors?"
+        for it, n in _minor_logic_items.items():
+            self.prog_items.extend([it for _ in range(n)])
+
         self.extra_items = []
-        for it, n in _minor_items.items():
+        for it, n in _minor_non_logic_items.items():
             self.extra_items.extend([it for _ in range(n)])
 
         self.itemLists = [self.prog_items, self.extra_items]
