@@ -7,7 +7,7 @@ from logic_shortcut import LogicShortcut
 from logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor,
     missileBarrier, electricHyper, killRippers, killYellowPirates,
-    plasmaWaveGate
+    plasmaWaveGate, icePod
 )
 from trick_data import Tricks
 
@@ -220,6 +220,7 @@ class ServiceSector:
     """ traverse from one door of waste processing to the other (not including colored door) """
 
 
+# TODO: use more of these in location logic where relevant
 class Verdite:
     hotSpring = LogicShortcut(lambda loadout: (
         # which hole you use in the top of hot spring determines
@@ -269,6 +270,58 @@ class Verdite:
         )
     ))
     """ traverse "Hot Spring" between Sporous Nook and Verdite Mines (including Verdite Mines Entrance) """
+
+    fieryTrail = LogicShortcut(lambda loadout: (
+        (varia_or_hell_run(550, heat_and_metroid_suit_not_required=True) in loadout)
+        # TODO: a different amount if I have screw and space jump and shootThroughWalls
+    ))
+    """ fiery gallery and burning trail """
+
+    pit = LogicShortcut(lambda loadout: (
+        (varia_or_hell_run(1120, heat_and_metroid_suit_not_required=True) in loadout) or
+        ((can_use_pbs(5) in loadout) and (varia_or_hell_run(320, heat_and_metroid_suit_not_required=True) in loadout))
+        # 5 pbs is to include the PB door that might be needed to go into verdite mines
+    ))
+    """ through raging pit and raging pit access """
+
+    beta = LogicShortcut(lambda loadout: (
+        # mockball or something to avoid taking damage from the
+        # lava at the bottom of mining site beta during hell run
+        loadout.has_any(Speedball, Varia, MetroidSuit, Tricks.movement_zoast, energy_req(1050)) and
+
+        (GravityBoots in loadout) and
+        (can_bomb(2) in loadout) and  # lava pool and mining site (lava pool could be screw, but not mining site)
+        (
+            (varia_or_hell_run(937, heat_and_metroid_suit_not_required=True) in loadout) or
+            (
+                (can_use_pbs(3) in loadout) and
+                (varia_or_hell_run(523, heat_and_metroid_suit_not_required=True) in loadout)
+            )
+        )
+        # the hell run to hollow chamber is about the same as the hell run going up the elevator
+        # so this hell run will work for both
+    ))
+    """ through mining site beta and lava pool (hell run up elevator) """
+
+    hollow = LogicShortcut(lambda loadout: (
+        (GravityBoots in loadout) and
+        (icePod in loadout) and
+        (varia_or_hell_run(346, heat_and_metroid_suit_not_required=True) in loadout)
+    ))
+    """ traverse hollow chamber - hell run includes elevator """
+
+    placid = LogicShortcut(lambda loadout: (
+        ((can_bomb(2) in loadout) or (Screw in loadout) or (SpeedBooster in loadout)) and  # wall by elevator
+        ((icePod in loadout) or (
+            (can_use_pbs(2) in loadout) and
+            (
+                (GravitySuit in loadout) or
+                ((HiJump in loadout) and (Tricks.crouch_or_downgrab in loadout))
+                # hint: for hi jump, lay power bomb on the second tile away from the power bomb blocks
+            )
+        ))
+    ))
+    """ through placid pool to elevator """
 
 
 class SkyWorld:

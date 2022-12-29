@@ -1,15 +1,12 @@
-from math import comb
 from connection_data import area_doors_unpackable
 from door_logic import canOpen
 from item_data import items_unpackable
-from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, \
-    hell_run_energy, lava_run, varia_or_hell_run
+from logicCommon import can_bomb, can_use_pbs
 from logic_area_shortcuts import SandLand, ServiceSector, LifeTemple, \
-    SkyWorld, FireHive, PirateLab, Verdite, Geothermal, DrayLand, Early
+    SkyWorld, FireHive, PirateLab, Verdite, Geothermal, Early
 from logicInterface import AreaLogicType
 from logic_shortcut_data import (
-    canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor, pinkSwitch,
-    missileBarrier, icePod, electricHyper, killRippers, killGreenPirates
+    canFly, shootThroughWalls, breakIce, pinkDoor, missileBarrier, icePod, electricHyper, killGreenPirates
 )
 from trick_data import Tricks
 
@@ -949,266 +946,161 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (
                 (
-                    (GravitySuit in loadout) and#c
+                    (GravitySuit in loadout) and
                     (Screw in loadout)
-                    ) or
+                ) or
                 (electricHyper in loadout)
-                ) and
-            (Varia in loadout) and 
+            ) and
+            (Varia in loadout) and
             (MetroidSuit in loadout) and
-            (canUsePB in loadout)
+            (can_use_pbs(1) in loadout)
         ),
         ("MagmaPumpAccessR", "ElevatorToMagmaLakeR"): lambda loadout: (
             (GravityBoots in loadout) and
             (
                 (
-                    (GravitySuit in loadout) and#c
+                    (GravitySuit in loadout) and
                     (Screw in loadout)
-                    ) or
+                ) or
                 (electricHyper in loadout)
-                ) and
-            (Varia in loadout) and 
+            ) and
+            (Varia in loadout) and
             (MetroidSuit in loadout) and
-            (canUsePB in loadout)
+            (can_use_pbs(1) in loadout)
         ),
     },
     "Verdite": {
         ("FieryGalleryL", "RagingPitL"): lambda loadout: (
-            loadout.has_all(GravityBoots, Super, canBomb, varia_or_hell_run(450))
+            (GravityBoots in loadout) and
+            (Verdite.fieryTrail in loadout) and
+            (Super in loadout) and  # door to raging pit access
+            (Verdite.pit in loadout)
         ),
         ("FieryGalleryL", "HollowChamberR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Morph in loadout) and
-            casual Speedball
-            (varia_or_hell_run(550) in loadout) and
-            (icePod in loadout) and
-            (Super in loadout) and
-            ((canBomb in loadout) or (Screw in loadout) or (SpeedBooster in loadout))
+            (Verdite.fieryTrail in loadout) and
+            (Verdite.beta in loadout) and
+            (Super in loadout) and  # door out of lava pool
+            (Verdite.hollow in loadout)
         ),
         ("FieryGalleryL", "PlacidPoolR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (varia_or_hell_run(550) in loadout) and
-            (Super in loadout) and
-            (Morph in loadout) and  # TODO: confirm needed
-            ((canBomb in loadout) or (Screw in loadout) or (SpeedBooster in loadout)) and
-            (
-                (icePod in loadout) or
-                (
-                    (canUsePB in loadout) and
-                    (
-                        (GravitySuit in loadout) or#c
-                        (HiJump in loadout)
-                        )
-                    )
-                )
+            (Verdite.fieryTrail in loadout) and
+            (Verdite.beta in loadout) and
+            (Super in loadout) and  # door out of lava pool
+            (Verdite.placid in loadout)
         ),
         ("FieryGalleryL", "SporousNookL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (varia_or_hell_run(550) in loadout) and
-            (hotSpring in loadout) and
-            (
-                (canBomb in loadout) or
-                (Screw in loadout)
-            )
+            (Verdite.fieryTrail in loadout) and
+            (Verdite.hotSpring in loadout)
         ),
         ("RagingPitL", "FieryGalleryL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (varia_or_hell_run(550) in loadout) and
-            (canUsePB in loadout)
+            (Verdite.pit in loadout) and
+            (can_use_pbs(1) in loadout) and  # door to verdite mines
+            (Verdite.fieryTrail in loadout)
         ),
         ("RagingPitL", "HollowChamberR"): lambda loadout: (
-            loadout.has_all(GravityBoots, canUsePB, Super, varia_or_hell_run(450), icePod)
+            (GravityBoots in loadout) and
+            (Verdite.pit in loadout) and
+            (can_use_pbs(1) in loadout) and  # door to verdite mines
+            (Verdite.beta in loadout) and
+            (Super in loadout) and  # door out of lava pool
+            (Verdite.hollow in loadout)
         ),
         ("RagingPitL", "PlacidPoolR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canBomb in loadout) and
-            (varia_or_hell_run(450) in loadout) and
-            (Super in loadout) and
-            is pb needed?
-            (
-                (icePod in loadout) or
-                (
-                    (canUsePB in loadout) and
-                    (underwater in loadout)
-                    )
-                )
+            (Verdite.pit in loadout) and
+            (can_use_pbs(1) in loadout) and  # door to verdite mines
+            (Verdite.beta in loadout) and
+            (Super in loadout) and  # door out of lava pool
+            (Verdite.placid in loadout)
         ),
         ("RagingPitL", "SporousNookL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canUsePB in loadout) and
-            (varia_or_hell_run(450) in loadout) and
-            (hotSpring in loadout)
+            (Verdite.pit in loadout) and
+            (can_use_pbs(1) in loadout) and  # door to verdite mines
+            (Verdite.hotSpring in loadout)
         ),
         ("HollowChamberR", "FieryGalleryL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Morph in loadout) and
-            casual Speedball
-            (varia_or_hell_run(450) in loadout) and
-            (pinkDoor in loadout) and
-            (icePod in loadout) and
-            (
-                (canBomb in loadout) or
-                (Screw in loadout) or
-                (SpeedBooster in loadout)
-                )
+            (Verdite.hollow in loadout) and
+            (pinkDoor in loadout) and  # door into lava pool
+            (Verdite.beta in loadout) and
+            (Verdite.fieryTrail in loadout)
         ),
         ("HollowChamberR", "RagingPitL"): lambda loadout: (
-            loadout.has_all(GravityBoots, canBomb, varia_or_hell_run(450), Super, icePod)
-            casual Speedball
-            # can you screw into raging pit?
+            (GravityBoots in loadout) and
+            (Verdite.hollow in loadout) and
+            (pinkDoor in loadout) and  # door into lava pool
+            (Verdite.beta in loadout) and
+            (Super in loadout) and  # door raging pit access
+            (Verdite.pit in loadout)
         ),
         ("HollowChamberR", "PlacidPoolR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (varia_or_hell_run(250) in loadout) and
-            (icePod in loadout)
+            (Verdite.hollow in loadout) and
+            (Verdite.placid in loadout)
         ),
         ("HollowChamberR", "SporousNookL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Morph in loadout) and
-            #casual Speedball
-            (varia_or_hell_run(450) in loadout) and
-            (icePod in loadout) and
-            (pinkDoor in loadout) and
-            (
-                (canBomb in loadout) or
-                (Screw in loadout) or
-                (SpeedBooster in loadout)
-                ) and
-            (hotSpring in loadout) and
-            (
-                (canBomb in loadout) or
-                (
-                    (GravitySuit in loadout) and
-                    (Screw in loadout)
-                    )
-                )
+            (Verdite.hollow in loadout) and
+            (pinkDoor in loadout) and  # door into lava pool
+            (Verdite.beta in loadout) and
+            (Verdite.hotSpring in loadout)
         ),
         ("PlacidPoolR", "FieryGalleryL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Morph in loadout) and
-            casual Speedball
-            (varia_or_hell_run(550) in loadout) and
-            (pinkDoor in loadout) and
-            (
-                (canBomb in loadout) or
-                (Screw in loadout) or
-                (SpeedBooster in loadout)) and# and?
-            (
-                (icePod in loadout) or
-                (
-                    (canUsePB in loadout) and
-                    (
-                        (GravitySuit in loadout) or#c
-                        (HiJump in loadout)
-                        )
-                    )
-                )
+            (Verdite.placid in loadout) and
+            (pinkDoor in loadout) and  # door into lava pool
+            (Verdite.beta in loadout) and
+            (Verdite.fieryTrail in loadout)
         ),
         ("PlacidPoolR", "RagingPitL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (canBomb in loadout) and
-            casual Speedball
-            (varia_or_hell_run(450) in loadout) and
-            (Super in loadout) and
-            (
-                (icePod in loadout) or
-                (
-                    (canUsePB in loadout) and
-                    (
-                        (GravitySuit in loadout) or#c
-                        (HiJump in loadout)
-                        )
-                    )
-                )
-        ), #screw into raging pit?
+            (Verdite.placid in loadout) and
+            (pinkDoor in loadout) and  # door into lava pool
+            (Verdite.beta in loadout) and
+            (Super in loadout) and  # door to raging pit access
+            (Verdite.pit in loadout)
+        ),
         ("PlacidPoolR", "HollowChamberR"): lambda loadout: (
-            loadout.has_all(GravityBoots, varia_or_hell_run(250), icePod)
+            (GravityBoots in loadout) and
+            (Verdite.placid in loadout) and
+            (Verdite.hollow in loadout)
         ),
         ("PlacidPoolR", "SporousNookL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (varia_or_hell_run(450) in loadout) and
-            (Morph in loadout) and
-            c Speedball
-            (pinkDoor in loadout) and
-            (
-                (icePod in loadout) or
-                (
-                    (canUsePB in loadout) and
-                    (
-                        (GravitySuit in loadout) or#c
-                        (HiJump in loadout)
-                        )
-                    )
-                ) and
-            (hotSpring in loadout) and
-            (
-                (canBomb in loadout) or
-                (
-                    (GravitySuit in loadout) and
-                    (Screw in loadout)
-                    )
-                )
+            (Verdite.placid in loadout) and
+            (pinkDoor in loadout) and  # door into lava pool
+            (Verdite.beta in loadout) and
+            (Verdite.hotSpring in loadout)
         ),
         ("SporousNookL", "FieryGalleryL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (varia_or_hell_run(550) in loadout) and
-            (hotSpring in loadout) and
-            (
-                (canBomb in loadout) or
-                (Screw in loadout)
-            )
+            (Verdite.hotSpring in loadout) and
+            (Verdite.fieryTrail in loadout)
         ),
         ("SporousNookL", "RagingPitL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Super in loadout) and
-            (canBomb in loadout) and
-            (varia_or_hell_run(450) in loadout) and
-            (hotSpring in loadout)
-        ),  # screw into raging pit?
+            (Verdite.hotSpring in loadout) and
+            (Super in loadout) and  # door to raging pit access
+            (Verdite.pit in loadout)
+        ),
         ("SporousNookL", "HollowChamberR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (varia_or_hell_run(450) in loadout) and
-            (icePod in loadout) and
-            (Super in loadout) and
-            # casual ended with underwater here
-            (Morph in loadout) and
-            (
-                (canBomb in loadout) or
-                (Screw in loadout) or
-                (SpeedBooster in loadout)
-                ) and
-            (hotSpring in loadout) and
-            (
-                (canBomb in loadout) or
-                (
-                    (GravitySuit in loadout) and
-                    (Screw in loadout)
-                    )
-                )
+            (Verdite.hotSpring in loadout) and
+            (Verdite.beta in loadout) and
+            (Super in loadout) and  # door out of lava pool
+            (Verdite.hollow in loadout)
         ),
         ("SporousNookL", "PlacidPoolR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (varia_or_hell_run(450) in loadout) and
-            (Morph in loadout) and#?
-            (Super in loadout) and
-            (
-                (icePod in loadout) or
-                (
-                    (canUsePB in loadout) and
-                    (
-                        (GravitySuit in loadout) or
-                        (HiJump in loadout)
-                    )
-                )
-            ) and
-            (hotSpring in loadout) and
-            (
-                (canBomb in loadout) or
-                (
-                    (GravitySuit in loadout) and
-                    (Screw in loadout)
-                )
-            )
+            (Verdite.hotSpring in loadout) and
+            (Verdite.beta in loadout) and
+            (Super in loadout) and  # door out of lava pool
+            (Verdite.placid in loadout)
         ),
     },
 }
