@@ -113,6 +113,7 @@ ruinedConcourseBDoorToEldersTop = LogicShortcut(lambda loadout: (
     ) or (
         ((HiJump in loadout) and (Tricks.wall_jump_delayed in loadout))
         # tight wall jump from lower chozo statue to higher chozo statue))
+        # TODO: did bob do this without hjb?
     ) or (
         (SpaceJump in loadout)
     ) or (
