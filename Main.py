@@ -9,7 +9,7 @@ from game import Game
 from item_data import Item, Items
 from loadout import Loadout
 from location_data import Location, pullCSV, spacePortLocs
-from logic_presets import casual, expert
+from logic_presets import casual, expert, medium
 import logic_updater
 import fillMedium
 import fillMajorMinor
@@ -24,6 +24,8 @@ def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--casual', action="store_true",
                         help='Casual logic, easy setting matching the vanilla Subversion experience, Default')
+    parser.add_argument('-u', '--logicmedium', action="store_true",
+                        help='Medium logic, medium setting between casual and expert')
     parser.add_argument('-e', '--expert', action="store_true",
                         help='Expert logic, hard setting comparable to Varia.run Expert difficulty')
 
@@ -88,9 +90,11 @@ fillers: dict[str, Type[FillAlgorithm]] = {
 def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     workingArgs = commandLineArgs(argv[1:])
 
-    logicChoice: Literal["E", "C"]
+    logicChoice: Literal["E", "U", "C"]
     if workingArgs.expert :
         logicChoice = "E"
+    elif workingArgs.logicmedium:
+        logicChoice = "U"
     else :
         logicChoice = "C"  # Default to casual logic
 
@@ -134,7 +138,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     spoilerSave = ""
     seedComplete = False
     randomizeAttempts = 0
-    game = Game(expert if logicChoice == "E" else casual,
+    game = Game(expert if logicChoice == "E" else (medium if logicChoice == "U" else casual),
                 csvdict,
                 areaA == "A",
                 VanillaAreas())

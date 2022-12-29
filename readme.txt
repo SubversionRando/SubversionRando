@@ -1,6 +1,6 @@
 README
 
-contact randorandy (ironrusty) or strotlog with questions
+contact randorandy (ironrusty) or strotlog or beauxq (buxnq) with questions
 
 simple readme for now
 
@@ -9,17 +9,23 @@ simple readme for now
 3.run Main.py in console
 4. optionally, command line arguments are available:
  -h   : Help
- -c   : Casual Logic (Default)
+ -c   : Casual logic (Default)
+ -i   : Medium logic
  -e   : Expert logic
+
  -s   : Speedrun fill (Default)
  -m   : Medium fill
  -d   : Assumed fill
+
  -a   : Area Rando
 
 This should create a randomized rom with the given name in the roms folder and a spoiler log (.txt) in the spoilers folder.
 
 Casual logic notes: -c
-For now, casual logic is the only one published. More are possible and coming eventually. You could update the logicCasual file if you want a different experience. Casual logic is meant to mimic the "intended" experience of Subversion, with its few moments of suitless underwater movement, no hellruns, and no "gate glitches" in logic. Logic regarding the shutdown, space port, and Suzi is overly cautious so I would be surprised to find any progress there besides Torpedo Bay. In casual, Torpedo Bay (the vanilla missile) will always have morph or missile as your intended escape from the space port, then the very next pack of items that will be placed are Missile, Morph, and GravityBoots. If you are looking into the code, see the earlyItemList.
+Casual logic is meant to mimic the "intended" experience of Subversion, with its few moments of suitless underwater movement, no hellruns, and no "gate glitches" in logic. Logic regarding the shutdown, and Suzi is overly cautious so I would be surprised to find any progress there.
+
+Medium logic notes: -u
+A logic level between Casual and Expert, including a few common tricks.
 
 Expert logic notes: -e
 Notable tricks in expert logic include p-shooter-only gate glitches, single springball jumps, and hellruns. Once you have 5 E-tanks, most hellruns are in logic. Items and areas in lava require Metroid Suit.
