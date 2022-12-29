@@ -86,7 +86,6 @@ area_logic: AreaLogicType = {
             (pinkDoor in loadout) and  # multiple
             (missileBarrier in loadout) and
             (Early.cisternAccessTunnel in loadout)
-            # TODO: confirm these doors are pink if they're encountered 1st in this direction
         ),
         ("RuinedConcourseBL", "RuinedConcourseTR"): lambda loadout: (
             (GravityBoots in loadout) and
@@ -100,7 +99,6 @@ area_logic: AreaLogicType = {
             loadout.has_all(
                 GravityBoots, pinkDoor, missileBarrier, Early.cisternAccessTunnel, Early.concourseShinespark
             )
-            # TODO: confirm these doors are pink if they're encountered 1st in this direction
         ),
         ("RuinedConcourseTR", "RuinedConcourseBL"): lambda loadout: (
             (GravityBoots in loadout) and
@@ -117,7 +115,6 @@ area_logic: AreaLogicType = {
             (missileBarrier in loadout) and
             (Early.cisternAccessTunnel in loadout) and
             (Early.causeway in loadout)
-            # TODO: confirm these doors are pink if they're encountered 1st in this direction
         ),
         ("CausewayR", "RuinedConcourseBL"): lambda loadout: (
             (GravityBoots in loadout) and
@@ -133,7 +130,6 @@ area_logic: AreaLogicType = {
             (pinkDoor in loadout) and  # multiple
             (missileBarrier in loadout) and
             (Early.sporeFieldEntrance in loadout)
-            # TODO: confirm these doors are pink if they're encountered 1st in this direction
         ),
         ("SporeFieldTR", "RuinedConcourseBL"): lambda loadout: (
             (GravityBoots in loadout) and
@@ -165,7 +161,6 @@ area_logic: AreaLogicType = {
             (missileBarrier in loadout) and
             ((shootThroughWalls in loadout) or (Tricks.wave_gate_glitch in loadout)) and
             (Early.sporeFieldEntrance in loadout)
-            # TODO: confirm these doors are pink if they're encountered 1st in this direction
         ),
         ("SporeFieldBR", "RuinedConcourseBL"): lambda loadout: (
             (GravityBoots in loadout) and
