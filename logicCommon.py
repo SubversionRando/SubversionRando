@@ -1,3 +1,5 @@
+""" utility functions for logic """
+
 from typing import TYPE_CHECKING
 
 from item_data import Item, Items

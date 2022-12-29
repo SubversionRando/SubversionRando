@@ -4,22 +4,6 @@ from logic_shortcut import LogicShortcut
 from logicCommon import ammo_req, can_bomb, can_use_pbs
 from trick_data import Tricks
 
-"""
-(
-    CraterR, SunkenNestL, RuinedConcourseBL, RuinedConcourseTR, CausewayR,
-    SporeFieldTR, SporeFieldBR, OceanShoreR, EleToTurbidPassageR, PileAnchorL,
-    ExcavationSiteL, WestCorridorR, FoyerR, ConstructionSiteL, AlluringCenoteR,
-    FieldAccessL, TransferStationR, CellarR, SubbasementFissureL,
-    WestTerminalAccessL, MezzanineConcourseL, VulnarCanyonL, CanyonPassageR,
-    ElevatorToCondenserL, LoadingDockSecurityAreaL, ElevatorToWellspringL,
-    NorakBrookL, NorakPerimeterTR, NorakPerimeterBL, VulnarDepthsElevatorEL,
-    VulnarDepthsElevatorER, HiveBurrowL, SequesteredInfernoL,
-    CollapsedPassageR, MagmaPumpL, ReservoirMaintenanceTunnelR, IntakePumpR,
-    ThermalReservoir1R, GeneratorAccessTunnelL, ElevatorToMagmaLakeR,
-    MagmaPumpAccessR, FieryGalleryL, RagingPitL, HollowChamberR, PlacidPoolR,
-    SporousNookL, RockyRidgeTrailL, TramToSuziIslandR
-) = area_doors_unpackable
-"""
 (
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
     GravitySuit, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
