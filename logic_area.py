@@ -452,7 +452,7 @@ area_logic: AreaLogicType = {
         ),
         ("FieldAccessL", "CellarR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Super in loadout) and  # door from crumbling basement to cellar, and field access pink door
+            (Super in loadout) and  # door from crumbling basement to cellar, and east field access pink door
             ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
             # If you fall in the water with nothing, it's a tight jump to get out.
             # But if you don't want to do that tight jump, then don't fall in the water.
@@ -470,8 +470,11 @@ area_logic: AreaLogicType = {
             (ServiceSector.wasteProcessingTraverse in loadout)
         ),
         ("TransferStationR", "FieldAccessL"): lambda loadout: (
-            loadout.has_all(GravityBoots, pinkDoor, DarkVisor, can_bomb(1))
-            # not putting shootThroughWalls in requirements here, don't close the door behind you
+            loadout.has_all(GravityBoots, pinkDoor, DarkVisor, can_bomb(1)) and
+            # not putting shootThroughWalls in hard requirements here, don't close the door behind you
+
+            # west spore field gates
+            loadout.has_any(shootThroughWalls, Tricks.wave_gate_glitch)
         ),
         ("TransferStationR", "CellarR"): lambda loadout: (
             (GravityBoots in loadout) and
