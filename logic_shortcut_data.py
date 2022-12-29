@@ -1,8 +1,10 @@
-from connection_data import area_doors_unpackable
+from connection_data import area_doors
 from item_data import items_unpackable
 from logic_shortcut import LogicShortcut
 from logicCommon import ammo_req, can_bomb, can_use_pbs
+from trick_data import Tricks
 
+"""
 (
     CraterR, SunkenNestL, RuinedConcourseBL, RuinedConcourseTR, CausewayR,
     SporeFieldTR, SporeFieldBR, OceanShoreR, EleToTurbidPassageR, PileAnchorL,
@@ -17,7 +19,7 @@ from logicCommon import ammo_req, can_bomb, can_use_pbs
     MagmaPumpAccessR, FieryGalleryL, RagingPitL, HollowChamberR, PlacidPoolR,
     SporousNookL, RockyRidgeTrailL, TramToSuziIslandR
 ) = area_doors_unpackable
-
+"""
 (
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
     GravitySuit, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
@@ -92,3 +94,66 @@ killYellowPirates = LogicShortcut(lambda loadout: (
     (Screw in loadout) or
     ((Morph in loadout) and (Bombs in loadout))  # TODO: and patience
 ))
+
+# game objectives
+
+can_fall_from_spaceport = LogicShortcut(lambda loadout: (
+    loadout.has_any(Morph, Missile, shootThroughWalls, Super, Tricks.wave_gate_glitch)
+))
+
+can_crash_spaceport = LogicShortcut(lambda loadout: (
+    (
+        (spaceDrop not in loadout) and
+        (MetroidSuit in loadout) and
+        (Super in loadout)
+        # This is dangerous because it messes up ocean logic.
+    ) or (
+        (spaceDrop in loadout) and
+        (MetroidSuit in loadout) and
+        (Super in loadout) and
+        (
+            (Grapple in loadout) or
+            ((Xray in loadout) and (Tricks.xray_climb in loadout)) or
+            ((Ice in loadout) and (Tricks.freeze_hard in loadout) and (Tricks.ice_clip in loadout))  # and super
+        ) and
+        (area_doors["LoadingDockSecurityAreaL"] in loadout) and
+        (GravityBoots in loadout)
+    )
+))
+
+can_win = LogicShortcut(lambda loadout: (
+    (can_crash_spaceport in loadout) and
+    (area_doors["RockyRidgeTrailL"] in loadout) and
+    (GravityBoots in loadout) and
+    (Screw in loadout) and
+    (pinkDoor in loadout) and  # top entrance to MB
+    (can_use_pbs(1) in loadout) and  # to enter detonator room
+    # 1 because there's an enemy in the room where you need 2 pbs, that normally drops 10 ammo
+
+    # This next part for leaving the detonator room
+    # TODO: add tricks
+    # (aqua suit because of the acid that starts rising up)
+    # (4 PBs is mostly for getting out after MB2, but also
+    # because there was no opportunity to refill after the last one you used to get in)
+    ((Speedball in loadout) or (GravitySuit in loadout) or (can_bomb(4) in loadout)) and
+    # MB1, zebs, and glass (separate from pinkDoor to prepare for door cap rando)
+    (missileDamage in loadout) and
+    # kill MB 2
+    (
+        # all the different ways to do damage
+        (
+            (Super in loadout) and
+            (ammo_req(365) in loadout)  # these numbers padded for the PB logic getting in and out
+        ) or (
+            (Missile in loadout) and
+            (ammo_req(230) in loadout)  # these numbers padded for the PB logic getting in and out
+        ) or (
+            (electricHyper in loadout)
+        ) or (
+            (Charge in loadout)
+        )
+    ) and
+    # back to ship
+    ((area_doors["SunkenNestL"] in loadout) or (area_doors["CraterR"] in loadout))
+))
+""" detonate daphne and get back to the ship """

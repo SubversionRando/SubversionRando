@@ -1010,6 +1010,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Sandy Burrow: ETank": lambda loadout: (  # top
         (OceanShoreR in loadout) and
         (Morph in loadout) and
+        (GravityBoots in loadout) and
         ((GravitySuit in loadout) or (
             loadout.has_all(HiJump, Tricks.movement_zoast)
         ) or (
@@ -1458,6 +1459,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ) or (
             (collapsedHive in loadout)
         )) and
+        (icePod in loadout) and
         (MetroidSuit in loadout) and
         (can_bomb(3) in loadout) and
         (lava_run(450, 950) in loadout)

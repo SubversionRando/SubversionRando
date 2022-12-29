@@ -108,6 +108,12 @@ class Tricks:
     short_charge_4 = Trick(Items.SpeedBooster)
     """ charge shinespark in smaller running space - 4 tap """
 
+    xray_climb = Trick(Items.Xray)
+    """ use Xray to climb through terrain """
+
+    ice_clip = Trick(Items.Ice)
+    """ freeze an enemy at a specific distance from the ceiling to jump through the ceiling """
+
     # specific location tricks
 
     searing_gate_tricks = Trick(Items.Morph)

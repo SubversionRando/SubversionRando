@@ -9,8 +9,7 @@ from game import Game
 from item_data import Item, Items
 from loadout import Loadout
 from location_data import Location, pullCSV, spacePortLocs
-from logicCasual import Casual
-from logicExpert import Expert
+from logic_presets import casual, expert
 import logic_updater
 import fillMedium
 import fillMajorMinor
@@ -135,7 +134,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     spoilerSave = ""
     seedComplete = False
     randomizeAttempts = 0
-    game = Game(Expert if logicChoice == "E" else Casual,
+    game = Game(expert if logicChoice == "E" else casual,
                 csvdict,
                 areaA == "A",
                 VanillaAreas())

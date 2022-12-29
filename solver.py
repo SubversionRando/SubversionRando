@@ -6,6 +6,7 @@ from item_data import Items
 from loadout import Loadout
 from location_data import Location, spacePortLocs
 from logicCommon import ammo_req, energy_req
+from logic_shortcut_data import can_fall_from_spaceport, can_win
 from logic_updater import updateLogic
 
 _progression_items = frozenset([
@@ -87,7 +88,7 @@ def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, l
     while "sphere:" in log_lines[-1]:
         log_lines.pop()
 
-    if not game.logic.can_fall_from_spaceport(loadout):
+    if can_fall_from_spaceport not in loadout:
         # print("solver: couldn't get out of spaceport")
         # for loc in unused_locations:
         #     if loc['inlogic'] and loc['fullitemname'] not in spacePortLocs:
@@ -137,7 +138,7 @@ def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, l
     # note: the reason for making a new list from all_locations rather than used_locs,
     # is that used_locs is a `set`, so iterating through it is not deterministic, so seeds wouldn't be reproducible
     return (
-        game.logic.can_win(loadout),
+        (can_win in loadout),
         # len(unused_locations) == 0,
         log_lines,
         [loc for loc in game.all_locations.values() if loc["fullitemname"] in used_locs]
