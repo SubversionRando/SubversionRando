@@ -142,11 +142,8 @@ can_win = LogicShortcut(lambda loadout: (
     (
         # all the different ways to do damage
         (
-            (Super in loadout) and
-            (ammo_req(365) in loadout)  # these numbers padded for the PB logic getting in and out
-        ) or (
             (Missile in loadout) and
-            (ammo_req(230) in loadout)  # these numbers padded for the PB logic getting in and out
+            (ammo_req(385) in loadout)  # these numbers padded for the PB logic getting in and out
         ) or (
             (electricHyper in loadout)
         ) or (
