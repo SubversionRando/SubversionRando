@@ -8,6 +8,8 @@ from location_data import Location, spacePortLocs
 from logicCommon import ammo_req, energy_req
 from logic_shortcut_data import can_fall_from_spaceport, can_win
 from logic_updater import updateLogic
+from trick import Trick
+from trick_data import Tricks
 
 _progression_items = frozenset([
     Items.Missile,
@@ -175,3 +177,26 @@ def hard_required_locations(game: Game) -> list[str]:
         excluded_loc['item'] = saved_item
 
     return req_locs
+
+
+def required_tricks(game: Game) -> tuple[list[str], list[str]]:
+    """ lists of names of (tricks required to win, tricks required to get all locations) """
+    completable, _, _ = solve(game)
+    if not completable:
+        # not sure what I want to do with this function if I pass a game that isn't completable
+        # maybe exception
+        return [], []
+
+    req_for_win: list[str] = []
+    req_for_locs: list[str] = []
+    all_tricks = {t: n for n, t in vars(Tricks).items() if isinstance(t, Trick)}
+    tricks_allowed = game.logic
+    for excluded_trick in tricks_allowed:
+        game.logic = tricks_allowed - {excluded_trick}
+        completable, _, locs = solve(game)
+        if not completable:
+            req_for_win.append(all_tricks[excluded_trick])
+        if len(locs) != 122:
+            req_for_locs.append(all_tricks[excluded_trick])
+
+    return req_for_win, req_for_locs

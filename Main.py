@@ -17,7 +17,7 @@ import fillAssumed
 import fillSpeedrun
 import areaRando
 from romWriter import RomWriter
-from solver import hard_required_locations, solve
+from solver import hard_required_locations, required_tricks, solve
 
 
 def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
@@ -206,6 +206,8 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         spoiler_file.write('\n\n')
         spoiler_file.write(required_locations_spoiler(game))
         spoiler_file.write('\n')
+        spoiler_file.write(required_tricks_spoiler(game))
+        spoiler_file.write('\n')
     print(f"Spoiler file is spoilers/{rom_name}.spoiler.txt")
 
 
@@ -216,6 +218,17 @@ def required_locations_spoiler(game: Game) -> str:
         item = game.all_locations[loc_name]['item']
         item_name = item[0] if item else "Nothing"
         spoiler_text += f"  {loc_name}  --  {item_name}\n"
+    return spoiler_text
+
+
+def required_tricks_spoiler(game: Game) -> str:
+    for_win, for_locs = required_tricks(game)
+    spoiler_text = "tricks required to win:\n"
+    for trick_name in for_win:
+        spoiler_text += f"  {trick_name}\n"
+    spoiler_text += "\ntricks required to reach all locations:\n"
+    for trick_name in for_locs:
+        spoiler_text += f"  {trick_name}\n"
     return spoiler_text
 
 
