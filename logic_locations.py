@@ -101,6 +101,12 @@ ruinedConcourseBDoorToEldersBottom = LogicShortcut(lambda loadout: (
             (Ice in loadout)  # freeze fish
         ) or (
             (Tricks.sbj_underwater_w_hjb in loadout)  # TODO: verify this
+        ) or (
+            # short charge through door in cistern access tunnel and immersion pool
+            (Tricks.short_charge_3 in loadout) and (
+                (Tricks.crouch_or_downgrab in loadout) or
+                (HiJump in loadout)
+            )
         ))
         # TODO: more tricks for coming through cistern without aqua suit?
     ))
@@ -378,7 +384,46 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         )  # TODO: or PBs and a lava dive
     ),
     "Sediment Flow": lambda loadout: (
-        loadout.has_all(OceanShoreR, GravityBoots, GravitySuit, Super)
+        # similar to sediment floor
+        loadout.has_all(GravityBoots, GravitySuit) and
+        ((
+            (OceanShoreR in loadout) and
+            ((  # from left
+                (SandLand.shaftToGreenMoon in loadout) and
+                (Super in loadout) and
+
+                # return
+                (
+                    (SandLand.directionalSedFloorToGreenMoonThroughSeaCaves in loadout) or
+                    (
+                        (SandLand.sedFloorToCanyon in loadout) and
+                        (
+                            (SandLand.canyonToShaft in loadout) or
+                            (
+                                (SandLand.canyonToGreenMoon in loadout) and
+                                (can_use_pbs(1) in loadout)
+                            )
+                        )
+                    )
+                )
+            ) or (  # from right
+                (SandLand.GreenMoonDown in loadout) and
+                (SandLand.canyonToGreenMoon in loadout) and
+                (SandLand.sedimentTunnel in loadout) and
+
+                # return
+                (
+                    (SandLand.sedFloorToCanyon in loadout) or
+                    (SandLand.directionalSedFloorToGreenMoonThroughSeaCaves in loadout)
+                )
+            ))
+        ) or (
+            (EleToTurbidPassageR in loadout) and
+            (SandLand.turbidToSedFloor in loadout) and
+            (pinkDoor in loadout) and  # turbid passage to sediment floor
+            (SandLand.sedFloorToCanyon in loadout) and
+            (SandLand.sedimentTunnel in loadout)
+        ))
     ),
     "Harmonic Growth Enhancer": lambda loadout: (
         ((
@@ -1000,13 +1045,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Ocean Shore: top": lambda loadout: (
         (OceanShoreR in loadout) and
-        (GravityBoots in loadout) and
-        (
-            loadout.has_all(Tricks.movement_moderate, Tricks.wall_jump_delayed) or
-            (canFly in loadout) or
-            (HiJump in loadout) or  # debating attaching a trick to this for the difficulty of the jumps
-            ((SpeedBooster in loadout) and (GravitySuit in loadout))
-        )
+        (SandLand.oceanShoreTop in loadout)
     ),
     "Sandy Burrow: ETank": lambda loadout: (  # top
         (OceanShoreR in loadout) and
@@ -1046,34 +1085,45 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         )
     ),
     "Sediment Floor": lambda loadout: (
-        (OceanShoreR in loadout) and
+        # similar to sediment flow
         (GravityBoots in loadout) and
-        (Super in loadout) and
-        (
-            (
-                (GravitySuit in loadout)
-            ) or (
-                (HiJump in loadout) and
+        ((
+            (OceanShoreR in loadout) and
+            ((  # from left
+                (SandLand.shaftToGreenMoon in loadout) and
+                (SandLand.canyonToShaft in loadout) and
+
+                # return
                 (
-                    ((Tricks.uwu_2_tile in loadout) and (Tricks.crouch_precise in loadout)) or
-                    (Tricks.freeze_hard in loadout)
+                    (SandLand.directionalSedFloorToGreenMoonThroughSeaCaves in loadout) or
+                    (SandLand.sedFloorToCanyon in loadout)
                 )
-            ) or (
-                (Tricks.sbj_underwater_no_hjb in loadout) and
-                (Tricks.freeze_hard in loadout)
-            )
-        )
-        # TODO: logic from turbid passage (because no super needed)?
+            ) or (  # from right
+                (SandLand.GreenMoonDown in loadout) and
+                (SandLand.canyonToGreenMoon in loadout) and
+
+                # return
+                (
+                    (SandLand.sedFloorToCanyon in loadout) or
+                    (SandLand.directionalSedFloorToGreenMoonThroughSeaCaves in loadout)
+                )
+            ))
+        ) or (
+            (EleToTurbidPassageR in loadout) and
+            (SandLand.turbidToSedFloor in loadout) and
+            (pinkDoor in loadout) and  # turbid passage to sediment floor
+            (SandLand.sedFloorToCanyon in loadout)
+        ))
     ),
     "Sandy Gully": lambda loadout: (
         (OceanShoreR in loadout) and
-        (Super in loadout) and
+        (Super in loadout) and  # green moon simplified because of super gate
         (GravityBoots in loadout) and
         (GravitySuit in loadout) and
         ((HiJump in loadout) or (
             (SpaceJump in loadout) and
             (SpaceJumpBoost in loadout)
-            # TODO: sjb in logical fill and maybe a logic shortcut for how many
+            # TODO:logic shortcut for how many space jump boost
         ) or (
             (Tricks.movement_zoast in loadout)
         ))
@@ -1252,7 +1302,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             ((Ice in loadout) and (Tricks.freeze_hard in loadout))
         ) and
         (Morph in loadout) and
-        (Speedball in loadout) and
+        (SandLand.eddy in loadout) and
         (Super in loadout) and
         (GravityBoots in loadout) and
         (loadout.has_any(DarkVisor, Tricks.dark_medium))

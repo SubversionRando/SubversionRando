@@ -198,8 +198,7 @@ area_logic: AreaLogicType = {
             ((
                 (SandLand.sedFloorToCanyon in loadout) and
                 (SandLand.canyonToGreenMoon in loadout) and
-                (Super in loadout)  # door from shallows to canyon
-                # TODO: instead of super door, moonfall and pb to open door from other side
+                (SandLand.GreenMoonDown in loadout)  # door from shallows to canyon
             ) or (
                 (SandLand.sedFloorToCanyon in loadout) and
                 (SandLand.canyonToShaft in loadout) and
@@ -211,7 +210,7 @@ area_logic: AreaLogicType = {
                 ((
                     (SandLand.canyonToShaft in loadout) and
                     (SandLand.canyonToGreenMoon in loadout) and
-                    (Super in loadout)  # door from shallows to canyon
+                    (SandLand.GreenMoonDown in loadout)  # door from shallows to canyon
                 ) or (
                     (SandLand.shaftToGreenMoon in loadout)
                 ))

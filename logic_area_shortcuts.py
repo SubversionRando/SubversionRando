@@ -79,6 +79,30 @@ class SandLand:
     #       *              * turbid passage
     #    pile anchor
 
+    oceanShoreTop = LogicShortcut(lambda loadout: (
+        (GravityBoots in loadout) and
+        (
+            loadout.has_all(Tricks.movement_moderate, Tricks.wall_jump_delayed) or
+            (canFly in loadout) or
+            (HiJump in loadout) or  # debating attaching a trick to this for the difficulty of the jumps
+            ((SpeedBooster in loadout) and (GravitySuit in loadout))
+        )
+    ))
+    """
+    I wouldn't make a logic shortcut just for a single location.
+
+    But if you can get to this item location,
+    you can also get to the island between shore and shallows.
+    (riding green platforms)
+    """
+
+    sedimentTunnel = LogicShortcut(lambda loadout: (
+        loadout.has_all(GravitySuit, Morph, GravityBoots) and
+        ((Speedball in loadout) or (Tricks.movement_zoast in loadout))
+        # I don't know how Joonie did this without speedball
+    ))
+    """ just from one side to the other - no door """
+
     lowerLowerToSedFloor = LogicShortcut(lambda loadout: (
         (GravityBoots in loadout) and
         (  # bottom to Dark Hollow
@@ -135,8 +159,8 @@ class SandLand:
     """ bottom-left of sediment canyon to ocean shallows above green door """
 
     canyonToShaft = LogicShortcut(lambda loadout: (
-        loadout.has_all(GravitySuit, Speedball, Morph, GravityBoots, Super)
-        # door between Sediment Tunnel and Ocean Shallows
+        (Super in loadout) and  # door between Sediment Tunnel and Ocean Shallows
+        (SandLand.sedimentTunnel in loadout)
     ))
     """ bottom-left of sediment canyon to sea cave shaft """
 
@@ -174,6 +198,19 @@ class SandLand:
     ))
     """ sea cave shaft to bottom-right of sea caves lower hall """
 
+    eddy = LogicShortcut(lambda loadout: (
+        (Morph in loadout) and
+        (
+            (Speedball in loadout) or
+            (
+                loadout.has_all(GravitySuit, Bombs, Tricks.movement_zoast)
+                # Is this harder than movement_zoast? is it Tricks.bob?
+                # Joonie did it after like 15 minutes of trying.
+            )
+        )
+    ))
+    """ get out of Eddy Channel """
+
     turbidToSedFloor = LogicShortcut(lambda loadout: (
         (GravityBoots in loadout) and
         (Morph in loadout) and
@@ -181,13 +218,50 @@ class SandLand:
             (HiJump in loadout) and
             ((Tricks.movement_zoast in loadout) or (
                 (Super in loadout) and
-                (Speedball in loadout)
+                (SandLand.eddy in loadout)
                 # If no aqua suit, assume the player will fall into eddy channels
-                # Speedball to get out of eddy, and Supers to get back into Sediment Floor
+                # get out of eddy, and Supers to get back into Sediment Floor
             ))
         ))
     ))
     """ from turbid passage to the middle of sediment floor """
+
+    directionalSedFloorToGreenMoonThroughSeaCaves = LogicShortcut(lambda loadout: (
+        (pinkDoor in loadout) and  # door from sediment to meandering
+        (SandLand.lowerLowerToSedFloor in loadout) and
+        (SandLand.shaftToLowerLower in loadout) and
+        (SandLand.shaftToGreenMoon in loadout)
+    ))
+    """ one-way sediment floor to green moon - because it's needed in a bunch of return logic """
+
+    GreenMoonDown = LogicShortcut(lambda loadout: (
+        (Super in loadout) or  # normal way
+        (
+            (Tricks.moonfall_clip in loadout) and
+            (GravityBoots in loadout) and
+            (  # get to the starting island
+                (GravitySuit in loadout) or  # anything else needed with aqua? tricks?
+                (SandLand.oceanShoreTop in loadout)
+                # TODO: other ways to get up to the island?
+            ) and
+            (Morph in loadout) and  # TODO: is morph needed to get this clip?
+
+            # and able to return back to above door
+            (
+                (can_use_pbs(1) in loadout) or  # yellow door up
+                (
+                    # this one redundant unless door changes color (doorcap rando)
+                    (SandLand.canyonToShaft in loadout) and
+                    (SandLand.shaftToGreenMoon in loadout)
+                ) or
+                (
+                    (SandLand.sedFloorToCanyon in loadout) and
+                    (SandLand.directionalSedFloorToGreenMoonThroughSeaCaves in loadout)
+                )
+            )
+        )
+    ))
+    """ directional - go down through the green door in ocean shallows to sediment canyon """
 
 
 class ServiceSector:
@@ -869,7 +943,7 @@ class Geothermal:
 
     thermalResGamma = LogicShortcut(lambda loadout: (
         (GravityBoots in loadout) and
-        (plasmaWaveGate in loadout) and
+        ((plasmaWaveGate in loadout) or (Tricks.plasma_gate_glitch in loadout)) and
         ((
             # Subversion's full halfie
             # can shinespark across both ways,

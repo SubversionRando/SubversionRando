@@ -394,6 +394,15 @@ def test_restrictive_item_locations_area_rando(logic: frozenset[Trick]) -> None:
 # TODO: places that I can go with no bombs, pbs, or screw (doesn't include colosseum)
 # places that I can go with screw, no bombs, pbs (includes colosseum)
 
+# TODO: sediment floor is a place where supers can be?
+# (if you come in from turbid passage and can cross sediment tunnel)
+
+# TODO: make sure I can get sediment flow without speedball (if I have supers)
+# (and without movement_zoast or whatever trick is there or'd with speedball)
+
+# TODO: sediment floor is in logic from ocean floor with neither supers nor pbs
+# (with moonfall_clip and missiles and stuff to go around through sea caves)
+
 
 if __name__ == "__main__":
     test_hard_required_items()
