@@ -118,12 +118,7 @@ class Tricks:
     """ freeze an enemy at a specific distance from the ceiling to jump through the ceiling """
 
     moonfall_clip = Trick()
-    """
-    use moonfall to fall through a floor or downward door
-
-    This doesn't always require Gravity Boots, but in many places it does.
-    So Gravity Boots need to be checked separately.
-    """
+    """ use moonfall to fall through a floor or downward door """
 
     # specific location tricks
 

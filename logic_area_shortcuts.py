@@ -491,6 +491,31 @@ class SkyWorld:
         )
     ))
 
+    anticipation = LogicShortcut(lambda loadout: (
+        # this is mostly about exit logic, because it doesn't take anything to get into anticipation chamber
+        (GravityBoots in loadout) and
+        ((  # stair of dawn
+            (Morph in loadout) and
+            (pinkDoor in loadout)  # bottom of stair of dawn
+        ) or (
+            (Tricks.moonfall_clip in loadout)
+        ) or (
+            # get out by killing phantoon
+
+            # first get to phantoon
+            ((SkyWorld.killRidley in loadout) or (
+                (can_bomb(1) in loadout) and
+                (loadout.has_any(Bombs, Speedball, Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile))
+            )) and
+            (SkyWorld.killPhantoon in loadout) and
+
+            # then get out
+            (can_bomb(3) in loadout) and
+            (SkyWorld.meetingHall in loadout)
+        ))
+    ))
+    """ anticipation chamber to rail - hell run not included - gate to ridley not included """
+
 
 class PirateLab:
     constructionLToElevator = LogicShortcut(lambda loadout: (

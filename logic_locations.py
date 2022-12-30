@@ -905,6 +905,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         # get to the item
         (Super in loadout) and
         (railAccess in loadout) and
+        (SkyWorld.anticipation in loadout) and
         (GravityBoots in loadout) and
         ((SkyWorld.killRidley in loadout) or (
             (can_bomb(1) in loadout) and
@@ -913,8 +914,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         # get out
         ((
             (SkyWorld.killRidley in loadout) and
-            (Morph in loadout) and
-            (pinkDoor in loadout)  # stair of Dawn
+            (SkyWorld.anticipation in loadout)
         ) or (
             (SkyWorld.killPhantoon in loadout) and
             (can_bomb(3) in loadout) and
@@ -926,9 +926,15 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         ((
             (Screw in loadout) and
-            (Morph in loadout) and
+            ((  # stair of dawn
+                (Morph in loadout) and
+                (pinkDoor in loadout)
+            ) or (  # anticipation chamber
+                (SkyWorld.anticipation in loadout)
+            )) and
             (varia_or_hell_run(90) in loadout)
         ) or (
+            (SkyWorld.anticipation in loadout) and
             (Super in loadout) and
             (SkyWorld.killRidley in loadout)
         ))
@@ -965,8 +971,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (Super in loadout) and
         (GravityBoots in loadout) and
         (railAccess in loadout) and
-        (Morph in loadout) and  # exit
-        (pinkDoor in loadout) and  # bottom of stair of dawn
+        (SkyWorld.anticipation in loadout) and
         (varia_or_hell_run(90) in loadout)  # This might require getting i-frames from enemies to avoid spike damage
     ),
     "Impact Crater Overlook": lambda loadout: (
@@ -1589,8 +1594,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (can_use_pbs(1) in loadout) and  # might have to farm after opening door
         (GravityBoots in loadout) and
         (railAccess in loadout) and
-        (Morph in loadout) and  # exit
-        (pinkDoor in loadout) and  # bottom of stair of dawn  # TODO: or get out by killing Phantoon
+        (SkyWorld.anticipation in loadout) and
         (varia_or_hell_run(98) in loadout) and
         ((Speedball in loadout) or (Bombs in loadout) or (
             loadout.has_all(Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile)
