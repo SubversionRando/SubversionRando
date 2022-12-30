@@ -930,8 +930,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (can_bomb(2) in loadout) and
         ((can_use_pbs(1) in loadout) or (Super in loadout)) and
         ((canFly in loadout) or (
-            (SpeedBooster in loadout) and (Tricks.movement_zoast in loadout)
-            # shinespark to just the right place, and respin, wall jump
+            (SpeedBooster in loadout) and (Tricks.movement_moderate in loadout)
+            # shinespark from just the right pixel on the 1 tile between 2 slopes
         ))
     ),
     "Magma Lake Cache": lambda loadout: (
@@ -991,8 +991,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         (can_bomb(2) in loadout) and
         ((canFly in loadout) or (
-            (SpeedBooster in loadout) and (Tricks.movement_zoast in loadout)
-            # shinespark to just the right place, and respin, wall jump
+            (SpeedBooster in loadout) and (Tricks.movement_moderate in loadout)
+            # shinespark from just the right pixel on the 1 tile between 2 slopes
         ))
     ),
     "Ocean Shore: bottom": lambda loadout: (
@@ -1004,7 +1004,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (
             loadout.has_all(Tricks.movement_moderate, Tricks.wall_jump_delayed) or
             (canFly in loadout) or
-            (HiJump in loadout) or
+            (HiJump in loadout) or  # debating attaching a trick to this for the difficulty of the jumps
             ((SpeedBooster in loadout) and (GravitySuit in loadout))
         )
     ),
@@ -1017,14 +1017,24 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ) or (
             (Tricks.sbj_underwater_w_hjb in loadout)
         )) and
+        # the number of PBs in can_bomb is because the blocks respawn pretty fast
         ((
             (GravitySuit in loadout) and
-            ((Screw in loadout) or (can_bomb(2) in loadout))
+            ((Screw in loadout) or (
+                (can_bomb(1) in loadout) and
+                (Tricks.movement_moderate in loadout)
+            ) or (
+                (can_bomb(2) in loadout)
+            ))
         ) or (
             ((Tricks.sbj_underwater_no_hjb in loadout) or (HiJump in loadout)) and
-            (can_bomb(2) in loadout)
+            (
+                (can_bomb(1) in loadout) and
+                (Tricks.movement_zoast in loadout)  # water slows you down
+            ) or (
+                (can_bomb(2) in loadout)
+            )
         ))
-        # can_bomb(2) because the blocks respawn pretty fast
     ),
     "Submarine Alcove": lambda loadout: (
         (meanderingPassage in loadout) and
@@ -1504,7 +1514,20 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (PirateLab.eastCorridor in loadout)
     ),
     "Norak Escarpment": lambda loadout: (
-        (NorakBrookL in loadout) and (GravityBoots in loadout) and (canFly in loadout)
+        (NorakBrookL in loadout) and
+        (GravityBoots in loadout) and
+        (
+            (canFly in loadout) or
+            (
+                (SpeedBooster in loadout) and
+                (
+                    # This shinespark is easy if vanilla area doors.
+                    ((CanyonPassageR, NorakBrookL) in loadout.game.connections) or
+                    # If area rando, we'll have to assume that we don't have the space to charge shinespark.
+                    ((Tricks.short_charge_4 in loadout) and (Tricks.movement_zoast in loadout))  # stutter 4 tap
+                )
+            )
+        )
     ),
     "Glacier's Reach": lambda loadout: (
         (railAccess in loadout) and
@@ -1567,6 +1590,12 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Magma Chamber": lambda loadout: (
         (ElevatorToMagmaLakeR in loadout) and
         (GravityBoots in loadout) and
+        (  # one of the jumps near the entrance
+            (HiJump in loadout) or
+            (canFly in loadout) or
+            (Tricks.wall_jump_precise in loadout) or
+            (Tricks.freeze_hard in loadout)
+        ) and
         (can_use_pbs(1) in loadout) and  # (return logic)
         ((
             # lower lava
