@@ -971,6 +971,7 @@ area_logic: AreaLogicType = {
         ("FieryGalleryL", "RagingPitL"): lambda loadout: (
             (GravityBoots in loadout) and
             (Verdite.fieryTrail in loadout) and
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and  # middle of verdite mines main shaft
             (Super in loadout) and  # door to raging pit access
             (Verdite.pit in loadout)
         ),
@@ -997,12 +998,14 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (Verdite.pit in loadout) and
             (can_use_pbs(1) in loadout) and  # door to verdite mines
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and  # middle of verdite mines main shaft
             (Verdite.fieryTrail in loadout)
         ),
         ("RagingPitL", "HollowChamberR"): lambda loadout: (
             (GravityBoots in loadout) and
             (Verdite.pit in loadout) and
             (can_use_pbs(1) in loadout) and  # door to verdite mines
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and  # middle of verdite mines main shaft
             (Verdite.beta in loadout) and
             (Super in loadout) and  # door out of lava pool
             (Verdite.hollow in loadout)
@@ -1011,6 +1014,7 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (Verdite.pit in loadout) and
             (can_use_pbs(1) in loadout) and  # door to verdite mines
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and  # middle of verdite mines main shaft
             (Verdite.beta in loadout) and
             (Super in loadout) and  # door out of lava pool
             (Verdite.placid in loadout)
@@ -1019,6 +1023,7 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (Verdite.pit in loadout) and
             (can_use_pbs(1) in loadout) and  # door to verdite mines
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and  # middle of verdite mines main shaft
             (Verdite.hotSpring in loadout)
         ),
         ("HollowChamberR", "FieryGalleryL"): lambda loadout: (
@@ -1033,6 +1038,7 @@ area_logic: AreaLogicType = {
             (Verdite.hollow in loadout) and
             (pinkDoor in loadout) and  # door into lava pool
             (Verdite.beta in loadout) and
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and  # middle of verdite mines main shaft
             (Super in loadout) and  # door raging pit access
             (Verdite.pit in loadout)
         ),
@@ -1060,6 +1066,7 @@ area_logic: AreaLogicType = {
             (Verdite.placid in loadout) and
             (pinkDoor in loadout) and  # door into lava pool
             (Verdite.beta in loadout) and
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and  # middle of verdite mines main shaft
             (Super in loadout) and  # door to raging pit access
             (Verdite.pit in loadout)
         ),
@@ -1083,6 +1090,7 @@ area_logic: AreaLogicType = {
         ("SporousNookL", "RagingPitL"): lambda loadout: (
             (GravityBoots in loadout) and
             (Verdite.hotSpring in loadout) and
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and  # middle of verdite mines main shaft
             (Super in loadout) and  # door to raging pit access
             (Verdite.pit in loadout)
         ),

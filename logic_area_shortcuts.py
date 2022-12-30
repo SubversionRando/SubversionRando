@@ -278,9 +278,19 @@ class Verdite:
     """ fiery gallery and burning trail """
 
     pit = LogicShortcut(lambda loadout: (
-        (varia_or_hell_run(1120, heat_and_metroid_suit_not_required=True) in loadout) or
-        ((can_use_pbs(5) in loadout) and (varia_or_hell_run(320, heat_and_metroid_suit_not_required=True) in loadout))
-        # 5 pbs is to include the PB door that might be needed to go into verdite mines
+        (GravityBoots in loadout) and
+        # you can super-sink to get down without morph, but I don't see a way to get back up
+        # can't xray climb right wall because of some empty tiles in the same column as the door
+        (Morph in loadout) and
+        ((can_bomb(1) in loadout) or (Screw in loadout)) and  # shaktools won't do all of the work
+        (
+            (varia_or_hell_run(1120, heat_and_metroid_suit_not_required=True) in loadout) or
+            (  # faster with pbs
+                (can_use_pbs(5) in loadout) and
+                # 5 pbs is to include the PB door that might be needed to go into verdite mines
+                (varia_or_hell_run(320, heat_and_metroid_suit_not_required=True) in loadout)
+            )
+        )
     ))
     """ through raging pit and raging pit access """
 

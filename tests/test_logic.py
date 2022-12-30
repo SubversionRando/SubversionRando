@@ -391,6 +391,10 @@ def test_restrictive_item_locations_area_rando(logic: frozenset[Trick]) -> None:
         #     assert found[loc_name], f"logic thinks {excluded_item[0]} can't be at {loc_name}"
 
 
+# TODO: places that I can go with no bombs, pbs, or screw (doesn't include colosseum)
+# places that I can go with screw, no bombs, pbs (includes colosseum)
+
+
 if __name__ == "__main__":
     test_hard_required_items()
     # test_restrictive_item_locations_area_rando(expert)
