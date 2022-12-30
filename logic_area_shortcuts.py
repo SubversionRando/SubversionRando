@@ -1,6 +1,5 @@
 """ This is for logic shortcuts that apply only to 1 specific area. """
 
-from connection_data import area_doors_unpackable
 from item_data import items_unpackable
 from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, varia_or_hell_run
 from logic_shortcut import LogicShortcut
@@ -10,22 +9,6 @@ from logic_shortcut_data import (
     plasmaWaveGate, icePod, can_crash_spaceport
 )
 from trick_data import Tricks
-
-
-(
-    CraterR, SunkenNestL, RuinedConcourseBL, RuinedConcourseTR, CausewayR,
-    SporeFieldTR, SporeFieldBR, OceanShoreR, EleToTurbidPassageR, PileAnchorL,
-    ExcavationSiteL, WestCorridorR, FoyerR, ConstructionSiteL, AlluringCenoteR,
-    FieldAccessL, TransferStationR, CellarR, SubbasementFissureL,
-    WestTerminalAccessL, MezzanineConcourseL, VulnarCanyonL, CanyonPassageR,
-    ElevatorToCondenserL, LoadingDockSecurityAreaL, ElevatorToWellspringL,
-    NorakBrookL, NorakPerimeterTR, NorakPerimeterBL, VulnarDepthsElevatorEL,
-    VulnarDepthsElevatorER, HiveBurrowL, SequesteredInfernoL,
-    CollapsedPassageR, MagmaPumpL, ReservoirMaintenanceTunnelR, IntakePumpR,
-    ThermalReservoir1R, GeneratorAccessTunnelL, ElevatorToMagmaLakeR,
-    MagmaPumpAccessR, FieryGalleryL, RagingPitL, HollowChamberR, PlacidPoolR,
-    SporousNookL, RockyRidgeTrailL, TramToSuziIslandR
-) = area_doors_unpackable
 
 (
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
