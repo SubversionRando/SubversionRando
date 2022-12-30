@@ -769,7 +769,7 @@ class FireHive:
         (varia_or_hell_run(150) in loadout) and  # with metroid suit
         (electricHyper in loadout)
     ))
-    """ sequestered infernal to the bottom of hive crossways """
+    """ sequestered inferno to the bottom of hive crossways """
 
     crossways = LogicShortcut(lambda loadout: (
         # The speedway is not in logic because it's one-way
