@@ -147,6 +147,19 @@ def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, l
     )
 
 
+def get_playthrough_locations(log_lines: list[str]) -> list[list[str]]:
+    """ returns all the locations in the solver playthrough grouped by spheres """
+    # there's probably a better way to get this info from the solver
+    tr: list[list[str]] = []
+    for line in log_lines:
+        if line.startswith("sphere:"):
+            tr.append([])
+        if line.startswith("    get "):
+            _beg, loc_name = line.split(" from ")
+            tr[-1].append(loc_name)
+    return tr
+
+
 def hard_required_locations(game: Game) -> list[str]:
     """ list of names of hard required locations in progression order """
     completable, log_lines, _ = solve(game)

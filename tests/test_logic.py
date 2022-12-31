@@ -208,6 +208,7 @@ def test_slag_heap_escape(logic: frozenset[Trick]) -> None:
     loadout.append(Items.Wave)
     loadout.append(Items.Morph)
     loadout.append(Items.Bombs)
+    loadout.append(Items.Speedball)
 
     updateLogic(game.all_locations.values(), loadout)
 

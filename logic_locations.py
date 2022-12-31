@@ -301,6 +301,35 @@ doorsToCentralCorridorMid = LogicShortcut(lambda loadout: (
 ))
 """ pirate lab area doors to middle of central corridor """
 
+greaterInferno = LogicShortcut(lambda loadout: (
+    (MagmaPumpAccessR in loadout) and
+    (GravityBoots in loadout) and
+    (can_use_pbs(1) in loadout) and  # door
+    (Super in loadout) and
+    # getting through the heat
+    (lava_run(850, 1850) in loadout) and
+    # hell run without aqua will require crystal flash
+    (MetroidSuit in loadout) and
+    # open gate
+    ((  # with switch
+        (
+            (GravitySuit in loadout) and
+            (can_bomb(2) in loadout)
+        ) or (
+            # no aqua
+            (Speedball in loadout) and
+            (can_bomb(2) in loadout)  # for getting stuck in crumbles
+        )
+    ) or (  # shoot through gate
+        (Tricks.wave_gate_glitch in loadout) and
+        # This is not the normal usage of this trick, but I don't want to make a trick just for this.
+        (shootThroughWalls in loadout)
+    )) and
+    (DrayLand.killDraygon in loadout) and
+    ((GravitySuit in loadout) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_water in loadout))  # exit
+))
+""" because this is also used for draygon in hint system """
+
 location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Impact Crater: AccelCharge": lambda loadout: (
         (SunkenNestL in loadout) and
@@ -542,30 +571,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((Tricks.morph_jump_4_tile in loadout) or (Bombs in loadout) or (Speedball in loadout))
     ),
     "Greater Inferno": lambda loadout: (
-        (MagmaPumpAccessR in loadout) and
-        (GravityBoots in loadout) and
-        (can_use_pbs(1) in loadout) and  # door
-        (Super in loadout) and
-        # getting through the heat
-        (lava_run(850, 1850) in loadout) and
-        # hell run without aqua will require crystal flash
-        (MetroidSuit in loadout) and
-        # open gate
-        ((  # with switch
-            (
-                (GravitySuit in loadout) and
-                (can_bomb(2) in loadout)
-            ) or (
-                # no aqua
-                (Speedball in loadout) and
-                (can_bomb(2) in loadout)  # for getting stuck in crumbles
-            )
-        ) or (  # shoot through gate
-            (Tricks.wave_gate_glitch in loadout) and
-            # This is not the normal usage of this trick, but I don't want to make a trick just for this.
-            (shootThroughWalls in loadout)
-        )) and
-        ((GravitySuit in loadout) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_water in loadout))  # exit
+        (greaterInferno in loadout)
     ),
     "Burning Depths Cache": lambda loadout: (
         (MagmaPumpAccessR in loadout) and
@@ -577,6 +583,11 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((Spazer in loadout) or (
             (Tricks.searing_gate_tricks in loadout) and
             ((Wave in loadout) or ((Charge in loadout) and (Bombs in loadout)))
+        )) and
+        # under-lava 2-tile space below a bomb block to exit
+        ((can_use_pbs(1) in loadout) or (
+            (can_bomb(1) in loadout) and
+            ((GravitySuit in loadout) or (Speedball in loadout))
         ))
     ),
     "Mining Cache": lambda loadout: (
@@ -979,6 +990,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         (can_bomb(2) in loadout) and
         ((can_use_pbs(1) in loadout) or (Super in loadout)) and
+        # TODO: canFly without SJ boost requires precise wall jumps
         ((canFly in loadout) or (
             (SpeedBooster in loadout) and (Tricks.movement_moderate in loadout)
             # shinespark from just the right pixel on the 1 tile between 2 slopes
@@ -1525,6 +1537,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ) or (
             (collapsedHive in loadout)
         )) and
+        (
+            (GravitySuit in loadout) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_water in loadout)
+        ) and
         (icePod in loadout) and
         (MetroidSuit in loadout) and
         (can_bomb(3) in loadout) and

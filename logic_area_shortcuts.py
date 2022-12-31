@@ -1021,6 +1021,21 @@ class DrayLand:
         # TODO: can hell run with hypercharge, or lots of beams and damage amps, or a billion supers
     ))
 
+    killDraygon = LogicShortcut(lambda loadout: (
+        ((GravitySuit in loadout) or (
+            (Tricks.movement_moderate in loadout) and (energy_req(850) in loadout)
+        ) or (
+            (Tricks.movement_zoast in loadout) and (energy_req(161) in loadout)
+        )) and
+        ((energy_req(850) in loadout) or (
+            (Tricks.movement_moderate in loadout) and
+            (energy_req(450) in loadout)
+        ) or (
+            (Tricks.movement_zoast in loadout)
+        ))
+        # TODO: improve this logic
+    ))
+
 
 class SpacePort:
     spaceportTopFromElevator = LogicShortcut(lambda loadout: (
