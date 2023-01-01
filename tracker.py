@@ -9,7 +9,7 @@ from game import Game
 from item_data import Item, Items, all_items
 from loadout import Loadout
 from location_data import Location, pullCSV, spacePortLocs
-from logic_presets import casual, expert
+from logic_presets import casual, expert, medium
 from solver import solve
 from trick import Trick
 
@@ -144,6 +144,9 @@ class Tracker:
         else:
             print("nothing to undo")
 
+    def switch_logic(self, logic: frozenset[Trick]) -> None:
+        self.loadout.game.logic = logic
+
 
 def main() -> None:
     t = Tracker()
@@ -153,7 +156,7 @@ def main() -> None:
         print("give path to spoiler: python tracker.py spoilers/SubEDA4939087.sfc.spoiler.txt")
         exit(1)
 
-    print("commands: list, exit, q <loc_name>, <loc_name>, undo")
+    print("commands: list, exit, q <loc_name>, <loc_name>, undo, logic")
     command = ""
     while command.lower() != "exit":
         command = input("> ")
@@ -165,6 +168,18 @@ def main() -> None:
             pass
         elif command.lower() == "undo":
             t.undo()
+        elif command.lower().startswith("logic ") and len(command) > 6:
+            if command[6].lower() == "c":
+                print("switching logic to casual")
+                t.switch_logic(casual)
+            elif command[6].lower() == "e":
+                print("switching logic to expert")
+                t.switch_logic(expert)
+            elif command[6].lower() in {"m", "u"}:
+                print("switching logic to medium")
+                t.switch_logic(medium)
+            else:
+                print(f"unknown logic: {command[6:]}")
         elif len(command) > 2 and command.lower().startswith("q "):
             loc_name_input = command[2:]
             name_results = t.loc_names_from_input(loc_name_input)
