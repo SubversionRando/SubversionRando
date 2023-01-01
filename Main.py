@@ -6,6 +6,7 @@ import argparse
 from connection_data import SunkenNestL, VanillaAreas
 from fillInterface import FillAlgorithm
 from game import Game
+from hints import choose_hint_location, get_hint_spoiler_text, write_hint_to_rom
 from item_data import Item, Items
 from loadout import Loadout
 from location_data import Location, pullCSV, spacePortLocs
@@ -129,8 +130,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     locArray = list(csvdict.values())
 
     if romWriter is None :
-        romWriter = RomWriter.fromFilePaths(
-            origRomPath=rom_clean_path, newRomPath=rom1_path)
+        romWriter = RomWriter.fromFilePaths(origRomPath=rom_clean_path)
     else :
         # remove .sfc extension and dirs
         romWriter.setBaseFilename(rom1_path[:-4].split("/")[-1])
@@ -166,6 +166,11 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
 
     _completable, solve_lines, _locs = solve(game)
 
+    if True:  # TODO: option
+        hint_loc_name, hint_loc_marker = choose_hint_location(game)
+        write_hint_to_rom(hint_loc_name, hint_loc_marker, romWriter)
+        spoilerSave += get_hint_spoiler_text(hint_loc_name, hint_loc_marker)
+
     if game.area_rando:
         areaRando.write_area_doors(game.connections, romWriter)
     # write all items into their locations
@@ -196,7 +201,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     #   which is vanilla and probably not used anyway
     #   use by writing 0x18 to the high byte of a gray door plm param, OR'ed with the low bit of the 9-low-bits id part
     romWriter.writeBytes(0x23e33, b"\x38\x38\x38\x38")  # set the carry bit (a lot)
-    romWriter.finalizeRom()
+    romWriter.finalizeRom(rom1_path)
 
     print("Done!")
     print(f"Filename is {rom_name}")

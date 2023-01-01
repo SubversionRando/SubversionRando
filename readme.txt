@@ -41,3 +41,14 @@ Compatible with casual/expert/etc logic and places Unique+Energy items at the Un
 
 Area Rando notes: -a
 Logically shuffles the major areas of the game and places items in logical places according to the door placement. Also creates a "logical" escape due to some map changes that happen during the final escape. (Warning: the elevator out of Sky Temple is bugged during the escape, so do NOT use it!) For now, this logic does not account for turning the power on/off to collect items. Now compatible with casual or expert logic, and speedrun or medium fill. Not currently compatible with major-minor.
+
+---
+
+# hints
+
+Somewhere in the bestiary of the log book, there's a hint for the location of an important item.
+(In order to see the bestiary text, you have to kill the boss.)
+
+The 10 bestiary entries are: Torizo, Spore Spawn, Kraid, Crocomire, Phantoon, Botwoon, Draygon, Ridley, Metroids, Aurora Unit
+
+note: The Metroids entry is triggered by picking up the item in extract storage, and it only works if the space port is not crashed yet.
