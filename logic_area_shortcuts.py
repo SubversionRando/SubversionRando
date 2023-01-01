@@ -656,7 +656,6 @@ class PirateLab:
     ))
     """ get out of the water in central corridor """
 
-    # TODO: make sure this is in all of the places that reference FoyerR
     eastCorridor = LogicShortcut(lambda loadout: (
         (Morph in loadout) and
         (  # 4 tile morph jump

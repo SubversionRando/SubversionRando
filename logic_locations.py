@@ -642,7 +642,6 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (collapsedHive in loadout)
         )) and
         (GravityBoots in loadout)
-        # TODO: from west: or hell run to fire temple courtyard and patience for slow refill
     ),
     "Fire's Bane Shrine": lambda loadout: (
         (icePod in loadout) and
@@ -808,9 +807,15 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (GeneratorAccessTunnelL in loadout) and
             (MetroidSuit in loadout) and  # top laser puzzles are 1 way w/o metroid suit
             (can_use_pbs(3) in loadout)
+        ) or (
+            (MagmaPumpL in loadout) and
+            (Geothermal.thermalResGamma in loadout) and
+            (Geothermal.thermalResBeta in loadout) and
+            (Screw in loadout) and
+            ((True))  # or (Grapple in loadout) or (MetroidSuit in loadout))
+            # This `True` represents the ability to turn the power off and back on again (requiring Screw)
+            # It's here in case we disable turning off the power.
         ))
-        # TODO: add MagmaPumpL access
-        # (because it can be done with neither metroid suit nor bombs)
     ),
     "Loading Dock Storage Area": lambda loadout: (
         (LoadingDockSecurityAreaL in loadout)  # no gravity boots needed
