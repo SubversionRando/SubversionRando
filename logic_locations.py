@@ -594,13 +594,13 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         (Super in loadout) and
         ((can_bomb(2) in loadout) or loadout.has_all(can_bomb(1), Speedball)) and
-        (
+        ((
             (FieryGalleryL in loadout) and
             (Verdite.fieryTrail in loadout)
         ) or (
             (SporousNookL in loadout) and
             (Verdite.hotSpring in loadout)
-        )
+        ))
     ),
     "Infested Passage": lambda loadout: (
         # copy and paste hive main passage
