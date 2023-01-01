@@ -317,7 +317,7 @@ class Verdite:
             ((
                 (can_bomb(3) in loadout)
             ) or (
-                (Screw in loadout)
+                (Screw in loadout) and (GravitySuit in loadout)  # need aqua to come up through this hole with screw
             ))
         )) and
         (
