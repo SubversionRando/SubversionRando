@@ -13,7 +13,7 @@ from game import Game
 from item_data import Items, items_unpackable
 from loadout import Loadout
 from location_data import Location, pullCSV
-from logic_presets import casual, expert
+from logic_presets import casual, medium, expert
 from logic_shortcut_data import can_win
 from logic_updater import updateLogic
 from trick import Trick
@@ -248,9 +248,22 @@ _unique_items = [
 ]
 
 
+_hard_required_items = {
+    "casual": [
+        Items.Morph, Items.GravityBoots, Items.MetroidSuit, Items.Super, Items.PowerBomb, Items.Screw, Items.Grapple
+    ],
+    "medium": [
+        Items.Morph, Items.GravityBoots, Items.MetroidSuit, Items.Super, Items.PowerBomb, Items.Screw, Items.Grapple
+    ],
+    "expert": [
+        Items.Morph, Items.GravityBoots, Items.MetroidSuit, Items.Super, Items.PowerBomb, Items.Screw
+    ],
+}
+
+
 def test_hard_required_items() -> None:
-    for logic in (casual, expert):
-        logic_name = 'casual' if logic is casual else 'expert'
+    for logic in (casual, medium, expert):
+        logic_name = 'casual' if logic is casual else ('medium' if logic is medium else 'expert')
         print(f" - {logic_name}")
         for excluded_item in _unique_items:
             game, loadout = setup(logic)
@@ -269,12 +282,12 @@ def test_hard_required_items() -> None:
             updateLogic(game.all_locations.values(), loadout)
 
             if can_win in loadout:
-                # assert excluded_item not in logic.hard_required_items, \
-                #     f"{excluded_item[0]} in {logic_name} hard required items"
+                assert excluded_item not in _hard_required_items[logic_name], \
+                    f"{excluded_item[0]} in {logic_name} hard required items"
                 print(f"{excluded_item[0]} not")
             else:
-                # assert excluded_item in logic.hard_required_items, \
-                #     f"{excluded_item[0]} missing from {logic_name} hard required items"
+                assert excluded_item in _hard_required_items[logic_name], \
+                    f"{excluded_item[0]} missing from {logic_name} hard required items"
                 print(f"{excluded_item[0]}  - - - - hard required")
 
 
@@ -315,7 +328,7 @@ _possible_places = {
 }
 
 
-@pytest.mark.parametrize("logic", (casual, expert))
+@pytest.mark.parametrize("logic", (casual, medium, expert))
 def test_restrictive_item_locations(logic: frozenset[Trick]) -> None:
     for excluded_item in _possible_places:
         print(f"  -- {excluded_item[0]}")
@@ -410,5 +423,5 @@ def test_restrictive_item_locations_area_rando(logic: frozenset[Trick]) -> None:
 
 
 if __name__ == "__main__":
-    test_hard_required_items()
-    # test_restrictive_item_locations_area_rando(expert)
+    # test_hard_required_items()
+    test_restrictive_item_locations_area_rando(expert)
