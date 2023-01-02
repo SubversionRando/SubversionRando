@@ -225,7 +225,10 @@ def _excluded_tricks(t: Trick) -> set[Trick]:
             {Tricks.crouch_or_downgrab, Tricks.crouch_precise},
 
         Tricks.short_charge_2:
-            {Tricks.short_charge_2, Tricks.short_charge_3, Tricks.short_charge_4}
+            {Tricks.short_charge_2, Tricks.short_charge_3, Tricks.short_charge_4},
+
+        Tricks.uwu_2_tile:
+            {Tricks.uwu_2_tile, Tricks.uwu_2_tile_surface}
     }
     if t in data:
         return data[t]

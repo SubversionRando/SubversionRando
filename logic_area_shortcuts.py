@@ -194,6 +194,8 @@ class SandLand:
                     ((GravitySuit in loadout) and (can_bomb(1) in loadout))
                 )
             )
+            # joonie did the super sink into the visor switch tunnel
+            # but with save states, and bob said he doesn't have a good setup for it
         )
     ))
     """ sea cave shaft to bottom-right of sea caves lower hall """
@@ -237,7 +239,7 @@ class SandLand:
     GreenMoonDown = LogicShortcut(lambda loadout: (
         (Super in loadout) or  # normal way
         (
-            (Tricks.moonfall_clip in loadout) and
+            (Tricks.moonfall_clip in loadout) and  # or supersink (morph needed, no aqua needed)
             (GravityBoots in loadout) and
             (  # get to the starting island
                 (GravitySuit in loadout) or  # anything else needed with aqua? tricks?
@@ -392,24 +394,51 @@ class Verdite:
 
 
 class SkyWorld:
-    # TODO: make sure any "both ways" usages of this also check for Screw
-    meetingHall = LogicShortcut(lambda loadout: (
-        (Morph in loadout) and
-        ((breakIce in loadout) or (
-            (Speedball in loadout) and
-            ((Tricks.clip_crouch in loadout) or (can_bomb(1) in loadout))
-        ) or (
+    meetingHallToLeft = LogicShortcut(lambda loadout: (
+        ((
+            # through top right
             (can_bomb(1) in loadout) and
             ((Tricks.morph_jump_3_tile in loadout) or (can_bomb(2) in loadout))
-        ))
-        # right to left, use clip by ice blocks or bomb furthest right block and then break bomb block with screw
-        # left to right has a 2 tile space for morph jump if no plasma
+        ) or (
+            # not through top right
+            ((
+                # through plasma tunnel
+                (breakIce in loadout) and
+                ((Morph in loadout) or (Tricks.morphless_tunnel_crawl in loadout))
+            ) or (
+                # not through plasma tunnel
+                (Tricks.clip_crouch in loadout) and
+                ((can_bomb(1) in loadout) or loadout.has_all(Screw, Morph))
+            ))
+        )) and
+        # exit in grand promenade
+        ((Screw in loadout) or (can_bomb(1) in loadout))
     ))
-    """
-    Grand Promenade through Meeting Hall to Stair of Twilight
+    """ including the exit in grand promenade """
 
-    Any "both ways" usages of this should also check for Screw, because this is used for some exit only logic.
-    """
+    meetingHallToRight = LogicShortcut(lambda loadout: (
+        # entrance in Grand Promenade
+        (Screw in loadout) and  # TODO: or supersink
+        # meeting hall
+        ((
+            # through top right
+            (Morph in loadout) and
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and  # break bomb blocks
+            ((Speedball in loadout) or (can_bomb(1) in loadout))  # 2-tile space morph jump
+        ) or (
+            # not through top right
+            # through plasma tunnel
+            (breakIce in loadout) and
+            ((Morph in loadout) or (Tricks.morphless_tunnel_crawl in loadout))
+        ))
+    ))
+    """ including the entrance in grand promenade """
+
+    meetingHall = LogicShortcut(lambda loadout: (
+        (SkyWorld.meetingHallToLeft in loadout) and
+        (SkyWorld.meetingHallToRight in loadout)
+    ))
+    """ Grand Promenade through Meeting Hall to Stair of Twilight """
 
     mezzanineShaft = LogicShortcut(lambda loadout: (
         (SpaceJump in loadout) or
@@ -511,7 +540,7 @@ class SkyWorld:
 
             # then get out
             (can_bomb(3) in loadout) and
-            (SkyWorld.meetingHall in loadout)
+            (SkyWorld.meetingHallToLeft in loadout)
         ))
     ))
     """ anticipation chamber to rail - hell run not included - gate to ridley not included """
@@ -650,7 +679,7 @@ class PirateLab:
         ) or (
             # high jump gets you high enough to wall jump
             (HiJump in loadout) and
-            (Tricks.wall_jump_precise in loadout)
+            ((Tricks.wall_jump_precise in loadout) or (Tricks.uwu_2_tile_surface in loadout))
         ))
         # TODO: can springball jump get me out?
     ))
@@ -700,7 +729,6 @@ class LifeTemple:
 
     # TODO: use this in relevant location logic
     waterToVeranda = LogicShortcut(lambda loadout: (
-        # need either bottom of chamber of life
         (GravityBoots in loadout) and
         ((  # bottom of chamber of life
             (
@@ -712,7 +740,11 @@ class LifeTemple:
                 loadout.has_all(HiJump, Speedball)
             )
         ) or (  # left-middle of chamber of stone
-            loadout.has_any(HiJump, canFly, Tricks.freeze_hard) or
+            ((HiJump in loadout) and (
+                (Tricks.wall_jump_precise in loadout) or
+                (SpeedBooster in loadout)
+            )) or
+            loadout.has_any(canFly, Tricks.freeze_hard) or
             loadout.has_all(Tricks.short_charge_4, Tricks.movement_zoast)
         )) and
         # top of chamber of stone to middle of water garden
@@ -985,6 +1017,7 @@ class Geothermal:
     """ top left of Magma Pump to middle of Reservoir Maintenance Tunnel (includes plasma+wave gate) """
 
     intakePump = LogicShortcut(lambda loadout: (
+        # TODO: super sink and xray climb up and down thermal res beta
         (Geothermal.thermalResBeta in loadout) and
         (
             (GravitySuit in loadout) or
