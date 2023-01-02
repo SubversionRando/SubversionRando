@@ -40,7 +40,10 @@ hint_data = {
         (Items.GravityBoots in loadout) and
         (pinkDoor in loadout) and  # 2 pink doors if I don't have (morph and (hjb or aqua))
         (missileDamage in loadout) and
-        (Items.GravitySuit in loadout)
+        ((Items.GravitySuit in loadout) or (
+            (Tricks.sbj_underwater_w_hjb in loadout) and
+            (Tricks.movement_zoast in loadout)
+        ))
     ))),
     b'AROUND THEM. IT IS LIKELY THAT': ("Crocomire", 4, LogicShortcut(lambda loadout: (
         (Items.GravityBoots in loadout) and
@@ -62,7 +65,7 @@ hint_data = {
         (SkyWorld.killPhantoon in loadout) and
         (can_bomb(3) in loadout) and
         (
-            (SkyWorld.meetingHall in loadout) or
+            (SkyWorld.meetingHallToLeft in loadout) or
             (SkyWorld.killRidley in loadout)
         )
     ))),

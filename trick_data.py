@@ -18,6 +18,12 @@ class Tricks:
     uwu_2_tile = Trick()
     """ underwater wall jumps between left and right in a 2-tile wide space """
 
+    uwu_2_tile_surface = Trick()
+    """
+    underwater wall jumps between left and right in a 2-tile wide space
+    to get above the surface of the water
+    """
+
     gravity_jump = Trick(Items.GravitySuit)
     """ remove aqua suit right after jumping for extra jump height in water """
 
@@ -50,6 +56,9 @@ class Tricks:
 
     mockball_hard = Trick(Items.Morph)
     """ short hop or short run (warrior shrine) """
+
+    morphless_tunnel_crawl = Trick()
+    """ travel through a 2-tile high space without morph ball """
 
     morph_jump_3_tile = Trick(Items.Morph)
     """ mid-air morph in a 3-tile-high space (no water) """

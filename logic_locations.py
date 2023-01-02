@@ -410,7 +410,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (
             ((Super in loadout) and (Tricks.morph_jump_3_tile_water in loadout)) or
             ((GravitySuit in loadout) and (Screw in loadout))
-        )  # TODO: or PBs and a lava dive
+        )
+        # TODO: or PBs and a lava dive
+        # Joonie needed 5 e tanks, no suits, used springball (would have needed 6 e without springball I think)
     ),
     "Sediment Flow": lambda loadout: (
         # similar to sediment floor
@@ -934,7 +936,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ) or (
             (SkyWorld.killPhantoon in loadout) and
             (can_bomb(3) in loadout) and
-            (SkyWorld.meetingHall in loadout)
+            (SkyWorld.meetingHallToLeft in loadout)
         ))
     ),
     "Syzygy Observatorium": lambda loadout: (
@@ -959,28 +961,32 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         # copy and paste armory cache 3
         (railAccess in loadout) and
         (GravityBoots in loadout) and
-        (SkyWorld.meetingHall in loadout) and  # exit or both
         ((
-            (Screw in loadout)
+            (SkyWorld.meetingHall in loadout)  # both enter and exit
         ) or (
             (Super in loadout) and
             (can_bomb(2) in loadout) and
             (SkyWorld.killPhantoon in loadout) and
-            loadout.has_any(Bombs, Speedball, Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile, SkyWorld.killRidley)
+            loadout.has_any(
+                Bombs, Speedball, Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile, SkyWorld.killRidley
+            ) and
+            (SkyWorld.meetingHallToLeft in loadout)  # exit
         ))
     ),
     "Armory Cache 3": lambda loadout: (
         # copy and paste armory cache 2
         (railAccess in loadout) and
         (GravityBoots in loadout) and
-        (SkyWorld.meetingHall in loadout) and  # exit or both
         ((
-            (Screw in loadout)
+            (SkyWorld.meetingHall in loadout)  # both enter and exit
         ) or (
             (Super in loadout) and
             (can_bomb(2) in loadout) and
             (SkyWorld.killPhantoon in loadout) and
-            loadout.has_any(Bombs, Speedball, Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile, SkyWorld.killRidley)
+            loadout.has_any(
+                Bombs, Speedball, Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile, SkyWorld.killRidley
+            ) and
+            (SkyWorld.meetingHallToLeft in loadout)  # exit
         ))
     ),
     "Drawing Room": lambda loadout: (
@@ -1607,7 +1613,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Glacier's Reach": lambda loadout: (
         (railAccess in loadout) and
         (GravityBoots in loadout) and
-        ((can_bomb(1) in loadout) or (breakIce in loadout)) and
+        ((can_bomb(1) in loadout) or (breakIce in loadout) or (
+            loadout.has_all(Screw, Tricks.morphless_tunnel_crawl)
+        )) and
         (varia_or_hell_run(252) in loadout)
     ),
     "Sitting Room": lambda loadout: (
