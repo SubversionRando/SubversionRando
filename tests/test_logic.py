@@ -406,6 +406,8 @@ def test_restrictive_item_locations_area_rando(logic: frozenset[Trick]) -> None:
 
 # TODO: mining cache without bombs or pbs (screw and speedball and wave)
 
+# TODO: it looks like ocean vent and submarine alcove both require aqua or hi jump
+
 
 if __name__ == "__main__":
     test_hard_required_items()

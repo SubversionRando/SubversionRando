@@ -106,6 +106,7 @@ class SandLand:
 
     lowerLowerToSedFloor = LogicShortcut(lambda loadout: (
         (GravityBoots in loadout) and
+        ((DarkVisor in loadout) or (Tricks.dark_medium in loadout)) and
         (  # bottom to Dark Hollow
             (GravitySuit in loadout) or
             ((HiJump in loadout) and (Tricks.crouch_precise in loadout)) or
@@ -131,7 +132,10 @@ class SandLand:
             (HiJump in loadout)
         )
     ))
-    """ bottom-right of sea caves lower hall to middle of sediment floor """
+    """
+    bottom-right of sea caves lower hall to middle of sediment floor
+    (not including door between sediment floor and meandering passage)
+    """
 
     sedFloorToCanyon = LogicShortcut(lambda loadout: (
         (GravityBoots in loadout) and
@@ -197,7 +201,8 @@ class SandLand:
             )
             # joonie did the super sink into the visor switch tunnel
             # but with save states, and bob said he doesn't have a good setup for it
-        )
+        ) and
+        ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
     ))
     """ sea cave shaft to bottom-right of sea caves lower hall """
 
@@ -210,7 +215,8 @@ class SandLand:
                 # Is this harder than movement_zoast? is it Tricks.bob?
                 # Joonie did it after like 15 minutes of trying.
             )
-        )
+        ) and
+        ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
     ))
     """ get out of Eddy Channel """
 
@@ -264,7 +270,11 @@ class SandLand:
             )
         )
     ))
-    """ directional - go down through the green door in ocean shallows to sediment canyon """
+    """
+    directional - go down through the green door in ocean shallows to sediment canyon
+
+    and able to return
+    """
 
 
 class ServiceSector:
