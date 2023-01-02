@@ -362,7 +362,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
                 (HiJump in loadout) and
                 (
                     (Ice in loadout) or
-                    (Tricks.crouch_precise in loadout)
+                    ((Tricks.crouch_or_downgrab in loadout) and (Morph in loadout)) or
+                    (Tricks.sbj_underwater_w_hjb in loadout)
                 )
             ) or
             (Tricks.sbj_underwater_no_hjb in loadout)
@@ -610,7 +611,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # exit room
             (can_bomb(2) in loadout) or
             loadout.has_all(can_bomb(1), Speedball) or
-            loadout.has_all(Speedball, shootThroughWalls)
+            loadout.has_all(Morph, Speedball, shootThroughWalls)
         ) and
         ((
             (FieryGalleryL in loadout) and
@@ -648,6 +649,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (pinkDoor in loadout) and
             # TODO: something that can kill red pirates, in case door color changes
             # crossways to item and back to crossways
+            (can_bomb(1) in loadout) and
             (varia_or_hell_run(850, heat_and_metroid_suit_not_required=True) in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and
@@ -655,6 +657,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (pinkDoor in loadout) and
             # TODO: something that can kill red pirates, in case door color changes
             # crossways to item and back to crossways
+            (can_bomb(1) in loadout) and
             (varia_or_hell_run(850, heat_and_metroid_suit_not_required=True) in loadout)
         ) or (
             (collapsedHive in loadout)
