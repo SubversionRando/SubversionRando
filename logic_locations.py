@@ -409,10 +409,15 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (Morph in loadout) and  # inside the room with the item
         (
             ((Super in loadout) and (Tricks.morph_jump_3_tile_water in loadout)) or
-            ((GravitySuit in loadout) and (Screw in loadout))
+            ((GravitySuit in loadout) and (Screw in loadout)) or
+
+            # lava room
+            ((can_use_pbs(1) in loadout) and (
+                (MetroidSuit in loadout) or
+                (energy_req(880) in loadout) or
+                ((GravitySuit in loadout) and (energy_req(650) in loadout))
+            ))
         )
-        # TODO: or PBs and a lava dive
-        # Joonie needed 5 e tanks, no suits, used springball (would have needed 6 e without springball I think)
     ),
     "Sediment Flow": lambda loadout: (
         # similar to sediment floor
@@ -595,7 +600,12 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Mining Cache": lambda loadout: (
         (GravityBoots in loadout) and
         (Super in loadout) and
-        ((can_bomb(2) in loadout) or loadout.has_all(can_bomb(1), Speedball)) and
+        (
+            # exit room
+            (can_bomb(2) in loadout) or
+            loadout.has_all(can_bomb(1), Speedball) or
+            loadout.has_all(Speedball, shootThroughWalls)
+        ) and
         ((
             (FieryGalleryL in loadout) and
             (Verdite.fieryTrail in loadout)
@@ -1331,7 +1341,15 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ) and
         (Morph in loadout) and
         (SandLand.eddy in loadout) and
-        (Super in loadout) and
+
+        (
+            (Super in loadout) or
+            (GravitySuit in loadout) or
+            (Tricks.movement_zoast in loadout)
+        ) and
+        # with gravity suit or good movement, you can open the pink door in sediment floor
+        # so you don't need supers to get back
+
         (GravityBoots in loadout) and
         (loadout.has_any(DarkVisor, Tricks.dark_medium))
     ),

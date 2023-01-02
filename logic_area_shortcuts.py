@@ -31,7 +31,8 @@ class Early:
         (SpeedBooster in loadout) or (
             (can_bomb(2) in loadout) and
             ((Speedball in loadout) or (
-                (shootThroughWalls in loadout) and
+                # This wave gate glitch seems a little bit harder than other, but still not hard
+                ((shootThroughWalls in loadout) or (Tricks.wave_gate_glitch in loadout)) and
                 ((GravitySuit in loadout) or (
                     (Tricks.crouch_or_downgrab in loadout) and
                     ((HiJump in loadout) or (Ice in loadout))
@@ -444,8 +445,8 @@ class SkyWorld:
         (SpaceJump in loadout) or
         ((
             (killRippers in loadout) or
-            (Tricks.movement_moderate in loadout)
-            # using movement_moderate to control speed of bomb jumping to not run into rippers
+            (Tricks.movement_zoast in loadout)
+            # using movement_zoast to control speed of bomb jumping to not run into rippers
         ) and (canFly in loadout)) or
         (SpeedBooster in loadout) or
         ((HiJump in loadout) and (Tricks.wall_jump_precise in loadout)) or  # wall jump around 3 tiles

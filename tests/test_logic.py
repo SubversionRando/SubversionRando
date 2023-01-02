@@ -404,6 +404,8 @@ def test_restrictive_item_locations_area_rando(logic: frozenset[Trick]) -> None:
 # TODO: sediment floor is in logic from ocean floor with neither supers nor pbs
 # (with moonfall_clip and missiles and stuff to go around through sea caves)
 
+# TODO: mining cache without bombs or pbs (screw and speedball and wave)
+
 
 if __name__ == "__main__":
     test_hard_required_items()
