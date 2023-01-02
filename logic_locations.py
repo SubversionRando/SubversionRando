@@ -190,20 +190,26 @@ enterSuzi = LogicShortcut(lambda loadout: (
 """ from suzi area door to inside with energy requirement """
 
 meanderingPassage = LogicShortcut(lambda loadout: (
-    ((OceanShoreR in loadout) or (EleToTurbidPassageR in loadout)) and
-    (GravityBoots in loadout) and
-    (pinkDoor in loadout) and
-    ((GravitySuit in loadout) or (
-        (HiJump in loadout) and
-        # TODO: Do I need super if I come from EleToTurbidPassageR ?
-        ((Super in loadout) or (  # don't need these tricks if I can go through sediment floor
-            (Tricks.crouch_or_downgrab in loadout) and  # up from murky gallery
-            (Tricks.movement_moderate in loadout) and  # left from murky gallery
-            (Tricks.uwu_2_tile in loadout)  # up from submarine crevice
-        ))
-        # hint: snail will help you up meandering passage
-    )) and
-    ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
+    ((
+        (OceanShoreR in loadout) and
+        (SandLand.shaftToGreenMoon in loadout) and
+        (SandLand.shaftToLowerLower in loadout) and
+        (SandLand.lowerLowerToSedFloor in loadout)  # used without the door into sediment floor
+    ) or (
+        (OceanShoreR in loadout) and
+        (SandLand.GreenMoonDown in loadout) and
+        (SandLand.canyonToGreenMoon in loadout) and
+        (SandLand.sedFloorToCanyon in loadout) and
+        (pinkDoor in loadout) and  # door to meandering passage
+        # TODO: pinkDoor or (eddy and Super), in case super can't open pink door
+        ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
+    ) or (
+        (EleToTurbidPassageR in loadout) and
+        (SandLand.turbidToSedFloor in loadout) and
+        (pinkDoor in loadout) and  # door to meandering passage
+        ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
+    ))
+    # hint: snail will help you up meandering passage
 ))
 """ from OceanShoreR or EleToTurbidPassageR to bottom of meandering passage"""
 
