@@ -366,9 +366,155 @@ def test_restrictive_item_locations(logic: frozenset[Trick]) -> None:
             assert found[loc_name], f"logic thinks {excluded_item[0]} can't be at {loc_name}"
 
 
-@pytest.mark.parametrize("logic", (casual, expert))
+_possible_places_area = {
+    "expert": {
+        Items.Morph: frozenset([
+            "Ocean Shore: bottom",
+            "Ocean Shore: top",
+            "Sandy Cache",
+            "Sandy Gully",
+            "Sediment Floor",
+            "Sediment Flow",
+            "Submarine Nest",
+            "Subterranean Burrow",
+            "Arena",
+            "Grand Vault",
+            "Hall Of The Elders",
+            "Vulnar Caves Entrance",
+            "Colosseum",
+            "Depressurization Valve",
+            "Antelier",
+            "Crocomire's Energy Station",
+            "Crocomire's Lair",
+            "Equipment Locker",
+            "Loading Dock Storage Area",
+            "Norak Escarpment",
+            "Restricted Area",
+            "Shrine Of Fervor",
+            "Water Garden",
+            "Armory Cache 2",
+            "Armory Cache 3",
+            "Drawing Room",
+            "Glacier's Reach",
+            "Grand Promenade",
+            "Ice Cave",
+            "Icy Flow",
+            "Reliquary Access",
+            "Syzygy Observatorium",
+            "Portico",
+            "Saline Cache",
+            "Tower Rock Lookout",
+            "Docking Port 3",
+            "Docking Port 4",
+            "Gantry",
+            "Ready Room",
+            "Torpedo Bay",
+            "Weapon Locker",
+        ]),
+        Items.GravityBoots: frozenset([
+            "Ocean Shore: bottom",
+            "Subterranean Burrow",
+            "Loading Dock Storage Area",
+        ])
+    },
+    "medium": {
+        Items.Morph: frozenset([
+            "Ocean Shore: bottom",
+            "Ocean Shore: top",
+            "Sandy Cache",
+            "Sandy Gully",
+            "Sediment Floor",
+            "Sediment Flow",
+            "Submarine Nest",
+            "Subterranean Burrow",
+            "Arena",
+            "Grand Vault",
+            "Hall Of The Elders",
+            "Vulnar Caves Entrance",
+            "Colosseum",
+            "Depressurization Valve",
+            "Antelier",
+            "Crocomire's Energy Station",
+            "Crocomire's Lair",
+            "Equipment Locker",
+            "Loading Dock Storage Area",
+            "Norak Escarpment",
+            "Restricted Area",
+            "Shrine Of Fervor",
+            "Water Garden",
+            "Glacier's Reach",
+            "Grand Promenade",
+            "Ice Cave",
+            "Icy Flow",
+            "Portico",
+            "Saline Cache",
+            "Tower Rock Lookout",
+            "Docking Port 3",
+            "Docking Port 4",
+            "Gantry",
+            "Ready Room",
+            "Torpedo Bay",
+            "Weapon Locker",
+        ]),
+        Items.GravityBoots: frozenset([
+            "Ocean Shore: bottom",
+            "Subterranean Burrow",
+            "Loading Dock Storage Area",
+        ])
+    },
+    "casual": {
+        Items.Morph: frozenset([
+            "Ocean Shore: bottom",
+            "Ocean Shore: top",
+            "Sandy Cache",
+            "Sandy Gully",
+            "Sediment Floor",
+            "Sediment Flow",
+            "Submarine Nest",
+            "Subterranean Burrow",
+            "Arena",
+            "Grand Vault",
+            "Hall Of The Elders",
+            "Vulnar Caves Entrance",
+            "Colosseum",
+            "Depressurization Valve",
+            "Antelier",
+            "Crocomire's Energy Station",
+            "Crocomire's Lair",
+            "Equipment Locker",
+            "Loading Dock Storage Area",
+            "Norak Escarpment",
+            "Restricted Area",
+            "Shrine Of Fervor",
+            "Water Garden",
+            "Glacier's Reach",
+            "Grand Promenade",
+            "Ice Cave",
+            "Icy Flow",
+            "Portico",
+            "Saline Cache",
+            "Tower Rock Lookout",
+            "Docking Port 3",
+            "Docking Port 4",
+            "Gantry",
+            "Ready Room",
+            "Torpedo Bay",
+            "Weapon Locker",
+        ]),
+        Items.GravityBoots: frozenset([
+            "Ocean Shore: bottom",
+            "Subterranean Burrow",
+            "Loading Dock Storage Area",
+        ])
+    },
+}
+
+
+@pytest.mark.parametrize("logic", (casual, medium, expert))
 def test_restrictive_item_locations_area_rando(logic: frozenset[Trick]) -> None:
-    for excluded_item in _possible_places:
+    logic_name = 'casual' if logic is casual else ('medium' if logic is medium else 'expert')
+    print(f" - {logic_name}")
+    for excluded_item in _possible_places_area[logic_name]:
         print(f"  -- {excluded_item[0]}")
         game, loadout = setup(logic)
 
@@ -395,14 +541,216 @@ def test_restrictive_item_locations_area_rando(logic: frozenset[Trick]) -> None:
             for loc_name, loc in game.all_locations.items():
                 if loc["inlogic"]:
                     found[loc_name] = True
-                    # assert loc_name in _possible_places[excluded_item], \
-                    #     f"logic thinks {excluded_item[0]} can be at {loc_name}"
+                    assert loc_name in _possible_places_area[logic_name][excluded_item], \
+                        f"logic thinks {excluded_item[0]} can be at {loc_name}"
                     print(loc_name)
 
         this_loadout()
 
-        # for loc_name in _possible_places[excluded_item]:
-        #     assert found[loc_name], f"logic thinks {excluded_item[0]} can't be at {loc_name}"
+        for loc_name in _possible_places_area[logic_name][excluded_item]:
+            assert found[loc_name], f"logic thinks {excluded_item[0]} can't be at {loc_name}"
+
+
+_no_bombing = frozenset([
+    "Aft Battery",
+    "Docking Port 3",
+    "Docking Port 4",
+    "Forward Battery",
+    "Gantry",
+    "Ready Room",
+    "Torpedo Bay",
+    "Weapon Locker",
+    "Eddy Channels",
+    "Impact Crater: AccelCharge",
+    "Ocean Shore: bottom",
+    "Ocean Shore: top",
+    "Ocean Vent Supply Depot",
+    "Sandy Burrow: AmmoTank",
+    "Sandy Burrow: ETank",
+    "Sandy Cache",
+    "Sandy Gully",
+    "Sediment Floor",
+    "Sediment Flow",
+    "Submarine Alcove",
+    "Submarine Nest",
+    "Subterranean Burrow",
+    "Archives: SJBoost",
+    "Archives: SpringBall",
+    "Arena",
+    "Grand Vault",
+    "Hall Of The Elders",
+    "Mezzanine Concourse",
+    "Monitoring Station",
+    "Path Of Swords",
+    "Sensor Maintenance: ETank",
+    "Trophobiotic Chamber",
+    "Vulnar Caves Entrance",
+    "Warrior Shrine: AmmoTank bottom",
+    "West Spore Field",
+    "Colosseum",
+    "Magma Lake Cache",
+    "Mining Cache",
+    "Antelier",
+    "Briar: AmmoTank",
+    "Chamber Of Wind",
+    "Containment Area",
+    "Crocomire's Energy Station",
+    "Crocomire's Lair",
+    "Equipment Locker",
+    "Foundry",
+    "Hydrodynamic Chamber",
+    "Loading Dock Storage Area",
+    "Norak Escarpment",
+    "Restricted Area",
+    "Shrine Of Fervor",
+    "Water Garden",
+    "Weapon Research",
+    "Armory Cache 2",
+    "Armory Cache 3",
+    "Drawing Room",
+    "Glacier's Reach",
+    "Grand Promenade",
+    "Ice Cave",
+    "Icy Flow",
+    "Reliquary Access",
+    "Syzygy Observatorium",
+    "Aft Battery",
+    "Docking Port 3",
+    "Docking Port 4",
+    "Forward Battery",
+    "Gantry",
+    "Ready Room",
+    "Torpedo Bay",
+    "Weapon Locker",
+])
+
+
+@pytest.mark.parametrize("logic", (casual, medium, expert))
+def test_no_bombing_locations(logic: frozenset[Trick]) -> None:
+    game, loadout = setup(logic)
+
+    for item in items_unpackable:
+        if item not in {Items.Bombs, Items.PowerBomb, Items.spaceDrop}:
+            loadout.append(item)
+
+    # some of the non-unique that can help in logic
+    for _ in range(12):
+        loadout.append(Items.Energy)
+        loadout.append(Items.LargeAmmo)
+    loadout.append(Items.SpaceJumpBoost)
+
+    found: dict[str, bool] = defaultdict(bool)
+
+    def this_loadout() -> None:
+        updateLogic(game.all_locations.values(), loadout)
+
+        for loc_name, loc in game.all_locations.items():
+            if loc["inlogic"]:
+                found[loc_name] = True
+                assert loc_name in _no_bombing, \
+                    f"logic thinks no bombing is needed for {loc_name}"
+                print(loc_name)
+
+    this_loadout()
+    print(" -- space drop")
+    loadout.append(SunkenNestL)
+    loadout.append(Items.spaceDrop)
+    this_loadout()
+
+    for loc_name in _no_bombing:
+        assert found[loc_name], f"logic thinks bombing is needed for {loc_name}"
+
+
+_no_bomb_blocks = frozenset([
+    "Aft Battery",
+    "Docking Port 3",
+    "Docking Port 4",
+    "Forward Battery",
+    "Gantry",
+    "Ready Room",
+    "Torpedo Bay",
+    "Weapon Locker",
+    "Eddy Channels",
+    "Impact Crater: AccelCharge",
+    "Ocean Shore: bottom",
+    "Ocean Shore: top",
+    "Ocean Vent Supply Depot",
+    "Sandy Burrow: AmmoTank",
+    "Sandy Cache",
+    "Sandy Gully",
+    "Sediment Floor",
+    "Sediment Flow",
+    "Submarine Alcove",
+    "Submarine Nest",
+    "Subterranean Burrow",
+    "Archives: SJBoost",
+    "Archives: SpringBall",
+    "Arena",
+    "Grand Vault",
+    "Hall Of The Elders",
+    "Mezzanine Concourse",
+    "Monitoring Station",
+    "Sensor Maintenance: ETank",
+    "Trophobiotic Chamber",
+    "Vulnar Caves Entrance",
+    "Warrior Shrine: AmmoTank bottom",
+    "Mining Cache",
+    "Antelier",
+    "Equipment Locker",
+    "Hydrodynamic Chamber",
+    "Loading Dock Storage Area",
+    "Drawing Room",
+    "Glacier's Reach",
+    "Grand Promenade",
+    "Ice Cave",
+    "Icy Flow",
+    "Reliquary Access",
+    "Syzygy Observatorium",
+    "Aft Battery",
+    "Docking Port 3",
+    "Docking Port 4",
+    "Forward Battery",
+    "Gantry",
+    "Ready Room",
+    "Torpedo Bay",
+    "Weapon Locker",
+])
+
+
+@pytest.mark.parametrize("logic", (casual, medium, expert))
+def test_no_bomb_blocks(logic: frozenset[Trick]) -> None:
+    game, loadout = setup(logic)
+
+    for item in items_unpackable:
+        if item not in {Items.Bombs, Items.PowerBomb, Items.Screw, Items.spaceDrop}:
+            loadout.append(item)
+
+    # some of the non-unique that can help in logic
+    for _ in range(12):
+        loadout.append(Items.Energy)
+        loadout.append(Items.LargeAmmo)
+    loadout.append(Items.SpaceJumpBoost)
+
+    found: dict[str, bool] = defaultdict(bool)
+
+    def this_loadout() -> None:
+        updateLogic(game.all_locations.values(), loadout)
+
+        for loc_name, loc in game.all_locations.items():
+            if loc["inlogic"]:
+                found[loc_name] = True
+                assert loc_name in _no_bomb_blocks, \
+                    f"logic thinks no bomb blocks are needed for {loc_name}"
+                print(loc_name)
+
+    this_loadout()
+    print(" -- space drop")
+    loadout.append(SunkenNestL)
+    loadout.append(Items.spaceDrop)
+    this_loadout()
+
+    for loc_name in _no_bomb_blocks:
+        assert found[loc_name], f"logic thinks bomb blocks are needed for {loc_name}"
 
 
 # TODO: places that I can go with no bombs, pbs, or screw (doesn't include colosseum)
@@ -424,4 +772,4 @@ def test_restrictive_item_locations_area_rando(logic: frozenset[Trick]) -> None:
 
 if __name__ == "__main__":
     # test_hard_required_items()
-    test_restrictive_item_locations_area_rando(expert)
+    test_no_bomb_blocks(medium)

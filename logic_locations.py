@@ -415,7 +415,11 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (meanderingPassage in loadout) and
         (Morph in loadout) and  # inside the room with the item
         (
-            ((Super in loadout) and (Tricks.morph_jump_3_tile_water in loadout)) or
+            ((Super in loadout) and (
+                (Tricks.morph_jump_3_tile_water in loadout) or
+                (Speedball in loadout) or
+                loadout.has_all(GravitySuit, can_bomb(1))
+            )) or
             ((GravitySuit in loadout) and (Screw in loadout)) or
 
             # lava room
