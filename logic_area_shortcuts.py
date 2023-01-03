@@ -728,22 +728,6 @@ class PirateLab:
 
 
 class LifeTemple:
-    waterGardenBottom = LogicShortcut(lambda loadout: (
-        ((GravitySuit in loadout) or (Ice in loadout) or (Tricks.sbj_underwater_w_hjb in loadout)) and
-        ((
-            (Tricks.morph_jump_4_tile in loadout) and
-            (can_bomb(3) in loadout)
-        ) or (
-            (Tricks.morph_jump_4_tile in loadout) and
-            (can_bomb(1) in loadout) and
-            (Speedball in loadout)
-        ) or (
-            (can_bomb(1) in loadout) and
-            ((Speedball in loadout) or (Bombs in loadout))
-        ))
-    ))
-    """ get into water garden from wellspring access """
-
     # TODO: use this in relevant location logic
     waterToVeranda = LogicShortcut(lambda loadout: (
         (GravityBoots in loadout) and
@@ -764,11 +748,26 @@ class LifeTemple:
                 (SpeedBooster in loadout)
             )) or
             loadout.has_any(canFly, Tricks.freeze_hard) or
-            loadout.has_all(Tricks.short_charge_4, Tricks.movement_zoast)
+            loadout.has_all(Tricks.short_charge_4, Tricks.movement_zoast)  # stutter
+        ))
+    ))
+    """ bottom of chamber of stone to bottom of veranda (top of chamber of stone) """
+
+    waterGardenBottom = LogicShortcut(lambda loadout: (
+        ((GravitySuit in loadout) or (Ice in loadout) or (Tricks.sbj_underwater_w_hjb in loadout)) and
+        ((
+            (Tricks.morph_jump_4_tile in loadout) and
+            (can_bomb(3) in loadout)
+        ) or (
+            (Tricks.morph_jump_4_tile in loadout) and
+            (can_bomb(1) in loadout) and
+            (Speedball in loadout)
+        ) or (
+            (can_bomb(1) in loadout) and
+            ((Speedball in loadout) or (Bombs in loadout))
         )) and
-        # top of chamber of stone to middle of water garden
         (
-            (SpeedBooster in loadout) or  # top door
+            ((SpeedBooster in loadout) and (LifeTemple.waterToVeranda in loadout)) or  # top door
             (HiJump in loadout) or
             (Tricks.wall_jump_precise in loadout) or  # around 2-tile ledge with no hjb
             ((SpaceJump in loadout) and (SpaceJumpBoost in loadout)) or
@@ -776,7 +775,7 @@ class LifeTemple:
             # have to start bomb jump mid-air if no aqua
         )
     ))
-    """ middle of water garden to bottom of veranda (top of chamber of stone) """
+    """ get into chamber of stone from wellspring access """
 
     brook = LogicShortcut(lambda loadout: (
         (GravityBoots in loadout) and

@@ -900,9 +900,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         (norakToLifeTemple in loadout) and
         (LifeTemple.veranda in loadout) and
+        (LifeTemple.waterToVeranda in loadout) and
         (SpeedBooster in loadout) and
         (energy_req(163) in loadout)
-        # TODO: chamber of stone logic
         # TODO: Might there be a reason to add logic from ElevatorToWellspringL ?
     ),
     "Crocomire's Energy Station": lambda loadout: (
@@ -910,6 +910,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         (norakToLifeTemple in loadout) and
         (LifeTemple.veranda in loadout) and
+        (LifeTemple.waterToVeranda in loadout) and
         (SpeedBooster in loadout) and
         (Super in loadout) and  # door to elevator to jungle's heart
         ((  # to get past the bomb blocks in the left side of Croc's room (can't use shinespark for exit)
@@ -1451,7 +1452,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         (can_use_pbs(1) in loadout) and
         (Spazer in loadout) and
-        (LifeTemple.veranda in loadout)
+        (LifeTemple.veranda in loadout) and
+        (LifeTemple.waterToVeranda in loadout)
         # TODO: Might there be a reason to add logic from ElevatorToWellspringL ?
     ),
     "Sandy Burrow: AmmoTank": lambda loadout: (  # bottom
@@ -1787,6 +1789,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         (norakToLifeTemple in loadout) and
         (LifeTemple.veranda in loadout) and
+        (LifeTemple.waterToVeranda in loadout) and
         (SpeedBooster in loadout) and
         (Super in loadout)  # door to elevator to jungle's heart
     ),
