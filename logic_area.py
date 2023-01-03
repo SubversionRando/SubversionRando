@@ -45,7 +45,9 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (canOpen(CraterR) in loadout) and
             ((
-                (SpaceJump in loadout) and (HiJump in loadout)  # TODO: count sjb with and without hjb
+                (SpaceJump in loadout) and (
+                    (HiJump in loadout) or (SpaceJumpBoost in loadout)
+                )  # 1 SJ boost enough with no hjb
             ) or (SpeedBooster in loadout) or (
                 (Morph in loadout) and (Bombs in loadout)
             ))
@@ -457,7 +459,7 @@ area_logic: AreaLogicType = {
             # But if you don't want to do that tight jump, then don't fall in the water.
             # It's not worth putting in logic that something is required when it's not required,
             # just for the case that someone falls in the water without it.
-            (shootThroughWalls in loadout) and
+            (shootThroughWalls in loadout) and  # or easy super sink
             (can_bomb(1) in loadout)
         ),
         ("FieldAccessL", "SubbasementFissureL"): lambda loadout: (

@@ -100,7 +100,7 @@ class SandLand:
     sedimentTunnel = LogicShortcut(lambda loadout: (
         loadout.has_all(GravitySuit, Morph, GravityBoots) and
         ((Speedball in loadout) or (Tricks.movement_zoast in loadout))
-        # I don't know how Joonie did this without speedball
+        # I don't know how Rusty and Joonie did this without speedball
     ))
     """ just from one side to the other - no door """
 
@@ -197,7 +197,10 @@ class SandLand:
                 (
                     (Speedball in loadout) or
                     ((GravitySuit in loadout) and (can_bomb(1) in loadout))
-                )
+                ) and
+
+                # going up, shoot the switch through the wall, or use the shinespark path
+                ((shootThroughWalls in loadout) or loadout.has_all(GravitySuit, SpeedBooster))
             )
             # joonie did the super sink into the visor switch tunnel
             # but with save states, and bob said he doesn't have a good setup for it
@@ -253,7 +256,10 @@ class SandLand:
                 (SandLand.oceanShoreTop in loadout)
                 # TODO: other ways to get up to the island?
             ) and
-            (Morph in loadout) and  # TODO: is morph needed to get this clip?
+            ((Morph in loadout) or (GravitySuit in loadout)) and
+            # without aqua, I couldn't do it without morph
+            # I saw rusty do it with aqua, no morph
+            # TODO: Can it be done with neither morph nor aqua?
 
             # and able to return back to above door
             (
@@ -744,7 +750,9 @@ class LifeTemple:
         ((  # bottom of chamber of life
             (
                 ((can_bomb(1) in loadout) and (Tricks.movement_moderate in loadout)) or
-                (can_bomb(2) in loadout)
+                (can_bomb(2) in loadout) or
+                (loadout.has_all(Morph, Screw))
+                # can't break blocks with screw going down, but easy to go down in chamber of stone
             ) and
             (
                 (Tricks.movement_moderate in loadout) or

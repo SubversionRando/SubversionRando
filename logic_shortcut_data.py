@@ -136,5 +136,7 @@ can_win = LogicShortcut(lambda loadout: (
     ) and
     # back to ship
     ((area_doors["SunkenNestL"] in loadout) or (area_doors["CraterR"] in loadout))
+    # TODO: this isn't enough for back to ship because some doors are grey
+    # (non area rando needs speedbooster or super sink)
 ))
 """ detonate daphne and get back to the ship """

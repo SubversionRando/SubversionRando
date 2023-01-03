@@ -119,12 +119,21 @@ ruinedConcourseBDoorToEldersTop = LogicShortcut(lambda loadout: (
     ) or (
         ((HiJump in loadout) and (Tricks.wall_jump_delayed in loadout))
         # tight wall jump from lower chozo statue to higher chozo statue))
-        # TODO: did bob do this without hjb?
     ) or (
         (SpaceJump in loadout)
     ) or (
         (GravitySuit in loadout) and (canFly in loadout)
         # bomb jump from in water
+    ) or (
+        # the morph/unmorph jump that bob did in 2nd quest low%
+        # (rusty also did it)
+        # no hi jump required, but need a way to get up to the bottom statue
+        (Tricks.movement_zoast in loadout) and
+
+        # to get up to the bottom statue
+        ((GravitySuit in loadout) or (HiJump in loadout)) and  # TODO: or sbj without hi jump? or space jump with how many boosts?
+
+        (Morph in loadout)
     )) and
     (  # exit gate
         (shootThroughWalls in loadout) or
@@ -357,7 +366,13 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         (pinkDoor in loadout) and  # 2 pink doors if I don't have (morph and (hjb or aqua))
         (
-            (GravitySuit in loadout) or
+            ((GravitySuit in loadout) and (
+                (Morph in loadout) or
+                (Tricks.gravity_jump in loadout) or
+                (Ice in loadout) or
+                (SpaceJump in loadout)
+                # TODO: probably more options here
+            )) or
             (
                 (HiJump in loadout) and
                 (
@@ -1124,7 +1139,10 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             ) or (
                 (can_bomb(2) in loadout)
             )
-        ))
+        )) and
+
+        # enemies here hit hard and are difficult to avoid
+        (loadout.has_any(energy_req(150), Tricks.movement_moderate))
     ),
     "Submarine Alcove": lambda loadout: (
         (meanderingPassage in loadout) and
@@ -1459,7 +1477,10 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             ) or (
                 ((HiJump in loadout) and (Ice in loadout) and (Tricks.freeze_hard in loadout))
             )
-        )
+        ) and
+
+        # enemies here hit hard and are difficult to avoid
+        (loadout.has_any(energy_req(150), Tricks.movement_moderate))
     ),
     "Trophobiotic Chamber": lambda loadout: (
         (sunkenNestToVulnar in loadout) and (Morph in loadout) and (Speedball in loadout)  # or Tricks.bob
