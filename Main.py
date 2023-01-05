@@ -27,6 +27,7 @@ import fillSpeedrun
 import areaRando
 from romWriter import RomWriter
 from solver import hard_required_locations, required_tricks, solve
+from trick import Trick
 
 
 def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
@@ -37,11 +38,13 @@ def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
                         help='Medium logic, medium setting between casual and expert')
     parser.add_argument('-e', '--expert', action="store_true",
                         help='Expert logic, hard setting comparable to Varia.run Expert difficulty')
+    parser.add_argument('-q', '--logiccustom', action="store_true",
+                        help='use the gui to customize logic')
 
     parser.add_argument('-s', '--speedrun', action="store_true",
-                        help='Speedrun fill, fast setting comparable to Varia.run Speedrun fill algorithm, Default')
+                        help='Speedrun fill, fast setting comparable to Varia.run Speedrun fill algorithm')
     parser.add_argument('-d', '--assumedfill', action="store_true",
-                        help='Assumed fill, standard slower progression fill algorithm')
+                        help='Assumed fill, standard slower progression fill algorithm, Default')
     parser.add_argument(
         '-m', '--medium', action="store_true",
         help='Medium fill, medium speed setting that places low-power items first for increased exploration'
@@ -94,16 +97,32 @@ fillers: dict[str, Type[FillAlgorithm]] = {
     "AF": fillAssumed.FillAssumed,
 }
 
+logics: dict[Literal["E", "U", "C", "Q"], frozenset[Trick]] = {
+    "E": expert,
+    "U": medium,
+    "C": casual,
+}
+
 
 # main program
-def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
+def Main(argv: list[str], romWriter: Optional[RomWriter] = None, *, logic_custom: frozenset[Trick] = casual) -> str:
+    """ returns rom name """
     workingArgs = commandLineArgs(argv[1:])
 
-    logicChoice: Literal["E", "U", "C"]
+    logicChoice: Literal["E", "U", "C", "Q"]
     if workingArgs.expert :
         logicChoice = "E"
     elif workingArgs.logicmedium:
         logicChoice = "U"
+    elif workingArgs.logiccustom:
+        logicChoice = "Q"
+        logics["Q"] = logic_custom
+        if logic_custom == casual:
+            logicChoice = "C"
+        elif logic_custom == medium:
+            logicChoice = "U"
+        elif logic_custom == expert:
+            logicChoice = "E"
     else :
         logicChoice = "C"  # Default to casual logic
 
@@ -112,16 +131,16 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         fillChoice = "M"
     elif workingArgs.majorminor :
         fillChoice = "MM"
-    elif workingArgs.assumedfill :
-        fillChoice = "D"
-    else :
+    elif workingArgs.speedrun:
         fillChoice = "S"
+    else :
+        fillChoice = "D"
     areaA = ""
     if workingArgs.area :
         areaA = "A"
         if fillChoice == "MM" :
-            fillChoice = "M"
-            print("Cannot use Major-Minor in Area rando currently. Using medium instead.")
+            fillChoice = "D"
+            print("Cannot use Major-Minor in Area rando currently. Using assumed fill instead.")
 
     # hudFlicker=""
     # while hudFlicker != "Y" and hudFlicker != "N" :
@@ -146,7 +165,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
     spoilerSave = ""
     seedComplete = False
     randomizeAttempts = 0
-    game = Game(expert if logicChoice == "E" else (medium if logicChoice == "U" else casual),
+    game = Game(logics[logicChoice],
                 csvdict,
                 areaA == "A",
                 VanillaAreas())
@@ -226,6 +245,8 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None) -> None:
         spoiler_file.write(required_tricks_spoiler(game))
         spoiler_file.write('\n')
     print(f"Spoiler file is spoilers/{rom_name}.spoiler.txt")
+
+    return rom_name
 
 
 def required_locations_spoiler(game: Game) -> str:

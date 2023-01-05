@@ -1,14 +1,36 @@
-README
+# SubversionRando
 
 contact randorandy (ironrusty) or strotlog or beauxq (buxnq) with questions
 
-simple readme for now
+---
 
-1.download this repository
-2.place a copy of the Subversion 1.2 rom in the roms folder - it must be named Subversion12.sfc
-3.run Main.py in console
-4. optionally, command line arguments are available:
+## setup / install
+
+1. install Python from [https://www.python.org/](https://www.python.org/)
+
+2. download the code from this page
+   1. green "Code" button in the top right portion of this page
+   2. "Download ZIP"
+   3. unzip it to a folder on your hard drive
+
+3. put your Subversion 1.2 rom in the `roms` directory with this filename: `Subversion12.sfc`
+
+---
+
+## generate from gui
+
+run `gui.py`
+
+---
+
+## generate from command line
+
+run `Main.py` in console
+
+optionally, command line arguments are available:
+```
  -h   : Help
+
  -c   : Casual logic (Default)
  -i   : Medium logic
  -e   : Expert logic
@@ -18,8 +40,13 @@ simple readme for now
  -d   : Assumed fill
 
  -a   : Area Rando
+```
 
 This should create a randomized rom with the given name in the roms folder and a spoiler log (.txt) in the spoilers folder.
+
+---
+
+## notes on options
 
 Casual logic notes: -c
 Casual logic is meant to mimic the "intended" experience of Subversion, with its few moments of suitless underwater movement, no hellruns, and no "gate glitches" in logic. Logic regarding the shutdown, and Suzi is overly cautious so I would be surprised to find any progress there.
@@ -44,7 +71,7 @@ Logically shuffles the major areas of the game and places items in logical place
 
 ---
 
-# hints
+## hints
 
 Somewhere in the bestiary of the log book, there's a hint for the location of an important item.
 (In order to see the bestiary text, you have to kill the boss.)
