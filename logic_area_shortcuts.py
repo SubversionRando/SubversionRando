@@ -19,6 +19,164 @@ from trick_data import Tricks
 ) = items_unpackable
 
 
+class SkyWorld:
+    meetingHallToLeft = LogicShortcut(lambda loadout: (
+        ((
+            # through top right
+            (can_bomb(1) in loadout) and
+            ((Tricks.morph_jump_3_tile in loadout) or (can_bomb(2) in loadout))
+        ) or (
+            # not through top right
+            ((
+                # through plasma tunnel
+                (breakIce in loadout) and
+                ((Morph in loadout) or (Tricks.morphless_tunnel_crawl in loadout))
+            ) or (
+                # not through plasma tunnel
+                (Tricks.clip_crouch in loadout) and
+                ((can_bomb(1) in loadout) or loadout.has_all(Screw, Morph))
+            ))
+        )) and
+        # exit in grand promenade
+        ((Screw in loadout) or (can_bomb(1) in loadout))
+    ))
+    """ including the exit in grand promenade """
+
+    meetingHallToRight = LogicShortcut(lambda loadout: (
+        # entrance in Grand Promenade
+        (Screw in loadout) and  # TODO: or supersink
+        # meeting hall
+        ((
+            # through top right
+            (Morph in loadout) and
+            ((can_bomb(1) in loadout) or (Screw in loadout)) and  # break bomb blocks
+            ((Speedball in loadout) or (can_bomb(1) in loadout))  # 2-tile space morph jump
+        ) or (
+            # not through top right
+            # through plasma tunnel
+            (breakIce in loadout) and
+            ((Morph in loadout) or (Tricks.morphless_tunnel_crawl in loadout))
+        ))
+    ))
+    """ including the entrance in grand promenade """
+
+    meetingHall = LogicShortcut(lambda loadout: (
+        (SkyWorld.meetingHallToLeft in loadout) and
+        (SkyWorld.meetingHallToRight in loadout)
+    ))
+    """ Grand Promenade through Meeting Hall to Stair of Twilight """
+
+    mezzanineShaft_withoutSpeedbooster = LogicShortcut(lambda loadout: (
+        (SpaceJump in loadout) or
+        ((
+            (killRippers in loadout) or
+            (Tricks.movement_zoast in loadout)
+            # using movement_zoast to control speed of bomb jumping to not run into rippers
+        ) and (canFly in loadout)) or
+        ((HiJump in loadout) and (Tricks.wall_jump_precise in loadout)) or  # wall jump around 3 tiles
+        (Ice in loadout) or
+        ((Speedball in loadout) and (Tricks.sbj_wall in loadout))
+    ))
+    """ the reason for this is to figure whether energy is required for the shinespark up ruined concourse """
+
+    mezzanineShaft = LogicShortcut(lambda loadout: (
+        (SpeedBooster in loadout) or
+        (SkyWorld.mezzanineShaft_withoutSpeedbooster in loadout)
+    ))
+    """ up mezzanine concourse """
+
+    condenser = LogicShortcut(lambda loadout: (
+        (  # up into the door from the platform below the door
+            (GravitySuit in loadout) or
+            ((Speedball in loadout) and (Tricks.sbj_underwater_no_hjb in loadout)) or
+            (HiJump in loadout)
+        ) and
+        (
+            ((Ice in loadout) and (Tricks.movement_moderate in loadout)) or
+            # movement just because there are so many enemies in the room
+            (
+                (GravitySuit in loadout) and
+                # aqua suit alone won't do it
+                (loadout.has_any(Tricks.gravity_jump, HiJump, Ice, Grapple, canFly, Tricks.short_charge_2))
+                # Yes. Some day we will find that person that can't do a gravity jump, but can do a 2-tap short charge.
+            ) or
+            ((Grapple in loadout) and (Tricks.movement_moderate in loadout)) or
+            (Tricks.sbj_underwater_w_hjb in loadout)
+        ) and
+        (GravityBoots in loadout) and
+        (varia_or_hell_run(90) in loadout)  # hell_run_hard won't need any tanks, but others will
+    ))
+    """ traverse condenser room """
+
+    killPhantoon = LogicShortcut(lambda loadout: (
+        (DarkVisor in loadout) and
+        loadout.has_any(missileDamage, Charge) and
+        ((Tricks.movement_zoast in loadout) or (
+            (Tricks.movement_moderate in loadout) and
+            (energy_req(250) in loadout)
+        ) or (
+            (energy_req(450) in loadout)
+        ))
+    ))
+
+    killRidley = LogicShortcut(lambda loadout: (
+        # These numbers are all guesses, they might need to be tuned.
+        # TODO: Should these numbers depend on damage amp and accel charge?
+        (
+            (MetroidSuit in loadout) and
+            (Varia in loadout) and
+            ((energy_req(850) in loadout) or (
+                (Tricks.movement_moderate in loadout) and
+                (energy_req(650) in loadout)
+            ) or (
+                (Tricks.movement_zoast in loadout) and
+                (energy_req(450) in loadout)
+            ))
+            # TODO: energy w/o varia?
+        ) or (
+            (Charge in loadout) and
+            (Hypercharge in loadout) and
+            ((
+                (energy_req(480) in loadout) and
+                (varia_or_hell_run(680) in loadout)
+            ) or (
+                (Tricks.movement_moderate in loadout) and
+                (energy_req(280) in loadout) and
+                (varia_or_hell_run(480) in loadout)
+            ) or (
+                (Tricks.movement_zoast in loadout) and
+                (energy_req(80) in loadout) and
+                (varia_or_hell_run(280) in loadout)
+            ))
+        )
+    ))
+
+    anticipation = LogicShortcut(lambda loadout: (
+        # this is mostly about exit logic, because it doesn't take anything to get into anticipation chamber
+        (GravityBoots in loadout) and
+        ((  # stair of dawn
+            (Morph in loadout) and
+            (pinkDoor in loadout)  # bottom of stair of dawn
+        ) or (
+            (Tricks.moonfall_clip in loadout)
+        ) or (
+            # get out by killing phantoon
+
+            # first get to phantoon
+            ((SkyWorld.killRidley in loadout) or (
+                (can_bomb(1) in loadout) and
+                (loadout.has_any(Bombs, Speedball, Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile))
+            )) and
+            (SkyWorld.killPhantoon in loadout) and
+
+            # then get out
+            (can_bomb(3) in loadout) and
+            (SkyWorld.meetingHallToLeft in loadout)
+        ))
+    ))
+    """ anticipation chamber to rail - hell run not included - gate to ridley not included """
+
+
 class Early:
     cisternAccessTunnel = LogicShortcut(lambda loadout: (
         (Morph in loadout) and
@@ -43,9 +201,9 @@ class Early:
 
     concourseShinespark = LogicShortcut(lambda loadout: (
         (SpeedBooster in loadout) and
-        # less than 180 is needed for this shinespark, (could be done with no energy tank)
+        # less than 180 is needed for this shinespark, (can be done with no energy tank)
         # but then you're very likely to need more health to shinespark in the next room (when it's not area rando)
-        (energy_req(180) in loadout) and
+        ((energy_req(180) in loadout) or (SkyWorld.mezzanineShaft_withoutSpeedbooster in loadout)) and
         (Morph in loadout)  # back down
     ))
     """ access to the top of ruined concourse """
@@ -292,6 +450,7 @@ class ServiceSector:
         )) or
         (SpeedBooster in loadout) or
         (Bombs in loadout)
+        # TODO: ice with sbj (no hjb)?
     ))
     """ traverse from one door of waste processing to the other (not including colored door) """
 
@@ -408,159 +567,6 @@ class Verdite:
         ))
     ))
     """ through placid pool to elevator """
-
-
-class SkyWorld:
-    meetingHallToLeft = LogicShortcut(lambda loadout: (
-        ((
-            # through top right
-            (can_bomb(1) in loadout) and
-            ((Tricks.morph_jump_3_tile in loadout) or (can_bomb(2) in loadout))
-        ) or (
-            # not through top right
-            ((
-                # through plasma tunnel
-                (breakIce in loadout) and
-                ((Morph in loadout) or (Tricks.morphless_tunnel_crawl in loadout))
-            ) or (
-                # not through plasma tunnel
-                (Tricks.clip_crouch in loadout) and
-                ((can_bomb(1) in loadout) or loadout.has_all(Screw, Morph))
-            ))
-        )) and
-        # exit in grand promenade
-        ((Screw in loadout) or (can_bomb(1) in loadout))
-    ))
-    """ including the exit in grand promenade """
-
-    meetingHallToRight = LogicShortcut(lambda loadout: (
-        # entrance in Grand Promenade
-        (Screw in loadout) and  # TODO: or supersink
-        # meeting hall
-        ((
-            # through top right
-            (Morph in loadout) and
-            ((can_bomb(1) in loadout) or (Screw in loadout)) and  # break bomb blocks
-            ((Speedball in loadout) or (can_bomb(1) in loadout))  # 2-tile space morph jump
-        ) or (
-            # not through top right
-            # through plasma tunnel
-            (breakIce in loadout) and
-            ((Morph in loadout) or (Tricks.morphless_tunnel_crawl in loadout))
-        ))
-    ))
-    """ including the entrance in grand promenade """
-
-    meetingHall = LogicShortcut(lambda loadout: (
-        (SkyWorld.meetingHallToLeft in loadout) and
-        (SkyWorld.meetingHallToRight in loadout)
-    ))
-    """ Grand Promenade through Meeting Hall to Stair of Twilight """
-
-    mezzanineShaft = LogicShortcut(lambda loadout: (
-        (SpaceJump in loadout) or
-        ((
-            (killRippers in loadout) or
-            (Tricks.movement_zoast in loadout)
-            # using movement_zoast to control speed of bomb jumping to not run into rippers
-        ) and (canFly in loadout)) or
-        (SpeedBooster in loadout) or
-        ((HiJump in loadout) and (Tricks.wall_jump_precise in loadout)) or  # wall jump around 3 tiles
-        (Ice in loadout) or
-        ((Speedball in loadout) and (Tricks.sbj_wall in loadout))
-    ))
-    """ up mezzanine concourse """
-
-    condenser = LogicShortcut(lambda loadout: (
-        (  # up into the door from the platform below the door
-            (GravitySuit in loadout) or
-            ((Speedball in loadout) and (Tricks.sbj_underwater_no_hjb in loadout)) or
-            (HiJump in loadout)
-        ) and
-        (
-            ((Ice in loadout) and (Tricks.movement_moderate in loadout)) or
-            # movement just because there are so many enemies in the room
-            (
-                (GravitySuit in loadout) and
-                # aqua suit alone won't do it
-                (loadout.has_any(Tricks.gravity_jump, HiJump, Ice, Grapple, canFly, Tricks.short_charge_2))
-                # Yes. Some day we will find that person that can't do a gravity jump, but can do a 2-tap short charge.
-            ) or
-            ((Grapple in loadout) and (Tricks.movement_moderate in loadout)) or
-            (Tricks.sbj_underwater_w_hjb in loadout)
-        ) and
-        (GravityBoots in loadout) and
-        (varia_or_hell_run(90) in loadout)  # hell_run_hard won't need any tanks, but others will
-    ))
-    """ traverse condenser room """
-
-    killPhantoon = LogicShortcut(lambda loadout: (
-        (DarkVisor in loadout) and
-        loadout.has_any(missileDamage, Charge) and
-        ((Tricks.movement_zoast in loadout) or (
-            (Tricks.movement_moderate in loadout) and
-            (energy_req(250) in loadout)
-        ) or (
-            (energy_req(450) in loadout)
-        ))
-    ))
-
-    killRidley = LogicShortcut(lambda loadout: (
-        # These numbers are all guesses, they might need to be tuned.
-        # TODO: Should these numbers depend on damage amp and accel charge?
-        (
-            (MetroidSuit in loadout) and
-            (Varia in loadout) and
-            ((energy_req(850) in loadout) or (
-                (Tricks.movement_moderate in loadout) and
-                (energy_req(650) in loadout)
-            ) or (
-                (Tricks.movement_zoast in loadout) and
-                (energy_req(450) in loadout)
-            ))
-            # TODO: energy w/o varia?
-        ) or (
-            (Charge in loadout) and
-            (Hypercharge in loadout) and
-            ((
-                (energy_req(480) in loadout) and
-                (varia_or_hell_run(680) in loadout)
-            ) or (
-                (Tricks.movement_moderate in loadout) and
-                (energy_req(280) in loadout) and
-                (varia_or_hell_run(480) in loadout)
-            ) or (
-                (Tricks.movement_zoast in loadout) and
-                (energy_req(80) in loadout) and
-                (varia_or_hell_run(280) in loadout)
-            ))
-        )
-    ))
-
-    anticipation = LogicShortcut(lambda loadout: (
-        # this is mostly about exit logic, because it doesn't take anything to get into anticipation chamber
-        (GravityBoots in loadout) and
-        ((  # stair of dawn
-            (Morph in loadout) and
-            (pinkDoor in loadout)  # bottom of stair of dawn
-        ) or (
-            (Tricks.moonfall_clip in loadout)
-        ) or (
-            # get out by killing phantoon
-
-            # first get to phantoon
-            ((SkyWorld.killRidley in loadout) or (
-                (can_bomb(1) in loadout) and
-                (loadout.has_any(Bombs, Speedball, Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile))
-            )) and
-            (SkyWorld.killPhantoon in loadout) and
-
-            # then get out
-            (can_bomb(3) in loadout) and
-            (SkyWorld.meetingHallToLeft in loadout)
-        ))
-    ))
-    """ anticipation chamber to rail - hell run not included - gate to ridley not included """
 
 
 class PirateLab:
@@ -1068,7 +1074,8 @@ class DrayLand:
 
     killGT = LogicShortcut(lambda loadout: (
         loadout.has_all(Varia, Charge)
-        # TODO: can hell run with hypercharge, or lots of beams and damage amps, or a billion supers
+        # TODO: can hell run with hypercharge, or lots of beams and damage amps, or a billion supers,
+        # or patience and varia+missiles
     ))
 
     killDraygon = LogicShortcut(lambda loadout: (

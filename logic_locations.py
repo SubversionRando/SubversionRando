@@ -863,8 +863,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Containment Area": lambda loadout: (
         (GravityBoots in loadout) and
         ((
-            (FoyerR in loadout) and
-            (PirateLab.eastCorridor in loadout) and
+            (doorsToCentralCorridorMid in loadout) and
             ((MetroidSuit in loadout) or (Screw in loadout))
         ) or (
             (AlluringCenoteR in loadout) and
@@ -894,7 +893,11 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (Morph in loadout)
         )) and
         # get out of chamber of wind
-        ((Tricks.short_charge_2 in loadout) or (canFly in loadout))
+        (
+            (Tricks.short_charge_2 in loadout) or
+            (canFly in loadout) or
+            ((HiJump in loadout) and (Tricks.wall_jump_precise in loadout))  # with speedbooster, jump high enough to wall jump on top ledges
+        )
     ),
     "Water Garden": lambda loadout: (
         (GravityBoots in loadout) and
@@ -1640,13 +1643,12 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Foundry": lambda loadout: (
         (GravityBoots in loadout) and
-        (FoyerR in loadout) and
+        (doorsToCentralCorridorMid in loadout) and
         (
             (energy_req(129) in loadout) or
             ((MetroidSuit in loadout) and (Speedball in loadout)) or
             (Tricks.movement_zoast in loadout)
-        ) and
-        (PirateLab.eastCorridor in loadout)
+        )
     ),
     "Norak Escarpment": lambda loadout: (
         (NorakBrookL in loadout) and
@@ -1660,6 +1662,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
                     ((CanyonPassageR, NorakBrookL) in loadout.game.connections) or
                     # If area rando, we'll have to assume that we don't have the space to charge shinespark.
                     ((Tricks.short_charge_4 in loadout) and (Tricks.movement_zoast in loadout))  # stutter 4 tap
+                    # TODO: hi jump + a short charge from bottom left that might not be as hard
                 )
             )
         )
