@@ -1,9 +1,17 @@
 import random
 import sys
-from typing import Literal, Optional, Type
+try:  # Literal 3.8
+    from typing import Literal, Optional, Type
+except ImportError:
+    input("requires Python 3.9 or higher... press enter to quit")
+    exit(1)
 import argparse
 
-from connection_data import SunkenNestL, VanillaAreas
+try:  # container type annotations 3.9
+    from connection_data import SunkenNestL, VanillaAreas
+except ImportError:
+    input("requires Python 3.9 or higher... press enter to quit")
+    exit(1)
 from fillInterface import FillAlgorithm
 from game import Game
 from hints import choose_hint_location, get_hint_spoiler_text, write_hint_to_rom
