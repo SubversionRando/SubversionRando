@@ -19,7 +19,7 @@ from trick import Trick
 # TODO: spore spawn, kraid, draygon
 # TODO: impact crater (doesn't need "Accel Charge" - there's only 1 item in that room)
 # TODO: mining site alpha a
-# TODO: armory cache b beta, gamma g y
+# TODO: armory cache b beta, gamma g y c,  armory 2, armory 3,  armory b, armory c
 # TODO: sandy burrow top and bottom
 # TODO: shrines last word (penumbra, fervor)
 _name_aliases = {
