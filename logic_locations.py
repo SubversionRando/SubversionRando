@@ -131,7 +131,8 @@ ruinedConcourseBDoorToEldersTop = LogicShortcut(lambda loadout: (
         (Tricks.movement_zoast in loadout) and
 
         # to get up to the bottom statue
-        ((GravitySuit in loadout) or (HiJump in loadout)) and  # TODO: or sbj without hi jump? or space jump with how many boosts?
+        ((GravitySuit in loadout) or (HiJump in loadout)) and
+        # TODO: or sbj without hi jump? or space jump with how many boosts?
 
         (Morph in loadout)
     )) and
@@ -896,7 +897,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (
             (Tricks.short_charge_2 in loadout) or
             (canFly in loadout) or
-            ((HiJump in loadout) and (Tricks.wall_jump_precise in loadout))  # with speedbooster, jump high enough to wall jump on top ledges
+
+            ((HiJump in loadout) and (Tricks.wall_jump_precise in loadout))
+            # with speedbooster, jump high enough to wall jump on top ledges
         )
     ),
     "Water Garden": lambda loadout: (
