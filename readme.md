@@ -35,9 +35,10 @@ optionally, command line arguments are available:
  -i   : Medium logic
  -e   : Expert logic
 
- -s   : Speedrun fill (Default)
+ -d   : Assumed fill (Default)
+ -s   : Speedrun fill
  -m   : Medium fill
- -d   : Assumed fill
+ -mm  : Major/Minor fill (not compatible with area rando)
 
  -a   : Area Rando
 ```
