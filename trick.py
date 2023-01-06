@@ -4,10 +4,12 @@ from item_data import Item
 
 class Trick:
     """ items: all the items needed to do this trick """
+    desc: str
     _items: tuple[Item, ...]
-    __slots__ = "_items",
+    __slots__ = ("desc", "_items")
 
-    def __init__(self, *items: Item) -> None:
+    def __init__(self, desc: str, *items: Item) -> None:
+        self.desc = desc
         self._items = items
 
     def __hash__(self) -> int:

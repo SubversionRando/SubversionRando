@@ -31,9 +31,10 @@ def main() -> None:
             ttk.Checkbutton(
                 custom_logic_frame.viewPort, variable=logic_selections[trick_name], text=trick_name
             ).grid(sticky=tk.W, column=0, row=row_i)
-            # ttk.Label(
-            #     custom_logic_frame.viewPort, text=trick_name, justify=tk.LEFT, anchor="w"
-            # ).grid(sticky=tk.W, column=1, row=row_i)
+            ttk.Label(
+                custom_logic_frame.viewPort, text=trick.desc, justify=tk.LEFT, anchor="w", wraplength=150,
+                borderwidth=1, relief="solid", padding=2
+            ).grid(sticky=tk.W, column=1, row=row_i)
             row_i += 1
 
     def preset_buttons() -> None:
