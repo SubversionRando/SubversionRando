@@ -28,6 +28,7 @@ import areaRando
 from romWriter import RomWriter
 from solver import hard_required_locations, required_tricks, solve
 from trick import Trick
+from trick_data import Tricks
 
 
 def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
@@ -244,6 +245,8 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None, *, logic_custom
         spoiler_file.write('\n')
         spoiler_file.write(required_tricks_spoiler(game))
         spoiler_file.write('\n')
+        spoiler_file.write(logic_tricks_spoiler(game))
+        spoiler_file.write('\n')
     print(f"Spoiler file is spoilers/{rom_name}.spoiler.txt")
 
     return rom_name
@@ -267,6 +270,14 @@ def required_tricks_spoiler(game: Game) -> str:
     spoiler_text += "\ntricks required to reach all locations:\n"
     for trick_name in for_locs:
         spoiler_text += f"  {trick_name}\n"
+    return spoiler_text
+
+
+def logic_tricks_spoiler(game: Game) -> str:
+    spoiler_text = "tricks allowed in this logic:\n"
+    for trick_name, trick in vars(Tricks).items():
+        if isinstance(trick, Trick) and trick in game.logic:
+            spoiler_text += f'    "{trick_name}",\n'
     return spoiler_text
 
 

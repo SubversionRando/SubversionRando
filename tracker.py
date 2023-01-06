@@ -12,6 +12,7 @@ from location_data import Location, pullCSV, spacePortLocs
 from logic_presets import casual, expert, medium
 from solver import solve
 from trick import Trick
+from trick_data import Tricks
 
 # TODO: archives right and left, front and back
 # TODO: sensor maintenance top and bottom (sensor top, sensor bot)
@@ -74,15 +75,7 @@ class Tracker:
         return list(everything[best[0]] if len(best) else [])
 
     def set_spoiler(self, filename: str) -> None:
-        file_only = os.path.basename(filename)
-        logic: frozenset[Trick]
-        if file_only[3] == "C":
-            logic = casual
-        elif file_only[3] == "E":
-            logic = expert
-        else:
-            print(f"can't find logic letter in filename {file_only}")
-            logic = expert
+        logic_from_spoiler: set[Trick] = set()
 
         area_rando = False
         connections: list[tuple[AreaDoor, AreaDoor]] = []
@@ -99,10 +92,25 @@ class Tracker:
                     _area_a, door_name_a = door_a.split(" ")
                     _area_b, door_name_b = door_b.split(" ")
                     connections.append((area_doors[door_name_a], area_doors[door_name_b]))
+                elif line.startswith('    "') and line.strip().endswith('",'):
+                    end_quote_i = line.index('"', 6)
+                    trick_name = line[5:end_quote_i]
+                    logic_from_spoiler.add(getattr(Tricks, trick_name))
+
         if len(connections) == 0:
             connections = VanillaAreas()
 
-        game = Game(logic, self.empty_locations, area_rando, connections)
+        frz_logic_from_spoiler = frozenset(logic_from_spoiler)
+        if frz_logic_from_spoiler == casual:
+            print("found logic: casual")
+        elif frz_logic_from_spoiler == medium:
+            print("found logic: medium")
+        elif frz_logic_from_spoiler == expert:
+            print("found logic: expert")
+        else:
+            print("found logic: custom")
+
+        game = Game(frozenset(logic_from_spoiler), self.empty_locations, area_rando, connections)
         self.loadout = Loadout(game)
 
     def pickup_location(self, loc_name: str) -> None:
