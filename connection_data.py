@@ -1,8 +1,10 @@
 """ data for the connections in area rando """
-from typing import NamedTuple, Union
+from typing import TYPE_CHECKING, NamedTuple, Union
+
 from item_data import Item, Items
 from logicCommon import can_use_pbs
-from logic_shortcut import LogicShortcut
+if TYPE_CHECKING:
+    from logic_shortcut import LogicShortcut
 
 
 class AreaDoor(NamedTuple):
@@ -70,7 +72,7 @@ area_doors: dict[str, AreaDoor] = {
     for door in area_doors_unpackable
 }
 
-vanilla_doors: dict[AreaDoor, Union[Item, LogicShortcut]] = {
+vanilla_doors: "dict[AreaDoor, Union[Item, LogicShortcut]]" = {
     area_doors["CraterR"]: can_use_pbs(1),
     area_doors["WestTerminalAccessL"]: can_use_pbs(1),
     area_doors["VulnarCanyonL"]: can_use_pbs(1),

@@ -1641,11 +1641,13 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Restricted Area": lambda loadout: (
         (MetroidSuit in loadout) and
         (doorsToCentralCorridorMid in loadout)
-        # note: if you accidentally shoot the laser switch, you'll make it so you need shootThroughWalls,
-        # so don't do that if you can't shoot through walls
     ),
     "Foundry": lambda loadout: (
         (GravityBoots in loadout) and
+
+        (Morph in loadout) and
+        # even with super sink getting through the first small passage, I couldn't get to the item without morph
+
         (doorsToCentralCorridorMid in loadout) and
         (
             (energy_req(129) in loadout) or
