@@ -269,13 +269,7 @@ def write_area_doors(Connections: list[tuple[AreaDoor, AreaDoor]], romWriter : R
     for pair in Connections :
         node1 = pair[0]
         node2 = pair[1]
-        # place data for node1 sending
-        romWriter.writeBytes(int(node1.address, 16), int(node2.data, 16).to_bytes(12, 'big'))
-        # place data for node2 sending
-        romWriter.writeBytes(int(node2.address, 16), int(node1.data, 16).to_bytes(12, 'big'))
-        if node1.region != node2.region:
-            romWriter.writeBytes(int(node1.address, 16)+2, b"\x40")
-            romWriter.writeBytes(int(node2.address, 16)+2, b"\x40")
+        romWriter.connect_doors(node1, node2)
 
     # Area rando done?
 

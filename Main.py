@@ -27,6 +27,7 @@ import fillSpeedrun
 import areaRando
 from romWriter import RomWriter
 from solver import hard_required_locations, required_tricks, solve
+from spaceport_door_data import shrink_spaceport
 from trick import Trick
 from trick_data import Tricks
 
@@ -55,6 +56,9 @@ def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
 
     parser.add_argument('-a', '--area', action="store_true",
                         help='Area rando shuffles major areas of the game, expert logic only')
+
+    parser.add_argument('-o', '--smallspaceport', action="store_true",
+                        help='cuts out some parts of the space port to make it smaller')
     args = parser.parse_args(sys_args)
     # print(args)
     return args
@@ -229,6 +233,12 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None, *, logic_custom
     #   which is vanilla and probably not used anyway
     #   use by writing 0x18 to the high byte of a gray door plm param, OR'ed with the low bit of the 9-low-bits id part
     romWriter.writeBytes(0x23e33, b"\x38\x38\x38\x38")  # set the carry bit (a lot)
+
+    if workingArgs.smallspaceport:
+        romWriter.writeBytes(0x106283, b'\x71\x01')  # zebetite health
+        romWriter.writeBytes(0x204b3, b'\x08')  # fake zebetite hits taken
+        shrink_spaceport(romWriter)
+
     romWriter.finalizeRom(rom1_path)
 
     print("Done!")

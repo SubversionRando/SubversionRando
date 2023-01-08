@@ -1,6 +1,9 @@
 import enum
 import os
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
+
+if TYPE_CHECKING:
+    from connection_data import AreaDoor
 
 
 class RomWriterType(enum.IntEnum):
@@ -97,3 +100,12 @@ class RomWriter:
 
     def getBaseFilename(self) -> str:
         return self.baseFilename
+
+    def connect_doors(self, door1: "AreaDoor", door2: "AreaDoor") -> None:
+        # place data for node1 sending
+        self.writeBytes(int(door1.address, 16), int(door2.data, 16).to_bytes(12, 'big'))
+        # place data for node2 sending
+        self.writeBytes(int(door2.address, 16), int(door1.data, 16).to_bytes(12, 'big'))
+        if door1.region != door2.region:
+            self.writeBytes(int(door1.address, 16)+2, b"\x40")
+            self.writeBytes(int(door2.address, 16)+2, b"\x40")

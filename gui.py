@@ -76,6 +76,12 @@ def main() -> None:
         logic_frame, variable=area_rando_value, text="area rando"
     ).grid(sticky=tk.E, column=0, row=2)
 
+    small_spaceport_value = tk.IntVar()
+
+    ttk.Checkbutton(
+        logic_frame, variable=small_spaceport_value, text="small spaceport"
+    ).grid(sticky=tk.E, column=1, row=2)
+
     name_label = ttk.Label(logic_frame, text="")
     name_label.grid(column=0, row=3)
 
@@ -89,6 +95,8 @@ def main() -> None:
         args = ["", "-q", "-d"]
         if area_rando_value.get():
             args.append("-a")
+        if small_spaceport_value.get():
+            args.append("-o")
         name = generate_main(args, logic_custom=logic)
         name_label.config(text=name)
 
