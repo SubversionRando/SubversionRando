@@ -712,7 +712,14 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             ((
                 (Varia in loadout) and
                 (GravitySuit in loadout) and
-                (energy_req(hell_run_energy(450, loadout)) in loadout)
+                (
+                    (energy_req(hell_run_energy(450, loadout)) in loadout) or
+                    (
+                        (Speedball in loadout) and
+                        (can_use_pbs(4) in loadout) and
+                        (energy_req(hell_run_energy(350, loadout)) in loadout)
+                    )
+                )
             ) or (
                 (Varia in loadout) and
                 # no aqua
