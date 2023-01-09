@@ -41,6 +41,8 @@ optionally, command line arguments are available:
  -mm  : Major/Minor fill (not compatible with area rando)
 
  -a   : Area Rando
+
+ -o   : Smaller Spaceport
 ```
 
 This should create a randomized rom with the given name in the roms folder and a spoiler log (.txt) in the spoilers folder.
