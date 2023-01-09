@@ -77,6 +77,7 @@ def main() -> None:
     ).grid(sticky=tk.E, column=0, row=2)
 
     small_spaceport_value = tk.IntVar()
+    small_spaceport_value.set(1)
 
     ttk.Checkbutton(
         logic_frame, variable=small_spaceport_value, text="small spaceport"
