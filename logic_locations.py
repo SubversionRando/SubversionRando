@@ -120,6 +120,9 @@ ruinedConcourseBDoorToEldersTop = LogicShortcut(lambda loadout: (
         ((HiJump in loadout) and (Tricks.wall_jump_delayed in loadout))
         # tight wall jump from lower chozo statue to higher chozo statue))
     ) or (
+        ((HiJump in loadout) and (SpeedBooster in loadout) and (Tricks.wall_jump_precise in loadout))
+        # speedbooster jump from lower chozo statue to higher chozo statue wall))
+    ) or (
         (SpaceJump in loadout)
     ) or (
         (GravitySuit in loadout) and (canFly in loadout)
@@ -1164,7 +1167,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (
             (GravitySuit in loadout) or
             (Tricks.sbj_underwater_w_hjb in loadout) or
-            loadout.has_all(Tricks.sbj_underwater_no_hjb, Tricks.freeze_hard)
+            loadout.has_all(Tricks.sbj_underwater_no_hjb, Tricks.freeze_hard) or
+            (HiJump in loadout) or
+            (Tricks.crouch_or_downgrab in loadout)  # TODO: this with Tricks.snail_climb ?
         )
     ),
     "Sediment Floor": lambda loadout: (
@@ -1786,9 +1791,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (doorsToCentralCorridorMid in loadout) and
             (Screw in loadout) and
             # backdoor main hydrology research
-            loadout.has_any(GravitySuit, HiJump, Tricks.sbj_underwater_no_hjb) and
-            (PirateLab.exitMainHydrologyResearch in loadout)
-        ))
+            loadout.has_any(GravitySuit, HiJump, Tricks.sbj_underwater_no_hjb)
+        )) and
+        (PirateLab.exitMainHydrologyResearch in loadout)
         # can gravity jump (no gravity suit)
         # through hydrodynamic chamber door into main hydrology research from central corridor
     ),

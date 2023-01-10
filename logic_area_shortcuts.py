@@ -147,6 +147,8 @@ class SkyWorld:
                 (Tricks.movement_zoast in loadout) and
                 (energy_req(80) in loadout) and
                 (varia_or_hell_run(280) in loadout)
+                # TODO: test - I did this (no suits), but I had a few accel charges and damage amps.
+                # Can it be done with no damage amp or accel charge?
             ))
         )
     ))
@@ -639,7 +641,8 @@ class PirateLab:
     exitMainHydrologyResearch = LogicShortcut(lambda loadout: (
         (GravitySuit in loadout) or
         (Ice in loadout) or  # freeze pancake to stand on
-        (Tricks.sbj_underwater_w_hjb in loadout)
+        (Tricks.sbj_underwater_w_hjb in loadout) or
+        ((Tricks.uwu_2_tile in loadout) and (HiJump in loadout))
     ))
 
     waterGauntlet_oneWay = LogicShortcut(lambda loadout: (
@@ -1083,6 +1086,10 @@ class DrayLand:
             (Tricks.movement_moderate in loadout) and (energy_req(850) in loadout)
         ) or (
             (Tricks.movement_zoast in loadout) and (energy_req(161) in loadout)
+        ) or (
+            # hypercharge makes up for not having aqua
+            (Charge in loadout) and
+            (Hypercharge in loadout)
         )) and
         ((energy_req(850) in loadout) or (
             (Tricks.movement_moderate in loadout) and
