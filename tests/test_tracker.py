@@ -14,7 +14,7 @@ def test_loc_names_from_input() -> None:
     assert len(t.loc_names_from_input("benthic")) == 2  # cache and cache access
     assert t.loc_names_from_input("benthic access") == ['Benthic Cache Access']
     assert len(t.loc_names_from_input("briar")) == 2
-    assert t.loc_names_from_input("briar ammo") == ['Briar: AmmoTank']
+    assert t.loc_names_from_input("briar ammo") == ['Briar: Bottom']
     assert len(t.loc_names_from_input("shrine")) == 3
     assert t.loc_names_from_input("shrine fervor") == ['Shrine Of Fervor']
     assert t.loc_names_from_input("tower") == ['Tower Rock Lookout']
@@ -30,8 +30,8 @@ def test_loc_names_from_input() -> None:
     assert len(t.loc_names_from_input("q et")) == 0
 
     # aliases
-    assert t.loc_names_from_input("warrior shrine top") == ["Warrior Shrine: AmmoTank top"]
-    assert t.loc_names_from_input("warrior shrine bottom") == ["Warrior Shrine: AmmoTank bottom"]
-    assert t.loc_names_from_input("warrior shrine mid") == ["Warrior Shrine: ETank"]
-    assert t.loc_names_from_input("briar bot") == ['Briar: AmmoTank']
-    assert t.loc_names_from_input("briar top") == ["Briar: SJBoost"]
+    assert t.loc_names_from_input("warrior shrine top") == ["Warrior Shrine: Top"]
+    assert t.loc_names_from_input("warrior shrine bottom") == ["Warrior Shrine: Bottom"]
+    assert t.loc_names_from_input("warrior shrine mid") == ["Warrior Shrine: Middle"]
+    assert t.loc_names_from_input("briar bot") == ['Briar: Bottom']
+    assert t.loc_names_from_input("briar top") == ["Briar: Top"]

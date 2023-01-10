@@ -94,28 +94,8 @@ hint_data = {
     ))),
 }
 
-
-_location_aliases = {
-    "Archives: SJBoost": "Archives: back",
-    "Archives: SpringBall": "Archives: front",
-
-    "Briar: SJBoost": "Briar: top",
-    "Briar: AmmoTank": "Briar: bottom",
-
-    "Sandy Burrow: ETank": "Sandy Burrow: top",
-    "Sandy Burrow: AmmoTank": "Sandy Burrow: bottom",
-
-    "Sensor Maintenance: ETank": "Sensor Maintenance: top",
-    "Sensor Maintenance: AmmoTank": "Sensor Maintenance: bottom",
-
-    "Warrior Shrine: AmmoTank bottom": "Warrior Shrine: bottom",
-    "Warrior Shrine: AmmoTank top": "Warrior Shrine: top",
-    "Warrior Shrine: ETank": "Warrior Shrine: middle",
-
-    "Impact Crater: AccelCharge": "Impact Crater",
-
-    "Frozen Lake Wall: DamageAmp": "Frozen Lake Wall"
-}
+# used this before for changing location names
+_location_aliases: dict[str, str] = {}
 
 
 def choose_hint_location(game: Game) -> tuple[str, bytes]:

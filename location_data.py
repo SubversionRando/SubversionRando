@@ -35,7 +35,7 @@ majorLocs = frozenset([
     "Sandy Cache",
     "Shrine Of The Penumbra",
     "Subterranean Burrow",
-    "Archives: SpringBall",
+    "Archives: Front",
     "Arena",
     "Grand Vault",
     "Harmonic Growth Enhancer",
@@ -54,14 +54,14 @@ majorLocs = frozenset([
     "Shrine Of The Animate Spark",
     "Extract Storage",
     "Torpedo Bay",  # end of unique majors
-    "Sandy Burrow: ETank",  # E Tanks
+    "Sandy Burrow: Top",  # E Tanks
     "Sediment Flow",
     "Epiphreatic Crag",
     "Mezzanine Concourse",
-    "Sensor Maintenance: ETank",
+    "Sensor Maintenance: Top",
     "Trophobiotic Chamber",
     "Vulnar Caves Entrance",
-    "Warrior Shrine: ETank",
+    "Warrior Shrine: Middle",
     "Depressurization Valve",
     "Gymnasium",
     "Mining Cache",

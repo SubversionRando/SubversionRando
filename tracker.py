@@ -24,11 +24,11 @@ from trick_data import Tricks
 # TODO: sandy burrow top and bottom
 # TODO: shrines last word (penumbra, fervor)
 _name_aliases = {
-    "Warrior Shrine: Top": "Warrior Shrine: AmmoTank top",
-    "Warrior Shrine: Bottom": "Warrior Shrine: AmmoTank bottom",
-    "Warrior Shrine: Middle": "Warrior Shrine: ETank",
-    "Briar: Bottom": "Briar: AmmoTank",
-    "Briar: Top": "Briar: SJBoost",
+    "Warrior Shrine: AmmoTank Top": "Warrior Shrine: Top",
+    "Warrior Shrine: AmmoTank Bottom": "Warrior Shrine: Bottom",
+    "Warrior Shrine: ETank": "Warrior Shrine: Middle",
+    "Briar: AmmoTank": "Briar: Bottom",
+    "Briar: SJBoost": "Briar: Top",
 }
 """ alternate name: location name """
 # If you add an alias, add a unit test for it in test_tracker.py `test_loc_names_from_input()`

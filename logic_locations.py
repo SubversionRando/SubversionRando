@@ -350,7 +350,7 @@ greaterInferno = LogicShortcut(lambda loadout: (
 """ because this is also used for draygon in hint system """
 
 location_logic: dict[str, Callable[[Loadout], bool]] = {
-    "Impact Crater: AccelCharge": lambda loadout: (
+    "Impact Crater": lambda loadout: (  # under ship
         (SunkenNestL in loadout) and
         (GravityBoots in loadout) and
         (Morph in loadout) and
@@ -521,7 +521,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Cistern": lambda loadout: (
         (RuinedConcourseBL in loadout) and (GravityBoots in loadout) and (can_bomb(1) in loadout)
     ),
-    "Warrior Shrine: ETank": lambda loadout: (
+    "Warrior Shrine: Middle": lambda loadout: (
         (ruinedConcourseBDoorToEldersTop in loadout) and
         (pinkDoor in loadout) and  # to warrior shrine access
         (can_use_pbs(1) in loadout) and  # PB placement is important if you only have 10 ammo
@@ -542,20 +542,20 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             )
         )
     ),
-    "Archives: SpringBall": lambda loadout: (
+    "Archives: Front": lambda loadout: (
         (sunkenNestToVulnar in loadout) and
         (pinkDoor in loadout) and  # into way of the watcher
         (Morph in loadout) and
         (Speedball in loadout)
     ),
-    "Archives: SJBoost": lambda loadout: (
+    "Archives: Back": lambda loadout: (
         (sunkenNestToVulnar in loadout) and
         (pinkDoor in loadout) and  # into way of the watcher
         (Morph in loadout) and
         (Speedball in loadout) and
         (SpeedBooster in loadout)
     ),
-    "Sensor Maintenance: ETank": lambda loadout: (  # front
+    "Sensor Maintenance: Top": lambda loadout: (  # front
         (sensorMaintenance in loadout)
     ),
     "Eribium Apparatus Room": lambda loadout: (
@@ -881,7 +881,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (PirateLab.cenote in loadout)
         ))
     ),
-    "Briar: SJBoost": lambda loadout: (  # top  PB tube
+    "Briar: Top": lambda loadout: (  # PB tube
         (NorakPerimeterBL in loadout) and
         (GravityBoots in loadout) and
         (can_use_pbs(1) in loadout)
@@ -953,7 +953,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (Tricks.freeze_hard in loadout)
         ))
     ),
-    "Frozen Lake Wall: DamageAmp": lambda loadout: (
+    "Frozen Lake Wall": lambda loadout: (
         (ElevatorToCondenserL in loadout) and
         (GravityBoots in loadout) and
         (can_use_pbs(1) in loadout)
@@ -1123,14 +1123,14 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # shinespark from just the right pixel on the 1 tile between 2 slopes
         ))
     ),
-    "Ocean Shore: bottom": lambda loadout: (
+    "Ocean Shore: Bottom": lambda loadout: (
         (OceanShoreR in loadout)
     ),
-    "Ocean Shore: top": lambda loadout: (
+    "Ocean Shore: Top": lambda loadout: (
         (OceanShoreR in loadout) and
         (SandLand.oceanShoreTop in loadout)
     ),
-    "Sandy Burrow: ETank": lambda loadout: (  # top
+    "Sandy Burrow: Top": lambda loadout: (  # ETank
         (OceanShoreR in loadout) and
         (Morph in loadout) and
         (GravityBoots in loadout) and
@@ -1232,12 +1232,12 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (Tricks.sbj_underwater_no_hjb in loadout)
         )
     ),
-    "Warrior Shrine: AmmoTank bottom": lambda loadout: (
+    "Warrior Shrine: Bottom": lambda loadout: (
         (ruinedConcourseBDoorToEldersTop in loadout) and
         (Morph in loadout) and
         (pinkDoor in loadout)
     ),
-    "Warrior Shrine: AmmoTank top": lambda loadout: (
+    "Warrior Shrine: Top": lambda loadout: (
         (ruinedConcourseBDoorToEldersTop in loadout) and
         (pinkDoor in loadout) and  # to warrior shrine access
         (can_bomb(1) in loadout) and  # PB placement is important if you only have 10 ammo
@@ -1257,7 +1257,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (Morph in loadout) and
         ((Speedball in loadout) or (can_bomb(1) in loadout) or (Tricks.movement_zoast in loadout))
     ),
-    "Sensor Maintenance: AmmoTank": lambda loadout: (  # back
+    "Sensor Maintenance: Bottom": lambda loadout: (  # back
         (sensorMaintenance in loadout) and
         (can_bomb(2) in loadout)  # TODO: confirm this is the only difference from the other sensor maintenance item
     ),
@@ -1363,12 +1363,12 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (varia_or_hell_run(1216, heat_and_metroid_suit_not_required=True) in loadout)
         ))
     ),
-    "Central Corridor: right": lambda loadout: (
+    "Central Corridor: Right": lambda loadout: (
         (GravityBoots in loadout) and
         (can_bomb(1) in loadout) and
         (doorsToCentralCorridorBottom in loadout)
     ),
-    "Briar: AmmoTank": lambda loadout: (  # bottom
+    "Briar: Bottom": lambda loadout: (  # AmmoTank
         (norakToLifeTemple in loadout) and
         (Morph in loadout) and
         (GravityBoots in loadout)
@@ -1474,7 +1474,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (LifeTemple.waterToVeranda in loadout)
         # TODO: Might there be a reason to add logic from ElevatorToWellspringL ?
     ),
-    "Sandy Burrow: AmmoTank": lambda loadout: (  # bottom
+    "Sandy Burrow: Bottom": lambda loadout: (  # AmmoTank
         (OceanShoreR in loadout) and
         (Morph in loadout) and
         (GravityBoots in loadout) and
@@ -1640,7 +1640,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (Screw in loadout)
         ))
     ),
-    "Central Corridor: left": lambda loadout: (
+    "Central Corridor: Left": lambda loadout: (
         # don't need other area doors if everything here will get through east corridor
         (GravitySuit in loadout) and
         (Speedball in loadout) and

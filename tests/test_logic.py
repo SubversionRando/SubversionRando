@@ -53,7 +53,7 @@ def test_start_logic() -> None:
     print("  with planet")
     for loc in accessible:
         print(loc["fullitemname"])
-    assert len(accessible) == 4, "add Ocean Shore: bottom"
+    assert len(accessible) == 4, "add Ocean Shore: Bottom"
 
     game, _ = setup(expert)
     loadout = Loadout(game, loadout.contents)
@@ -172,13 +172,13 @@ def test_warrior_shrine_speedball() -> None:
 
     updateLogic(game.all_locations.values(), loadout)
 
-    assert not game.all_locations["Warrior Shrine: ETank"]["inlogic"]
+    assert not game.all_locations["Warrior Shrine: Middle"]["inlogic"]
 
     loadout.append(Items.Speedball)
 
     updateLogic(game.all_locations.values(), loadout)
 
-    assert game.all_locations["Warrior Shrine: ETank"]["inlogic"]
+    assert game.all_locations["Warrior Shrine: Middle"]["inlogic"]
 
 
 def test_norak_perimeters() -> None:
@@ -300,8 +300,8 @@ _possible_places = {
         "Torpedo Bay",
         "Weapon Locker",
 
-        "Ocean Shore: bottom",
-        "Ocean Shore: top",
+        "Ocean Shore: Bottom",
+        "Ocean Shore: Top",
         "Sandy Cache",
         "Sandy Gully",
         "Sediment Floor",
@@ -322,7 +322,7 @@ _possible_places = {
         "Torpedo Bay",
         "Weapon Locker",
 
-        "Ocean Shore: bottom",
+        "Ocean Shore: Bottom",
         "Subterranean Burrow",
     ])
 }
@@ -369,8 +369,8 @@ def test_restrictive_item_locations(logic: frozenset[Trick]) -> None:
 _possible_places_area = {
     "expert": {
         Items.Morph: frozenset([
-            "Ocean Shore: bottom",
-            "Ocean Shore: top",
+            "Ocean Shore: Bottom",
+            "Ocean Shore: Top",
             "Sandy Cache",
             "Sandy Gully",
             "Sediment Floor",
@@ -413,15 +413,15 @@ _possible_places_area = {
             "Weapon Locker",
         ]),
         Items.GravityBoots: frozenset([
-            "Ocean Shore: bottom",
+            "Ocean Shore: Bottom",
             "Subterranean Burrow",
             "Loading Dock Storage Area",
         ])
     },
     "medium": {
         Items.Morph: frozenset([
-            "Ocean Shore: bottom",
-            "Ocean Shore: top",
+            "Ocean Shore: Bottom",
+            "Ocean Shore: Top",
             "Sandy Cache",
             "Sandy Gully",
             "Sediment Floor",
@@ -459,15 +459,15 @@ _possible_places_area = {
             "Weapon Locker",
         ]),
         Items.GravityBoots: frozenset([
-            "Ocean Shore: bottom",
+            "Ocean Shore: Bottom",
             "Subterranean Burrow",
             "Loading Dock Storage Area",
         ])
     },
     "casual": {
         Items.Morph: frozenset([
-            "Ocean Shore: bottom",
-            "Ocean Shore: top",
+            "Ocean Shore: Bottom",
+            "Ocean Shore: Top",
             "Sandy Cache",
             "Sandy Gully",
             "Sediment Floor",
@@ -505,7 +505,7 @@ _possible_places_area = {
             "Weapon Locker",
         ]),
         Items.GravityBoots: frozenset([
-            "Ocean Shore: bottom",
+            "Ocean Shore: Bottom",
             "Subterranean Burrow",
             "Loading Dock Storage Area",
         ])
@@ -564,12 +564,12 @@ _no_bombing = frozenset([
     "Torpedo Bay",
     "Weapon Locker",
     "Eddy Channels",
-    "Impact Crater: AccelCharge",
-    "Ocean Shore: bottom",
-    "Ocean Shore: top",
+    "Impact Crater",
+    "Ocean Shore: Bottom",
+    "Ocean Shore: Top",
     "Ocean Vent Supply Depot",
-    "Sandy Burrow: AmmoTank",
-    "Sandy Burrow: ETank",
+    "Sandy Burrow: Bottom",
+    "Sandy Burrow: Top",
     "Sandy Cache",
     "Sandy Gully",
     "Sediment Floor",
@@ -577,24 +577,24 @@ _no_bombing = frozenset([
     "Submarine Alcove",
     "Submarine Nest",
     "Subterranean Burrow",
-    "Archives: SJBoost",
-    "Archives: SpringBall",
+    "Archives: Back",
+    "Archives: Front",
     "Arena",
     "Grand Vault",
     "Hall Of The Elders",
     "Mezzanine Concourse",
     "Monitoring Station",
     "Path Of Swords",
-    "Sensor Maintenance: ETank",
+    "Sensor Maintenance: Top",
     "Trophobiotic Chamber",
     "Vulnar Caves Entrance",
-    "Warrior Shrine: AmmoTank bottom",
+    "Warrior Shrine: Bottom",
     "West Spore Field",
     "Colosseum",
     "Magma Lake Cache",
     "Mining Cache",
     "Antelier",
-    "Briar: AmmoTank",
+    "Briar: Bottom",
     "Chamber Of Wind",
     "Containment Area",
     "Crocomire's Energy Station",
@@ -674,11 +674,11 @@ _no_bomb_blocks = frozenset([
     "Torpedo Bay",
     "Weapon Locker",
     "Eddy Channels",
-    "Impact Crater: AccelCharge",
-    "Ocean Shore: bottom",
-    "Ocean Shore: top",
+    "Impact Crater",
+    "Ocean Shore: Bottom",
+    "Ocean Shore: Top",
     "Ocean Vent Supply Depot",
-    "Sandy Burrow: AmmoTank",
+    "Sandy Burrow: Bottom",
     "Sandy Cache",
     "Sandy Gully",
     "Sediment Floor",
@@ -686,17 +686,17 @@ _no_bomb_blocks = frozenset([
     "Submarine Alcove",
     "Submarine Nest",
     "Subterranean Burrow",
-    "Archives: SJBoost",
-    "Archives: SpringBall",
+    "Archives: Back",
+    "Archives: Front",
     "Arena",
     "Grand Vault",
     "Hall Of The Elders",
     "Mezzanine Concourse",
     "Monitoring Station",
-    "Sensor Maintenance: ETank",
+    "Sensor Maintenance: Top",
     "Trophobiotic Chamber",
     "Vulnar Caves Entrance",
-    "Warrior Shrine: AmmoTank bottom",
+    "Warrior Shrine: Bottom",
     "Mining Cache",
     "Antelier",
     "Equipment Locker",
