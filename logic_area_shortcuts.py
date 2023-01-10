@@ -14,7 +14,7 @@ from trick_data import Tricks
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
     GravitySuit, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
     MetroidSuit, Plasma, Screw, Hypercharge, Charge, Xray, SpaceJump, Energy,
-    Refuel, SmallAmmo, LargeAmmo, DamageAmp, ChargeAmp, SpaceJumpBoost,
+    Refuel, SmallAmmo, LargeAmmo, DamageAmp, AccelCharge, SpaceJumpBoost,
     spaceDrop
 ) = items_unpackable
 

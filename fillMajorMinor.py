@@ -11,7 +11,7 @@ from location_data import Location, majorLocs
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
     GravitySuit, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
     MetroidSuit, Plasma, Screw, Hypercharge, Charge, Xray, SpaceJump, Energy,
-    Refuel, SmallAmmo, LargeAmmo, DamageAmp, ChargeAmp, SpaceJumpBoost,
+    Refuel, SmallAmmo, LargeAmmo, DamageAmp, AccelCharge, SpaceJumpBoost,
     spaceDrop
 ) = items_unpackable
 
@@ -57,7 +57,7 @@ class FillMajorMinor(FillAlgorithm):
         self.extraItemList = [
             Refuel, Refuel, Refuel, Refuel, Refuel, Refuel, Refuel,
             DamageAmp, DamageAmp, DamageAmp, DamageAmp, DamageAmp, DamageAmp,
-            ChargeAmp, ChargeAmp, ChargeAmp, ChargeAmp, ChargeAmp, ChargeAmp,
+            AccelCharge, AccelCharge, AccelCharge, AccelCharge, AccelCharge, AccelCharge,
             SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost,
             SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost, SpaceJumpBoost,
             SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo, SmallAmmo,

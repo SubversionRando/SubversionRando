@@ -144,15 +144,15 @@ class Items:
     # when spoiler says damage amp, it's accel charge
     # when spoiler says charge amp, it's damage amp
     DamageAmp = ("Damage Amp",
-                 b"\x7e\xf8",
-                 b"\x7e\xf8",
-                 b"\x7e\xf8",
-                 b"\x00")
-    ChargeAmp = ("Charge Amp",
                  b"\xa0\xf0",
                  b"\xa0\xf0",
                  b"\xa0\xf0",
                  b"\x00")
+    AccelCharge = ("Accel Charge",
+                   b"\x7e\xf8",
+                   b"\x7e\xf8",
+                   b"\x7e\xf8",
+                   b"\x00")
     SpaceJumpBoost = ("Space Jump Boost",
                       b"\xc0\xfc",
                       b"\xc0\xfc",
@@ -166,7 +166,7 @@ items_unpackable: Iterable[Item] = (
     Items.HiJump, Items.GravitySuit, Items.DarkVisor, Items.Wave, Items.SpeedBooster, Items.Spazer, Items.Varia,
     Items.Ice, Items.Grapple, Items.MetroidSuit, Items.Plasma, Items.Screw, Items.Hypercharge, Items.Charge,
     Items.Xray, Items.SpaceJump, Items.Energy, Items.Refuel, Items.SmallAmmo, Items.LargeAmmo, Items.DamageAmp,
-    Items.ChargeAmp, Items.SpaceJumpBoost, Items.spaceDrop
+    Items.AccelCharge, Items.SpaceJumpBoost, Items.spaceDrop
 )
 
 all_items: dict[str, Item] = {

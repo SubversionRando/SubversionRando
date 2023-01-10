@@ -14,7 +14,7 @@ from location_data import Location
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
     GravitySuit, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
     MetroidSuit, Plasma, Screw, Hypercharge, Charge, Xray, SpaceJump, Energy,
-    Refuel, SmallAmmo, LargeAmmo, DamageAmp, ChargeAmp, SpaceJumpBoost,
+    Refuel, SmallAmmo, LargeAmmo, DamageAmp, AccelCharge, SpaceJumpBoost,
     spaceDrop
 ) = items_unpackable
 
@@ -68,8 +68,8 @@ class FillMedium(FillAlgorithm):
             Xray,
             DamageAmp, DamageAmp, DamageAmp,
             DamageAmp, DamageAmp, DamageAmp,
-            ChargeAmp, ChargeAmp, ChargeAmp,
-            ChargeAmp, ChargeAmp, ChargeAmp,
+            AccelCharge, AccelCharge, AccelCharge,
+            AccelCharge, AccelCharge, AccelCharge,
             Refuel, Refuel, Refuel, Refuel, Refuel, Refuel, Refuel,
             Energy, Energy, Energy, Energy,
             Energy, Energy, Energy, Energy, Energy,

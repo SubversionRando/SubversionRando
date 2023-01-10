@@ -10,7 +10,7 @@ from solver import solve
 
 _minor_logic_items = {
     Items.DamageAmp: 6,
-    Items.ChargeAmp: 6,
+    Items.AccelCharge: 6,
     Items.Energy: 16,
     Items.SpaceJumpBoost: 8,
     Items.SmallAmmo: 12,
