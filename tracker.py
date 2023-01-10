@@ -14,21 +14,39 @@ from solver import solve
 from trick import Trick
 from trick_data import Tricks
 
-# TODO: archives right and left, front and back
-# TODO: sensor maintenance top and bottom (sensor top, sensor bot)
-# TODO: docking port 4 omega o, and 3 is gamma y g
-# TODO: spore spawn, kraid, draygon
-# TODO: impact crater (doesn't need "Accel Charge" - there's only 1 item in that room)
-# TODO: mining site alpha a
-# TODO: armory cache b beta, gamma g y c,  armory 2, armory 3,  armory b, armory c
-# TODO: sandy burrow top and bottom
-# TODO: shrines last word (penumbra, fervor)
 _name_aliases = {
     "Warrior Shrine: AmmoTank Top": "Warrior Shrine: Top",
     "Warrior Shrine: AmmoTank Bottom": "Warrior Shrine: Bottom",
     "Warrior Shrine: ETank": "Warrior Shrine: Middle",
     "Briar: AmmoTank": "Briar: Bottom",
     "Briar: SJBoost": "Briar: Top",
+    "Archives: Right": "Archives: Front",
+    "Archives: Left": "Archives: Back",
+    "Sensor Top": "Sensor Maintenance: Top",
+    "Sensor Bottom": "Sensor Maintenance: Bottom",
+    "Docking Port: Omega": "Docking Port 4",
+    "Docking Port: O": "Docking Port 4",
+    "Docking Port: Gamma": "Docking Port 3",
+    "Docking Port: G": "Docking Port 3",
+    "Docking Port: Y": "Docking Port 3",
+    "Spore Spawn": "Harmonic Growth Enhancer",
+    "SpoSpo": "Harmonic Growth Enhancer",
+    "Kraid": "Shrine Of The Penumbra",
+    "Draygon": "Greater Inferno",
+    "Mining Site Alpha": "Mining Site 1",
+    "Mining Site A": "Mining Site 1",
+    "Armory Cache Beta": "Armory Cache 2",
+    "Armory Cache B": "Armory Cache 2",
+    "Armory Cache Gamma": "Armory Cache 3",
+    "Armory Cache G": "Armory Cache 3",
+    "Armory Cache Y": "Armory Cache 3",
+    "Armory 2": "Armory Cache 2",
+    "Armory 3": "Armory Cache 3",
+    "Armory B": "Armory Cache 2",
+    "Armory C": "Armory Cache 3",
+    "Penumbra": "Shrine Of The Penumbra",
+    "Fervor": "Shrine Of Fervor",
+    "Animate Spark": "Shrine Of The Animate Spark",
 }
 """ alternate name: location name """
 # If you add an alias, add a unit test for it in test_tracker.py `test_loc_names_from_input()`
