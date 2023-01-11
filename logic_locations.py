@@ -882,9 +882,15 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ))
     ),
     "Briar: Top": lambda loadout: (  # PB tube
-        (NorakPerimeterBL in loadout) and
+        (norakToLifeTemple in loadout) and
         (GravityBoots in loadout) and
-        (can_use_pbs(1) in loadout)
+        ((
+            (can_use_pbs(1) in loadout)
+        ) or (
+            (False) and  # (Tricks.super_sink in loadout) and
+            # harder without speedball, requires patience without xray or movement_zoast
+            (can_bomb(1) in loadout)  # type: ignore
+        ))
     ),
     "Shrine Of Fervor": lambda loadout: (
         (GravityBoots in loadout) and
@@ -1366,6 +1372,10 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Central Corridor: Right": lambda loadout: (
         (GravityBoots in loadout) and
         (can_bomb(1) in loadout) and
+
+        # lowest jump in central corridor (below "bottom")
+        (loadout.has_any(GravitySuit, HiJump, Tricks.crouch_or_downgrab, Ice, Tricks.sbj_underwater_no_hjb)) and
+
         (doorsToCentralCorridorBottom in loadout)
     ),
     "Briar: Bottom": lambda loadout: (  # AmmoTank

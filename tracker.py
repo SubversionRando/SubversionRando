@@ -14,6 +14,7 @@ from solver import solve
 from trick import Trick
 from trick_data import Tricks
 
+# TODO: ocean top
 _name_aliases = {
     "Warrior Shrine: AmmoTank Top": "Warrior Shrine: Top",
     "Warrior Shrine: AmmoTank Bottom": "Warrior Shrine: Bottom",

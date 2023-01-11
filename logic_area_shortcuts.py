@@ -241,13 +241,19 @@ class SandLand:
     #    pile anchor
 
     oceanShoreTop = LogicShortcut(lambda loadout: (
-        (GravityBoots in loadout) and
         (
-            loadout.has_all(Tricks.movement_moderate, Tricks.wall_jump_delayed) or
-            (canFly in loadout) or
-            (HiJump in loadout) or  # debating attaching a trick to this for the difficulty of the jumps
-            ((SpeedBooster in loadout) and (GravitySuit in loadout))
-        )
+            (GravityBoots in loadout) and
+            (
+                loadout.has_all(Tricks.movement_moderate, Tricks.wall_jump_delayed) or
+                (canFly in loadout) or
+                (HiJump in loadout) or  # debating attaching a trick to this for the difficulty of the jumps
+                (SpeedBooster in loadout)
+            )
+        ) or
+
+        # Gravity boots are not required to get this.
+        # The only difficulty is shooting the wall in the right place (when you'll fall quickly).
+        ((SpeedBooster in loadout) and (Tricks.movement_moderate in loadout))
     ))
     """
     I wouldn't make a logic shortcut just for a single location.
@@ -388,7 +394,7 @@ class SandLand:
         (Morph in loadout) and
         ((GravitySuit in loadout) or (
             (HiJump in loadout) and
-            ((Tricks.movement_zoast in loadout) or (
+            ((Tricks.movement_moderate in loadout) or (
                 (Super in loadout) and
                 (SandLand.eddy in loadout)
                 # If no aqua suit, assume the player will fall into eddy channels
