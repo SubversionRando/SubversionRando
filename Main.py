@@ -9,7 +9,7 @@ import argparse
 
 try:  # container type annotations 3.9
     from connection_data import SunkenNestL, VanillaAreas
-except ImportError:
+except TypeError:
     input("requires Python 3.9 or higher... press enter to quit")
     exit(1)
 from fillInterface import FillAlgorithm

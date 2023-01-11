@@ -3,7 +3,11 @@ from tkinter import ttk
 
 from gui_scroll_frame import ScrollFrame
 from gui_toggled_frame import ToggledFrame
-import logic_presets
+try:
+    import logic_presets
+except TypeError:
+    input("requires Python 3.9 or higher... press enter to quit")
+    exit(1)
 from Main import Main as generate_main
 from trick import Trick
 from trick_data import Tricks
