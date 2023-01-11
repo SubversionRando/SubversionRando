@@ -178,6 +178,22 @@ class SkyWorld:
     ))
     """ anticipation chamber to rail - hell run not included - gate to ridley not included """
 
+    crackedCliffsideCave = LogicShortcut(lambda loadout: (
+        (can_bomb(1) in loadout) or
+        (Screw in loadout) or
+        (
+            (SpeedBooster in loadout) and
+
+            # left to right
+            (Tricks.short_charge_4 in loadout) and
+
+            # right to left
+            # get up to the 2nd platform holding shinespark charge
+            (Tricks.movement_zoast in loadout) and
+            ((HiJump in loadout) or (SpaceJump in loadout))
+        )
+    ))
+
 
 class Early:
     cisternAccessTunnel = LogicShortcut(lambda loadout: (
@@ -188,7 +204,9 @@ class Early:
     """ Cistern Access Tunnel with a shot block in it """
 
     causeway = LogicShortcut(lambda loadout: (
-        (SpeedBooster in loadout) or (
+        (
+            (SpeedBooster in loadout)
+        ) or (
             (can_bomb(2) in loadout) and
             ((Speedball in loadout) or (
                 # This wave gate glitch seems a little bit harder than other, but still not hard
@@ -198,6 +216,25 @@ class Early:
                     ((HiJump in loadout) or (Ice in loadout))
                 ))
             ))
+        ) or (
+            # no bombs or speedbooster needed
+            (GravitySuit in loadout) and
+            (GravityBoots in loadout) and
+            (Screw in loadout) and
+            (Morph in loadout) and
+            (
+                (Speedball in loadout) or
+                (shootThroughWalls in loadout) or
+                (Tricks.wave_gate_glitch in loadout)
+            ) and
+            (
+                (Tricks.morph_jump_3_tile in loadout) or
+                (Speedball in loadout) or
+                (can_bomb(1) in loadout)
+            ) and
+
+            # just left of the left switch
+            (Tricks.clip_crouch in loadout)  # add a down press to the 1st clip, then up to get the second clip
         )
     ))
 
@@ -383,6 +420,8 @@ class SandLand:
                 loadout.has_all(GravitySuit, Bombs, Tricks.movement_zoast)
                 # Is this harder than movement_zoast? is it Tricks.bob?
                 # Joonie did it after like 15 minutes of trying.
+                # Azder made it look easy.
+                # Azder gave up on doing it without bombs.
             )
         ) and
         ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))

@@ -578,6 +578,7 @@ _no_bombing = frozenset([
     "Sandy Gully",
     "Sediment Floor",
     "Sediment Flow",
+    "Shrine Of The Penumbra",
     "Submarine Alcove",
     "Submarine Nest",
     "Subterranean Burrow",
@@ -593,6 +594,7 @@ _no_bombing = frozenset([
     "Trophobiotic Chamber",
     "Vulnar Caves Entrance",
     "Warrior Shrine: Bottom",
+    "Warrior Shrine: Top",
     "West Spore Field",
     "Colosseum",
     "Magma Lake Cache",
@@ -665,7 +667,8 @@ def test_no_bombing_locations(logic: frozenset[Trick]) -> None:
     this_loadout()
 
     for loc_name in _no_bombing:
-        assert found[loc_name], f"logic thinks bombing is needed for {loc_name}"
+        assert found[loc_name] or (logic is casual and loc_name == "Warrior Shrine: Top"), \
+            f"logic thinks bombing is needed for {loc_name}"
 
 
 _no_bomb_blocks = frozenset([
@@ -687,6 +690,7 @@ _no_bomb_blocks = frozenset([
     "Sandy Gully",
     "Sediment Floor",
     "Sediment Flow",
+    "Shrine Of The Penumbra",
     "Submarine Alcove",
     "Submarine Nest",
     "Subterranean Burrow",
@@ -713,19 +717,21 @@ _no_bomb_blocks = frozenset([
     "Icy Flow",
     "Reliquary Access",
     "Syzygy Observatorium",
-    "Aft Battery",
-    "Docking Port 3",
-    "Docking Port 4",
-    "Forward Battery",
-    "Gantry",
-    "Ready Room",
-    "Torpedo Bay",
-    "Weapon Locker",
+])
+
+_more_no_bomb_blocks_for_expert = frozenset([
+    "Norak Escarpment",
+    "Briar: Bottom",
+    "Shrine Of Fervor",
+    "Water Garden",
+    "Crocomire's Energy Station",
+    "Crocomire's Lair",
 ])
 
 
 @pytest.mark.parametrize("logic", (casual, medium, expert))
 def test_no_bomb_blocks(logic: frozenset[Trick]) -> None:
+    """ no bombs or PBs or Screw Attack (Speedbooster might be used to break bomb blocks) """
     game, loadout = setup(logic)
 
     for item in items_unpackable:
@@ -746,8 +752,9 @@ def test_no_bomb_blocks(logic: frozenset[Trick]) -> None:
         for loc_name, loc in game.all_locations.items():
             if loc["inlogic"]:
                 found[loc_name] = True
-                assert loc_name in _no_bomb_blocks, \
-                    f"logic thinks no bomb blocks are needed for {loc_name}"
+                assert loc_name in _no_bomb_blocks or (
+                    logic is expert and loc_name in _more_no_bomb_blocks_for_expert
+                ), f"logic thinks no bomb blocks are needed for {loc_name}"
                 print(loc_name)
 
     this_loadout()
@@ -758,6 +765,10 @@ def test_no_bomb_blocks(logic: frozenset[Trick]) -> None:
 
     for loc_name in _no_bomb_blocks:
         assert found[loc_name], f"logic thinks bomb blocks are needed for {loc_name}"
+
+    if logic is expert:
+        for loc_name in _more_no_bomb_blocks_for_expert:
+            assert found[loc_name], f"expert logic thinks bomb blocks are needed for {loc_name}"
 
 
 # TODO: places that I can go with no bombs, pbs, or screw (doesn't include colosseum)

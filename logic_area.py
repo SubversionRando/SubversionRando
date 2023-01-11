@@ -552,12 +552,12 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (SpeedBooster in loadout) and
             (canOpen(VulnarCanyonL) in loadout) and
-            ((can_bomb(1) in loadout) or (Screw in loadout))
+            (SkyWorld.crackedCliffsideCave in loadout)
         ),
         ("WestTerminalAccessL", "CanyonPassageR"): lambda loadout: (
             (GravityBoots in loadout) and
             (SpeedBooster in loadout) and
-            ((can_bomb(1) in loadout) or (Screw in loadout))
+            (SkyWorld.crackedCliffsideCave in loadout)
         ),
         ("WestTerminalAccessL", "ElevatorToCondenserL"): lambda loadout: (
             (GravityBoots in loadout) and
@@ -573,12 +573,12 @@ area_logic: AreaLogicType = {
         ("MezzanineConcourseL", "VulnarCanyonL"): lambda loadout: (
             (GravityBoots in loadout) and
             (canOpen(VulnarCanyonL) in loadout) and
-            ((can_bomb(1) in loadout) or (Screw in loadout)) and
+            (SkyWorld.crackedCliffsideCave in loadout) and
             (SpeedBooster in loadout)
         ),
         ("MezzanineConcourseL", "CanyonPassageR"): lambda loadout: (
             (GravityBoots in loadout) and
-            ((can_bomb(1) in loadout) or (Screw in loadout)) and
+            (SkyWorld.crackedCliffsideCave in loadout) and
             (SpeedBooster in loadout)
         ),
         ("MezzanineConcourseL", "ElevatorToCondenserL"): lambda loadout: (
@@ -591,12 +591,12 @@ area_logic: AreaLogicType = {
         ("VulnarCanyonL", "WestTerminalAccessL"): lambda loadout: (
             (GravityBoots in loadout) and
             (canOpen(WestTerminalAccessL) in loadout) and
-            ((can_bomb(1) in loadout) or (Screw in loadout)) and
+            (SkyWorld.crackedCliffsideCave in loadout) and
             (SpeedBooster in loadout)
         ),
         ("VulnarCanyonL", "MezzanineConcourseL"): lambda loadout: (
             (GravityBoots in loadout) and
-            ((can_bomb(1) in loadout) or (Screw in loadout)) and
+            (SkyWorld.crackedCliffsideCave in loadout) and
             (SpeedBooster in loadout) and
             (SkyWorld.mezzanineShaft in loadout)
         ),
@@ -606,7 +606,7 @@ area_logic: AreaLogicType = {
         ("VulnarCanyonL", "ElevatorToCondenserL"): lambda loadout: (
             (GravityBoots in loadout) and
             (SpeedBooster in loadout) and
-            ((can_bomb(1) in loadout) or (Screw in loadout)) and
+            (SkyWorld.crackedCliffsideCave in loadout) and
             (Morph in loadout) and
             (breakIce in loadout) and
             (SkyWorld.condenser in loadout)

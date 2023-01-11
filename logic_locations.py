@@ -399,6 +399,14 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (DarkVisor in loadout)
         ) or (
             (can_use_pbs(2) in loadout)
+        ) or (
+            (DarkVisor in loadout) and
+            (Morph in loadout) and
+            (shootThroughWalls in loadout) and
+            (
+                (Tricks.morph_jump_4_tile in loadout) or
+                (Speedball in loadout)
+            )
         ))
     ),
     "Benthic Cache Access": lambda loadout: (
@@ -560,7 +568,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Eribium Apparatus Room": lambda loadout: (
         (GravityBoots in loadout) and
-        (can_bomb(1) in loadout) and
+        (can_bomb(1) in loadout) and  # required for getting out
         ((
             (FieldAccessL in loadout) and
             ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
@@ -917,6 +925,15 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             ((HiJump in loadout) and (Tricks.wall_jump_precise in loadout))
             # with speedbooster, jump high enough to wall jump on top ledges
         )
+        # TODO: Azder did this with no bombs, pbs, nor screw
+        # getting in, shinespark in is easy
+        # getting out, he had (and needed) space jump and wave beam
+        # charge shinespark at bottom of chamber of wind,
+        # fast wall jump and space jump to get through door into chamber of wind access,
+        # shoot left door (wave beam through wall, no time for hypercharge) of chamber of wind access
+        # and use shinespark through it
+        # He had no space jump boost, nor hi jump boots. Those would make it easier
+        # https://clips.twitch.tv/AntsyVivaciousFriesNotLikeThis-SW5bAw7fOAyQnJfP
     ),
     "Water Garden": lambda loadout: (
         (GravityBoots in loadout) and
@@ -1245,8 +1262,15 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Warrior Shrine: Top": lambda loadout: (
         (ruinedConcourseBDoorToEldersTop in loadout) and
+        (Morph in loadout) and
         (pinkDoor in loadout) and  # to warrior shrine access
-        (can_bomb(1) in loadout) and  # PB placement is important if you only have 10 ammo
+        (
+            (can_bomb(1) in loadout) or  # PB placement is important if you only have 10 ammo
+            (
+                (Screw in loadout) and
+                (Tricks.movement_moderate in loadout)  # just keep trying a few times, it's not hard
+            )
+        ) and
         ((Speedball in loadout) or (Tricks.mockball_hard in loadout))
     ),
     "Path Of Swords": lambda loadout: (

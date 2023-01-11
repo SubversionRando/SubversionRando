@@ -65,6 +65,7 @@ Common pitfalls:
   - The bottom of Magma Chamber requires Power Bombs.
   - Shrine Of The Penumbra (behind Kraid) requires Dark Visor or Power Bombs.
   - Going through Magma Pump (in either direction) is not in logic unless you can open the plasma + wave gate.
+  - Hot Spring requires a morph jump underwater in a 2-tile space (Speed Ball, or Aqua Suit and bombing).
   - Archives requires Speed Ball.
 
 Also, the logic assumes you pick up everything you can from the space port before falling from the space port.
