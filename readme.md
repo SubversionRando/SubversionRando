@@ -7,6 +7,7 @@ contact randorandy (ironrusty) or strotlog or beauxq (buxnq) with questions
 ## setup / install
 
 1. install Python from [https://www.python.org/](https://www.python.org/)
+   - requires Python 3.9 or higher
 
 2. download the code from this page
    1. green "Code" button in the top right portion of this page
@@ -46,6 +47,30 @@ optionally, command line arguments are available:
 ```
 
 This should create a randomized rom with the given name in the roms folder and a spoiler log (.txt) in the spoilers folder.
+
+---
+
+## logic notes
+
+All the logic is symmetrical. This means getting out is required to go in.
+
+For example, Speed Ball cannot be at the vanilla Speed Ball location in the Archives, because it requires Speed Ball to get out.
+
+If you can't get out of a location, you shouldn't go in, because you might be soft-locked.
+
+Common pitfalls:
+  - Open the pink door left of Sediment Floor before falling into Eddy Channel. (Otherwise, it might require Supers.)
+     - Also think about how to get out of Eddy Channel. (Do you need Speed Ball? Aqua Suit?)
+  - Fire's Bane Shrine requires Ice Beam, or Charge and HyperCharge.
+  - The bottom of Magma Chamber requires Power Bombs.
+  - Shrine Of The Penumbra (behind Kraid) requires Dark Visor or Power Bombs.
+  - Going through Magma Pump (in either direction) is not in logic unless you can open the plasma + wave gate.
+  - Archives requires Speed Ball.
+
+Also, the logic assumes you pick up everything you can from the space port before falling from the space port.
+So if you don't pick up everything you can before you free fall, you might be stuck.
+
+Turning the power off is never in logic, unless you can turn it back on before you leave the Geothermal Energy Plant.
 
 ---
 
