@@ -926,6 +926,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # with speedbooster, jump high enough to wall jump on top ledges
         )
         # TODO: Azder did this with no bombs, pbs, nor screw
+        # This might be higher than expert level logic - Tricks.bob?
         # getting in, shinespark in is easy
         # getting out, he had (and needed) space jump and wave beam
         # charge shinespark at bottom of chamber of wind,

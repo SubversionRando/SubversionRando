@@ -548,7 +548,9 @@ class Verdite:
         (
             (GravitySuit in loadout) or
             (Tricks.sbj_underwater_no_hjb in loadout) or
-            ((HiJump in loadout) and (Ice in loadout))
+            (Tricks.sbj_underwater_w_hjb in loadout) or
+            ((HiJump in loadout) and (Ice in loadout)) or
+            (loadout.has_all(Ice, Tricks.crouch_or_downgrab))  # and uwu 1-tile wide
         )
     ))
     """ traverse "Hot Spring" between Sporous Nook and Verdite Mines (including Verdite Mines Entrance) """

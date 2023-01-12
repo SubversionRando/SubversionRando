@@ -99,6 +99,7 @@ _location_aliases: dict[str, str] = {}
 
 
 def choose_hint_location(game: Game) -> tuple[str, bytes]:
+    """ returns (hinted location name, bytes of boss text in log book to put hint after) """
     hard_locs = hard_required_locations(game)
     hint_loc_name = hard_locs[-1]
 
@@ -114,6 +115,10 @@ def choose_hint_location(game: Game) -> tuple[str, bytes]:
                     break
             break
         sphere_of_hinted_loc_i += 1
+
+    if len(spheres) == 0:
+        print("WARNING: 0 spheres found in hint chooser")
+        return hint_loc_name, b'THE CHOZO HAVE A WEAKNESS IN'  # this shouldn't happen
 
     saved_items: dict[str, Optional[Item]] = {}
     for sphere_loc in spheres[sphere_of_hinted_loc_i]:
