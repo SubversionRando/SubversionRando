@@ -6,6 +6,7 @@ if TYPE_CHECKING:
 
 spaceport_doors = {
     "StationCorridorL": AreaDoor('1a5ec', '85dc00040116000100800000', 'SpacePort', 'StationCorridorL', 6),
+    "StationCorridorBR": AreaDoor('1a5bc', '85dc00050e26000200800000', 'SpacePort', 'StationCorridorBR', 6),
     "DockingPort2AccessR": AreaDoor('1a85c', '11d400052e06020000800000', 'SpacePort', 'DockingPort2AccessR', 6),
     "DockingUmbilical2L": AreaDoor('1abb0', 'c3d300000106000000800000', 'SpacePort', 'DockingUmbilical2L', 6),
     "SternR": AreaDoor('1a898', '9cd300011e160101008020a6', 'SpacePort', 'SternR', 6),
@@ -25,6 +26,14 @@ spaceport_doors = {
     "FuelingPortAccessL": AreaDoor('1a940', '4dc000040106000000800000', 'SpacePort', 'FuelingPortAccessL', 6),
     "FuelingPortAccessR": AreaDoor('1a088', '4dc0000110100101008095a9', 'SpacePort', 'FuelingPortAccessR', 6),
     "FuelingPortL": AreaDoor('19bd8', 'f9db00000106000000800000', 'SpacePort', 'FuelingPortL', 6),
+
+    "CargoBayBL": AreaDoor('191dc', '3fdc00040136000300800000', 'SpacePort', 'CargoBayBL', 6),
+    "DockingPort4R": AreaDoor('19c8c', '14cb00050e06000000800000', 'SpacePort', 'DockingPort4R', 6),
+    "CargoBayMR": AreaDoor('193c8', '3fdc00052e26020200800000', 'SpacePort', 'CargoBayMR', 6),
+    "DockingPort3L": AreaDoor('19338', 'edca00040106000000800000', 'SpacePort', 'DockingPort3L', 6),
+
+    "CargoBayTL": AreaDoor('19398', '3fdc00040116000100800000', 'SpacePort', 'CargoBayTL', 6),
+    "BridgeL": AreaDoor('1959c', '818100040116000100800000', 'SpacePort', 'BridgeL', 6),
 }
 
 
@@ -34,3 +43,6 @@ def shrink_spaceport(rom_writer: "RomWriter") -> None:
     rom_writer.connect_doors(spaceport_doors['LoungeR'], spaceport_doors['AirLockL'])
     rom_writer.connect_doors(spaceport_doors['AirLockR'], spaceport_doors['CrewQuartersBL'])
     rom_writer.connect_doors(spaceport_doors['MainEngineeringBR'], spaceport_doors['FuelingPortL'])
+    rom_writer.connect_doors(spaceport_doors['CargoBayMR'], spaceport_doors['DockingPort3L'])
+    rom_writer.connect_doors(spaceport_doors['CargoBayBL'], spaceport_doors['DockingPort4R'])
+    rom_writer.connect_doors(spaceport_doors['BridgeL'], spaceport_doors['StationCorridorBR'], one_way=True)

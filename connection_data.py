@@ -72,6 +72,11 @@ area_doors: dict[str, AreaDoor] = {
     for door in area_doors_unpackable
 }
 
+misc_doors: dict[str, AreaDoor] = {
+    'AuroraUnitWreckageL': AreaDoor('1a598', '008000000106000000800000', 'Daphne', 'AuroraUnitWreckageL', 3),
+    'WreckedMachineRoomR': AreaDoor('194ac', 'a5ec00090f06000000800000', 'Daphne', 'WreckedMachineRoomR', 3),
+}
+
 vanilla_doors: "dict[AreaDoor, Union[Item, LogicShortcut]]" = {
     area_doors["CraterR"]: can_use_pbs(1),
     area_doors["WestTerminalAccessL"]: can_use_pbs(1),

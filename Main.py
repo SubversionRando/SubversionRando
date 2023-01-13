@@ -8,7 +8,7 @@ except ImportError:
 import argparse
 
 try:  # container type annotations 3.9
-    from connection_data import SunkenNestL, VanillaAreas
+    from connection_data import SunkenNestL, VanillaAreas, area_doors, misc_doors
 except TypeError:
     input("requires Python 3.9 or higher... press enter to quit")
     exit(1)
@@ -238,6 +238,8 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None, *, logic_custom
         romWriter.writeBytes(0x106283, b'\x71\x01')  # zebetite health
         romWriter.writeBytes(0x204b3, b'\x08')  # fake zebetite hits taken
         shrink_spaceport(romWriter)
+        if not game.area_rando:
+            romWriter.connect_doors(misc_doors["AuroraUnitWreckageL"], area_doors["CraterR"], one_way=True)
 
     romWriter.finalizeRom(rom1_path)
 
