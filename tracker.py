@@ -63,6 +63,7 @@ class Tracker:
     game_state_locations: dict[str, Location]
     loadout: Loadout
     undo_stack: deque[tuple[Location, Item]]
+    logic_from_spoiler: frozenset[Trick]
 
     def __init__(self) -> None:
         logic = casual
@@ -75,6 +76,7 @@ class Tracker:
         self.loadout = Loadout(game)
 
         self.undo_stack = deque()
+        self.logic_from_spoiler = logic
 
     def loc_names_from_input(self, in_text: str) -> list[str]:
         everything: dict[str, set[str]] = defaultdict(set)
@@ -129,7 +131,8 @@ class Tracker:
         else:
             print("found logic: custom")
 
-        game = Game(frozenset(logic_from_spoiler), self.empty_locations, area_rando, connections)
+        self.logic_from_spoiler = frz_logic_from_spoiler
+        game = Game(frz_logic_from_spoiler, self.empty_locations, area_rando, connections)
         self.loadout = Loadout(game)
 
     def pickup_location(self, loc_name: str) -> None:
@@ -205,6 +208,9 @@ def main() -> None:
             elif command[6].lower() in {"m", "u"}:
                 print("switching logic to medium")
                 t.switch_logic(medium)
+            elif command[6].lower() == "q":
+                print("switching logic to spoiler")
+                t.switch_logic(t.logic_from_spoiler)
             else:
                 print(f"unknown logic: {command[6:]}")
         elif len(command) > 2 and command.lower().startswith("q "):
