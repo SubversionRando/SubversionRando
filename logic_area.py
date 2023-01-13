@@ -206,7 +206,8 @@ area_logic: AreaLogicType = {
                 (SandLand.canyonToShaft in loadout) and
                 (SandLand.shaftToGreenMoon in loadout)
             ) or (
-                (SandLand.lowerLowerToSedFloor in loadout) and
+                (SandLand.lowerLowerToSubCrevice in loadout) and
+                (SandLand.subCreviceToSedFloor in loadout) and
                 (Super in loadout) and  # door from meandering to sediment floor
                 (SandLand.shaftToLowerLower in loadout) and
                 ((
@@ -231,7 +232,8 @@ area_logic: AreaLogicType = {
                 (SandLand.canyonToShaft in loadout) and
                 (SandLand.shaftToGreenMoon in loadout)
             ) or (
-                (SandLand.lowerLowerToSedFloor in loadout) and
+                (SandLand.lowerLowerToSubCrevice in loadout) and
+                (SandLand.subCreviceToSedFloor in loadout) and
                 (pinkDoor in loadout) and  # sediment floor to meandering
                 (SandLand.shaftToLowerLower in loadout) and
                 ((

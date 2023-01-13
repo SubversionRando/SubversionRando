@@ -207,7 +207,8 @@ meanderingPassage = LogicShortcut(lambda loadout: (
         (OceanShoreR in loadout) and
         (SandLand.shaftToGreenMoon in loadout) and
         (SandLand.shaftToLowerLower in loadout) and
-        (SandLand.lowerLowerToSedFloor in loadout)  # used without the door into sediment floor
+        (SandLand.lowerLowerToSubCrevice in loadout) and
+        (SandLand.subCreviceToSedFloor in loadout)  # used without the door into sediment floor
     ) or (
         (OceanShoreR in loadout) and
         (SandLand.GreenMoonDown in loadout) and
@@ -225,6 +226,31 @@ meanderingPassage = LogicShortcut(lambda loadout: (
     # hint: snail will help you up meandering passage
 ))
 """ from OceanShoreR or EleToTurbidPassageR to bottom of meandering passage"""
+
+submarineCrevice = LogicShortcut(lambda loadout: (
+    ((
+        (OceanShoreR in loadout) and
+        (SandLand.shaftToGreenMoon in loadout) and
+        (SandLand.shaftToLowerLower in loadout) and
+        (SandLand.lowerLowerToSubCrevice in loadout)
+    ) or (
+        (OceanShoreR in loadout) and
+        (SandLand.GreenMoonDown in loadout) and
+        (SandLand.canyonToGreenMoon in loadout) and
+        (SandLand.sedFloorToCanyon in loadout) and
+        (pinkDoor in loadout) and  # door to meandering passage
+        # TODO: pinkDoor or (eddy and Super), in case super can't open pink door
+        (SandLand.subCreviceToSedFloor in loadout) and
+        ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
+    ) or (
+        (EleToTurbidPassageR in loadout) and
+        (SandLand.turbidToSedFloor in loadout) and
+        (pinkDoor in loadout) and  # door to meandering passage
+        (SandLand.subCreviceToSedFloor in loadout) and
+        ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
+    ))
+))
+""" from OceanShoreR or EleToTurbidPassageR to middle of submarine crevice """
 
 doorsToWestCorridorTop = LogicShortcut(lambda loadout: (
     # you don't need gravity boots from west corridor door,
@@ -410,33 +436,28 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ))
     ),
     "Benthic Cache Access": lambda loadout: (
-        ((OceanShoreR in loadout) or (EleToTurbidPassageR in loadout)) and
-        (GravityBoots in loadout) and
+        (submarineCrevice in loadout) and
+        (SandLand.benthic in loadout) and
         # if you don't have bombs, you'll need 3 pbs
         (can_bomb(3) in loadout) and
         # and even if you do have bombs, you'll need 1 pb
         (can_use_pbs(1) in loadout) and
-        (Super in loadout) and  # submarine crevice bottom left - and some pink doors
-        ((GravitySuit in loadout) or (
+        ((
+            (GravitySuit in loadout) and
+            ((
+                (Speedball in loadout) and (HiJump in loadout)
+            ) or (
+                (Tricks.wall_jump_precise in loadout)
+            ))
+        ) or (
+            # This is a harder SBJ because you can't see where you hit the ceiling
             (Tricks.sbj_underwater_w_hjb in loadout) and
-            # out of benthic shaft without aqua before the balls block you in
             (Tricks.movement_moderate in loadout)
-        )) and
-        ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
+        ))
     ),
     "Benthic Cache": lambda loadout: (
-        ((OceanShoreR in loadout) or (EleToTurbidPassageR in loadout)) and
-        (GravityBoots in loadout) and
-        (can_bomb(2) in loadout) and  # submarine crevice, in and out with nowhere to farm between
-        (Super in loadout) and  # submarine crevice bottom left - and some pink doors
-        ((GravitySuit in loadout) or (
-            (HiJump in loadout) and
-            # out of benthic shaft without aqua before the balls block you in
-            (Tricks.movement_moderate in loadout) and
-            # submarine crevice
-            (loadout.has_any(Tricks.crouch_precise, Tricks.sbj_underwater_w_hjb, Tricks.uwu_2_tile))
-        )) and
-        ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
+        (submarineCrevice in loadout) and
+        (SandLand.benthic in loadout)
     ),
     "Ocean Vent Supply Depot": lambda loadout: (
         (meanderingPassage in loadout) and
@@ -464,7 +485,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (OceanShoreR in loadout) and
             ((  # from left
                 (SandLand.shaftToGreenMoon in loadout) and
-                (Super in loadout) and
+                (Super in loadout) and  # door from bottom of shallows into sediment tunnel
 
                 # return
                 (
@@ -475,7 +496,11 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
                             (SandLand.canyonToShaft in loadout) or
                             (
                                 (SandLand.canyonToGreenMoon in loadout) and
-                                (can_use_pbs(1) in loadout)
+
+                                # since we came from ocean shore, we can open the canyon door from above
+                                # (without going in it)
+                                # before going around to the sediment tunnel entrance
+                                ((can_use_pbs(1) in loadout) or (Super in loadout))
                             )
                         )
                     )

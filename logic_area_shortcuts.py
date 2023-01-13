@@ -272,10 +272,10 @@ class SandLand:
     #         shaft  /   |
     #             - * -- *  canyon
     #           /        |
-    #    lower * ------- *  sed floor
-    #        /            \
-    #       *              * turbid passage
-    #    pile anchor
+    #    lower * ---*--- *  sed floor
+    #        /     sub    \
+    #       *     crevice  * turbid passage
+    # pile anchor
 
     oceanShoreTop = LogicShortcut(lambda loadout: (
         (
@@ -307,7 +307,7 @@ class SandLand:
     ))
     """ just from one side to the other - no door """
 
-    lowerLowerToSedFloor = LogicShortcut(lambda loadout: (
+    lowerLowerToSubCrevice = LogicShortcut(lambda loadout: (
         (GravityBoots in loadout) and
         ((DarkVisor in loadout) or (Tricks.dark_medium in loadout)) and
         (  # bottom to Dark Hollow
@@ -315,28 +315,43 @@ class SandLand:
             ((HiJump in loadout) and (Tricks.crouch_precise in loadout)) or
             (Tricks.sbj_underwater_no_hjb in loadout) or
             (Tricks.freeze_hard in loadout)  # crab
-            # not very hard, but each to miss, then you have to look for another crab
+            # not very hard, but easy to miss, then you have to look for another crab
         ) and
         (pinkDoor in loadout) and  # between submarine crevice and murky gallery
-        (  # murky gallery and submarine crevice
+        (  # up from submarine crevice
+            (GravitySuit in loadout) or
+            (
+                (HiJump in loadout) and
+                (
+                    (Tricks.uwu_2_tile in loadout) or
+                    ((Super in loadout) and (Tricks.freeze_hard in loadout)) or  # knock crab off wall and freeze
+                    (Tricks.sbj_underwater_w_hjb in loadout)
+                )
+            )
+        )
+    ))
+    """ bottom-right of sea caves lower hall to middle of submarine crevice """
+
+    subCreviceToSedFloor = LogicShortcut(lambda loadout: (
+        (GravityBoots in loadout) and
+        ((DarkVisor in loadout) or (Tricks.dark_medium in loadout)) and
+        (  # to not get stuck in sediment sand pits
+            (GravitySuit in loadout) or
+            (HiJump in loadout)
+        ) and
+        (Morph in loadout) and  # top of meandering passage
+        (pinkDoor in loadout) and  # between submarine crevice and murky gallery
+        (  # murky gallery
             (GravitySuit in loadout) or
             (
                 (HiJump in loadout) and
                 (Tricks.crouch_or_downgrab in loadout) and  # up from murky gallery
-                (Tricks.movement_moderate in loadout) and  # left from murky gallery
-                (  # up from submarine crevice
-                    (Tricks.uwu_2_tile in loadout) or
-                    ((Super in loadout) and (Tricks.freeze_hard in loadout))  # super to knock crab off wall and freeze
-                )
+                (Tricks.movement_moderate in loadout)  # left from murky gallery
             )
-        ) and
-        (  # to not get stuck in sediment sand pits
-            (GravitySuit in loadout) or
-            (HiJump in loadout)
         )
     ))
     """
-    bottom-right of sea caves lower hall to middle of sediment floor
+    middle of submarine crevice to middle of sediment floor
     (not including door between sediment floor and meandering passage)
     """
 
@@ -428,6 +443,21 @@ class SandLand:
     ))
     """ get out of Eddy Channel """
 
+    benthic = LogicShortcut(lambda loadout: (
+        (GravityBoots in loadout) and
+        (can_bomb(2) in loadout) and  # submarine crevice, in and out with nowhere to farm between
+        (Super in loadout) and  # submarine crevice bottom left
+        ((GravitySuit in loadout) or (
+            (HiJump in loadout) and
+            # out of benthic shaft without aqua before the balls block you in
+            (Tricks.movement_moderate in loadout) and
+            # submarine crevice
+            (loadout.has_any(Tricks.crouch_precise, Tricks.sbj_underwater_w_hjb, Tricks.uwu_2_tile))
+        )) and
+        ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
+    ))
+    """ middle of submarine crevice to benthic cache """
+
     turbidToSedFloor = LogicShortcut(lambda loadout: (
         (GravityBoots in loadout) and
         (Morph in loadout) and
@@ -445,7 +475,8 @@ class SandLand:
 
     directionalSedFloorToGreenMoonThroughSeaCaves = LogicShortcut(lambda loadout: (
         (pinkDoor in loadout) and  # door from sediment to meandering
-        (SandLand.lowerLowerToSedFloor in loadout) and
+        (SandLand.subCreviceToSedFloor in loadout) and
+        (SandLand.lowerLowerToSubCrevice in loadout) and
         (SandLand.shaftToLowerLower in loadout) and
         (SandLand.shaftToGreenMoon in loadout)
     ))
