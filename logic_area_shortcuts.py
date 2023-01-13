@@ -799,7 +799,8 @@ class PirateLab:
         (  # open the shot block from below
             ((Tricks.movement_moderate in loadout) and (electricHyper in loadout)) or
             (can_bomb(1) in loadout) or
-            (shootThroughWalls in loadout)
+            (shootThroughWalls in loadout) or
+            (Spazer in loadout)
         )
     ))
     """ top of East Corridor to get to Foyer """

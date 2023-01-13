@@ -445,7 +445,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((
             (GravitySuit in loadout) and
             ((
-                (Speedball in loadout) and (HiJump in loadout)
+                (HiJump in loadout)
             ) or (
                 (Tricks.wall_jump_precise in loadout)
             ))
