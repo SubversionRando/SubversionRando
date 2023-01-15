@@ -610,9 +610,9 @@ class Verdite:
     """ through raging pit and raging pit access """
 
     beta = LogicShortcut(lambda loadout: (
-        # mockball or something to avoid taking damage from the
+        # something to avoid taking damage from the
         # lava at the bottom of mining site beta during hell run
-        loadout.has_any(Speedball, Varia, MetroidSuit, Tricks.movement_zoast, energy_req(1050)) and
+        loadout.has_any(Speedball, Varia, MetroidSuit, Tricks.mockball_hard, energy_req(1050)) and
 
         (GravityBoots in loadout) and
         (can_bomb(2) in loadout) and  # lava pool and mining site (lava pool could be screw, but not mining site)

@@ -197,6 +197,7 @@ area_logic: AreaLogicType = {
             # same as "EleToTurbidPassageR", "OceanShoreR" except door colors changed for direction
             (SandLand.turbidToSedFloor in loadout) and
             (Super in loadout) and  # door from sediment floor to turbid passage
+            # TODO: ^ or super sink? (and pink door to return)
             ((
                 (SandLand.sedFloorToCanyon in loadout) and
                 (SandLand.canyonToGreenMoon in loadout) and
