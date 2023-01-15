@@ -94,6 +94,19 @@ hint_data = {
     ))),
 }
 
+_hint_rom_locations: dict[bytes, tuple[int, int]] = {
+    b'THE CHOZO HAVE A WEAKNESS IN': (0x1e467c, 0x1e46ab),
+    b'BODY IS COVERED WITH A HARDENED': (0x1e47a1, 0x1e47c9),
+    b'STURDY IN ORDER TO SURVIVE IN': (0x1e48e5, 0x1e4917),
+    b'EXOSKELETON HAS BEEN MODIFIED USING SOME': (0x1e4a32, 0x1e4a87),
+    b'PIRATES\x87. THEIR SKIN IS': (0x1e4bba, 0x1e4bf7),
+    b'AROUND THEM. IT IS LIKELY THAT': (0x1e4cea, 0x1e4d2d),
+    b'PHANTOON\x87 CAN CLOAK': (0x1e4e4c, 0x1e4e7f),
+    b'FUNGUS AND CAN CHANGE THE STRUCTURE OF': (0x1e4f86, 0x1e4fd5),
+    b'COMMANDEERED THESE AND BUILT THEM INTO': (0x1e50b9, 0x1e5115),
+    b'ALMOST ANY LIFEFORM WHILE BEING NEARLY': (0x1e5218, 0x1e524f),
+}
+
 # used this before for changing location names
 _location_aliases: dict[str, str] = {}
 
@@ -155,9 +168,6 @@ def choose_hint_location(game: Game) -> tuple[str, bytes]:
 
 
 def write_hint_to_rom(loc_name: str, hint_loc_marker: bytes, rom_writer: RomWriter) -> None:
-    assert len(rom_writer.rom_data), "tried to write hints without rom"
-    rom = rom_writer.rom_data
-
     all_locations = tuple(loc["fullitemname"] for loc in pullCSV().values())
 
     def get_decoy() -> str:
@@ -166,8 +176,7 @@ def write_hint_to_rom(loc_name: str, hint_loc_marker: bytes, rom_writer: RomWrit
         return "".join(decoy_chars)
 
     for each_loc_marker in hint_data:
-        destination_i = rom.index(each_loc_marker) + len(each_loc_marker)
-        end_i = rom.index(b'\x00', destination_i)
+        destination_i, end_i = _hint_rom_locations[each_loc_marker]
         length_limit = end_i - destination_i
 
         # make replacement text
@@ -191,3 +200,20 @@ def write_hint_to_rom(loc_name: str, hint_loc_marker: bytes, rom_writer: RomWrit
 
 def get_hint_spoiler_text(loc_name: str, hint_loc_marker: bytes) -> str:
     return f"\nhint for {loc_name} at {hint_data[hint_loc_marker][0]}\n"
+
+
+def find_rom_hint_locations() -> None:
+    rw = RomWriter.fromFilePaths("roms/Subversion12.sfc")
+    rom = rw.rom_data
+    output: dict[bytes, tuple[int, int]] = {}
+    for each_loc_marker in hint_data:
+        destination_i = rom.index(each_loc_marker) + len(each_loc_marker)
+        end_i = rom.index(b'\x00', destination_i)
+        output[each_loc_marker] = (destination_i, end_i)
+
+    for key, [destination_i, end_i] in output.items():
+        print(f"    {repr(key)}: ({hex(destination_i)}, {hex(end_i)}),")
+
+
+if __name__ == "__main__":
+    find_rom_hint_locations()
