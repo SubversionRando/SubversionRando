@@ -267,6 +267,7 @@ def required_tricks(game: Game) -> tuple[list[str], list[str]]:
             req_for_win.append(all_tricks[excluded_trick])
         if len(locs) != 122:
             req_for_locs.append(all_tricks[excluded_trick])
+    game.logic = tricks_allowed
 
     obsoleted: set[str] = set()
     for trick_name in req_for_win:
