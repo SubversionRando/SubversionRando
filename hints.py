@@ -165,6 +165,11 @@ def choose_hint_location(game: Game) -> None:
     for saved_loc_name, item in saved_items.items():
         game.all_locations[saved_loc_name]["item"] = item
 
+    if len(allowed_bosses) == 0:
+        # no bosses were in logic with the sphere before go mode
+        game.hint_data = (hint_loc_name, b'THE CHOZO HAVE A WEAKNESS IN')
+        return
+
     game.hint_data = (hint_loc_name, random.choice(allowed_bosses))
 
 
