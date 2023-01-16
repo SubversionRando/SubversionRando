@@ -45,7 +45,7 @@ hint_data = {
             (Tricks.movement_zoast in loadout)
         ))
     ))),
-    b'AROUND THEM. IT IS LIKELY THAT': ("Crocomire", 4, LogicShortcut(lambda loadout: (
+    b'AROUND THEM. IT IS LIKELY THAT': ("Crocomire", 3, LogicShortcut(lambda loadout: (
         (Items.GravityBoots in loadout) and
         (norakToLifeTemple in loadout) and
         (LifeTemple.veranda in loadout) and
@@ -69,7 +69,7 @@ hint_data = {
             (SkyWorld.killRidley in loadout)
         )
     ))),
-    b'FUNGUS AND CAN CHANGE THE STRUCTURE OF': ("Spore Spawn", 3, LogicShortcut(lambda loadout: (
+    b'FUNGUS AND CAN CHANGE THE STRUCTURE OF': ("Spore Spawn", 2, LogicShortcut(lambda loadout: (
         ((
             (area_doors["FieldAccessL"] in loadout) and
             ((shootThroughWalls in loadout) or (Tricks.wave_gate_glitch in loadout))
