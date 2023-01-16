@@ -47,21 +47,14 @@ class WebParams(TypedDict):
 
 @app.route('/rollseed', methods=['POST'])
 def roll_seed() -> flask.Response:
-    argv = ['dummyexe']
     print(flask.request.get_data(), file=sys.stderr)
     params: WebParams = flask.json.loads(flask.request.get_data())  # type: ignore
-
-    if params["area_rando"]:
-        argv.append("-a")
-    if params["small_spaceport"]:
-        argv.append("-o")
-    argv.append("-d")
-    argv.append("-q")
 
     tricks: frozenset[Trick] = frozenset([getattr(Tricks, trick_name) for trick_name in params["tricks"]])
 
     romWriter = RomWriter.fromBlankIps()
-    Main.Main(argv, romWriter, logic_custom=tricks)
+    game = Main.generate(tricks, bool(params["area_rando"]), "D", bool(params["small_spaceport"]))
+    Main.write_rom(game, romWriter)
     response = flask.make_response(romWriter.getFinalIps())
     response.headers['Content-Type'] = 'application/octet-stream'
     response.headers['Content-Disposition'] = f'attachment; filename={romWriter.getBaseFilename()}.ips'

@@ -72,7 +72,7 @@ class Tracker:
 
         self.empty_locations = pullCSV()
         self.game_state_locations = deepcopy(self.empty_locations)
-        game = Game(logic, self.empty_locations, area_rando, area_connections)
+        game = Game(logic, self.empty_locations, area_rando, area_connections, "D", 0, True)
         self.loadout = Loadout(game)
 
         self.undo_stack = deque()
@@ -132,7 +132,7 @@ class Tracker:
             print("found logic: custom")
 
         self.logic_from_spoiler = frz_logic_from_spoiler
-        game = Game(frz_logic_from_spoiler, self.empty_locations, area_rando, connections)
+        game = Game(frz_logic_from_spoiler, self.empty_locations, area_rando, connections, "D", 0, True)
         self.loadout = Loadout(game)
 
     def pickup_location(self, loc_name: str) -> None:

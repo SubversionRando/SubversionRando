@@ -8,7 +8,7 @@ try:
 except TypeError:
     input("requires Python 3.9 or higher... press enter to quit")
     exit(1)
-from Main import Main as generate_main
+from Main import generate, write_rom
 from trick import Trick
 from trick_data import Tricks
 
@@ -97,12 +97,8 @@ def main() -> None:
             if logic_selections[trick_name].get()
         ])
 
-        args = ["", "-q", "-d"]
-        if area_rando_value.get():
-            args.append("-a")
-        if small_spaceport_value.get():
-            args.append("-o")
-        name = generate_main(args, logic_custom=logic)
+        game = generate(logic, bool(area_rando_value.get()), "D", bool(small_spaceport_value.get()))
+        name = write_rom(game)
         name_label.config(text=name)
 
     ttk.Button(logic_frame, text="roll", command=roll_button_action).grid(column=1, row=3)

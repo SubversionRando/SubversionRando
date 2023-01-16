@@ -110,70 +110,64 @@ logics: dict[Literal["E", "U", "C", "Q"], frozenset[Trick]] = {
 
 
 # main program
-def Main(argv: list[str], romWriter: Optional[RomWriter] = None, *, logic_custom: frozenset[Trick] = casual) -> str:
-    """ returns rom name """
+def Main(argv: list[str]) -> None:
+    """ generate from command line """
     workingArgs = commandLineArgs(argv[1:])
 
-    logicChoice: Literal["E", "U", "C", "Q"]
+    logic = casual  # default
     if workingArgs.expert :
-        logicChoice = "E"
+        logic = expert
     elif workingArgs.logicmedium:
-        logicChoice = "U"
-    elif workingArgs.logiccustom:
-        logicChoice = "Q"
-        logics["Q"] = logic_custom
-        if logic_custom == casual:
-            logicChoice = "C"
-        elif logic_custom == medium:
-            logicChoice = "U"
-        elif logic_custom == expert:
-            logicChoice = "E"
-    else :
-        logicChoice = "C"  # Default to casual logic
+        logic = medium
 
     fillChoice: Literal["M", "MM", "D", "S"]
-    if workingArgs.medium :
+    if workingArgs.medium:
         fillChoice = "M"
-    elif workingArgs.majorminor :
+    elif workingArgs.majorminor:
         fillChoice = "MM"
     elif workingArgs.speedrun:
         fillChoice = "S"
-    else :
+    else:
         fillChoice = "D"
-    areaA = ""
-    if workingArgs.area :
-        areaA = "A"
-        if fillChoice == "MM" :
+
+    area_rando = False
+    if workingArgs.area:
+        area_rando = True
+        if fillChoice == "MM":
             fillChoice = "D"
             print("Cannot use Major-Minor in Area rando currently. Using assumed fill instead.")
 
+    small_spaceport = False
+    if workingArgs.smallspaceport:
+        small_spaceport = True
+
+    game = generate(logic, area_rando, fillChoice, small_spaceport)
+    write_rom(game)
+
+
+def generate(logic: frozenset[Trick],
+             area_rando: bool,
+             fill_choice: Literal["M", "MM", "D", "S"],
+             small_spaceport: bool) -> Game:
     # hudFlicker=""
     # while hudFlicker != "Y" and hudFlicker != "N" :
     #     hudFlicker= input("Enter Y to patch HUD flicker on emulator, or N to decline:")
     #     hudFlicker = hudFlicker.title()
     seeeed = random.randint(1000000, 9999999)
     random.seed(seeeed)
-    rom_name = f"Sub{logicChoice}{fillChoice}{areaA}{seeeed}.sfc"
-    rom1_path = f"roms/{rom_name}"
-    rom_clean_path = "roms/Subversion12.sfc"
     # you must include Subversion 1.2 in your roms folder with this name^
 
-    csvdict = pullCSV()
-    locArray = list(csvdict.values())
+    all_locations = pullCSV()
 
-    if romWriter is None :
-        romWriter = RomWriter.fromFilePaths(origRomPath=rom_clean_path)
-    else :
-        # remove .sfc extension and dirs
-        romWriter.setBaseFilename(rom1_path[:-4].split("/")[-1])
-
-    spoilerSave = ""
     seedComplete = False
     randomizeAttempts = 0
-    game = Game(logics[logicChoice],
-                csvdict,
-                areaA == "A",
-                VanillaAreas())
+    game = Game(logic,
+                all_locations,
+                area_rando,
+                VanillaAreas(),
+                fill_choice,
+                seeeed,
+                small_spaceport)
     while not seedComplete :
         if game.area_rando:  # area rando
             game.connections = areaRando.RandomizeAreas()
@@ -183,13 +177,43 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None, *, logic_custom
             print("Giving up after 1000 attempts. Help?")
             break
         print("Starting randomization attempt:", randomizeAttempts)
-        spoilerSave = ""
-        spoilerSave += f"Starting randomization attempt: {randomizeAttempts}\n"
+        game.item_placement_spoiler = f"Starting randomization attempt: {randomizeAttempts}\n"
         # now start randomizing
-        if fillChoice == "D":
-            seedComplete, spoilerSave = assumed_fill(game, spoilerSave)
+        if fill_choice == "D":
+            seedComplete = assumed_fill(game)
         else:
-            seedComplete, spoilerSave = forward_fill(game, fillChoice, spoilerSave)
+            seedComplete = forward_fill(game)
+
+    # make this optional? (if someone doesn't want hints, they can just not look at the log)
+    choose_hint_location(game)
+
+    return game
+
+
+def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
+    logicChoice: Literal["E", "U", "C", "Q"] = "Q"
+    if game.logic == casual:
+        logicChoice = "C"
+    elif game.logic == medium:
+        logicChoice = "U"
+    elif game.logic == expert:
+        logicChoice = "E"
+
+    areaA = ""
+    if game.area_rando:
+        areaA = "A"
+
+    rom_name = f"Sub{logicChoice}{game.fill_choice}{areaA}{game.seed}.sfc"
+    rom1_path = f"roms/{rom_name}"
+    rom_clean_path = "roms/Subversion12.sfc"
+
+    if romWriter is None :
+        romWriter = RomWriter.fromFilePaths(origRomPath=rom_clean_path)
+    else :
+        # remove .sfc extension and dirs
+        romWriter.setBaseFilename(rom1_path[:-4].split("/")[-1])
+
+    spoilerSave = game.item_placement_spoiler + '\n'
 
     # add area transitions to spoiler
     if game.area_rando:
@@ -198,15 +222,15 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None, *, logic_custom
 
     _completable, solve_lines, _locs = solve(game)
 
-    if True:  # TODO: option
-        hint_loc_name, hint_loc_marker = choose_hint_location(game)
+    if game.hint_data:
+        hint_loc_name, hint_loc_marker = game.hint_data
         write_hint_to_rom(hint_loc_name, hint_loc_marker, romWriter)
         spoilerSave += get_hint_spoiler_text(hint_loc_name, hint_loc_marker)
 
     if game.area_rando:
         areaRando.write_area_doors(game.connections, romWriter)
     # write all items into their locations
-    for loc in locArray:
+    for loc in game.all_locations.values():
         write_location(romWriter, loc)
 
     # Suit animation skip patch
@@ -234,7 +258,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None, *, logic_custom
     #   use by writing 0x18 to the high byte of a gray door plm param, OR'ed with the low bit of the 9-low-bits id part
     romWriter.writeBytes(0x23e33, b"\x38\x38\x38\x38")  # set the carry bit (a lot)
 
-    if workingArgs.smallspaceport:
+    if game.small_spaceport:
         romWriter.writeBytes(0x106283, b'\x71\x01')  # zebetite health
         romWriter.writeBytes(0x204b3, b'\x08')  # fake zebetite hits taken
         shrink_spaceport(romWriter)
@@ -246,7 +270,7 @@ def Main(argv: list[str], romWriter: Optional[RomWriter] = None, *, logic_custom
     print("Done!")
     print(f"Filename is {rom_name}")
     with open(f"spoilers/{rom_name}.spoiler.txt", "w") as spoiler_file:
-        spoiler_file.write(f"RNG Seed: {seeeed}\n\n")
+        spoiler_file.write(f"RNG Seed: {game.seed}\n\n")
         spoiler_file.write("\n Spoiler \n\n Spoiler \n\n Spoiler \n\n Spoiler \n\n")
         spoiler_file.write(spoilerSave)
         spoiler_file.write('\n\n')
@@ -293,7 +317,7 @@ def logic_tricks_spoiler(game: Game) -> str:
     return spoiler_text
 
 
-def assumed_fill(game: Game, spoilerSave: str) -> tuple[bool, str]:
+def assumed_fill(game: Game) -> bool:
     for loc in game.all_locations.values():
         loc["item"] = None
     dummy_locations: list[Location] = []
@@ -309,11 +333,11 @@ def assumed_fill(game: Game, spoilerSave: str) -> tuple[bool, str]:
             message = ('Item placement was not successful in assumed. '
                        f'{fill_algorithm.count_items_remaining()} items remaining.')
             print(message)
-            spoilerSave += f'{message}\n'
+            game.item_placement_spoiler += f'{message}\n'
             break
         placeLocation, placeItem = placePair
         placeLocation["item"] = placeItem
-        spoilerSave += f"{placeLocation['fullitemname']} - - - {placeItem[0]}\n"
+        game.item_placement_spoiler += f"{placeLocation['fullitemname']} - - - {placeItem[0]}\n"
 
         if fill_algorithm.count_items_remaining() == 0:
             # Normally, assumed fill will always make a valid playthrough,
@@ -323,15 +347,13 @@ def assumed_fill(game: Game, spoilerSave: str) -> tuple[bool, str]:
             done = completable and len(accessible_locations) == len(game.all_locations)
             if done:
                 print("Item placements successful.")
-                spoilerSave += "Item placements successful.\n"
-            return done, spoilerSave
+                game.item_placement_spoiler += "Item placements successful.\n"
+            return done
 
-    return False, spoilerSave
+    return False
 
 
-def forward_fill(game: Game,
-                 fillChoice: Literal["M", "S", "MM"],
-                 spoilerSave: str) -> tuple[bool, str]:
+def forward_fill(game: Game) -> bool:
     unusedLocations : list[Location] = []
     unusedLocations.extend(game.all_locations.values())
     availableLocations: list[Location] = []
@@ -339,7 +361,7 @@ def forward_fill(game: Game,
     loadout = Loadout(game)
     loadout.append(SunkenNestL)  # starting area
     # use appropriate fill algorithm for initializing item lists
-    fill_algorithm = fillers[fillChoice](game.connections)
+    fill_algorithm = fillers[game.fill_choice](game.connections)
     while len(unusedLocations) != 0 or len(availableLocations) != 0:
         # print("loadout contains:")
         # print(loadout)
@@ -366,7 +388,8 @@ def forward_fill(game: Game,
 
         if availableLocations == [] and unusedLocations != [] :
             print(f'Item placement was not successful. {len(unusedLocations)} locations remaining.')
-            spoilerSave += f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
+            game.item_placement_spoiler += \
+                f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
             # for i in loadout:
             #     print(i[0])
             # for u in unusedLocations :
@@ -377,7 +400,8 @@ def forward_fill(game: Game,
         placePair = fill_algorithm.choose_placement(availableLocations, loadout)
         if placePair is None:
             print(f'Item placement was not successful due to majors. {len(unusedLocations)} locations remaining.')
-            spoilerSave += f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
+            game.item_placement_spoiler += \
+                f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
             break
         # it returns your location and item, which are handled here
         placeLocation, placeItem = placePair
@@ -389,14 +413,14 @@ def forward_fill(game: Game,
         loadout.append(placeItem)
         if not ((placeLocation['fullitemname'] in spacePortLocs) or (Items.spaceDrop in loadout)):
             loadout.append(Items.spaceDrop)
-        spoilerSave += f"{placeLocation['fullitemname']} - - - {placeItem[0]}\n"
+        game.item_placement_spoiler += f"{placeLocation['fullitemname']} - - - {placeItem[0]}\n"
         # print(placeLocation['fullitemname']+placeItem[0])
 
         if availableLocations == [] and unusedLocations == [] :
             print("Item placements successful.")
-            spoilerSave += "Item placements successful.\n"
-            return True, spoilerSave
-    return False, spoilerSave
+            game.item_placement_spoiler += "Item placements successful.\n"
+            return True
+    return False
 
 
 if __name__ == "__main__":

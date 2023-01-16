@@ -46,7 +46,7 @@ def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, l
     for loc in game.all_locations.values():
         loc['inlogic'] = False
 
-    unused_locations = list(game.all_locations.values())
+    unused_locations: list[Location] = list(game.all_locations.values())
     used_locs: set[str] = set()
     doors_accessed: set[AreaDoor] = set()
 

@@ -111,7 +111,7 @@ _hint_rom_locations: dict[bytes, tuple[int, int]] = {
 _location_aliases: dict[str, str] = {}
 
 
-def choose_hint_location(game: Game) -> tuple[str, bytes]:
+def choose_hint_location(game: Game) -> None:
     """ returns (hinted location name, bytes of boss text in log book to put hint after) """
     hard_locs = hard_required_locations(game)
     hint_loc_name = hard_locs[-1]
@@ -129,9 +129,10 @@ def choose_hint_location(game: Game) -> tuple[str, bytes]:
             break
         sphere_of_hinted_loc_i += 1
 
-    if len(spheres) == 0:
-        print("WARNING: 0 spheres found in hint chooser")
-        return hint_loc_name, b'THE CHOZO HAVE A WEAKNESS IN'  # this shouldn't happen
+    if len(spheres) <= sphere_of_hinted_loc_i:
+        print(f"WARNING: {len(spheres)} spheres found in hint chooser with last sphere {sphere_of_hinted_loc_i}")
+        game.hint_data = (hint_loc_name, b'THE CHOZO HAVE A WEAKNESS IN')  # this shouldn't happen
+        return
 
     saved_items: dict[str, Optional[Item]] = {}
     for sphere_loc in spheres[sphere_of_hinted_loc_i]:
@@ -164,7 +165,7 @@ def choose_hint_location(game: Game) -> tuple[str, bytes]:
     for saved_loc_name, item in saved_items.items():
         game.all_locations[saved_loc_name]["item"] = item
 
-    return hint_loc_name, random.choice(allowed_bosses)
+    game.hint_data = (hint_loc_name, random.choice(allowed_bosses))
 
 
 def write_hint_to_rom(loc_name: str, hint_loc_marker: bytes, rom_writer: RomWriter) -> None:
