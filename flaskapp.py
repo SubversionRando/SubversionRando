@@ -6,7 +6,7 @@ import Main
 import logic_presets
 from romWriter import RomWriter
 from trick import Trick
-from trick_data import Tricks
+from trick_data import Tricks, trick_name_lookup
 
 app = flask.Flask(__name__)
 
@@ -23,15 +23,10 @@ tricks_response = make_tricks_response()
 
 
 def make_presets_response() -> list[tuple[str, list[str]]]:
-    name_lookup = {
-        trick: trick_name
-        for trick_name, trick in vars(Tricks).items()
-        if isinstance(trick, Trick)
-    }
     tr = [
-        ("casual", [name_lookup[t] for t in logic_presets.casual]),
-        ("medium", [name_lookup[t] for t in logic_presets.medium]),
-        ("expert", [name_lookup[t] for t in logic_presets.expert]),
+        ("casual", [trick_name_lookup[t] for t in logic_presets.casual]),
+        ("medium", [trick_name_lookup[t] for t in logic_presets.medium]),
+        ("expert", [trick_name_lookup[t] for t in logic_presets.expert]),
     ]
     return tr
 

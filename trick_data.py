@@ -139,3 +139,10 @@ class Tricks:
 
     spazer_into_lower_pirate_lab = Trick("", Items.Spazer)
     """ She's made of wood! """
+
+
+trick_name_lookup = {
+    trick: trick_name
+    for trick_name, trick in vars(Tricks).items()
+    if isinstance(trick, Trick)
+}
