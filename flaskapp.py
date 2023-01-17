@@ -42,6 +42,7 @@ presets_response = make_presets_response()
 class WebParams(TypedDict):
     area_rando: bool
     small_spaceport: bool
+    escape_shortcuts: bool
     tricks: list[str]
 
 
@@ -53,7 +54,11 @@ def roll_seed() -> flask.Response:
     tricks: frozenset[Trick] = frozenset([getattr(Tricks, trick_name) for trick_name in params["tricks"]])
 
     romWriter = RomWriter.fromBlankIps()
-    game = Main.generate(tricks, bool(params["area_rando"]), "D", bool(params["small_spaceport"]))
+    game = Main.generate(tricks,
+                         bool(params["area_rando"]),
+                         "D",
+                         bool(params["small_spaceport"]),
+                         bool(params["escape_shortcuts"]))
     Main.write_rom(game, romWriter)
     response = flask.make_response(romWriter.getFinalIps())
     response.headers['Content-Type'] = 'application/octet-stream'

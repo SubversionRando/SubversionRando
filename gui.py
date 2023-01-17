@@ -87,6 +87,12 @@ def main() -> None:
         logic_frame, variable=small_spaceport_value, text="small spaceport"
     ).grid(sticky=tk.E, column=1, row=2)
 
+    escape_shortcuts_value = tk.IntVar()
+
+    ttk.Checkbutton(
+        logic_frame, variable=escape_shortcuts_value, text="escape shortcuts"
+    ).grid(sticky=tk.E, column=2, row=2)
+
     name_label = ttk.Label(logic_frame, text="")
     name_label.grid(column=0, row=3)
 
@@ -97,7 +103,11 @@ def main() -> None:
             if logic_selections[trick_name].get()
         ])
 
-        game = generate(logic, bool(area_rando_value.get()), "D", bool(small_spaceport_value.get()))
+        game = generate(logic,
+                        bool(area_rando_value.get()),
+                        "D",
+                        bool(small_spaceport_value.get()),
+                        bool(escape_shortcuts_value.get()))
         name = write_rom(game)
         name_label.config(text=name)
 

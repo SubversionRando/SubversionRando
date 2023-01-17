@@ -15,7 +15,7 @@ from logic_presets import casual
 
 
 def test_area_rando() -> None:
-    game = Game(casual, {}, True, [], "D", 0, True)
+    game = Game(casual, {}, True, [], "D", 0, True, True)
     loadout = Loadout(game)
 
     assert canOpen(area_doors["CraterR"]) in loadout
@@ -25,7 +25,7 @@ def test_area_rando() -> None:
 
 
 def test_area_rando_with_items() -> None:
-    game = Game(casual, {}, True, [], "D", 0, True)
+    game = Game(casual, {}, True, [], "D", 0, True, True)
     loadout = Loadout(game, (Items.PowerBomb, Items.Super))
 
     assert canOpen(area_doors["CraterR"]) in loadout
@@ -35,7 +35,7 @@ def test_area_rando_with_items() -> None:
 
 
 def test_non_area_rando_locked() -> None:
-    game = Game(casual, {}, False, [], "D", 0, True)
+    game = Game(casual, {}, False, [], "D", 0, True, True)
     loadout = Loadout(game)
 
     assert canOpen(area_doors["CraterR"]) not in loadout
@@ -45,7 +45,7 @@ def test_non_area_rando_locked() -> None:
 
 
 def test_non_area_rando_missing_morph() -> None:
-    game = Game(casual, {}, False, [], "D", 0, True)
+    game = Game(casual, {}, False, [], "D", 0, True, True)
     loadout = Loadout(game, (Items.PowerBomb, Items.Super))
 
     assert canOpen(area_doors["CraterR"]) not in loadout
@@ -55,7 +55,7 @@ def test_non_area_rando_missing_morph() -> None:
 
 
 def test_non_area_rando_open() -> None:
-    game = Game(casual, {}, False, [], "D", 0, True)
+    game = Game(casual, {}, False, [], "D", 0, True, True)
     loadout = Loadout(game, (Items.Morph, Items.PowerBomb, Items.Super))
 
     assert canOpen(area_doors["CraterR"]) in loadout

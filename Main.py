@@ -27,7 +27,7 @@ import fillSpeedrun
 import areaRando
 from romWriter import RomWriter
 from solver import hard_required_locations, required_tricks, solve
-from spaceport_door_data import shrink_spaceport
+from spaceport_door_data import shrink_spaceport, spaceport_doors
 from trick import Trick
 from trick_data import Tricks
 
@@ -59,6 +59,9 @@ def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
 
     parser.add_argument('-o', '--smallspaceport', action="store_true",
                         help='cuts out some parts of the space port to make it smaller')
+
+    parser.add_argument('-h', '--escapeshortcuts', action="store_true",
+                        help='shortens the escape paths - (final escape shortened only if not area rando)')
     args = parser.parse_args(sys_args)
     # print(args)
     return args
@@ -141,14 +144,19 @@ def Main(argv: list[str]) -> None:
     if workingArgs.smallspaceport:
         small_spaceport = True
 
-    game = generate(logic, area_rando, fillChoice, small_spaceport)
+    escape_shortcuts = False
+    if workingArgs.escapeshortcuts:
+        escape_shortcuts = True
+
+    game = generate(logic, area_rando, fillChoice, small_spaceport, escape_shortcuts)
     write_rom(game)
 
 
 def generate(logic: frozenset[Trick],
              area_rando: bool,
              fill_choice: Literal["M", "MM", "D", "S"],
-             small_spaceport: bool) -> Game:
+             small_spaceport: bool,
+             escape_shortcuts: bool) -> Game:
     # hudFlicker=""
     # while hudFlicker != "Y" and hudFlicker != "N" :
     #     hudFlicker= input("Enter Y to patch HUD flicker on emulator, or N to decline:")
@@ -167,7 +175,8 @@ def generate(logic: frozenset[Trick],
                 VanillaAreas(),
                 fill_choice,
                 seeeed,
-                small_spaceport)
+                small_spaceport,
+                escape_shortcuts)
     while not seedComplete :
         if game.area_rando:  # area rando
             game.connections = areaRando.RandomizeAreas()
@@ -262,6 +271,9 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
         romWriter.writeBytes(0x106283, b'\x71\x01')  # zebetite health
         romWriter.writeBytes(0x204b3, b'\x08')  # fake zebetite hits taken
         shrink_spaceport(romWriter)
+
+    if game.escape_shortcuts:
+        romWriter.connect_doors(spaceport_doors['BridgeL'], spaceport_doors['StationCorridorBR'], one_way=True)
         if not game.area_rando:
             romWriter.connect_doors(misc_doors["AuroraUnitWreckageL"], area_doors["CraterR"], one_way=True)
 

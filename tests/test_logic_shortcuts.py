@@ -32,7 +32,7 @@ def test_energy_from_tanks() -> None:
 
 
 def test_energy_req() -> None:
-    game = Game(casual, {}, False, [], "D", 0, True)
+    game = Game(casual, {}, False, [], "D", 0, True, True)
     loadout = Loadout(game, (Items.Energy for _ in range(10)))
 
     assert energy_req(900) in loadout
@@ -47,7 +47,7 @@ def test_energy_req() -> None:
 
     assert energy_req(900) not in loadout
 
-    game = Game(expert, {}, False, [], "D", 0, True)
+    game = Game(expert, {}, False, [], "D", 0, True, True)
     loadout = Loadout(game)  # empty
 
     assert energy_req(700) not in loadout
@@ -65,7 +65,7 @@ def test_energy_req() -> None:
 
 
 def test_varia_or_hell_run() -> None:
-    game = Game(expert, {}, False, [], "D", 0, True)
+    game = Game(expert, {}, False, [], "D", 0, True, True)
     loadout = Loadout(game)
 
     assert varia_or_hell_run(400) not in loadout
@@ -102,7 +102,7 @@ def test_varia_or_hell_run() -> None:
 
 
 def test_other_suit_hell_runs() -> None:
-    game = Game(expert, {}, False, [], "D", 0, True)
+    game = Game(expert, {}, False, [], "D", 0, True, True)
     loadout = Loadout(game)
     loadout.append(Items.MetroidSuit)
     loadout.append(Items.GravitySuit)
@@ -129,7 +129,7 @@ def test_use_as_bool() -> None:
         (Items.Bombs in loadout) and
         (Items.Morph in loadout)
     ))
-    game = Game(casual, {}, False, [], "D", 0, True)
+    game = Game(casual, {}, False, [], "D", 0, True, True)
     loadout = Loadout(game)
 
     with pytest.raises(TypeError):
@@ -144,7 +144,7 @@ def test_use_as_bool() -> None:
 
 
 def test_ammo_in_loadout() -> None:
-    game = Game(casual, {}, False, [], "D", 0, True)
+    game = Game(casual, {}, False, [], "D", 0, True, True)
     loadout = Loadout(game)
 
     assert ammo_in_loadout(loadout) == 0, f"empty loadout has {ammo_in_loadout(loadout)}"
@@ -173,7 +173,7 @@ def test_ammo_in_loadout() -> None:
 
 
 def test_ammo_req() -> None:
-    game = Game(casual, {}, False, [], "D", 0, True)
+    game = Game(casual, {}, False, [], "D", 0, True, True)
     loadout = Loadout(game)
 
     assert ammo_req(5) not in loadout

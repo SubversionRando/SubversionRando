@@ -45,4 +45,3 @@ def shrink_spaceport(rom_writer: "RomWriter") -> None:
     rom_writer.connect_doors(spaceport_doors['MainEngineeringBR'], spaceport_doors['FuelingPortL'])
     rom_writer.connect_doors(spaceport_doors['CargoBayMR'], spaceport_doors['DockingPort3L'])
     rom_writer.connect_doors(spaceport_doors['CargoBayBL'], spaceport_doors['DockingPort4R'])
-    rom_writer.connect_doors(spaceport_doors['BridgeL'], spaceport_doors['StationCorridorBR'], one_way=True)

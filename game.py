@@ -23,6 +23,7 @@ class Game:
     fill_choice: Literal["M", "MM", "D", "S"]
     seed: int
     small_spaceport: bool
+    escape_shortcuts: bool
     door_data: "Mapping[AreaDoor, Union[Item, LogicShortcut]]" = field(default_factory=door_factory)
     item_placement_spoiler: str = ""
     hint_data: Optional[tuple[str, bytes]] = None

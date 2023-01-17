@@ -24,7 +24,7 @@ from trick import Trick
 def setup(logic: frozenset[Trick]) -> tuple[Game, Loadout]:
     """ returns (all locations, vanilla connections, a new loadout) """
     all_locations = pullCSV()
-    game = Game(logic, all_locations, False, VanillaAreas(), "D", 0, True)
+    game = Game(logic, all_locations, False, VanillaAreas(), "D", 0, True, True)
     loadout = Loadout(game)
     return game, loadout
 
