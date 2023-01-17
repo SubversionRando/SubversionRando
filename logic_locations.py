@@ -610,6 +610,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (can_bomb(2) in loadout) and
         (Verdite.hotSpring in loadout) and
         ((GravitySuit in loadout) or (Speedball in loadout))  # 2-tile morph jump
+        # TODO: this doesn't require as much from verdite
+        # (hot spring to sporous nook can't be done with just HJB, but this can be done with just HJB)
     ),
     "Epiphreatic Crag": lambda loadout: (
         (GravityBoots in loadout) and
@@ -1266,6 +1268,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ))
         # TODO: rusty said an expert can do this with just gravity boots and hi jump boots
         # I don't see how.
+        # joonie said he thinks it's possible with double sbj (w hjb), but he gave up trying
     ),
     "Hall Of The Elders": lambda loadout: (
         (ruinedConcourseBDoorToEldersBottom in loadout) and
@@ -1346,6 +1349,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             ((canFly in loadout) or (Tricks.gravity_jump in loadout))
         ) or (
             (HiJump in loadout)
+        ) or (
+            (Tricks.wall_jump_precise in loadout)
         ))
     ),
     "Generator Manifold": lambda loadout: (

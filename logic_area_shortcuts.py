@@ -586,6 +586,8 @@ class Verdite:
     ))
     """ traverse "Hot Spring" between Sporous Nook and Verdite Mines (including Verdite Mines Entrance) """
 
+    # TODO: all the places where we only check for this and sporous nook should also check from raging pit
+    # because it could require less energy if we have PBs
     fieryTrail = LogicShortcut(lambda loadout: (
         (varia_or_hell_run(550, heat_and_metroid_suit_not_required=True) in loadout)
         # TODO: a different amount if I have screw and space jump and shootThroughWalls
@@ -720,6 +722,7 @@ class PirateLab:
         (GravitySuit in loadout) or
         (Ice in loadout) or  # freeze pancake to stand on
         (Tricks.sbj_underwater_w_hjb in loadout) or
+        # joonie gave up on trying to get out with SBJ no HJB, he wondered if bob could do it
         ((Tricks.uwu_2_tile in loadout) and (HiJump in loadout))
     ))
 
@@ -775,6 +778,7 @@ class PirateLab:
     centralCorridorWater = LogicShortcut(lambda loadout: (
         ((
             (Tricks.movement_zoast in loadout)  # gravity jump through door
+            # https://vimeo.com/user130979419
             # (not gravity jump trick because that requires gravity suit)
         ) or (
             (GravitySuit in loadout)
