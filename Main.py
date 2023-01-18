@@ -60,7 +60,7 @@ def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
     parser.add_argument('-o', '--smallspaceport', action="store_true",
                         help='cuts out some parts of the space port to make it smaller')
 
-    parser.add_argument('-h', '--escapeshortcuts', action="store_true",
+    parser.add_argument('-r', '--escapeshortcuts', action="store_true",
                         help='shortens the escape paths - (final escape shortened only if not area rando)')
     args = parser.parse_args(sys_args)
     # print(args)
