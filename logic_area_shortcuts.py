@@ -407,6 +407,7 @@ class SandLand:
         ((GravitySuit in loadout) or (HiJump in loadout) or (Tricks.sbj_underwater_no_hjb in loadout)) and
         # TODO: confirm springball jump can get you over narrows
         (pinkDoor in loadout) and  # between sea caves upper and sea caves lower
+        (Morph in loadout) and  # passage right next to door in lower sea caves
         (  # top of lower hall, to bottom-right of lower hall
             ((GravitySuit in loadout) and (Screw in loadout)) or
             (

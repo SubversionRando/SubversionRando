@@ -73,7 +73,8 @@ sensorMaintenance = LogicShortcut(lambda loadout: (
         (Super in loadout) and
         (ammo_req(45) in loadout)
     ) or (
-        (Screw in loadout)
+        (Screw in loadout) and
+        (missileBarrier in loadout)
     )) and
     (Morph in loadout) and
     ((Tricks.mockball_hard in loadout) or (Speedball in loadout)) and
@@ -1014,7 +1015,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Summit Landing": lambda loadout: (
         (GravityBoots in loadout) and
-        (can_bomb(1) in loadout) and
+        ((can_bomb(1) in loadout) or (Screw in loadout)) and
         (railAccess in loadout) and
         (varia_or_hell_run(69) in loadout) and
         (loadout.has_any(Speedball, Tricks.movement_moderate))  # jump through respawning crumble block
