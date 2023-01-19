@@ -1015,6 +1015,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Summit Landing": lambda loadout: (
         (GravityBoots in loadout) and
+        (Morph in loadout) and
         ((can_bomb(1) in loadout) or (Screw in loadout)) and
         (railAccess in loadout) and
         (varia_or_hell_run(69) in loadout) and
