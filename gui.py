@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from game import GameOptions
 
 from gui_scroll_frame import ScrollFrame
 from gui_toggled_frame import ToggledFrame
@@ -103,11 +104,12 @@ def main() -> None:
             if logic_selections[trick_name].get()
         ])
 
-        game = generate(logic,
-                        bool(area_rando_value.get()),
-                        "D",
-                        bool(small_spaceport_value.get()),
-                        bool(escape_shortcuts_value.get()))
+        options = GameOptions(logic,
+                              bool(area_rando_value.get()),
+                              "D",
+                              bool(small_spaceport_value.get()),
+                              bool(escape_shortcuts_value.get()))
+        game = generate(options)
         name = write_rom(game)
         name_label.config(text=name)
 

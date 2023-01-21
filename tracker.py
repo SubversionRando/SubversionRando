@@ -5,7 +5,7 @@ import os
 import sys
 
 from connection_data import AreaDoor, VanillaAreas, area_doors
-from game import Game
+from game import CypherItems, Game, GameOptions
 from item_data import Item, Items, all_items
 from loadout import Loadout
 from location_data import Location, pullCSV, spacePortLocs
@@ -72,7 +72,8 @@ class Tracker:
 
         self.empty_locations = pullCSV()
         self.game_state_locations = deepcopy(self.empty_locations)
-        game = Game(logic, self.empty_locations, area_rando, area_connections, "D", 0, True, True)
+        options = GameOptions(logic, area_rando, "D", True, False, CypherItems.NotRequired)
+        game = Game(options, self.empty_locations, area_connections, 0)
         self.loadout = Loadout(game)
 
         self.undo_stack = deque()
@@ -132,7 +133,8 @@ class Tracker:
             print("found logic: custom")
 
         self.logic_from_spoiler = frz_logic_from_spoiler
-        game = Game(frz_logic_from_spoiler, self.empty_locations, area_rando, connections, "D", 0, True, True)
+        options = GameOptions(frz_logic_from_spoiler, area_rando, "D", True, False, CypherItems.NotRequired)
+        game = Game(options, self.empty_locations, connections, 0)
         self.loadout = Loadout(game)
 
     def pickup_location(self, loc_name: str) -> None:
@@ -175,7 +177,7 @@ class Tracker:
             print("nothing to undo")
 
     def switch_logic(self, logic: frozenset[Trick]) -> None:
-        self.loadout.game.logic = logic
+        self.loadout.game.options.logic = logic
 
 
 def main() -> None:

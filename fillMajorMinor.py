@@ -5,7 +5,7 @@ from connection_data import AreaDoor
 from fillInterface import FillAlgorithm
 from item_data import Item, items_unpackable
 from loadout import Loadout
-from location_data import Location, majorLocs
+from location_data import Location, majorLocs, eTankLocs
 
 (
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
@@ -108,7 +108,7 @@ class FillMajorMinor(FillAlgorithm):
             valid_locations = [
                 loc
                 for loc in availableLocations
-                if (loc['fullitemname'] in majorLocs)
+                if (loc['fullitemname'] in majorLocs or loc["fullitemname"] in eTankLocs)
             ]
             if from_items is self.earlyItemList and len(valid_locations) == 0 and (
                 (Morph in loadout) or (

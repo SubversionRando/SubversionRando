@@ -9,7 +9,7 @@ parent, root = file.parent, file.parents[1]
 sys.path.append(str(root))
 
 from connection_data import SunkenNestL, VanillaAreas, area_doors
-from game import Game
+from game import Game, GameOptions
 from item_data import Items, items_unpackable
 from loadout import Loadout
 from location_data import Location, pullCSV
@@ -24,7 +24,8 @@ from trick import Trick
 def setup(logic: frozenset[Trick]) -> tuple[Game, Loadout]:
     """ returns (all locations, vanilla connections, a new loadout) """
     all_locations = pullCSV()
-    game = Game(logic, all_locations, False, VanillaAreas(), "D", 0, True, True)
+    options = GameOptions(logic, False, "D", True)
+    game = Game(options, all_locations, VanillaAreas(), 0)
     loadout = Loadout(game)
     return game, loadout
 
@@ -619,6 +620,7 @@ _no_bombing = frozenset([
     "Drawing Room",
     "Glacier's Reach",
     "Grand Promenade",
+    "Summit Landing",
     "Ice Cave",
     "Icy Flow",
     "Reliquary Access",

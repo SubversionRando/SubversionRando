@@ -14,7 +14,7 @@ from typing import Iterator, Literal, Optional
 
 from Main import generate
 from connection_data import AreaDoor
-from game import Game
+from game import Game, GameOptions
 from location_data import Location
 from logic_presets import casual, expert, medium
 from trick_data import trick_name_lookup
@@ -26,12 +26,12 @@ game_count = 1000
 
 def game_source() -> Iterator[Game]:
     while True:
-        yield generate(expert, False, "D", True, False)
-        yield generate(casual, False, "D", True, False)
-        yield generate(medium, False, "D", True, False)
-        yield generate(expert, True, "D", True, False)
-        yield generate(casual, True, "D", True, False)
-        yield generate(medium, True, "D", True, False)
+        yield generate(GameOptions(expert, False, "D", True, False))
+        yield generate(GameOptions(casual, False, "D", True, False))
+        yield generate(GameOptions(medium, False, "D", True, False))
+        yield generate(GameOptions(expert, True, "D", True, False))
+        yield generate(GameOptions(casual, True, "D", True, False))
+        yield generate(GameOptions(medium, True, "D", True, False))
 
 
 class GameData:
@@ -41,7 +41,7 @@ class GameData:
     all_locations: dict[str, Location]
     area_rando: bool
     connections: list[tuple[AreaDoor, AreaDoor]]
-    fill_choice: Literal["M", "MM", "D", "S"]
+    fill_choice: Literal["M", "MM", "D", "S", "B"]
     seed: int
     small_spaceport: bool
     escape_shortcuts: bool
@@ -49,14 +49,14 @@ class GameData:
     hint_data: Optional[tuple[str, bytes]] = None
 
     def __init__(self, g: Game) -> None:
-        self.logic = [trick_name_lookup[t] for t in g.logic]
+        self.logic = [trick_name_lookup[t] for t in g.options.logic]
         self.all_locations = g.all_locations
-        self.area_rando = g.area_rando
+        self.area_rando = g.options. area_rando
         self.connections = g.connections
-        self.fill_choice = g.fill_choice
+        self.fill_choice = g.options.fill_choice
         self.seed = g.seed
-        self.small_spaceport = g.small_spaceport
-        self.escape_shortcuts = g.escape_shortcuts
+        self.small_spaceport = g.options.small_spaceport
+        self.escape_shortcuts = g.options.escape_shortcuts
         self.item_placement_spoiler = g.item_placement_spoiler
         self.hint_data = g.hint_data
 

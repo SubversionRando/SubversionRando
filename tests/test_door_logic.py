@@ -8,14 +8,19 @@ sys.path.append(str(root))
 
 from connection_data import area_doors
 from door_logic import canOpen
-from game import Game
+from game import Game, GameOptions
 from item_data import Items
 from loadout import Loadout
 from logic_presets import casual
 
 
+_test_options = GameOptions(casual, False, "D", True)
+
+
 def test_area_rando() -> None:
-    game = Game(casual, {}, True, [], "D", 0, True, True)
+    _test_options.logic = casual
+    _test_options.area_rando = True
+    game = Game(_test_options, {}, [], 0)
     loadout = Loadout(game)
 
     assert canOpen(area_doors["CraterR"]) in loadout
@@ -25,7 +30,9 @@ def test_area_rando() -> None:
 
 
 def test_area_rando_with_items() -> None:
-    game = Game(casual, {}, True, [], "D", 0, True, True)
+    _test_options.logic = casual
+    _test_options.area_rando = True
+    game = Game(_test_options, {}, [], 0)
     loadout = Loadout(game, (Items.PowerBomb, Items.Super))
 
     assert canOpen(area_doors["CraterR"]) in loadout
@@ -35,7 +42,9 @@ def test_area_rando_with_items() -> None:
 
 
 def test_non_area_rando_locked() -> None:
-    game = Game(casual, {}, False, [], "D", 0, True, True)
+    _test_options.logic = casual
+    _test_options.area_rando = False
+    game = Game(_test_options, {}, [], 0)
     loadout = Loadout(game)
 
     assert canOpen(area_doors["CraterR"]) not in loadout
@@ -45,7 +54,9 @@ def test_non_area_rando_locked() -> None:
 
 
 def test_non_area_rando_missing_morph() -> None:
-    game = Game(casual, {}, False, [], "D", 0, True, True)
+    _test_options.logic = casual
+    _test_options.area_rando = False
+    game = Game(_test_options, {}, [], 0)
     loadout = Loadout(game, (Items.PowerBomb, Items.Super))
 
     assert canOpen(area_doors["CraterR"]) not in loadout
@@ -55,7 +66,9 @@ def test_non_area_rando_missing_morph() -> None:
 
 
 def test_non_area_rando_open() -> None:
-    game = Game(casual, {}, False, [], "D", 0, True, True)
+    _test_options.logic = casual
+    _test_options.area_rando = False
+    game = Game(_test_options, {}, [], 0)
     loadout = Loadout(game, (Items.Morph, Items.PowerBomb, Items.Super))
 
     assert canOpen(area_doors["CraterR"]) in loadout

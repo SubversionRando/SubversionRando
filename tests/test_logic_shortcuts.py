@@ -2,7 +2,8 @@
 import sys
 from pathlib import Path
 import pytest
-from game import Game
+from game import Game, GameOptions
+from trick import Trick
 
 file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
@@ -31,8 +32,13 @@ def test_energy_from_tanks() -> None:
     assert energy_from_tanks(16) == 1499
 
 
+def make_game(logic: frozenset[Trick]) -> Game:
+    options = GameOptions(logic, False, "D", True)
+    return Game(options, {}, [], 0)
+
+
 def test_energy_req() -> None:
-    game = Game(casual, {}, False, [], "D", 0, True, True)
+    game = make_game(casual)
     loadout = Loadout(game, (Items.Energy for _ in range(10)))
 
     assert energy_req(900) in loadout
@@ -47,7 +53,7 @@ def test_energy_req() -> None:
 
     assert energy_req(900) not in loadout
 
-    game = Game(expert, {}, False, [], "D", 0, True, True)
+    game = make_game(expert)
     loadout = Loadout(game)  # empty
 
     assert energy_req(700) not in loadout
@@ -65,7 +71,7 @@ def test_energy_req() -> None:
 
 
 def test_varia_or_hell_run() -> None:
-    game = Game(expert, {}, False, [], "D", 0, True, True)
+    game = make_game(expert)
     loadout = Loadout(game)
 
     assert varia_or_hell_run(400) not in loadout
@@ -102,7 +108,7 @@ def test_varia_or_hell_run() -> None:
 
 
 def test_other_suit_hell_runs() -> None:
-    game = Game(expert, {}, False, [], "D", 0, True, True)
+    game = make_game(expert)
     loadout = Loadout(game)
     loadout.append(Items.MetroidSuit)
     loadout.append(Items.GravitySuit)
@@ -129,7 +135,7 @@ def test_use_as_bool() -> None:
         (Items.Bombs in loadout) and
         (Items.Morph in loadout)
     ))
-    game = Game(casual, {}, False, [], "D", 0, True, True)
+    game = make_game(casual)
     loadout = Loadout(game)
 
     with pytest.raises(TypeError):
@@ -144,7 +150,7 @@ def test_use_as_bool() -> None:
 
 
 def test_ammo_in_loadout() -> None:
-    game = Game(casual, {}, False, [], "D", 0, True, True)
+    game = make_game(casual)
     loadout = Loadout(game)
 
     assert ammo_in_loadout(loadout) == 0, f"empty loadout has {ammo_in_loadout(loadout)}"
@@ -173,7 +179,7 @@ def test_ammo_in_loadout() -> None:
 
 
 def test_ammo_req() -> None:
-    game = Game(casual, {}, False, [], "D", 0, True, True)
+    game = make_game(casual)
     loadout = Loadout(game)
 
     assert ammo_req(5) not in loadout

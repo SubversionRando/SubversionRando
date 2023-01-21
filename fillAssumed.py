@@ -5,7 +5,7 @@ from connection_data import AreaDoor
 from fillInterface import FillAlgorithm
 from item_data import Item, Items
 from loadout import Loadout
-from location_data import Location, spacePortLocs
+from location_data import Location, spacePortLocs, majorLocs
 from solver import solve
 
 _minor_logic_items = {
@@ -24,11 +24,36 @@ _minor_non_logic_items = {
 }
 """ items placed without logic """
 
+_unique_items: frozenset[Item] = frozenset([
+    Items.Missile,
+    Items.Morph,
+    Items.GravityBoots,
+    Items.Super,
+    Items.Grapple,
+    Items.PowerBomb,
+    Items.Speedball,
+    Items.Bombs,
+    Items.HiJump,
+    Items.GravitySuit,
+    Items.DarkVisor,
+    Items.Wave,
+    Items.SpeedBooster,
+    Items.Spazer,
+    Items.Varia,
+    Items.Ice,
+    Items.MetroidSuit,
+    Items.Plasma,
+    Items.Screw,
+    Items.SpaceJump,
+    Items.Charge,
+    Items.Hypercharge,
+    Items.Xray,
+])
+
 
 class FillAssumed(FillAlgorithm):
     connections: list[tuple[AreaDoor, AreaDoor]]
 
-    # earlyItemList: list[Item]
     prog_items: list[Item]
     extra_items: list[Item]
     itemLists: list[list[Item]]
@@ -37,36 +62,7 @@ class FillAssumed(FillAlgorithm):
                  connections: list[tuple[AreaDoor, AreaDoor]]) -> None:
         self.connections = connections
 
-        # self.earlyItemList = [
-        #     Missile,
-        #     Morph,
-        #     GravityBoots
-        # ]
-        self.prog_items = [
-            Items.Missile,
-            Items.Morph,
-            Items.GravityBoots,
-            Items.Super,
-            Items.Grapple,
-            Items.PowerBomb,
-            Items.Speedball,
-            Items.Bombs,
-            Items.HiJump,
-            Items.GravitySuit,
-            Items.DarkVisor,
-            Items.Wave,
-            Items.SpeedBooster,
-            Items.Spazer,
-            Items.Varia,
-            Items.Ice,
-            Items.MetroidSuit,
-            Items.Plasma,
-            Items.Screw,
-            Items.SpaceJump,
-            Items.Charge,
-            Items.Hypercharge,
-            Items.Xray,
-        ]
+        self.prog_items = sorted(_unique_items)  # sort because iterating through set will not be the same every time
         assert len(self.prog_items) == len(set(self.prog_items)), "duplicate majors?"
         for it, n in _minor_logic_items.items():
             self.prog_items.extend([it for _ in range(n)])
@@ -100,6 +96,21 @@ class FillAssumed(FillAlgorithm):
                 if loc["fullitemname"] not in spacePortLocs:
                     distribution.append(loc)
         return random.choice(distribution)
+
+    @staticmethod
+    def transform_mmb(available_locations: list[Location], item_to_place: Item) -> list[Location]:
+        """ transform the distribution of locations for major minor bias """
+        tr: list[Location] = []
+        for loc in available_locations:
+            if item_to_place in _unique_items and loc["fullitemname"] in majorLocs:
+                for _ in range(30):
+                    tr.append(loc)
+            elif item_to_place not in _unique_items and loc["fullitemname"] not in majorLocs:
+                for _ in range(5):
+                    tr.append(loc)
+            else:
+                tr.append(loc)
+        return tr
 
     def choose_placement(self,
                          availableLocations: list[Location],
@@ -138,6 +149,9 @@ class FillAssumed(FillAlgorithm):
             available_locations = self._get_empty_locations(loadout.game.all_locations)
         if len(available_locations) == 0:
             return None
+
+        if loadout.game.options.fill_choice == "B":
+            available_locations = self.transform_mmb(available_locations, item_to_place)
 
         # This magic number 2 could be an option for "How loaded do you want the spaceport to be?"
         # (lower number means more progression items in spaceport)

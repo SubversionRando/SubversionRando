@@ -31,7 +31,7 @@ spacePortLocs = ["Ready Room",
 
 
 majorLocs = frozenset([
-    "Ocean Vent Supply Depot",  # start of unique majors
+    "Ocean Vent Supply Depot",
     "Sandy Cache",
     "Shrine Of The Penumbra",
     "Subterranean Burrow",
@@ -53,8 +53,11 @@ majorLocs = frozenset([
     "Syzygy Observatorium",
     "Shrine Of The Animate Spark",
     "Extract Storage",
-    "Torpedo Bay",  # end of unique majors
-    "Sandy Burrow: Top",  # E Tanks
+    "Torpedo Bay",
+])
+
+eTankLocs = frozenset([
+    "Sandy Burrow: Top",
     "Sediment Flow",
     "Epiphreatic Crag",
     "Mezzanine Concourse",

@@ -46,7 +46,7 @@ class Loadout:
         if isinstance(x, LogicShortcut):
             return x.access(self)
         elif isinstance(x, Trick):
-            return all(self.contents[item] > 0 for item in x) and x in self.game.logic
+            return all(self.contents[item] > 0 for item in x) and x in self.game.options.logic
         return self.contents[x] > 0
 
     def __iter__(self) -> Iterator[Union[Item, AreaDoor]]:

@@ -3,6 +3,7 @@ from typing import TypedDict
 import flask
 
 import Main
+from game import GameOptions
 import logic_presets
 from romWriter import RomWriter
 from trick import Trick
@@ -49,11 +50,12 @@ def roll_seed() -> flask.Response:
     tricks: frozenset[Trick] = frozenset([getattr(Tricks, trick_name) for trick_name in params["tricks"]])
 
     romWriter = RomWriter.fromBlankIps()
-    game = Main.generate(tricks,
-                         bool(params["area_rando"]),
-                         "D",
-                         bool(params["small_spaceport"]),
-                         bool(params["escape_shortcuts"]))
+    options = GameOptions(tricks,
+                          bool(params["area_rando"]),
+                          "D",
+                          bool(params["small_spaceport"]),
+                          bool(params["escape_shortcuts"]))
+    game = Main.generate(options)
     Main.write_rom(game, romWriter)
     response = flask.make_response(romWriter.getFinalIps())
     response.headers['Content-Type'] = 'application/octet-stream'

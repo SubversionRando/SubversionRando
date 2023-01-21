@@ -7,7 +7,7 @@ from item_data import Items
 from mass_generator import GameData
 
 
-file_name = "data/ECU-w-and-wo-area-rando-2023-01-17-10-29-49.dat"
+file_name = "data/ECU-w-and-wo-area-rando-D-T-F-2023-01-17-10-41-50.dat"
 
 
 def read_games() -> list[GameData]:

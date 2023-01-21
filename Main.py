@@ -13,7 +13,7 @@ except TypeError:
     input("requires Python 3.9 or higher... press enter to quit")
     exit(1)
 from fillInterface import FillAlgorithm
-from game import Game
+from game import CypherItems, Game, GameOptions
 from hints import choose_hint_location, get_hint_spoiler_text, write_hint_to_rom
 from item_data import Item, Items
 from loadout import Loadout
@@ -26,7 +26,7 @@ import fillAssumed
 import fillSpeedrun
 import areaRando
 from romWriter import RomWriter
-from solver import hard_required_locations, required_tricks, solve
+from solver import hard_required_locations, required_tricks, solve, spoil_play_through
 from spaceport_door_data import shrink_spaceport, spaceport_doors
 from trick import Trick
 from trick_data import Tricks
@@ -53,6 +53,8 @@ def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
     )
     parser.add_argument('-mm', '--majorminor', action="store_true",
                         help='Major-Minor fill, using unique majors and locations')
+    parser.add_argument('-b', '--majorminorbias', action="store_true",
+                        help='unique items have high probability to be in unique item locations')
 
     parser.add_argument('-a', '--area', action="store_true",
                         help='Area rando shuffles major areas of the game, expert logic only')
@@ -123,13 +125,15 @@ def Main(argv: list[str]) -> None:
     elif workingArgs.logicmedium:
         logic = medium
 
-    fillChoice: Literal["M", "MM", "D", "S"]
+    fillChoice: Literal["M", "MM", "D", "S", "B"]
     if workingArgs.medium:
         fillChoice = "M"
     elif workingArgs.majorminor:
         fillChoice = "MM"
     elif workingArgs.speedrun:
         fillChoice = "S"
+    elif workingArgs.majorminorbias:
+        fillChoice = "B"
     else:
         fillChoice = "D"
 
@@ -148,15 +152,25 @@ def Main(argv: list[str]) -> None:
     if workingArgs.escapeshortcuts:
         escape_shortcuts = True
 
-    game = generate(logic, area_rando, fillChoice, small_spaceport, escape_shortcuts)
+    options = GameOptions(logic, area_rando, fillChoice, small_spaceport, escape_shortcuts, CypherItems.NotRequired)
+    game = generate(options)
     write_rom(game)
 
 
-def generate(logic: frozenset[Trick],
-             area_rando: bool,
-             fill_choice: Literal["M", "MM", "D", "S"],
-             small_spaceport: bool,
-             escape_shortcuts: bool) -> Game:
+def verify_cypher_not_required(seedComplete: bool, game: Game) -> bool:
+    saved_animate = game.all_locations["Shrine Of The Animate Spark"]["item"]
+    saved_enervation = game.all_locations["Enervation Chamber"]["item"]
+    game.all_locations["Shrine Of The Animate Spark"]["item"] = None
+    game.all_locations["Enervation Chamber"]["item"] = None
+    completable, _, _ = solve(game)
+    game.all_locations["Shrine Of The Animate Spark"]["item"] = saved_animate
+    game.all_locations["Enervation Chamber"]["item"] = saved_enervation
+    if not completable:
+        print("cypher requirement missing")
+    return seedComplete and completable
+
+
+def generate(options: GameOptions) -> Game:
     # hudFlicker=""
     # while hudFlicker != "Y" and hudFlicker != "N" :
     #     hudFlicker= input("Enter Y to patch HUD flicker on emulator, or N to decline:")
@@ -169,16 +183,12 @@ def generate(logic: frozenset[Trick],
 
     seedComplete = False
     randomizeAttempts = 0
-    game = Game(logic,
+    game = Game(options,
                 all_locations,
-                area_rando,
                 VanillaAreas(),
-                fill_choice,
-                seeeed,
-                small_spaceport,
-                escape_shortcuts)
+                seeeed)
     while not seedComplete :
-        if game.area_rando:  # area rando
+        if game.options.area_rando:  # area rando
             game.connections = areaRando.RandomizeAreas()
             # print(Connections) #test
         randomizeAttempts += 1
@@ -188,10 +198,13 @@ def generate(logic: frozenset[Trick],
         print("Starting randomization attempt:", randomizeAttempts)
         game.item_placement_spoiler = f"Starting randomization attempt: {randomizeAttempts}\n"
         # now start randomizing
-        if fill_choice == "D":
+        if options.fill_choice in {"D", "B"}:
             seedComplete = assumed_fill(game)
         else:
             seedComplete = forward_fill(game)
+
+        if game.options.cypher_items == CypherItems.NotRequired:
+            seedComplete = verify_cypher_not_required(seedComplete, game)
 
     # make this optional? (if someone doesn't want hints, they can just not look at the log)
     choose_hint_location(game)
@@ -201,18 +214,18 @@ def generate(logic: frozenset[Trick],
 
 def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
     logicChoice: Literal["E", "U", "C", "Q"] = "Q"
-    if game.logic == casual:
+    if game.options.logic == casual:
         logicChoice = "C"
-    elif game.logic == medium:
+    elif game.options.logic == medium:
         logicChoice = "U"
-    elif game.logic == expert:
+    elif game.options.logic == expert:
         logicChoice = "E"
 
     areaA = ""
-    if game.area_rando:
+    if game.options.area_rando:
         areaA = "A"
 
-    rom_name = f"Sub{logicChoice}{game.fill_choice}{areaA}{game.seed}.sfc"
+    rom_name = f"Sub{logicChoice}{game.options.fill_choice}{areaA}{game.seed}.sfc"
     rom1_path = f"roms/{rom_name}"
     rom_clean_path = "roms/Subversion12.sfc"
 
@@ -225,18 +238,19 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
     spoilerSave = game.item_placement_spoiler + '\n'
 
     # add area transitions to spoiler
-    if game.area_rando:
+    if game.options.area_rando:
         for door1, door2 in game.connections:
             spoilerSave += f"{door1.area_name} {door1.name} << >> {door2.area_name} {door2.name}\n"
 
-    _completable, solve_lines, _locs = solve(game)
+    _completable, play_through, _locs = solve(game)
+    solve_lines = spoil_play_through(play_through)
 
     if game.hint_data:
         hint_loc_name, hint_loc_marker = game.hint_data
         write_hint_to_rom(hint_loc_name, hint_loc_marker, romWriter)
         spoilerSave += get_hint_spoiler_text(hint_loc_name, hint_loc_marker)
 
-    if game.area_rando:
+    if game.options.area_rando:
         areaRando.write_area_doors(game.connections, romWriter)
     # write all items into their locations
     for loc in game.all_locations.values():
@@ -267,14 +281,14 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
     #   use by writing 0x18 to the high byte of a gray door plm param, OR'ed with the low bit of the 9-low-bits id part
     romWriter.writeBytes(0x23e33, b"\x38\x38\x38\x38")  # set the carry bit (a lot)
 
-    if game.small_spaceport:
+    if game.options.small_spaceport:
         romWriter.writeBytes(0x106283, b'\x71\x01')  # zebetite health
         romWriter.writeBytes(0x204b3, b'\x08')  # fake zebetite hits taken
         shrink_spaceport(romWriter)
 
-    if game.escape_shortcuts:
+    if game.options.escape_shortcuts:
         romWriter.connect_doors(spaceport_doors['BridgeL'], spaceport_doors['StationCorridorBR'], one_way=True)
-        if not game.area_rando:
+        if not game.options.area_rando:
             romWriter.connect_doors(misc_doors["AuroraUnitWreckageL"], area_doors["CraterR"], one_way=True)
 
     romWriter.finalizeRom(rom1_path)
@@ -302,7 +316,7 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
 
 def required_locations_spoiler(game: Game) -> str:
     spoiler_text = "hard required locations:\n"
-    req_locs = hard_required_locations(game)
+    req_locs, _ = hard_required_locations(game)
     for loc_name in req_locs:
         item = game.all_locations[loc_name]['item']
         item_name = item[0] if item else "Nothing"
@@ -324,7 +338,7 @@ def required_tricks_spoiler(game: Game) -> str:
 def logic_tricks_spoiler(game: Game) -> str:
     spoiler_text = "tricks allowed in this logic:\n"
     for trick_name, trick in vars(Tricks).items():
-        if isinstance(trick, Trick) and trick in game.logic:
+        if isinstance(trick, Trick) and trick in game.options.logic:
             spoiler_text += f'    "{trick_name}",\n'
     return spoiler_text
 
@@ -335,6 +349,13 @@ def assumed_fill(game: Game) -> bool:
     dummy_locations: list[Location] = []
     loadout = Loadout(game)
     fill_algorithm = fillAssumed.FillAssumed(game.connections)
+
+    if game.options.cypher_items == CypherItems.SmallAmmo:
+        game.all_locations["Shrine Of The Animate Spark"]["item"] = Items.SmallAmmo
+        game.all_locations["Enervation Chamber"]["item"] = Items.SmallAmmo
+        fill_algorithm.extra_items.remove(Items.SmallAmmo)
+        fill_algorithm.extra_items.remove(Items.SmallAmmo)
+
     n_items_to_place = fill_algorithm.count_items_remaining()
     assert n_items_to_place <= len(game.all_locations), \
         f"{n_items_to_place} items to put in {len(game.all_locations)} locations"
@@ -373,7 +394,7 @@ def forward_fill(game: Game) -> bool:
     loadout = Loadout(game)
     loadout.append(SunkenNestL)  # starting area
     # use appropriate fill algorithm for initializing item lists
-    fill_algorithm = fillers[game.fill_choice](game.connections)
+    fill_algorithm = fillers[game.options.fill_choice](game.connections)
     while len(unusedLocations) != 0 or len(availableLocations) != 0:
         # print("loadout contains:")
         # print(loadout)

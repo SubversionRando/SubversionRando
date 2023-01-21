@@ -5,7 +5,7 @@ from game import Game
 from connection_data import area_doors
 from item_data import Item, Items
 from loadout import Loadout
-from location_data import pullCSV
+from location_data import pullCSV, majorLocs
 from logicCommon import varia_or_hell_run, can_bomb
 from logic_area_shortcuts import SkyWorld, LifeTemple
 from logic_locations import ruinedConcourseBDoorToEldersTop, greaterInferno, railAccess, norakToLifeTemple
@@ -13,7 +13,7 @@ from logic_shortcut import LogicShortcut
 from logic_shortcut_data import can_crash_spaceport, pinkDoor, missileDamage, shootThroughWalls
 from logic_updater import updateLogic
 from romWriter import RomWriter
-from solver import get_playthrough_locations, hard_required_locations, solve
+from solver import PlayThrough, hard_required_locations, solve
 from trick_data import Tricks
 
 
@@ -111,31 +111,66 @@ _hint_rom_locations: dict[bytes, tuple[int, int]] = {
 _location_aliases: dict[str, str] = {}
 
 
+def get_last_minor_hard_required_location(hard_locs: dict[str, int], play_through: PlayThrough) -> str:
+
+    # don't want to hint an item too early, look for the 3rd sphere after falling from spaceport
+    third_fallen = 1
+    count_fallen = 0
+    for sphere_i, sphere in enumerate(play_through.spheres):
+        if sphere.fallen:
+            count_fallen += 1
+            if count_fallen == 3:
+                third_fallen = sphere_i
+                break
+
+    for hard_loc in reversed(hard_locs):
+        if hard_locs[hard_loc] < third_fallen:
+            # went too early in game to hint
+            # so hint last location, even though it's major
+            return next(reversed(hard_locs))
+        if hard_loc not in majorLocs:
+            return hard_loc
+
+    # all hard required locations are major and none are in early spheres
+    # so hint last location, even though it's major
+    return next(reversed(hard_locs))
+
+
 def choose_hint_location(game: Game) -> None:
     """ returns (hinted location name, bytes of boss text in log book to put hint after) """
-    hard_locs = hard_required_locations(game)
-    hint_loc_name = hard_locs[-1]
+    hard_locs, play_through = hard_required_locations(game)
+    hint_loc_name = next(reversed(hard_locs))
 
-    _, log_lines, _ = solve(game)
-    spheres = get_playthrough_locations(log_lines)
+    mmb = game.options.fill_choice == "B"
+
+    if mmb:
+        hint_loc_name = get_last_minor_hard_required_location(hard_locs, play_through)
+
     sphere_of_hinted_loc_i = 0
-    for sphere in spheres:
-        if hint_loc_name in sphere:
-            for sphere_loc in sphere:
+    for sphere in play_through.spheres:
+        if hint_loc_name in sphere.pickups:
+            for sphere_loc in sphere.pickups:
                 # if screw is in the same sphere, hint that
-                if game.all_locations[sphere_loc]["item"] == Items.Screw:
+                if (
+                    game.all_locations[sphere_loc]["item"] == Items.Screw and
+                    (
+                        (not mmb) or
+                        sphere_loc not in majorLocs
+                    )
+                ):
                     hint_loc_name = sphere_loc
                     break
             break
         sphere_of_hinted_loc_i += 1
 
-    if len(spheres) <= sphere_of_hinted_loc_i:
-        print(f"WARNING: {len(spheres)} spheres found in hint chooser with last sphere {sphere_of_hinted_loc_i}")
+    if len(play_through.spheres) <= sphere_of_hinted_loc_i:
+        print(f"WARNING: {len(play_through.spheres)} spheres found "
+              f"in hint chooser with last sphere {sphere_of_hinted_loc_i}")
         game.hint_data = (hint_loc_name, b'THE CHOZO HAVE A WEAKNESS IN')  # this shouldn't happen
         return
 
     saved_items: dict[str, Optional[Item]] = {}
-    for sphere_loc in spheres[sphere_of_hinted_loc_i]:
+    for sphere_loc in play_through.spheres[sphere_of_hinted_loc_i].pickups:
         item = game.all_locations[sphere_loc]["item"]
         saved_items[sphere_loc] = item
         game.all_locations[sphere_loc]["item"] = None
