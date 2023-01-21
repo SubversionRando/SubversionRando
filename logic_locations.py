@@ -963,6 +963,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         # and use shinespark through it
         # He had no space jump boost, nor hi jump boots. Those would make it easier
         # https://clips.twitch.tv/AntsyVivaciousFriesNotLikeThis-SW5bAw7fOAyQnJfP
+
+        # TODO: something like that ^ is a lot easier if you have screw (don't need morph)
+        # just have to shinespark through the right door
     ),
     "Water Garden": lambda loadout: (
         (GravityBoots in loadout) and
@@ -1135,7 +1138,10 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
                     else 1350
                 )
             ) in loadout)
-        ))
+        )) and
+        # exit
+        (Hypercharge in loadout) and
+        (Charge in loadout)
     ),
     "Docking Port 4": lambda loadout: (  # (4 = letter Omega)
         # copy and paste docking port 3
