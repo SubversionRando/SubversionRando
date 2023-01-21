@@ -116,11 +116,15 @@ function setup_roll_button() {
         const area_rando_box = document.getElementById("area-rando");
         const small_spaceport_box = document.getElementById("small-spaceport");
         const escape_shortcuts_box = document.getElementById("escape-shortcuts");
+        const mmb_box = document.getElementById("mmb");
+        const cypher_select = document.getElementById("cypher");
 
         const params = {
             "area_rando": area_rando_box.checked,
             "small_spaceport": small_spaceport_box.checked,
             "escape_shortcuts": escape_shortcuts_box.checked,
+            "mmb": mmb_box.checked,
+            "cypher": cypher_select.value,
             "tricks": activated_trick_names
         };
         roll_button.disabled = true;

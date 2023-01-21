@@ -3,7 +3,7 @@ from typing import TypedDict
 import flask
 
 import Main
-from game import GameOptions
+from game import CypherItems, GameOptions
 import logic_presets
 from romWriter import RomWriter
 from trick import Trick
@@ -39,6 +39,8 @@ class WebParams(TypedDict):
     area_rando: bool
     small_spaceport: bool
     escape_shortcuts: bool
+    mmb: bool
+    cypher: str
     tricks: list[str]
 
 
@@ -52,9 +54,10 @@ def roll_seed() -> flask.Response:
     romWriter = RomWriter.fromBlankIps()
     options = GameOptions(tricks,
                           bool(params["area_rando"]),
-                          "D",
+                          "B" if params["mmb"] else "D",
                           bool(params["small_spaceport"]),
-                          bool(params["escape_shortcuts"]))
+                          bool(params["escape_shortcuts"]),
+                          getattr(CypherItems, params["cypher"]))
     game = Main.generate(options)
     Main.write_rom(game, romWriter)
     response = flask.make_response(romWriter.getFinalIps())

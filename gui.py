@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from game import GameOptions
+from game import CypherItems, GameOptions
 
 from gui_scroll_frame import ScrollFrame
 from gui_toggled_frame import ToggledFrame
@@ -94,8 +94,28 @@ def main() -> None:
         logic_frame, variable=escape_shortcuts_value, text="escape shortcuts"
     ).grid(sticky=tk.E, column=2, row=2)
 
+    mmb_value = tk.IntVar()
+
+    ttk.Checkbutton(
+        logic_frame, variable=mmb_value, text="major/minor bias"
+    ).grid(sticky=tk.E, column=3, row=2)
+
+    cypher_label = ttk.Label(logic_frame, text="Shrine Of The Animate Spark and Enervation Chamber have:")
+    cypher_label.grid(sticky=tk.W, column=0, row=3, columnspan=4)
+
+    cypher_options = {
+        "Anything": CypherItems.Anything,
+        "Something not required": CypherItems.NotRequired,
+        "Small Ammo Tanks": CypherItems.SmallAmmo,
+    }
+
+    cypher_select = ttk.Combobox(logic_frame)
+    cypher_select["values"] = tuple(cypher_options.keys())
+    cypher_select.set("Something not required")
+    cypher_select.grid(sticky=tk.W, column=0, row=4, columnspan=4)
+
     name_label = ttk.Label(logic_frame, text="")
-    name_label.grid(column=0, row=3)
+    name_label.grid(column=0, row=5)
 
     def roll_button_action() -> None:
         logic: frozenset[Trick] = frozenset([
@@ -104,16 +124,19 @@ def main() -> None:
             if logic_selections[trick_name].get()
         ])
 
+        cypher_option = cypher_options[cypher_select.get()]
+
         options = GameOptions(logic,
                               bool(area_rando_value.get()),
-                              "D",
+                              "B" if mmb_value.get() else "D",
                               bool(small_spaceport_value.get()),
-                              bool(escape_shortcuts_value.get()))
+                              bool(escape_shortcuts_value.get()),
+                              cypher_option)
         game = generate(options)
         name = write_rom(game)
         name_label.config(text=name)
 
-    ttk.Button(logic_frame, text="roll", command=roll_button_action).grid(column=1, row=3)
+    ttk.Button(logic_frame, text="roll", command=roll_button_action).grid(column=1, row=5)
     root.mainloop()
 
 
