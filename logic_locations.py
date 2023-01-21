@@ -5,12 +5,13 @@ from item_data import items_unpackable
 from loadout import Loadout
 from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, \
     hell_run_energy, lava_run, varia_or_hell_run
-from logic_area_shortcuts import SandLand, SpacePort, LifeTemple, SkyWorld, FireHive, \
-    PirateLab, Verdite, Geothermal, Suzi, DrayLand
+from logic_area_shortcuts import SandLand, ServiceSector, SpacePort, LifeTemple, \
+    SkyWorld, FireHive, PirateLab, Verdite, Geothermal, Suzi, DrayLand
 from logic_shortcut import LogicShortcut
 from logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor, pinkSwitch,
-    missileBarrier, icePod, electricHyper, killRippers, killGreenPirates
+    missileBarrier, icePod, electricHyper, killRippers, killGreenPirates,
+    bonkCeilingSuperSink
 )
 from trick_data import Tricks
 
@@ -528,11 +529,11 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Harmonic Growth Enhancer": lambda loadout: (
         ((
             (FieldAccessL in loadout) and
-            ((shootThroughWalls in loadout) or (Tricks.wave_gate_glitch in loadout))
+            (ServiceSector.westSpore in loadout)
         ) or (
             (TransferStationR in loadout) and
-            (DarkVisor in loadout) and
-            (pinkDoor in loadout)  # between east spore field and ESF access
+            (ServiceSector.transfer in loadout) and
+            (ServiceSector.eastSpore in loadout)
         )) and
         ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
         (can_bomb(1) in loadout) and
@@ -597,12 +598,11 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (can_bomb(1) in loadout) and  # required for getting out
         ((
             (FieldAccessL in loadout) and
-            ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
-            ((shootThroughWalls in loadout) or (Tricks.wave_gate_glitch in loadout)) and
-            (pinkDoor in loadout)  # between east spore field and ESF access
+            (ServiceSector.westSpore in loadout) and
+            (ServiceSector.eastSpore in loadout)
         ) or (
             (TransferStationR in loadout) and
-            (DarkVisor in loadout)
+            (ServiceSector.transfer in loadout)
         ))
     ),
     "Hot Spring": lambda loadout: (
@@ -688,9 +688,12 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (FireHive.hiveEntrance in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and
-            (FireHive.crossways in loadout) and
             (FireHive.infernalSequestration in loadout) and
+            (FireHive.crossways in loadout) and
             (icePod in loadout)
+        ) or (
+            (HiveBurrowL in loadout) and
+            (FireHive.hiveBurrow in loadout)
         ))
     ),
     "Fire's Boon Shrine": lambda loadout: (
@@ -923,9 +926,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((
             (can_use_pbs(1) in loadout)
         ) or (
-            (False) and  # (Tricks.super_sink in loadout) and
-            # harder without speedball, requires patience without xray or movement_zoast
-            (can_bomb(1) in loadout)  # type: ignore
+            (bonkCeilingSuperSink in loadout) and
+            (can_bomb(1) in loadout)
         ))
     ),
     "Shrine Of Fervor": lambda loadout: (
@@ -1580,31 +1582,28 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Waste Processing": lambda loadout: (
         (SpeedBooster in loadout) and
-        (GravityBoots in loadout) and
         (Morph in loadout) and
         ((can_bomb(1) in loadout) or (Screw in loadout)) and
         ((
             (SubbasementFissureL in loadout) and
-            (can_use_pbs(1) in loadout)  # door into waste processing
+            (can_use_pbs(1) in loadout) and  # door into waste processing
             # If I didn't have speedbooster, then I would want either 2 pbs
             # or something else to kill green pirates with, because it would
             # be difficult to get up exhaust vent without killing them.
+            (ServiceSector.wasteProcessingTraverse in loadout)
         ) or (
             (CellarR in loadout) and
             (pinkDoor in loadout) and  # door from cellar access to crumbling basement
-            (can_bomb(1) in loadout) and
-            ((DarkVisor in loadout) or (Tricks.dark_easy in loadout))
+            (ServiceSector.cellar in loadout)
         ) or (
             (FieldAccessL in loadout) and
-            ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
-            (pinkDoor in loadout) and  # field access to east spore field
-            (shootThroughWalls in loadout) and
-            (can_bomb(1) in loadout)
+            (ServiceSector.westSpore in loadout) and
+            (ServiceSector.eastSpore in loadout) and
+            (ServiceSector.crumblingBasement in loadout)
         ) or (
             (TransferStationR in loadout) and
-            (DarkVisor in loadout) and
-            (shootThroughWalls in loadout) and
-            (can_bomb(1) in loadout)
+            (ServiceSector.transfer in loadout) and
+            (ServiceSector.crumblingBasement in loadout)
         ))
     ),
     "Grand Chasm": lambda loadout: (
@@ -1664,6 +1663,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (FireHive.infernalSequestration in loadout) and
             (FireHive.crossways in loadout) and
             (icePod in loadout)
+        ) or (
+            (HiveBurrowL in loadout) and
+            (FireHive.hiveBurrow in loadout)
         ))
     ),
     "Crossway Cache": lambda loadout: (
@@ -1675,6 +1677,10 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (SequesteredInfernoL in loadout) and
             (FireHive.infernalSequestration in loadout) and
             (FireHive.crossways in loadout)
+        ) or (
+            (HiveBurrowL in loadout) and
+            (FireHive.hiveBurrow in loadout) and
+            (icePod in loadout)
         ) or (
             (collapsedHive in loadout) and
             (FireHive.crossways in loadout)

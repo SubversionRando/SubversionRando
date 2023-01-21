@@ -1,12 +1,13 @@
 """ This is for logic shortcuts that apply only to 1 specific area. """
 
 from item_data import items_unpackable
-from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, varia_or_hell_run
+from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, hell_run_energy, varia_or_hell_run
 from logic_shortcut import LogicShortcut
 from logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor,
     missileBarrier, electricHyper, killRippers, killYellowPirates,
-    plasmaWaveGate, icePod, can_crash_spaceport
+    plasmaWaveGate, icePod, can_crash_spaceport, hiJumpSuperSink,
+    bonkCeilingSuperSink, underwaterSuperSink
 )
 from trick_data import Tricks
 
@@ -44,7 +45,7 @@ class SkyWorld:
 
     meetingHallToRight = LogicShortcut(lambda loadout: (
         # entrance in Grand Promenade
-        (Screw in loadout) and  # TODO: or supersink
+        ((Screw in loadout) or (hiJumpSuperSink in loadout)) and
         # meeting hall
         ((
             # through top right
@@ -486,7 +487,7 @@ class SandLand:
     GreenMoonDown = LogicShortcut(lambda loadout: (
         (Super in loadout) or  # normal way
         (
-            (Tricks.moonfall_clip in loadout) and  # or supersink (morph needed, no aqua needed)
+            ((Tricks.moonfall_clip in loadout) or (underwaterSuperSink in loadout)) and
             (GravityBoots in loadout) and
             (  # get to the starting island
                 (GravitySuit in loadout) or  # anything else needed with aqua? tricks?
@@ -522,16 +523,66 @@ class SandLand:
 
 class ServiceSector:
     wasteProcessingTraverse = LogicShortcut(lambda loadout: (
-        ((HiJump in loadout) and (Ice in loadout) and (Tricks.wall_jump_precise in loadout)) or
-        (Tricks.sbj_w_hjb in loadout) or
-        ((SpaceJump in loadout) and (
-            loadout.has_any(SpaceJumpBoost, HiJump)
-        )) or
-        (SpeedBooster in loadout) or
-        (Bombs in loadout)
-        # TODO: ice with sbj (no hjb)?
+        (GravityBoots in loadout) and
+        (
+            ((HiJump in loadout) and (Ice in loadout) and (Tricks.wall_jump_precise in loadout)) or
+            (Tricks.sbj_w_hjb in loadout) or
+            ((SpaceJump in loadout) and (
+                loadout.has_any(SpaceJumpBoost, HiJump)
+            )) or
+            (SpeedBooster in loadout) or
+            (Bombs in loadout)
+            # TODO: ice with sbj (no hjb)?
+        )
     ))
     """ traverse from one door of waste processing to the other (not including colored door) """
+
+    crumblingBasement = LogicShortcut(lambda loadout: (
+        # This is useless, because there's no where else you can go without Gravity Boots.
+        # But here it is.
+        ((GravityBoots in loadout) or (SpeedBooster in loadout)) and
+
+        (
+            (can_bomb(1) in loadout) or
+            (  # can use Screw to get down, but need something special to get up
+                (Screw in loadout) and
+                ((Tricks.morphless_tunnel_crawl in loadout) or (SpeedBooster in loadout))
+            )
+        ) and  # can screw down, but not up
+        (
+            (Tricks.super_sink_easy in loadout) or
+            (shootThroughWalls in loadout)
+        )
+    ))
+    """ between top-left and bottom (not to eribium) """
+
+    eastSpore = LogicShortcut(lambda loadout: (
+        (GravityBoots in loadout) and
+        (pinkDoor in loadout) and  # between field access and field
+        (can_bomb(1) in loadout) and
+        ((DarkVisor in loadout) or (Tricks.dark_easy in loadout))
+    ))
+    """ east spore field access to crumbling basement top-left """
+
+    westSpore = LogicShortcut(lambda loadout: (
+        loadout.has_any(shootThroughWalls, Tricks.wave_gate_glitch)
+    ))
+
+    cellar = LogicShortcut(lambda loadout: (
+        # If you fall in the water with nothing, it's a tight jump to get out.
+        # But if you don't want to do that tight jump, then don't fall in the water.
+        # It's not worth putting in logic that something is required when it's not required,
+        # just for the case that someone falls in the water without it.
+        (GravityBoots in loadout) and
+        (Tricks.dark_easy in loadout) and
+        (can_bomb(1) in loadout)
+    ))
+
+    transfer = LogicShortcut(lambda loadout: (
+        # can get down with super sink and no dark visor, but not back up
+        loadout.has_all(GravityBoots, DarkVisor, can_bomb(1))
+    ))
+    """ transfer station - not including shoot through walls, because that's only required in 1 direction """
 
 
 # TODO: use more of these in location logic where relevant
@@ -599,9 +650,11 @@ class Verdite:
         (GravityBoots in loadout) and
         # you can super-sink to get down without morph, but I don't see a way to get back up
         # can't xray climb right wall because of some empty tiles in the same column as the door
+        # TODO: check morphless tunnel crawl with screw?
         (Morph in loadout) and
         ((can_bomb(1) in loadout) or (Screw in loadout)) and  # shaktools won't do all of the work
         (
+            # TODO: measure hell run with super sink no pbs
             (varia_or_hell_run(1120, heat_and_metroid_suit_not_required=True) in loadout) or
             (  # faster with pbs
                 (can_use_pbs(5) in loadout) and
@@ -906,7 +959,9 @@ class LifeTemple:
             (Tricks.movement_zoast in loadout)
             # This isn't that hard, but I'm making it movement_zoast because
             # if you don't have morph, you're likely to softlock trying to do it.
-            # TODO: You're not softlocked with the super-sink (slopekiller) trick.
+        ) or (
+            # but you're not softlocked with super-sink
+            (Tricks.super_sink_easy in loadout)
         )) and
         ((can_bomb(1) in loadout) or (Screw in loadout) or (
             (Tricks.short_charge_2 in loadout) and
@@ -1081,6 +1136,28 @@ class FireHive:
         # TODO: patience or more energy, because farming in fire temple courtyard would be really slow
     ))
     """ Fire Temple Courtyard to Collapsed Passage (no doors included because it depends on direction) """
+
+    hiveBurrow = LogicShortcut(lambda loadout: (
+        (GravityBoots in loadout) and
+        # hard requires super sink to be able to go both ways
+        (bonkCeilingSuperSink in loadout) and
+        (Grapple in loadout) and
+        (Varia in loadout) and
+        (Morph in loadout) and
+        (
+            (Tricks.morph_jump_3_tile in loadout) or
+            (Speedball in loadout) or
+            (can_bomb(1) in loadout)
+        ) and
+        ((MetroidSuit in loadout) or (energy_req(hell_run_energy(550, loadout)) in loadout))
+
+        # I started trying to figure out what this would take without varia,
+        # but that's just not going to be useful, because in non-area rando,
+        # there's another big heated room on the other side of this area door.
+        # And there's also the complexity of whether I can get to the farm in crossways.
+        # So I'm just saying no hell runs through this passage.
+    ))
+    """ hive burrow left door to infested passage (varia and super sink required) """
 
 
 class Geothermal:

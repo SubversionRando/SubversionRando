@@ -128,6 +128,17 @@ class Tricks:
     moonfall_clip = Trick("use moonfall to fall through a floor or downward door")
     """ use moonfall to fall through a floor or downward door """
 
+    super_sink_easy = Trick("use gravity boots glitch to fall through terrain by spin jumping into 2-tile high space",
+                            Items.GravityBoots)
+    """ use gravity boots glitch to fall through terrain by spin jumping into 2-tile high space """
+
+    super_sink_hard = Trick("use gravity boots glitch to fall through terrain (without a 2-tile high space)",
+                            Items.GravityBoots, Items.Morph)
+    """ use gravity boots glitch to fall through terrain (without a 2-tile high space) """
+
+    patience = Trick("RAGE!!!")
+    """ determination """
+
     # specific location tricks
 
     plasma_gate_glitch = Trick("get through the plasma+wave gate in Geothermal Magma Pump with only wave beam",

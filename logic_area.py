@@ -6,7 +6,8 @@ from logic_area_shortcuts import SandLand, ServiceSector, LifeTemple, \
     SkyWorld, FireHive, PirateLab, Verdite, Geothermal, Early
 from logicInterface import AreaLogicType
 from logic_shortcut_data import (
-    canFly, shootThroughWalls, breakIce, pinkDoor, missileBarrier, icePod, electricHyper, killGreenPirates
+    canFly, shootThroughWalls, breakIce, pinkDoor, missileBarrier, icePod,
+    electricHyper, killGreenPirates, underwaterSuperSink
 )
 from trick_data import Tricks
 
@@ -196,8 +197,10 @@ area_logic: AreaLogicType = {
         ("OceanShoreR", "EleToTurbidPassageR"): lambda loadout: (
             # same as "EleToTurbidPassageR", "OceanShoreR" except door colors changed for direction
             (SandLand.turbidToSedFloor in loadout) and
-            (Super in loadout) and  # door from sediment floor to turbid passage
-            # TODO: ^ or super sink? (and pink door to return)
+            (  # door from sediment floor to turbid passage
+                (Super in loadout) or
+                ((underwaterSuperSink in loadout) and (pinkDoor in loadout))  # pink door to return
+            ) and
             ((
                 (SandLand.sedFloorToCanyon in loadout) and
                 (SandLand.canyonToGreenMoon in loadout) and
@@ -459,91 +462,89 @@ area_logic: AreaLogicType = {
     },
     "ServiceSector": {
         ("FieldAccessL", "TransferStationR"): lambda loadout: (
-            loadout.has_all(GravityBoots, pinkDoor, DarkVisor, shootThroughWalls, can_bomb(1))
+            loadout.has_all(GravityBoots,
+                            ServiceSector.westSpore,
+                            ServiceSector.eastSpore,
+                            ServiceSector.transfer,
+                            shootThroughWalls)
         ),
         ("FieldAccessL", "CellarR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Super in loadout) and  # door from crumbling basement to cellar, and east field access pink door
-            ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
-            # If you fall in the water with nothing, it's a tight jump to get out.
-            # But if you don't want to do that tight jump, then don't fall in the water.
-            # It's not worth putting in logic that something is required when it's not required,
-            # just for the case that someone falls in the water without it.
-            (shootThroughWalls in loadout) and  # or easy super sink
-            (can_bomb(1) in loadout)
+            (ServiceSector.westSpore in loadout) and
+            (ServiceSector.eastSpore in loadout) and
+            (ServiceSector.crumblingBasement in loadout) and
+            (Super in loadout) and  # door from crumbling basement to cellar
+            (ServiceSector.cellar in loadout)
         ),
         ("FieldAccessL", "SubbasementFissureL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Super in loadout) and  # door into exhaust vent, and pink door in field access
-            (can_bomb(1) in loadout) and  # can screw down, but not up
-            ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
-            (shootThroughWalls in loadout) and
-            (ServiceSector.wasteProcessingTraverse in loadout)
+            (ServiceSector.eastSpore in loadout) and
+            (ServiceSector.crumblingBasement in loadout) and
+            (ServiceSector.wasteProcessingTraverse in loadout) and
+            (Super in loadout)
         ),
         ("TransferStationR", "FieldAccessL"): lambda loadout: (
-            loadout.has_all(GravityBoots, pinkDoor, DarkVisor, can_bomb(1)) and
+            loadout.has_all(GravityBoots, ServiceSector.transfer, ServiceSector.eastSpore, ServiceSector.westSpore)
             # not putting shootThroughWalls in hard requirements here, don't close the door behind you
-
-            # west spore field gates
-            loadout.has_any(shootThroughWalls, Tricks.wave_gate_glitch)
         ),
         ("TransferStationR", "CellarR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Super in loadout) and
-            (can_bomb(1) in loadout) and
-            (DarkVisor in loadout) and
-            (shootThroughWalls in loadout)
+            (ServiceSector.transfer in loadout) and
+            (ServiceSector.crumblingBasement in loadout) and
+            (Super in loadout) and  # door to cellar
+            (ServiceSector.cellar in loadout)
         ),
         ("TransferStationR", "SubbasementFissureL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (DarkVisor in loadout) and
-            (Super in loadout) and  # door to exhaust vent
-            (can_bomb(1) in loadout) and
-            (shootThroughWalls in loadout) and
-            (ServiceSector.wasteProcessingTraverse in loadout)
+            (ServiceSector.transfer in loadout) and
+            (ServiceSector.crumblingBasement in loadout) and
+            (ServiceSector.wasteProcessingTraverse in loadout) and
+            (Super in loadout)  # door to exhaust vent
         ),
         ("CellarR", "FieldAccessL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (pinkDoor in loadout) and  # cellar to crumbling, and field access pink door
-            ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
-            (shootThroughWalls in loadout) and
-            (can_bomb(1) in loadout)
+            (ServiceSector.cellar in loadout) and
+            (pinkDoor in loadout) and  # cellar to crumbling
+            (ServiceSector.crumblingBasement in loadout) and
+            (ServiceSector.eastSpore in loadout) and
+            (ServiceSector.westSpore in loadout)
         ),
         ("CellarR", "TransferStationR"): lambda loadout: (
-            loadout.has_all(GravityBoots, pinkDoor, can_bomb(1), DarkVisor, shootThroughWalls)
-            # door from cellar to crumbling
+            (GravityBoots in loadout) and
+            (ServiceSector.cellar in loadout) and
+            (pinkDoor in loadout) and  # cellar to crumbling
+            (ServiceSector.crumblingBasement in loadout) and
+            (ServiceSector.transfer in loadout) and
+            (shootThroughWalls in loadout)
         ),
         ("CellarR", "SubbasementFissureL"): lambda loadout: (
             (GravityBoots in loadout) and
-            (Super in loadout) and  # door into exhaust vent, and pink door to crumbling
-            (can_bomb(1) in loadout) and
+            (ServiceSector.cellar in loadout) and
+            (pinkDoor in loadout) and  # cellar to crumbling
             (ServiceSector.wasteProcessingTraverse in loadout) and
-            ((DarkVisor in loadout) or (Tricks.dark_easy in loadout))
-            # TODO: why did expert logic say dark visor was hard required here?
+            (Super in loadout)  # door into exhaust vent
         ),
         ("SubbasementFissureL", "FieldAccessL"): lambda loadout: (
             (GravityBoots in loadout) and
             (can_use_pbs(1) in loadout) and  # door to waste
             (ServiceSector.wasteProcessingTraverse in loadout) and
-            (shootThroughWalls in loadout) and  # return logic
-            (pinkDoor in loadout) and  # into field access
-            ((DarkVisor in loadout) or (Tricks.dark_easy in loadout))
-            # TODO: why did expert logic say dark visor was hard required here?
+            (ServiceSector.crumblingBasement in loadout) and
+            (ServiceSector.eastSpore in loadout) and
+            (ServiceSector.westSpore in loadout)
         ),
         ("SubbasementFissureL", "TransferStationR"): lambda loadout: (
             (GravityBoots in loadout) and
             (can_use_pbs(1) in loadout) and  # door to waste
             (ServiceSector.wasteProcessingTraverse in loadout) and
-            (shootThroughWalls in loadout) and
-            (DarkVisor in loadout)
+            (ServiceSector.crumblingBasement in loadout) and
+            (ServiceSector.transfer in loadout)
         ),
         ("SubbasementFissureL", "CellarR"): lambda loadout: (
             (GravityBoots in loadout) and
             (can_use_pbs(1) in loadout) and  # door to waste
             (ServiceSector.wasteProcessingTraverse in loadout) and
             (Super in loadout) and  # door into cellar access
-            ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
-            (can_bomb(1) in loadout)
+            (ServiceSector.cellar in loadout)
         ),
     },
     "SkyWorld": {
@@ -752,7 +753,9 @@ area_logic: AreaLogicType = {
             True  # flat hallway to walk across
         ),
         ("VulnarDepthsElevatorER", "HiveBurrowL"): lambda loadout: (
-            False  # One way logic not respected, intended
+            (GravityBoots in loadout) and
+            (FireHive.hiveEntrance in loadout) and
+            (FireHive.hiveBurrow in loadout)
         ),
         ("VulnarDepthsElevatorER", "SequesteredInfernoL"): lambda loadout: (
             (GravityBoots in loadout) and
@@ -771,13 +774,25 @@ area_logic: AreaLogicType = {
             (FireHive.courtyardToCollapsed in loadout)
         ),
         ("HiveBurrowL", "VulnarDepthsElevatorER"): lambda loadout: (
-            False  # One way
+            (GravityBoots in loadout) and
+            (FireHive.hiveEntrance in loadout) and
+            (FireHive.hiveBurrow in loadout)
         ),
         ("HiveBurrowL", "SequesteredInfernoL"): lambda loadout: (
-            False  # One way
+            (GravityBoots in loadout) and
+            (FireHive.hiveBurrow in loadout) and
+            (icePod in loadout) and
+            (FireHive.crossways in loadout) and
+            (FireHive.infernalSequestration in loadout)
         ),
         ("HiveBurrowL", "CollapsedPassageR"): lambda loadout: (
-            False  # One way
+            (GravityBoots in loadout) and
+            (FireHive.hiveBurrow in loadout) and
+            (icePod in loadout) and
+            (FireHive.crossways in loadout) and
+            (FireHive.crosswaysToCourtyard in loadout) and
+            (Super in loadout) and  # door to ancient basin access
+            (FireHive.courtyardToCollapsed in loadout)
         ),
         ("SequesteredInfernoL", "VulnarDepthsElevatorER"): lambda loadout: (
             (GravityBoots in loadout) and
@@ -787,7 +802,11 @@ area_logic: AreaLogicType = {
             (FireHive.hiveEntrance in loadout)
         ),
         ("SequesteredInfernoL", "HiveBurrowL"): lambda loadout: (
-            False  # One way Hive Burrow not in logic
+            (GravityBoots in loadout) and
+            (FireHive.hiveBurrow in loadout) and
+            (icePod in loadout) and
+            (FireHive.crossways in loadout) and
+            (FireHive.infernalSequestration in loadout)
         ),
         ("SequesteredInfernoL", "CollapsedPassageR"): lambda loadout: (
             (GravityBoots in loadout) and
@@ -806,7 +825,13 @@ area_logic: AreaLogicType = {
             (FireHive.hiveEntrance in loadout)
         ),
         ("CollapsedPassageR", "HiveBurrowL"): lambda loadout: (
-            False  # One way hive burrow not in logic
+            (GravityBoots in loadout) and
+            (FireHive.hiveBurrow in loadout) and
+            (icePod in loadout) and
+            (FireHive.crossways in loadout) and
+            (FireHive.crosswaysToCourtyard in loadout) and
+            (Super in loadout) and  # door to ancient basin access
+            (FireHive.courtyardToCollapsed in loadout)
         ),
         ("CollapsedPassageR", "SequesteredInfernoL"): lambda loadout: (
             (GravityBoots in loadout) and

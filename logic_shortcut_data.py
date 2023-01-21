@@ -51,6 +51,37 @@ plasmaWaveGate = LogicShortcut(lambda loadout: (
 ))
 """ the switches that are blocked by plasma+wave barriers """
 
+hiJumpSuperSink = LogicShortcut(lambda loadout: (
+    (Tricks.super_sink_hard in loadout) and
+    (HiJump in loadout) and
+    (
+        (Tricks.patience in loadout) or
+        (Xray in loadout) or
+        (Tricks.movement_zoast in loadout)
+    )
+))
+""" hi jump and not bonking ceiling """
+
+bonkCeilingSuperSink = LogicShortcut(lambda loadout: (
+    (Tricks.super_sink_hard in loadout) and
+    ((Speedball in loadout) or (Tricks.movement_zoast in loadout)) and
+    (
+        (Tricks.patience in loadout) or
+        (Xray in loadout) or
+        (Tricks.movement_zoast in loadout)
+    )
+))
+
+underwaterSuperSink = LogicShortcut(lambda loadout: (
+    (Tricks.super_sink_hard in loadout) and
+    (
+        (Tricks.patience in loadout) or
+        (Xray in loadout) or
+        (Tricks.movement_zoast in loadout)
+    )
+))
+""" no bonk, no gravity suit, no hi jump """
+
 killRippers = LogicShortcut(lambda loadout: (
     (Super in loadout) or
     (can_use_pbs(1) in loadout) or
