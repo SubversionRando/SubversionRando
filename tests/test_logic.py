@@ -596,6 +596,7 @@ _no_bombing = frozenset([
     "Vulnar Caves Entrance",
     "Warrior Shrine: Bottom",
     "Warrior Shrine: Top",
+    "Warrior Shrine: Middle",
     "West Spore Field",
     "Colosseum",
     "Magma Lake Cache",
@@ -669,8 +670,11 @@ def test_no_bombing_locations(logic: frozenset[Trick]) -> None:
     this_loadout()
 
     for loc_name in _no_bombing:
-        assert found[loc_name] or (logic is casual and loc_name == "Warrior Shrine: Top"), \
-            f"logic thinks bombing is needed for {loc_name}"
+        assert (
+            found[loc_name] or
+            (logic is casual and loc_name == "Warrior Shrine: Top") or
+            (logic in {casual, medium} and loc_name == "Warrior Shrine: Middle")
+        ), f"logic thinks bombing is needed for {loc_name}"
 
 
 _no_bomb_blocks = frozenset([
@@ -722,6 +726,7 @@ _no_bomb_blocks = frozenset([
 ])
 
 _more_no_bomb_blocks_for_expert = frozenset([
+    "West Spore Field",
     "Norak Escarpment",
     "Briar: Bottom",
     "Shrine Of Fervor",

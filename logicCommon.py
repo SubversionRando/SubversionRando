@@ -55,7 +55,8 @@ def ammo_req(amount: int) -> LogicShortcut:
 
 
 crystal_flash = LogicShortcut(lambda loadout: (
-    loadout.has_all(Items.Morph, Items.PowerBomb, ammo_req(100))
+    # 110 because there are too many times when you'll need ammo for something else
+    loadout.has_all(Items.Morph, Items.PowerBomb, ammo_req(110))
 ))
 
 

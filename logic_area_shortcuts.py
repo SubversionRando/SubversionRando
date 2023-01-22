@@ -824,7 +824,15 @@ class PirateLab:
         (PirateLab.hydrodynamicChamber in loadout) and
         (
             ((pinkDoor in loadout) and (PirateLab.waterGauntlet_oneWay in loadout)) or
-            ((Super in loadout) and ((Morph in loadout) or (MetroidSuit in loadout)))
+            ((Super in loadout) and (
+                (Morph in loadout) or
+                (MetroidSuit in loadout) or
+                (Tricks.morphless_tunnel_crawl in loadout)
+
+                # TODO: should we separate turnaround cancel from the crawl that can go both ways?
+                # This can be done with just the turnaround cancel if super_sink_easy is used to go down.
+                # ((Tricks.morphless_tunnel_crawl in loadout) and (Tricks.super_sink_easy in loadout))
+            ))
         )
     ))
     """ from west corridor to the top of central corridor (not through screw to go lower) """
@@ -848,18 +856,25 @@ class PirateLab:
     """ get out of the water in central corridor """
 
     eastCorridor = LogicShortcut(lambda loadout: (
+        # only morph needed to go down
         (Morph in loadout) and
-        (  # 4 tile morph jump
-            (Bombs in loadout) or
-            (Speedball in loadout) or
-            (Tricks.morph_jump_4_tile in loadout)
-        ) and
-        (  # open the shot block from below
-            ((Tricks.movement_moderate in loadout) and (electricHyper in loadout)) or
-            (can_bomb(1) in loadout) or
-            (shootThroughWalls in loadout) or
-            (Spazer in loadout)
-        )
+
+        # go up
+        ((
+            (  # 4 tile morph jump
+                (Bombs in loadout) or
+                (Speedball in loadout) or
+                (Tricks.morph_jump_4_tile in loadout)
+            ) and
+            (  # open the shot block from below
+                ((Tricks.movement_moderate in loadout) and (electricHyper in loadout)) or
+                (can_bomb(1) in loadout) or
+                (shootThroughWalls in loadout) or
+                (Spazer in loadout)
+            )
+        ) or (
+            (Tricks.xray_climb in loadout)
+        ))
     ))
     """ top of East Corridor to get to Foyer """
 
@@ -901,6 +916,7 @@ class LifeTemple:
 
     waterGardenBottom = LogicShortcut(lambda loadout: (
         ((GravitySuit in loadout) or (Ice in loadout) or (Tricks.sbj_underwater_w_hjb in loadout)) and
+        # There's a hole above the door that prevents xray climbing up.
         ((
             (Tricks.morph_jump_4_tile in loadout) and
             (can_bomb(3) in loadout)
@@ -973,6 +989,7 @@ class LifeTemple:
                 (Morph in loadout) and (Speedball in loadout)
             ))
         ))
+        # tried to avoid bomb blocks with super sink and xray climb, but something stopped xray climb
     ))
     """ between Norak Perimeter bottom left and main area of norak perimeter """
 
@@ -1068,6 +1085,8 @@ class FireHive:
             (killRippers in loadout) and
             ((canFly in loadout) or (Tricks.wall_jump_delayed in loadout))
             # no SJB needed with easy wall jumps - 1 space jump can get you to the long walls
+        ) or (
+            (Tricks.xray_climb in loadout)
         )) and
         (Morph in loadout) and  # required for either bottom or east hive tunnel
         (GravityBoots in loadout)

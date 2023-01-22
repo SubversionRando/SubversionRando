@@ -203,7 +203,7 @@ def test_ammo_req() -> None:
 
     assert crystal_flash not in loadout
 
-    for _ in range(10):
+    for _ in range(12):
         loadout.append(Items.SmallAmmo)
 
     assert crystal_flash in loadout

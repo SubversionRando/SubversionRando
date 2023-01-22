@@ -3,15 +3,15 @@ from typing import Callable
 from connection_data import area_doors_unpackable
 from item_data import items_unpackable
 from loadout import Loadout
-from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, \
-    hell_run_energy, lava_run, varia_or_hell_run
+from logicCommon import ammo_req, can_bomb, can_use_pbs, crystal_flash, \
+    energy_req, hell_run_energy, lava_run, varia_or_hell_run
 from logic_area_shortcuts import SandLand, ServiceSector, SpacePort, LifeTemple, \
     SkyWorld, FireHive, PirateLab, Verdite, Geothermal, Suzi, DrayLand
 from logic_shortcut import LogicShortcut
 from logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor, pinkSwitch,
     missileBarrier, icePod, electricHyper, killRippers, killGreenPirates,
-    bonkCeilingSuperSink
+    bonkCeilingSuperSink, hiJumpSuperSink
 )
 from trick_data import Tricks
 
@@ -558,9 +558,17 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Warrior Shrine: Middle": lambda loadout: (
         (ruinedConcourseBDoorToEldersTop in loadout) and
+        (Morph in loadout) and
         (pinkDoor in loadout) and  # to warrior shrine access
-        (can_use_pbs(1) in loadout) and  # PB placement is important if you only have 10 ammo
-        ((Speedball in loadout) or (Tricks.mockball_hard in loadout))
+        (
+            (can_bomb(1) in loadout) or  # PB placement is important if you only have 10 ammo
+            (
+                (Screw in loadout) and
+                (Tricks.movement_moderate in loadout)  # just keep trying a few times, it's not hard
+            )
+        ) and
+        ((Speedball in loadout) or (Tricks.mockball_hard in loadout)) and
+        ((can_use_pbs(1) in loadout) or (bonkCeilingSuperSink in loadout))
     ),
     "Vulnar Caves Entrance": lambda loadout: (
         (sunkenNestToVulnar in loadout)
@@ -1578,7 +1586,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (loadout.has_any(energy_req(150), Tricks.movement_moderate))
     ),
     "Trophobiotic Chamber": lambda loadout: (
-        (sunkenNestToVulnar in loadout) and (Morph in loadout) and (Speedball in loadout)  # or Tricks.bob
+        (sunkenNestToVulnar in loadout) and
+        (Morph in loadout) and
+        ((Speedball in loadout) or (hiJumpSuperSink in loadout))
     ),
     "Waste Processing": lambda loadout: (
         (SpeedBooster in loadout) and
@@ -1808,19 +1818,39 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (ruinedConcourseBDoorToEldersTop in loadout)
     ),
     "West Spore Field": lambda loadout: (
-        (sunkenNestToVulnar in loadout) and
-        (pinkDoor in loadout) and  # into spore field
-        (Super in loadout) and  # door into great spore hall
-        ((shootThroughWalls in loadout) or (Tricks.ggg in loadout) or (Tricks.wave_gate_glitch in loadout)) and
-        ((can_bomb(1) in loadout) or ((Morph in loadout) and (Screw in loadout))) and  # great spore hall
-        (pinkSwitch in loadout) and  # return through great spore hall
-        # get in to item
-        (
-            (Speedball in loadout) or
-            loadout.has_all(GravitySuit, SpaceJump, SpaceJumpBoost, Tricks.movement_moderate)
-        ) and
-        # get out (of water)
-        ((GravitySuit in loadout) or (HiJump in loadout) or (Tricks.sbj_underwater_no_hjb in loadout))
+        ((
+            (sunkenNestToVulnar in loadout) and
+            (pinkDoor in loadout)  # into west spore field
+        ) or (
+            (SporeFieldTR in loadout) and
+            (GravityBoots in loadout)
+        ) or (
+            (SporeFieldBR in loadout) and
+            (GravityBoots in loadout) and
+            ((shootThroughWalls in loadout) or (Tricks.wave_gate_glitch in loadout))
+        )) and
+        ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
+        ((
+            # no super sink
+            (Super in loadout) and  # door into great spore hall
+            ((shootThroughWalls in loadout) or (Tricks.ggg in loadout) or (Tricks.wave_gate_glitch in loadout)) and
+            ((can_bomb(1) in loadout) or ((Morph in loadout) and (Screw in loadout))) and  # great spore hall
+            (pinkSwitch in loadout) and  # return through great spore hall
+            # get in to item
+            (
+                (Speedball in loadout) or
+                loadout.has_all(GravitySuit, SpaceJump, SpaceJumpBoost, Tricks.movement_moderate)
+            ) and
+            # get out (of water)
+            ((GravitySuit in loadout) or (HiJump in loadout) or (Tricks.sbj_underwater_no_hjb in loadout))
+        ) or (
+            # super sink
+            # enter
+            ((bonkCeilingSuperSink in loadout) or (crystal_flash in loadout)) and
+            # exit
+            (Tricks.super_sink_easy in loadout) and
+            (Morph in loadout)
+        ))
     ),
     "Magma Chamber": lambda loadout: (
         (ElevatorToMagmaLakeR in loadout) and
@@ -1855,7 +1885,11 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (can_bomb(1) in loadout) or
             (Tricks.sbj_underwater_no_hjb in loadout)
         ) and
-        ((Morph in loadout) or (MetroidSuit in loadout))
+        (
+            (Morph in loadout) or
+            (MetroidSuit in loadout) or
+            ((Tricks.morphless_tunnel_crawl in loadout) and (Tricks.super_sink_easy in loadout))
+        )
     ),
     "Antelier": lambda loadout: (  # spelled "Antilier" in subversion 1.1
         (GravityBoots in loadout) and
@@ -1878,7 +1912,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Weapon Research": lambda loadout: (
         (GravityBoots in loadout) and
-        ((shootThroughWalls in loadout) or (MetroidSuit in loadout)) and
+        ((shootThroughWalls in loadout) or (MetroidSuit in loadout) or (bonkCeilingSuperSink in loadout)) and
         ((can_bomb(5) in loadout) or ((Spazer in loadout) and (Morph in loadout))) and
         (doorsToCentralCorridorMid in loadout)
         # TODO: energy or movement or something to kill red pirates?
