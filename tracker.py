@@ -10,11 +10,11 @@ from item_data import Item, Items, all_items
 from loadout import Loadout
 from location_data import Location, pullCSV, spacePortLocs
 from logic_presets import casual, expert, medium
-from solver import solve
+from solver import required_doors, solve
 from trick import Trick
-from trick_data import Tricks
+from trick_data import Tricks, trick_name_lookup
 
-# TODO: ocean top
+# TODO: ocean top, central right, central left, warrior bot/top/mid
 _name_aliases = {
     "Warrior Shrine: AmmoTank Top": "Warrior Shrine: Top",
     "Warrior Shrine: AmmoTank Bottom": "Warrior Shrine: Bottom",
@@ -138,7 +138,7 @@ class Tracker:
         self.loadout = Loadout(game)
 
     def pickup_location(self, loc_name: str) -> None:
-        was_in_logic = self.query(loc_name)
+        was_in_logic, _, _ = self.query(loc_name)
         if not was_in_logic:
             print(f" - {loc_name} was not in logic - ")
         item = self.game_state_locations[loc_name]["item"]
@@ -162,10 +162,27 @@ class Tracker:
                 tr.append(loc["fullitemname"])
         return tr
 
-    def query(self, loc_name: str) -> bool:
+    def query(self, loc_name: str) -> tuple[bool, list[str], list[str]]:
         """ is this location in logic? """
         _, _, accessible_locations = solve(self.loadout.game, self.loadout)
-        return self.loadout.game.all_locations[loc_name] in accessible_locations
+        in_logic = self.loadout.game.all_locations[loc_name] in accessible_locations
+
+        if in_logic:
+            required_tricks: list[str] = []
+            original_logic = self.loadout.game.options.logic
+            for excluded_trick in self.loadout.game.options.logic:
+                temp_logic = original_logic - {excluded_trick}
+                self.loadout.game.options.logic = temp_logic
+                _, _, accessible_locations = solve(self.loadout.game, self.loadout)
+                if self.loadout.game.all_locations[loc_name] not in accessible_locations:
+                    required_tricks.append(trick_name_lookup[excluded_trick])
+            self.loadout.game.options.logic = original_logic
+
+            req_doors = required_doors(self.loadout, loc_name)
+
+            return True, required_tricks, req_doors
+        else:
+            return False, [], []
 
     def undo(self) -> None:
         if len(self.undo_stack):
@@ -219,8 +236,11 @@ def main() -> None:
             loc_name_input = command[2:]
             name_results = t.loc_names_from_input(loc_name_input)
             if len(name_results) == 1:
-                in_logic = t.query(name_results[0])
+                in_logic, tricks, doors = t.query(name_results[0])
                 print(f"{name_results[0]} is {'not ' if not in_logic else ''}in logic")
+                if in_logic:
+                    print(f"      tricks required: {tricks}")
+                    print(f"      doors required: {doors}")
             else:
                 print(f"unrecognized location name: {command}")
                 if len(name_results):

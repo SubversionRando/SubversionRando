@@ -107,7 +107,7 @@ killYellowPirates = LogicShortcut(lambda loadout: (
     ((Super in loadout) and (ammo_req(15) in loadout)) or
     (can_use_pbs(3) in loadout) or
     (Screw in loadout) or
-    ((Morph in loadout) and (Bombs in loadout))  # TODO: and patience
+    ((Morph in loadout) and (Bombs in loadout) and (Tricks.patience in loadout))
 ))
 
 # game objectives

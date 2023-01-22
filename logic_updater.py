@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Optional
 
 from logic_area import area_logic
 from logic_locations import location_logic
@@ -17,7 +17,7 @@ def otherDoor(door: AreaDoor, Connections: list[tuple[AreaDoor, AreaDoor]]) -> A
     raise ValueError(f"door {door} is not in Connections {[(c0.name, c1.name) for c0, c1 in Connections]}")
 
 
-def _updateAreaLogic(loadout: Loadout) -> None:
+def _updateAreaLogic(loadout: Loadout, excluded_door: Optional[AreaDoor] = None) -> None:
     stuck = False  # check if loadout keeps increasing
     while not stuck:
         prev_loadout = loadout.copy()
@@ -26,6 +26,8 @@ def _updateAreaLogic(loadout: Loadout) -> None:
                 origin, destination = path
                 if area_doors[destination] not in loadout:
                     other = otherDoor(area_doors[destination], loadout.game.connections)
+                    if area_doors[destination] == excluded_door or other == excluded_door:
+                        continue
                     if other in loadout:
                         loadout.append(area_doors[destination])
                     elif (area_doors[origin] in loadout) and access(loadout):
@@ -36,8 +38,9 @@ def _updateAreaLogic(loadout: Loadout) -> None:
 
 
 def updateLogic(unusedLocations: Iterable[Location],
-                loadout: Loadout) -> Iterable[Location]:
-    _updateAreaLogic(loadout)
+                loadout: Loadout,
+                excluded_door: Optional[AreaDoor] = None) -> Iterable[Location]:
+    _updateAreaLogic(loadout, excluded_door)
     # print("Updating logic...")
     for thisLoc in unusedLocations:
         thisLoc['inlogic'] = location_logic[thisLoc['fullitemname']](loadout)

@@ -671,11 +671,12 @@ class Verdite:
         loadout.has_any(Speedball, Varia, MetroidSuit, Tricks.mockball_hard, energy_req(1050)) and
 
         (GravityBoots in loadout) and
-        (can_bomb(2) in loadout) and  # lava pool and mining site (lava pool could be screw, but not mining site)
+        # 4 pbs - beta, lava pool, vulnar elevator, placid pool
+        (can_bomb(4) in loadout) and  # lava pool and mining site (lava pool could be screw, but not mining site)
         (
             (varia_or_hell_run(937, heat_and_metroid_suit_not_required=True) in loadout) or
             (
-                (can_use_pbs(3) in loadout) and
+                (can_use_pbs(4) in loadout) and
                 (varia_or_hell_run(523, heat_and_metroid_suit_not_required=True) in loadout)
             )
         )
@@ -996,7 +997,6 @@ class LifeTemple:
     veranda = LogicShortcut(lambda loadout: (
         ((  # bottom to top
             (Tricks.short_charge_3 in loadout)
-            # TODO: a patience trick with bomb jumping all the way?
         ) or (
             (  # bottom to middle
                 ((

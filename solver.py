@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Optional
 
-from connection_data import AreaDoor, SunkenNestL
+from connection_data import AreaDoor, SunkenNestL, area_doors
 from game import Game
 from item_data import Items
 from loadout import Loadout
@@ -24,7 +24,9 @@ class PlayThrough:
     spheres: list[Sphere] = field(default_factory=list)
 
 
-def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, PlayThrough, list[Location]]:
+def solve(game: Game,
+          starting_items: Optional[Loadout] = None,
+          excluded_door: Optional[AreaDoor] = None) -> tuple[bool, PlayThrough, list[Location]]:
     """ returns (whether completable, play through, accessible locations) """
     for loc in game.all_locations.values():
         loc['inlogic'] = False
@@ -53,7 +55,7 @@ def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, P
     stuck = False
     while not stuck:
         prev_loadout_count = len(loadout)
-        updateLogic(unused_locations, loadout)
+        updateLogic(unused_locations, loadout, excluded_door)
         check_for_new_area_doors()
         play_through.spheres.append(Sphere(False))
         for loc in unused_locations:
@@ -92,7 +94,7 @@ def solve(game: Game, starting_items: Optional[Loadout] = None) -> tuple[bool, P
     stuck = False
     while not stuck:
         prev_loadout_count = len(loadout)
-        updateLogic(unused_locations, loadout)
+        updateLogic(unused_locations, loadout, excluded_door)
         check_for_new_area_doors()
         play_through.spheres.append(Sphere(True))
         for loc in unused_locations:
@@ -310,3 +312,30 @@ def required_tricks(game: Game) -> tuple[list[str], list[str]]:
     req_for_locs = [trick_name for trick_name in req_for_locs if trick_name not in obsoleted]
 
     return req_for_win, req_for_locs
+
+
+def required_doors(loadout: Loadout, loc_name: str) -> list[str]:
+    """ what doors are required to get to this location with this loadout """
+    temp_loadout = Loadout(loadout.game, loadout)
+    _, play_through, acc_locs = solve(temp_loadout.game, temp_loadout)
+
+    assert temp_loadout.game.all_locations[loc_name] in acc_locs, f"{loc_name} not in logic"
+
+    doors: list[str] = []
+    for sphere in play_through.spheres:
+        for door_name in sphere.new_doors:
+            doors.append(door_name)
+            temp_loadout.contents[area_doors[door_name]] = 0
+
+    tr: list[str] = []
+    for excluded_door in doors:
+        # empty doors from loadout
+        for thing in temp_loadout:
+            if isinstance(thing, AreaDoor):
+                temp_loadout.contents[thing] = 0
+
+        _, _, acc_locs = solve(temp_loadout.game, temp_loadout, area_doors[excluded_door])
+        if temp_loadout.game.all_locations[loc_name] not in acc_locs:
+            tr.append(excluded_door)
+
+    return tr
