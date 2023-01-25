@@ -816,7 +816,7 @@ class PirateLab:
     hydrodynamicChamber = LogicShortcut(lambda loadout: (
         (GravitySuit in loadout) or
         (HiJump in loadout) or
-        (loadout.has_all(Ice, Tricks.freeze_hard, Tricks.movement_zoast)) or
+        (loadout.has_all(Ice, Tricks.crouch_or_downgrab, Tricks.movement_moderate)) or
         ((Speedball in loadout) and (Tricks.sbj_underwater_no_hjb in loadout))
     ))
     """ only inside the room, not including the super door """
