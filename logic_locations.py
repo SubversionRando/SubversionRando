@@ -1776,10 +1776,34 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Glacier's Reach": lambda loadout: (
         (railAccess in loadout) and
         (GravityBoots in loadout) and
+        # top of frozen trail
         ((can_bomb(1) in loadout) or (breakIce in loadout) or (
             loadout.has_all(Screw, Tricks.morphless_tunnel_crawl)
         )) and
-        (varia_or_hell_run(252) in loadout)
+        # bottom of frozen trail
+        ((Morph in loadout) or (breakIce in loadout)) and
+        ((  # hell run health can vary a lot depending on gear
+            (varia_or_hell_run(386) in loadout)
+        ) or (
+            # don't have to climb the right wall of glacier's reach
+            loadout.has_any(HiJump, SpaceJump) and
+            (varia_or_hell_run(301) in loadout)
+        ) or (
+            # Wave makes a big difference to avoid getting hit by one enemy that you can shoot through the wall
+            (Wave in loadout) and
+            loadout.has_any(Spazer, DamageAmp) and
+            (varia_or_hell_run(230) in loadout)
+        ) or (
+            # can kill blue rippers (without using ammo) for high drop rate on health
+            # can farm to full health at the door between Icy Flow and Frozen Trail
+            ((Screw in loadout) or (
+                (Charge in loadout) and (Hypercharge in loadout)
+            )) and
+            (varia_or_hell_run(88) in loadout)
+        ) or (
+            (breakIce in loadout) and
+            (varia_or_hell_run(179) in loadout)
+        ))
     ),
     "Sitting Room": lambda loadout: (
         (can_use_pbs(1) in loadout) and  # might have to farm after opening door
