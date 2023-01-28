@@ -669,7 +669,11 @@ class Verdite:
     beta = LogicShortcut(lambda loadout: (
         # something to avoid taking damage from the
         # lava at the bottom of mining site beta during hell run
-        loadout.has_any(Speedball, Varia, MetroidSuit, Tricks.mockball_hard, energy_req(1050)) and
+        (
+            loadout.has_any(Speedball, MetroidSuit, Tricks.mockball_hard, energy_req(1050)) or
+            # If you don't have a way to avoid the lava damage, you'll need some energy to fall in the lava.
+            ((Varia in loadout) and (energy_req(hell_run_energy(183, loadout)) in loadout))
+        ) and
 
         (GravityBoots in loadout) and
         # 4 pbs - beta, lava pool, vulnar elevator, placid pool

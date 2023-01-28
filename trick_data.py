@@ -131,6 +131,7 @@ class Tricks:
     super_sink_easy = Trick("use gravity boots glitch to fall through terrain by spin jumping into 2-tile high space",
                             Items.GravityBoots)
     """ use gravity boots glitch to fall through terrain by spin jumping into 2-tile high space """
+    # super sink easy includes door-stuck start
 
     super_sink_hard = Trick("use gravity boots glitch to fall through terrain (without a 2-tile high space)",
                             Items.GravityBoots, Items.Morph)

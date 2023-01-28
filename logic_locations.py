@@ -477,7 +477,13 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
                 (MetroidSuit in loadout) or
                 (energy_req(880) in loadout) or
                 ((GravitySuit in loadout) and (energy_req(650) in loadout))
-            ))
+            )) or
+
+            # super sink down, xray climb up
+            (
+                (Tricks.super_sink_easy in loadout) and  # door-stuck to start super sink
+                (Tricks.xray_climb in loadout)
+            )
         )
     ),
     "Sediment Flow": lambda loadout: (
