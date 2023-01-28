@@ -209,9 +209,18 @@ def choose_hint_location(game: Game) -> None:
 
 
 def write_hint_to_rom(loc_name: str, hint_loc_marker: bytes, rom_writer: RomWriter) -> None:
+    """
+    replace text in the bestiary
+
+    We have to edit all of the bestiary entries,
+    otherwise someone could tell where the hint is, and possibly what the hint is,
+    without going to any bosses.
+    So we place a decoy for all the bosses that don't have the hint.
+    """
     all_locations = tuple(loc["fullitemname"] for loc in pullCSV().values())
 
     def get_decoy() -> str:
+        """ dots that match a location name """
         decoy_target = random.choice(all_locations)
         decoy_chars = [(" " if c == " " else ".") for c in decoy_target]
         return "".join(decoy_chars)

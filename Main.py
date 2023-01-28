@@ -206,7 +206,10 @@ def generate(options: GameOptions) -> Game:
         if game.options.cypher_items == CypherItems.NotRequired:
             seedComplete = verify_cypher_not_required(seedComplete, game)
 
-    # make this optional? (if someone doesn't want hints, they can just not look at the log)
+    # make this optional?
+    # If someone doesn't want hints, they can just not look at the log.
+    # That doesn't work for competitive play,
+    # but we can handle that if people start playing this competitively and want no hints.
     choose_hint_location(game)
 
     return game

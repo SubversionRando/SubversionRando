@@ -628,6 +628,7 @@ class Verdite:
                 (Screw in loadout) and (GravitySuit in loadout)  # need aqua to come up through this hole with screw
             ))
         )) and
+        # TODO: rusty said there's a way to get through hive entrance with speed booster, I don't see how
         (
             (GravitySuit in loadout) or
             (Tricks.sbj_underwater_no_hjb in loadout) or
