@@ -1,7 +1,7 @@
 from connection_data import area_doors_unpackable
 from door_logic import canOpen
 from item_data import items_unpackable
-from logicCommon import can_bomb, can_use_pbs
+from logicCommon import can_bomb, can_use_pbs, lava_run
 from logic_area_shortcuts import SandLand, ServiceSector, LifeTemple, \
     SkyWorld, FireHive, PirateLab, Verdite, Geothermal, Early
 from logicInterface import AreaLogicType
@@ -985,7 +985,8 @@ area_logic: AreaLogicType = {
                 ) or
                 (electricHyper in loadout)
             ) and
-            (Varia in loadout) and
+            (lava_run(446, 950) in loadout) and  # TODO: measure lava run w/o aqua (950 is estimate)
+            # TODO: killDragons or higher numbers for lava run
             (MetroidSuit in loadout) and
             (can_use_pbs(1) in loadout)
         ),
@@ -998,7 +999,8 @@ area_logic: AreaLogicType = {
                 ) or
                 (electricHyper in loadout)
             ) and
-            (Varia in loadout) and
+            (lava_run(446, 950) in loadout) and  # TODO: measure lava run w/o aqua (950 is estimate)
+            # TODO: killDragons or higher numbers for lava run
             (MetroidSuit in loadout) and
             (can_use_pbs(1) in loadout)
         ),
