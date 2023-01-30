@@ -717,7 +717,8 @@ class PirateLab:
         ((Screw in loadout) or (can_bomb(1) in loadout)) and  # through wall
         (  # through the passage lined with screw blocks
             (
-                (GravitySuit in loadout) and
+                # This morph jump out of wall jump is harder without aqua suit.
+                ((GravitySuit in loadout) or (Tricks.movement_zoast in loadout)) and
                 (Morph in loadout) and
                 (Tricks.morph_jump_4_tile in loadout)
             ) or (
@@ -740,7 +741,7 @@ class PirateLab:
     ))
     """ from ConstructionSiteL door to the elevator that is under construction """
 
-    epiphreaticCrag_left = LogicShortcut(lambda loadout: (
+    epiphreatic = LogicShortcut(lambda loadout: (
         (Morph in loadout) and
         (
             # with no high jump, in the right shot block passage,
@@ -762,7 +763,7 @@ class PirateLab:
     ))
     """ up to the outside wall of the pirate lab """
 
-    epiphreaticCrag_right = LogicShortcut(lambda loadout: (
+    isobaric = LogicShortcut(lambda loadout: (
         (Morph in loadout) and
         (
             (shootThroughWalls in loadout) or
@@ -772,9 +773,9 @@ class PirateLab:
     ))
     """ gate into the pirate lab """
 
-    epiphreaticCrag = LogicShortcut(lambda loadout: (
-        (PirateLab.epiphreaticCrag_left in loadout) and
-        (PirateLab.epiphreaticCrag_right in loadout)
+    epiphreaticIsobaric = LogicShortcut(lambda loadout: (
+        (PirateLab.epiphreatic in loadout) and
+        (PirateLab.isobaric in loadout)
     ))
     """ epiphreatic crag left and right, in and out of pirate lab """
 
@@ -843,6 +844,11 @@ class PirateLab:
     ))
     """ from west corridor to the top of central corridor (not through screw to go lower) """
 
+    centralTopToMid = LogicShortcut(lambda loadout: (
+        (Screw in loadout) or
+        ((Tricks.super_sink_easy in loadout) and (Tricks.xray_climb in loadout))
+    ))
+
     centralCorridorWater = LogicShortcut(lambda loadout: (
         ((
             (Tricks.movement_zoast in loadout)  # gravity jump through door
@@ -856,6 +862,8 @@ class PirateLab:
             # high jump gets you high enough to wall jump
             (HiJump in loadout) and
             ((Tricks.wall_jump_precise in loadout) or (Tricks.uwu_2_tile_surface in loadout))
+        ) or (
+            (Tricks.xray_climb in loadout)
         ))
         # TODO: can springball jump get me out?
     ))

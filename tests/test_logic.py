@@ -727,6 +727,10 @@ _no_bomb_blocks = frozenset([
 
 _more_no_bomb_blocks_for_expert = frozenset([
     "West Spore Field",
+    "Containment Area",
+    "Foundry",
+    "Restricted Area",
+    "Weapon Research",
     "Norak Escarpment",
     "Briar: Bottom",
     "Shrine Of Fervor",

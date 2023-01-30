@@ -282,21 +282,21 @@ doorsToCentralCorridorBottom = LogicShortcut(lambda loadout: (
             # through PB tube
             (killGreenPirates in loadout) and
             (can_use_pbs(1) in loadout) and
-            (PirateLab.epiphreaticCrag in loadout)
+            (PirateLab.epiphreaticIsobaric in loadout)
         ) or (
             # through hydrodynamic chamber
             (PirateLab.westCorridorToCentralTop in loadout) and
-            (Screw in loadout) and
+            (PirateLab.centralTopToMid in loadout) and
             (PirateLab.centralCorridorWater in loadout)
         ))
     ) or (
         (ExcavationSiteL in loadout) and
         (can_use_pbs(1) in loadout) and
-        (PirateLab.epiphreaticCrag in loadout)
+        (PirateLab.epiphreaticIsobaric in loadout)
     ) or (
         (ConstructionSiteL in loadout) and
         (PirateLab.constructionLToElevator in loadout) and
-        (PirateLab.epiphreaticCrag in loadout)
+        (PirateLab.epiphreaticIsobaric in loadout)
     ) or (
         (AlluringCenoteR in loadout) and
         (PirateLab.cenote in loadout) and
@@ -310,6 +310,14 @@ doorsToCentralCorridorBottom = LogicShortcut(lambda loadout: (
 ))
 """ pirate lab area doors to bottom of central corridor """
 
+# TODO: without bombs or screw or super sink, I could
+# enter pirate lab through isobaric vent,
+# xray climb up central corridor,
+# and circle back to wherever I came from through PB tube
+
+# full circle:
+# (isobaric - bombs), xray climb central, hydrodynamic, west corridor, lab workshop, PBs for pb tube
+
 doorsToCentralCorridorMid = LogicShortcut(lambda loadout: (
     # similar to bottom
     # the only difference is where I have to get out of the water
@@ -320,22 +328,22 @@ doorsToCentralCorridorMid = LogicShortcut(lambda loadout: (
             # through PB tube
             (killGreenPirates in loadout) and
             (can_use_pbs(1) in loadout) and
-            (PirateLab.epiphreaticCrag in loadout) and
+            (PirateLab.epiphreaticIsobaric in loadout) and
             (PirateLab.centralCorridorWater in loadout)
         ) or (
             # through hydrodynamic chamber
             (PirateLab.westCorridorToCentralTop in loadout) and
-            (Screw in loadout)
+            (PirateLab.centralTopToMid in loadout)
         ))
     ) or (
         (ExcavationSiteL in loadout) and
         (can_use_pbs(1) in loadout) and
-        (PirateLab.epiphreaticCrag in loadout) and
+        (PirateLab.epiphreaticIsobaric in loadout) and
         (PirateLab.centralCorridorWater in loadout)
     ) or (
         (ConstructionSiteL in loadout) and
         (PirateLab.constructionLToElevator in loadout) and
-        (PirateLab.epiphreaticCrag in loadout) and
+        (PirateLab.epiphreaticIsobaric in loadout) and
         (PirateLab.centralCorridorWater in loadout)
     ) or (
         (AlluringCenoteR in loadout) and
@@ -595,7 +603,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (sunkenNestToVulnar in loadout) and
         (pinkDoor in loadout) and  # into way of the watcher
         (Morph in loadout) and
-        (Speedball in loadout)
+        ((Speedball in loadout) or (Tricks.super_sink_easy in loadout))
     ),
     "Archives: Back": lambda loadout: (
         (sunkenNestToVulnar in loadout) and
@@ -644,9 +652,10 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (Tricks.crouch_or_downgrab in loadout)
         ) or (
             # go up on the right side, then left above the water
-            (PirateLab.epiphreaticCrag_left in loadout) and
+            (PirateLab.epiphreatic in loadout) and
             ((can_use_pbs(1) in loadout) or (
-                (Screw in loadout) and (Bombs in loadout)
+                ((Screw in loadout) or (Tricks.super_sink_easy in loadout)) and
+                (Bombs in loadout)
             ))
         ))
     ),
@@ -711,6 +720,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ))
     ),
     "Fire's Boon Shrine": lambda loadout: (
+        # TODO: hell run numbers for pit stop at fire temple courtyard
+        # (because it's weird that ancient basin is in logic from firehive entrance, and not boon)
         ((shootThroughWalls in loadout) or (
             (Tricks.ggg in loadout) and
             (Varia in loadout) and  # hell run ggg over spikes not in logic
@@ -1721,7 +1732,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (icePod in loadout) and
         (MetroidSuit in loadout) and
         (can_bomb(3) in loadout) and
-        (lava_run(450, 950) in loadout)
+        (lava_run(450, 640) in loadout)  # TODO: remeasure this with aqua suit
     ),
     "Hydrodynamic Chamber": lambda loadout: (
         (GravityBoots in loadout) and
@@ -1732,7 +1743,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (PirateLab.westCorridorToCentralTop in loadout)
         ) or (
             (doorsToCentralCorridorMid in loadout) and
-            (Screw in loadout)
+            (PirateLab.centralTopToMid in loadout)
         ))
     ),
     "Central Corridor: Left": lambda loadout: (
@@ -1932,7 +1943,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             ))
         ) or (
             (doorsToCentralCorridorMid in loadout) and
-            (Screw in loadout) and
+            (PirateLab.centralTopToMid in loadout) and
             # backdoor main hydrology research
             loadout.has_any(GravitySuit, HiJump, Tricks.sbj_underwater_no_hjb)
         )) and
