@@ -84,18 +84,27 @@ class FillAssumed(FillAlgorithm):
         return [loc for loc in all_locations.values() if loc["item"] is None]
 
     @staticmethod
-    def _choose_location(locs: list[Location], spaceport_deprio: int) -> Location:
+    def transform_spaceport(available_locations: list[Location], item_to_place: Item) -> list[Location]:
         """
-        to work against spaceport front-loading,
+        transform the distribution of locations to work against spaceport front-loading
+
         because 1 progression item in space port
         will lead to more progression items in spaceport
         """
-        distribution = locs.copy()
-        for _ in range(spaceport_deprio):
-            for loc in locs:
-                if loc["fullitemname"] not in spacePortLocs:
+        if item_to_place in _unique_items:
+            distribution = available_locations.copy()
+            for loc in available_locations:
+                if (
+                    (loc["fullitemname"] == "Torpedo Bay" and item_to_place == Items.GravityBoots) or
+                    loc["fullitemname"] not in spacePortLocs
+                ):
+                    # number of copies can be tuned
                     distribution.append(loc)
-        return random.choice(distribution)
+                    if item_to_place in {Items.Morph, Items.GravityBoots, Items.Missile}:
+                        distribution.append(loc)
+                        distribution.append(loc)
+            return distribution
+        return available_locations
 
     @staticmethod
     def transform_mmb(available_locations: list[Location], item_to_place: Item) -> list[Location]:
@@ -153,9 +162,11 @@ class FillAssumed(FillAlgorithm):
         if loadout.game.options.fill_choice == "B":
             available_locations = self.transform_mmb(available_locations, item_to_place)
 
+        available_locations = self.transform_spaceport(available_locations, item_to_place)
+
         # This magic number 2 could be an option for "How loaded do you want the spaceport to be?"
         # (lower number means more progression items in spaceport)
-        return self._choose_location(available_locations, 2), item_to_place
+        return random.choice(available_locations), item_to_place
 
     def count_items_remaining(self) -> int:
         return sum(len(li) for li in self.itemLists)
