@@ -25,15 +25,23 @@ def read_games() -> list[GameData]:
 def main() -> None:
     games = read_games()
 
-    counts: Counter[str] = Counter()
+    loc_counts: Counter[str] = Counter()
+    item_counts: Counter[str] = Counter()
     for g in games:
         for loc_name, loc in g.all_locations.items():
-            if loc["item"] == Items.GravityBoots:
-                counts[loc_name] += 1
+            if loc["item"] == Items.Morph:
+                loc_counts[loc_name] += 1
                 break
 
-    for b in counts:
-        print(f"{b}: {counts[b]}")
+        item = g.all_locations["Gantry"]["item"]
+        assert item
+        item_counts[item[0]] += 1
+
+    for b in loc_counts:
+        print(f"{b}: {loc_counts[b]}")
+    print()
+    for b in item_counts:
+        print(f"{b}: {item_counts[b]}")
 
 
 if __name__ == "__main__":

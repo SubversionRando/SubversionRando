@@ -596,7 +596,14 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (
                 (Speedball in loadout) and  # follow your bullet with speedball to hit the switch
                 (Tricks.movement_moderate in loadout)
-            )
+            ) or
+
+            # an ice beam shot can clip through the platform from beneath to hit the top left switch
+            ((Ice in loadout) and (Tricks.wave_gate_glitch in loadout) and (Tricks.movement_moderate in loadout))
+            # I tried for a while with normal beam and couldn't get it.
+            # (If it's possible, I think it's too hard to put in logic.)
+            # TODO: do we want a different trick for this?
+            # TODO: check plasma and spazer
         )
     ),
     "Archives: Front": lambda loadout: (
@@ -1551,7 +1558,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (Charge in loadout)
     ),
     "Weapon Locker": lambda loadout: (
-        (Missile in loadout) and
+        (pinkDoor in loadout) and
         (topOfSpaceport in loadout)
     ),
     "Aft Battery": lambda loadout: (
@@ -1559,10 +1566,10 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (topOfSpaceport in loadout)
     ),
     "Forward Battery": lambda loadout: (
-        loadout.has_all(Morph, Missile, topOfSpaceport)
+        loadout.has_all(Morph, pinkDoor, missileDamage, topOfSpaceport)
     ),
     "Gantry": lambda loadout: (
-        (Missile in loadout) and
+        (pinkDoor in loadout) and
         (topOfSpaceport in loadout)
     ),
     "Garden Canal": lambda loadout: (

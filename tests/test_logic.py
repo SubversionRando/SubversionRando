@@ -143,17 +143,22 @@ def test_crypt_no_bomb_no_wave() -> None:
     loadout.append(Items.Missile)
     loadout.append(Items.LargeAmmo)
     loadout.append(Items.HiJump)
-    loadout.append(Items.Ice)
     loadout.append(Items.GravitySuit)
 
     updateLogic(game.all_locations.values(), loadout)
-
     assert not game.all_locations["Crypt"]["inlogic"]
 
     loadout.append(Items.Speedball)
-
     updateLogic(game.all_locations.values(), loadout)
+    assert game.all_locations["Crypt"]["inlogic"]
 
+    # mypy bug doesn't end type narrowing, thinks this is unreachable code
+    loadout.contents[Items.Speedball] -= 1  # type: ignore
+    updateLogic(game.all_locations.values(), loadout)
+    assert not game.all_locations["Crypt"]["inlogic"]
+
+    loadout.append(Items.Ice)
+    updateLogic(game.all_locations.values(), loadout)
     assert game.all_locations["Crypt"]["inlogic"]
 
 
