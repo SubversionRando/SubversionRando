@@ -240,10 +240,18 @@ class Early:
     ))
 
     concourseShinespark = LogicShortcut(lambda loadout: (
-        (SpeedBooster in loadout) and
-        # less than 180 is needed for this shinespark, (can be done with no energy tank)
-        # but then you're very likely to need more health to shinespark in the next room (when it's not area rando)
-        ((energy_req(180) in loadout) or (SkyWorld.mezzanineShaft_withoutSpeedbooster in loadout)) and
+        ((
+            (SpeedBooster in loadout) and
+            # less than 180 is needed for this shinespark, (can be done with no energy tank)
+            # but then you're very likely to need more health to shinespark in the next room (when it's not area rando)
+            ((energy_req(180) in loadout) or (SkyWorld.mezzanineShaft_withoutSpeedbooster in loadout))
+        ) or (
+            (Tricks.xray_climb in loadout) and
+            (
+                (Tricks.patience in loadout) or  # from causeway door
+                (pinkDoor in loadout)  # from door to hall of elders
+            )
+        )) and
         (Morph in loadout)  # back down
     ))
     """ access to the top of ruined concourse """
