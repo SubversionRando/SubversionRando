@@ -554,7 +554,12 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (Morph in loadout) and
         (GravityBoots in loadout) and
         # 5-tile morph jump
-        (pinkDoor in loadout)  # between spore collection and spore generator access
+        (pinkDoor in loadout) and  # between spore collection and spore generator access
+
+        # kill spore spawn
+        (loadout.has_any(Tricks.movement_moderate, HiJump, SpaceJump)) and
+        (loadout.has_any(Tricks.movement_moderate, energy_req(130), Varia, MetroidSuit, GravitySuit)) and
+        (loadout.has_any(missileDamage, Charge))
     ),
     "Upper Vulnar Power Node": lambda loadout: (
         (sunkenNestToVulnar in loadout) and
