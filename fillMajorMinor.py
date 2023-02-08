@@ -9,7 +9,7 @@ from location_data import Location, majorLocs, eTankLocs
 
 (
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
-    GravitySuit, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
+    Aqua, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
     MetroidSuit, Plasma, Screw, Hypercharge, Charge, Xray, SpaceJump, Energy,
     Refuel, SmallAmmo, LargeAmmo, DamageAmp, AccelCharge, SpaceJumpBoost,
     spaceDrop
@@ -37,7 +37,7 @@ class FillMajorMinor(FillAlgorithm):
             Speedball,
             Bombs,
             HiJump,
-            GravitySuit,
+            Aqua,
             DarkVisor,
             Wave,
             SpeedBooster,

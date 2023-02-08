@@ -34,7 +34,7 @@ _unique_items: frozenset[Item] = frozenset([
     Items.Speedball,
     Items.Bombs,
     Items.HiJump,
-    Items.GravitySuit,
+    Items.Aqua,
     Items.DarkVisor,
     Items.Wave,
     Items.SpeedBooster,

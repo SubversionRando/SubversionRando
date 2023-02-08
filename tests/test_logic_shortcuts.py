@@ -111,7 +111,7 @@ def test_other_suit_hell_runs() -> None:
     game = make_game(expert)
     loadout = Loadout(game)
     loadout.append(Items.MetroidSuit)
-    loadout.append(Items.GravitySuit)
+    loadout.append(Items.Aqua)
     for _ in range(6):
         loadout.append(Items.Energy)
 

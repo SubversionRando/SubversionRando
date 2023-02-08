@@ -143,7 +143,7 @@ def test_crypt_no_bomb_no_wave() -> None:
     loadout.append(Items.Missile)
     loadout.append(Items.LargeAmmo)
     loadout.append(Items.HiJump)
-    loadout.append(Items.GravitySuit)
+    loadout.append(Items.Aqua)
 
     updateLogic(game.all_locations.values(), loadout)
     assert not game.all_locations["Crypt"]["inlogic"]
@@ -174,7 +174,7 @@ def test_warrior_shrine_speedball() -> None:
     loadout.append(Items.Missile)
     loadout.append(Items.HiJump)
     loadout.append(Items.Ice)
-    loadout.append(Items.GravitySuit)
+    loadout.append(Items.Aqua)
 
     updateLogic(game.all_locations.values(), loadout)
 
@@ -237,7 +237,7 @@ _unique_items = [
     Items.Speedball,
     Items.Bombs,
     Items.HiJump,
-    Items.GravitySuit,
+    Items.Aqua,
     Items.DarkVisor,
     Items.Wave,
     Items.SpeedBooster,

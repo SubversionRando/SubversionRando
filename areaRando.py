@@ -1,7 +1,6 @@
 import random
 
 from connection_data import AreaDoor, area_doors_unpackable
-from item_data import items_unpackable
 from logic_updater import otherDoor as find_other_door
 from romWriter import RomWriter
 
@@ -28,14 +27,6 @@ from romWriter import RomWriter
     MagmaPumpAccessR, FieryGalleryL, RagingPitL, HollowChamberR, PlacidPoolR,
     SporousNookL, RockyRidgeTrailL, TramToSuziIslandR
 ) = area_doors_unpackable
-
-(
-    Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
-    GravitySuit, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
-    MetroidSuit, Plasma, Screw, Hypercharge, Charge, Xray, SpaceJump, Energy,
-    Refuel, SmallAmmo, LargeAmmo, DamageAmp, AccelCharge, SpaceJumpBoost,
-    spaceDrop
-) = items_unpackable
 
 
 def RandomizeAreas() -> list[tuple[AreaDoor, AreaDoor]]:

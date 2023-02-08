@@ -6,7 +6,7 @@ from trick_data import Tricks
 
 (
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
-    GravitySuit, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
+    Aqua, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
     MetroidSuit, Plasma, Screw, Hypercharge, Charge, Xray, SpaceJump, Energy,
     Refuel, SmallAmmo, LargeAmmo, DamageAmp, AccelCharge, SpaceJumpBoost,
     spaceDrop
@@ -80,7 +80,7 @@ underwaterSuperSink = LogicShortcut(lambda loadout: (
         (Tricks.movement_zoast in loadout)
     )
 ))
-""" no bonk, no gravity suit, no hi jump """
+""" no bonk, no Aqua Suit, no hi jump """
 
 killRippers = LogicShortcut(lambda loadout: (
     (Super in loadout) or
@@ -150,7 +150,7 @@ can_win = LogicShortcut(lambda loadout: (
     # (aqua suit because of the acid that starts rising up)
     # (4 PBs is mostly for getting out after MB2, but also
     # because there was no opportunity to refill after the last one you used to get in)
-    ((Speedball in loadout) or (GravitySuit in loadout) or (can_bomb(4) in loadout)) and
+    ((Speedball in loadout) or (Aqua in loadout) or (can_bomb(4) in loadout)) and
     # MB1, zebs, and glass (separate from pinkDoor to prepare for door cap rando)
     (missileDamage in loadout) and
     # kill MB 2
@@ -158,7 +158,9 @@ can_win = LogicShortcut(lambda loadout: (
         # all the different ways to do damage
         (
             (Missile in loadout) and
-            (ammo_req(385) in loadout)  # these numbers padded for the PB logic getting in and out
+            (ammo_req(385) in loadout)
+            # these numbers padded for the PB logic getting in and out
+            # 330 missiles is what it takes
         ) or (
             (electricHyper in loadout)
         ) or (

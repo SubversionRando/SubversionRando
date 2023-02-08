@@ -45,11 +45,11 @@ class Items:
               b"\x47\xef",
               b"\x9b\xef",
               b"\x00")
-    GravitySuit = ("Gravity Suit",
-                   b"\x0b\xef",
-                   b"\x5f\xef",
-                   b"\xb3\xef",
-                   b"\x00")
+    Aqua = ("Aqua Suit",
+            b"\x0b\xef",
+            b"\x5f\xef",
+            b"\xb3\xef",
+            b"\x00")
     DarkVisor = ("Dark Visor",
                  b"\xb0\xfd",
                  b"\xb0\xfd",
@@ -163,7 +163,7 @@ class Items:
 
 items_unpackable: Iterable[Item] = (
     Items.Missile, Items.Super, Items.PowerBomb, Items.Morph, Items.GravityBoots, Items.Speedball, Items.Bombs,
-    Items.HiJump, Items.GravitySuit, Items.DarkVisor, Items.Wave, Items.SpeedBooster, Items.Spazer, Items.Varia,
+    Items.HiJump, Items.Aqua, Items.DarkVisor, Items.Wave, Items.SpeedBooster, Items.Spazer, Items.Varia,
     Items.Ice, Items.Grapple, Items.MetroidSuit, Items.Plasma, Items.Screw, Items.Hypercharge, Items.Charge,
     Items.Xray, Items.SpaceJump, Items.Energy, Items.Refuel, Items.SmallAmmo, Items.LargeAmmo, Items.DamageAmp,
     Items.AccelCharge, Items.SpaceJumpBoost, Items.spaceDrop

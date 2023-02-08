@@ -28,7 +28,7 @@ from trick_data import Tricks
 
 (
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
-    GravitySuit, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
+    Aqua, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
     MetroidSuit, Plasma, Screw, Hypercharge, Charge, Xray, SpaceJump, Energy,
     Refuel, SmallAmmo, LargeAmmo, DamageAmp, AccelCharge, SpaceJumpBoost,
     spaceDrop
@@ -257,19 +257,19 @@ area_logic: AreaLogicType = {
             ))
         ),
         ("OceanShoreR", "PileAnchorL"): lambda loadout: (
-            loadout.has_all(Super, GravityBoots, GravitySuit, can_use_pbs(2), SpeedBooster, Grapple) and
+            loadout.has_all(Super, GravityBoots, Aqua, can_use_pbs(2), SpeedBooster, Grapple) and
             ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
         ),
         ("EleToTurbidPassageR", "PileAnchorL"): lambda loadout: (
-            loadout.has_all(Super, GravityBoots, GravitySuit, can_use_pbs(2), SpeedBooster, Grapple) and
+            loadout.has_all(Super, GravityBoots, Aqua, can_use_pbs(2), SpeedBooster, Grapple) and
             ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
         ),
         ("PileAnchorL", "OceanShoreR"): lambda loadout: (
-            loadout.has_all(Super, GravityBoots, GravitySuit, can_use_pbs(2), SpeedBooster, Grapple) and
+            loadout.has_all(Super, GravityBoots, Aqua, can_use_pbs(2), SpeedBooster, Grapple) and
             ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
         ),
         ("PileAnchorL", "EleToTurbidPassageR"): lambda loadout: (
-            loadout.has_all(Super, GravityBoots, GravitySuit, can_use_pbs(2), SpeedBooster, Grapple) and
+            loadout.has_all(Super, GravityBoots, Aqua, can_use_pbs(2), SpeedBooster, Grapple) and
             ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
         ),
     },
@@ -989,7 +989,7 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (
                 (
-                    (GravitySuit in loadout) and
+                    (Aqua in loadout) and
                     (Screw in loadout)
                 ) or
                 (electricHyper in loadout)
@@ -1003,7 +1003,7 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (
                 (
-                    (GravitySuit in loadout) and
+                    (Aqua in loadout) and
                     (Screw in loadout)
                 ) or
                 (electricHyper in loadout)

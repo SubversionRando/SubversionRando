@@ -78,7 +78,7 @@ def hell_run_energy(min_energy: int, loadout: "Loadout") -> int:
 
 def _adjust_for_other_suits(energy_required: int, loadout: "Loadout", heat_and_metroid_suit_not_required: bool) -> int:
     helping_suit_count = (
-        int(Items.GravitySuit in loadout) +
+        int(Items.Aqua in loadout) +
         int(heat_and_metroid_suit_not_required and (Items.MetroidSuit in loadout))
     )
     return (energy_required * (4 - helping_suit_count)) // 4
@@ -124,7 +124,7 @@ def lava_run(energy_with_aqua: int, energy_no_aqua: int) -> LogicShortcut:
     """
     return LogicShortcut(lambda loadout: (
         (
-            (Items.GravitySuit in loadout) and
+            (Items.Aqua in loadout) and
             (varia_or_hell_run((energy_with_aqua * 4) // 3) in loadout)
             # this math will be reversed when that function sees I have aqua suit
         ) or (

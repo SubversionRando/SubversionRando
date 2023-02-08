@@ -32,7 +32,7 @@ from trick_data import Tricks
 
 (
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,
-    GravitySuit, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
+    Aqua, DarkVisor, Wave, SpeedBooster, Spazer, Varia, Ice, Grapple,
     MetroidSuit, Plasma, Screw, Hypercharge, Charge, Xray, SpaceJump, Energy,
     Refuel, SmallAmmo, LargeAmmo, DamageAmp, AccelCharge, SpaceJumpBoost,
     spaceDrop
@@ -94,7 +94,7 @@ ruinedConcourseBDoorToEldersBottom = LogicShortcut(lambda loadout: (
     ) or (
         # through cistern
         ((
-            (GravitySuit in loadout) and
+            (Aqua in loadout) and
             (
                 (HiJump in loadout) or (canFly in loadout) or (Tricks.gravity_jump in loadout)
             )
@@ -127,7 +127,7 @@ ruinedConcourseBDoorToEldersTop = LogicShortcut(lambda loadout: (
     ) or (
         (SpaceJump in loadout)
     ) or (
-        (GravitySuit in loadout) and (canFly in loadout)
+        (Aqua in loadout) and (canFly in loadout)
         # bomb jump from in water
     ) or (
         # the morph/unmorph jump that bob did in 2nd quest low%
@@ -136,7 +136,7 @@ ruinedConcourseBDoorToEldersTop = LogicShortcut(lambda loadout: (
         (Tricks.movement_zoast in loadout) and
 
         # to get up to the bottom statue
-        ((GravitySuit in loadout) or (HiJump in loadout)) and
+        ((Aqua in loadout) or (HiJump in loadout)) and
         # TODO: or sbj without hi jump? or space jump with how many boosts?
 
         (Morph in loadout)
@@ -368,7 +368,7 @@ greaterInferno = LogicShortcut(lambda loadout: (
     # open gate
     ((  # with switch
         (
-            (GravitySuit in loadout) and
+            (Aqua in loadout) and
             (can_bomb(2) in loadout)
         ) or (
             # no aqua
@@ -381,7 +381,7 @@ greaterInferno = LogicShortcut(lambda loadout: (
         (shootThroughWalls in loadout)
     )) and
     (DrayLand.killDraygon in loadout) and
-    ((GravitySuit in loadout) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_water in loadout))  # exit
+    ((Aqua in loadout) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_water in loadout))  # exit
 ))
 """ because this is also used for draygon in hint system """
 
@@ -406,7 +406,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         (pinkDoor in loadout) and  # 2 pink doors if I don't have (morph and (hjb or aqua))
         (
-            ((GravitySuit in loadout) and (
+            ((Aqua in loadout) and (
                 (Morph in loadout) or
                 (Tricks.gravity_jump in loadout) or
                 (Ice in loadout) or
@@ -429,7 +429,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         (missileDamage in loadout) and  # eye door
         (pinkDoor in loadout) and  # 2 pink doors if I don't have (morph and (hjb or aqua))
-        ((GravitySuit in loadout) or (Tricks.sbj_underwater_w_hjb in loadout)) and
+        ((Aqua in loadout) or (Tricks.sbj_underwater_w_hjb in loadout)) and
         ((
             (can_bomb(1) in loadout) and
             (DarkVisor in loadout)
@@ -453,7 +453,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         # and even if you do have bombs, you'll need 1 pb
         (can_use_pbs(1) in loadout) and
         ((
-            (GravitySuit in loadout) and
+            (Aqua in loadout) and
             ((
                 (HiJump in loadout)
             ) or (
@@ -476,15 +476,15 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             ((Super in loadout) and (
                 (Tricks.morph_jump_3_tile_water in loadout) or
                 (Speedball in loadout) or
-                loadout.has_all(GravitySuit, can_bomb(1))
+                loadout.has_all(Aqua, can_bomb(1))
             )) or
-            ((GravitySuit in loadout) and (Screw in loadout)) or
+            ((Aqua in loadout) and (Screw in loadout)) or
 
             # lava room
             ((can_use_pbs(1) in loadout) and (
                 (MetroidSuit in loadout) or
                 (energy_req(880) in loadout) or
-                ((GravitySuit in loadout) and (energy_req(650) in loadout))
+                ((Aqua in loadout) and (energy_req(650) in loadout))
             )) or
 
             # super sink down, xray climb up
@@ -496,7 +496,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Sediment Flow": lambda loadout: (
         # similar to sediment floor
-        loadout.has_all(GravityBoots, GravitySuit) and
+        loadout.has_all(GravityBoots, Aqua) and
         ((
             (OceanShoreR in loadout) and
             ((  # from left
@@ -558,7 +558,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
 
         # kill spore spawn
         (loadout.has_any(Tricks.movement_moderate, HiJump, SpaceJump)) and
-        (loadout.has_any(Tricks.movement_moderate, energy_req(130), Varia, MetroidSuit, GravitySuit)) and
+        (loadout.has_any(Tricks.movement_moderate, energy_req(130), Varia, MetroidSuit, Aqua)) and
         (loadout.has_any(missileDamage, Charge))
     ),
     "Upper Vulnar Power Node": lambda loadout: (
@@ -644,7 +644,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         (can_bomb(2) in loadout) and
         (Verdite.hotSpring in loadout) and
-        ((GravitySuit in loadout) or (Speedball in loadout))  # 2-tile morph jump
+        ((Aqua in loadout) or (Speedball in loadout))  # 2-tile morph jump
         # TODO: this doesn't require as much from verdite
         # (hot spring to sporous nook can't be done with just HJB, but this can be done with just HJB)
     ),
@@ -658,7 +658,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (can_use_pbs(1) in loadout)
         )) and
         (Morph in loadout) and
-        ((GravitySuit in loadout) or (
+        ((Aqua in loadout) or (
             (HiJump in loadout) and
             ((
                 # crouch down grab into first small platform
@@ -706,7 +706,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         # under-lava 2-tile space below a bomb block to exit
         ((can_use_pbs(1) in loadout) or (
             (can_bomb(1) in loadout) and
-            ((GravitySuit in loadout) or (Speedball in loadout))
+            ((Aqua in loadout) or (Speedball in loadout))
         ))
     ),
     "Mining Cache": lambda loadout: (
@@ -801,7 +801,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # no metroid suit
             ((
                 (Varia in loadout) and
-                (GravitySuit in loadout) and
+                (Aqua in loadout) and
                 (
                     (energy_req(hell_run_energy(450, loadout)) in loadout) or
                     (
@@ -815,14 +815,14 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
                 # no aqua
                 (energy_req(hell_run_energy(1250, loadout)) in loadout)
             ) or (
-                (GravitySuit in loadout) and
+                (Aqua in loadout) and
                 # no varia
                 (energy_req(hell_run_energy(850, loadout)) in loadout)
             ))  # no suits not possible
         )) and
         (GravityBoots in loadout) and
         (
-            (GravitySuit in loadout) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_water in loadout)
+            (Aqua in loadout) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_water in loadout)
         ) and
         (can_bomb(4) in loadout) and
         ((
@@ -882,7 +882,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (ReservoirMaintenanceTunnelR in loadout) and
             (Screw in loadout) and
             (can_bomb(1) in loadout) and
-            ((GravitySuit in loadout) or (
+            ((Aqua in loadout) or (
                 (Tricks.freeze_hard in loadout) and
                 (Ice in loadout) and
                 ((Tricks.movement_zoast in loadout) or (HiJump in loadout))
@@ -1045,7 +1045,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (Super in loadout) and
         (Morph in loadout) and
         ((
-            (GravitySuit in loadout)
+            (Aqua in loadout)
         ) or (
             (HiJump in loadout) and
             (Tricks.crouch_or_downgrab in loadout)
@@ -1243,14 +1243,14 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (OceanShoreR in loadout) and
         (Morph in loadout) and
         (GravityBoots in loadout) and
-        ((GravitySuit in loadout) or (
+        ((Aqua in loadout) or (
             loadout.has_all(HiJump, Tricks.movement_zoast)
         ) or (
             (Tricks.sbj_underwater_w_hjb in loadout)
         )) and
         # the number of PBs in can_bomb is because the blocks respawn pretty fast
         ((
-            (GravitySuit in loadout) and
+            (Aqua in loadout) and
             ((Screw in loadout) or (
                 (can_bomb(1) in loadout) and
                 (Tricks.movement_moderate in loadout)
@@ -1274,7 +1274,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (meanderingPassage in loadout) and
         (Morph in loadout) and
         (
-            (GravitySuit in loadout) or
+            (Aqua in loadout) or
             (Tricks.sbj_underwater_w_hjb in loadout) or
             loadout.has_all(Tricks.sbj_underwater_no_hjb, Tricks.freeze_hard) or
             (HiJump in loadout) or
@@ -1316,7 +1316,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (OceanShoreR in loadout) and
         (Super in loadout) and  # green moon simplified because of super gate
         (GravityBoots in loadout) and
-        (GravitySuit in loadout) and
+        (Aqua in loadout) and
         ((HiJump in loadout) or (
             (SpaceJump in loadout) and
             (SpaceJumpBoost in loadout)
@@ -1332,7 +1332,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (ruinedConcourseBDoorToEldersBottom in loadout) and
         (
             (missileDamage in loadout) or
-            (GravitySuit in loadout) or
+            (Aqua in loadout) or
             (HiJump in loadout) or
             (
                 (Ice in loadout) and
@@ -1386,7 +1386,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         (can_use_pbs(1) in loadout) and
         (icePod in loadout) and
-        ((GravitySuit in loadout) or (
+        ((Aqua in loadout) or (
             (HiJump in loadout) and (Tricks.crouch_or_downgrab in loadout)
         ) or (
             (Tricks.sbj_underwater_no_hjb in loadout)
@@ -1403,7 +1403,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (loadout.has_any(Screw, Plasma, Spazer, shootThroughWalls, Super, Tricks.movement_zoast)) and
         # a non-simple jump to get up blazing chasm
         ((
-            (GravitySuit in loadout) and
+            (Aqua in loadout) and
             ((canFly in loadout) or (Tricks.gravity_jump in loadout))
         ) or (
             (HiJump in loadout)
@@ -1487,7 +1487,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (can_bomb(1) in loadout) and
 
         # lowest jump in central corridor (below "bottom")
-        (loadout.has_any(GravitySuit, HiJump, Tricks.crouch_or_downgrab, Ice, Tricks.sbj_underwater_no_hjb)) and
+        (loadout.has_any(Aqua, HiJump, Tricks.crouch_or_downgrab, Ice, Tricks.sbj_underwater_no_hjb)) and
 
         (doorsToCentralCorridorBottom in loadout)
     ),
@@ -1508,7 +1508,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Eddy Channels": lambda loadout: (
         (EleToTurbidPassageR in loadout) and
         (
-            (GravitySuit in loadout) or
+            (Aqua in loadout) or
             (HiJump in loadout) or
             ((Ice in loadout) and (Tricks.freeze_hard in loadout))
         ) and
@@ -1517,10 +1517,10 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
 
         (
             (Super in loadout) or
-            (GravitySuit in loadout) or
+            (Aqua in loadout) or
             (Tricks.movement_zoast in loadout)
         ) and
-        # with gravity suit or good movement, you can open the pink door in sediment floor
+        # with Aqua Suit or good movement, you can open the pink door in sediment floor
         # so you don't need supers to get back
 
         (GravityBoots in loadout) and
@@ -1536,7 +1536,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Tower Rock Lookout": lambda loadout: (
         (enterSuzi in loadout) and
         (pinkDoor in loadout) and
-        (GravitySuit in loadout) and
+        (Aqua in loadout) and
         ((
             (SpaceJump in loadout) and
             (HiJump in loadout) and
@@ -1554,7 +1554,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Reef Nook": lambda loadout: (
         (enterSuzi in loadout) and
         (pinkDoor in loadout) and
-        (GravitySuit in loadout) and
+        (Aqua in loadout) and
         (Morph in loadout) and
         (Suzi.crossOceans in loadout)
     ),
@@ -1562,7 +1562,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (enterSuzi in loadout) and
         (Super in loadout) and
         (
-            ((GravitySuit in loadout) and (canFly in loadout)) or
+            ((Aqua in loadout) and (canFly in loadout)) or
             (Tricks.gravity_jump in loadout) or
             (Tricks.sbj_underwater_w_hjb in loadout)
         )
@@ -1602,7 +1602,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (Morph in loadout) and
         (GravityBoots in loadout) and
         # up to entrance
-        ((GravitySuit in loadout) or (
+        ((Aqua in loadout) or (
             loadout.has_all(HiJump, Tricks.movement_zoast)
         ) or (
             (Tricks.sbj_underwater_w_hjb in loadout)
@@ -1610,12 +1610,12 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         # out
         (  # to get back in hole after getting this item
             (Speedball in loadout) or
-            loadout.has_all(GravitySuit, Bombs) or
-            loadout.has_all(GravitySuit, PowerBomb) or
+            loadout.has_all(Aqua, Bombs) or
+            loadout.has_all(Aqua, PowerBomb) or
             (Tricks.morph_jump_3_tile_water in loadout)
         ) and
         (
-            (GravitySuit in loadout) or (
+            (Aqua in loadout) or (
                 (Tricks.sbj_underwater_w_hjb in loadout)
             ) or (
                 ((HiJump in loadout) and (Ice in loadout) and (Tricks.freeze_hard in loadout))
@@ -1750,7 +1750,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (collapsedHive in loadout)
         )) and
         (
-            (GravitySuit in loadout) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_water in loadout)
+            (Aqua in loadout) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_water in loadout)
         ) and
         (icePod in loadout) and
         (MetroidSuit in loadout) and
@@ -1771,7 +1771,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Central Corridor: Left": lambda loadout: (
         # don't need other area doors if everything here will get through east corridor
-        (GravitySuit in loadout) and
+        (Aqua in loadout) and
         (Speedball in loadout) and
         (SpeedBooster in loadout) and
         (GravityBoots in loadout) and
@@ -1903,10 +1903,10 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # get in to item
             (
                 (Speedball in loadout) or
-                loadout.has_all(GravitySuit, SpaceJump, SpaceJumpBoost, Tricks.movement_moderate)
+                loadout.has_all(Aqua, SpaceJump, SpaceJumpBoost, Tricks.movement_moderate)
             ) and
             # get out (of water)
-            ((GravitySuit in loadout) or (HiJump in loadout) or (Tricks.sbj_underwater_no_hjb in loadout))
+            ((Aqua in loadout) or (HiJump in loadout) or (Tricks.sbj_underwater_no_hjb in loadout))
         ) or (
             # super sink
             # enter
@@ -1944,7 +1944,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         (pinkDoor in loadout) and
         (
-            (GravitySuit in loadout) or
+            (Aqua in loadout) or
             (HiJump in loadout) or
             (can_bomb(1) in loadout) or
             (Tricks.sbj_underwater_no_hjb in loadout)
@@ -1962,16 +1962,16 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (PirateLab.westCorridorToCentralTop in loadout) and
             ((PirateLab.waterGauntlet_oneWay in loadout) or (
                 # backdoor main hydrology research
-                loadout.has_any(GravitySuit, HiJump, Tricks.sbj_underwater_no_hjb)
+                loadout.has_any(Aqua, HiJump, Tricks.sbj_underwater_no_hjb)
             ))
         ) or (
             (doorsToCentralCorridorMid in loadout) and
             (PirateLab.centralTopToMid in loadout) and
             # backdoor main hydrology research
-            loadout.has_any(GravitySuit, HiJump, Tricks.sbj_underwater_no_hjb)
+            loadout.has_any(Aqua, HiJump, Tricks.sbj_underwater_no_hjb)
         )) and
         (PirateLab.exitMainHydrologyResearch in loadout)
-        # can gravity jump (no gravity suit)
+        # can gravity jump (no Aqua Suit)
         # through hydrodynamic chamber door into main hydrology research from central corridor
     ),
     "Weapon Research": lambda loadout: (

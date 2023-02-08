@@ -26,7 +26,7 @@ class Tricks:
     to get above the surface of the water
     """
 
-    gravity_jump = Trick("remove aqua suit right after jumping for extra jump height in water", Items.GravitySuit)
+    gravity_jump = Trick("remove aqua suit right after jumping for extra jump height in water", Items.Aqua)
     """ remove aqua suit right after jumping for extra jump height in water """
 
     hell_run_hard = Trick("heated or cold without varia suit - hell runs requiring the minimum amount of energy")

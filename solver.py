@@ -141,7 +141,7 @@ def spoil_play_through(play_through: PlayThrough) -> list[str]:
         "Speed Ball": 999,
         "Bombs": 999,
         "HiJump": 999,
-        "Gravity Suit": 999,
+        "Aqua Suit": 999,
         "Dark Visor": 999,
         "Wave Beam": 999,
         "Speed Booster": 999,
