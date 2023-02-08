@@ -753,7 +753,7 @@ class PirateLab:
         (Morph in loadout) and
         (
             # with no high jump, in the right shot block passage,
-            # wall jump into morph
+            # wall jump into morph or don't shoot shot blocks that are easier to stand on
             (
                 (Tricks.movement_moderate in loadout) and
                 loadout.has_any(Tricks.morph_jump_4_tile, Speedball, Bombs) and

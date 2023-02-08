@@ -6,7 +6,7 @@ from logic_area_shortcuts import SandLand, ServiceSector, LifeTemple, \
     SkyWorld, FireHive, PirateLab, Verdite, Geothermal, Early
 from logicInterface import AreaLogicType
 from logic_shortcut_data import (
-    canFly, shootThroughWalls, breakIce, pinkDoor, missileBarrier, icePod,
+    shootThroughWalls, breakIce, pinkDoor, missileBarrier, icePod,
     electricHyper, killGreenPirates, underwaterSuperSink
 )
 from trick_data import Tricks
@@ -40,7 +40,14 @@ area_logic: AreaLogicType = {
         # using SunkenNestL as the hub for this area, so we don't need a path from every door to every other door
         # just need at least a path with sunken nest to and from every other door in the area
         ("CraterR", "SunkenNestL"): lambda loadout: (
-            canFly in loadout
+            (GravityBoots in loadout) and
+            ((
+                (SpaceJump in loadout) and (
+                    (HiJump in loadout) or (SpaceJumpBoost in loadout)
+                )  # 1 SJ boost enough with no hjb
+            ) or (SpeedBooster in loadout) or (
+                (Morph in loadout) and (Bombs in loadout)
+            ))
         ),
         ("SunkenNestL", "CraterR"): lambda loadout: (
             (GravityBoots in loadout) and

@@ -654,9 +654,20 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         )) and
         (Morph in loadout) and
         ((GravitySuit in loadout) or (
-            (HiJump in loadout) and  # crouch down grab into first small platform
-            (Speedball in loadout) and  # ball jump up from there
-            (Tricks.crouch_or_downgrab in loadout)
+            (HiJump in loadout) and
+            ((
+                # crouch down grab into first small platform
+                # ball jump up from there
+                (Speedball in loadout) and
+                (Tricks.crouch_or_downgrab in loadout)
+            ) or (
+                # I saw someone at a casual skill level do this:
+                # space jump at surface to get up to the ledge on the right
+                # and bomb jump or speedball jump to the left
+                (SpaceJump in loadout) and
+                (SpaceJumpBoost in loadout) and  # TODO: test for (sj boost or movement_moderate)
+                ((can_bomb(1) in loadout) or (Speedball in loadout))  # TODO: what about wall jump into morph?
+            ))
         ) or (
             # go up on the right side, then left above the water
             (PirateLab.epiphreatic in loadout) and
