@@ -267,6 +267,23 @@ class Early:
     ))
     """ through the small morph tunnel before entering spore field """
 
+    craterLedge = LogicShortcut(lambda loadout: (
+        ((
+            # IBJ
+            (Morph in loadout) and (Bombs in loadout)
+        ) or (
+            (SpaceJump in loadout) and
+            ((HiJump in loadout) or (SpaceJumpBoost in loadout) or (Tricks.wall_jump_precise in loadout))
+        ) or (
+            # shinespark from just the right pixel on the 1 tile between 2 slopes
+            (SpeedBooster in loadout) and (Tricks.movement_moderate in loadout)
+        ) or (
+            # https://vimeo.com/765888671
+            loadout.has_all(HiJump, Tricks.wall_jump_precise, Tricks.movement_moderate, Morph)
+        ))
+    ))
+    """ get up to the ledge in top left of impact crater """
+
 
 # TODO: SandLand location logic doesn't use these shortcuts as much as they should
 class SandLand:
@@ -539,8 +556,8 @@ class ServiceSector:
                 loadout.has_any(SpaceJumpBoost, HiJump)
             )) or
             (SpeedBooster in loadout) or
-            (Bombs in loadout)
-            # TODO: ice with sbj (no hjb)?
+            (Bombs in loadout) or
+            ((Ice in loadout) and (Tricks.sbj_no_hjb in loadout))
         )
     ))
     """ traverse from one door of waste processing to the other (not including colored door) """
@@ -1277,9 +1294,18 @@ class DrayLand:
     """ to lower lava in magma chamber """
 
     killGT = LogicShortcut(lambda loadout: (
-        loadout.has_all(Varia, Charge)
-        # TODO: can hell run with hypercharge, or lots of beams and damage amps, or a billion supers,
-        # or patience and varia+missiles
+        # TODO: measure hell run (whichever is the slowest out of the options that don't require varia)
+        (varia_or_hell_run(350) in loadout) and
+        (
+            loadout.has_all(Varia, Charge) or
+            loadout.has_all(Charge, Hypercharge) or
+            (
+                loadout.has_all(Charge, Ice, Wave, DamageAmp, AccelCharge) and
+                ((Spazer in loadout) or (Plasma in loadout))
+            ) or
+            loadout.has_all(Super, ammo_req(200)) or
+            loadout.has_all(Tricks.patience, Varia, Missile)
+        )
     ))
 
     killDraygon = LogicShortcut(lambda loadout: (
@@ -1297,6 +1323,14 @@ class DrayLand:
             (energy_req(450) in loadout)
         ) or (
             (Tricks.movement_zoast in loadout)
+        )) and
+        ((
+            (Varia in loadout)
+        ) or (
+            (Charge in loadout) and
+            (Hypercharge in loadout)
+        ) or (
+            (ammo_req(250) in loadout)
         ))
         # TODO: improve this logic
     ))

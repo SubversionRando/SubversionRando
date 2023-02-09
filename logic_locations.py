@@ -5,8 +5,8 @@ from item_data import items_unpackable
 from loadout import Loadout
 from logicCommon import ammo_req, can_bomb, can_use_pbs, crystal_flash, \
     energy_req, hell_run_energy, lava_run, varia_or_hell_run
-from logic_area_shortcuts import SandLand, ServiceSector, SpacePort, LifeTemple, \
-    SkyWorld, FireHive, PirateLab, Verdite, Geothermal, Suzi, DrayLand
+from logic_area_shortcuts import Early, SandLand, ServiceSector, SpacePort, LifeTemple, SkyWorld, \
+    FireHive, PirateLab, Verdite, Geothermal, Suzi, DrayLand
 from logic_shortcut import LogicShortcut
 from logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor, pinkSwitch,
@@ -1162,11 +1162,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         (can_bomb(2) in loadout) and
         ((can_use_pbs(1) in loadout) or (Super in loadout)) and
-        # TODO: canFly without SJ boost requires precise wall jumps
-        ((canFly in loadout) or (
-            (SpeedBooster in loadout) and (Tricks.movement_moderate in loadout)
-            # shinespark from just the right pixel on the 1 tile between 2 slopes
-        ))
+        (Early.craterLedge in loadout)
     ),
     "Magma Lake Cache": lambda loadout: (
         (ElevatorToMagmaLakeR in loadout) and (GravityBoots in loadout) and (icePod in loadout) and (Morph in loadout)
@@ -1227,10 +1223,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (SunkenNestL in loadout) and
         (GravityBoots in loadout) and
         (can_bomb(2) in loadout) and
-        ((canFly in loadout) or (
-            (SpeedBooster in loadout) and (Tricks.movement_moderate in loadout)
-            # shinespark from just the right pixel on the 1 tile between 2 slopes
-        ))
+        (Early.craterLedge in loadout)
     ),
     "Ocean Shore: Bottom": lambda loadout: (
         (OceanShoreR in loadout)
@@ -1632,8 +1625,16 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Waste Processing": lambda loadout: (
         (SpeedBooster in loadout) and
-        (Morph in loadout) and
-        ((can_bomb(1) in loadout) or (Screw in loadout)) and
+        ((
+            # get out through intended exit hole
+            (Morph in loadout) and
+            ((can_bomb(1) in loadout) or (Screw in loadout))
+        ) or (
+            # get out through the speedbooster blocks
+            (Tricks.short_charge_3 in loadout)
+        ) or (
+            (Tricks.super_sink_easy in loadout)
+        )) and
         ((
             (SubbasementFissureL in loadout) and
             (can_use_pbs(1) in loadout) and  # door into waste processing

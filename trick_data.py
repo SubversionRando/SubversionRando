@@ -10,6 +10,9 @@ class Tricks:
                                  Items.Morph, Items.Speedball, Items.HiJump)
     """ underwater springball jump with hi jump boots """
 
+    sbj_no_hjb = Trick("springball jump - no hi jump boots (no water)", Items.Morph, Items.Speedball)
+    """ springball jump - no hi jump boots (no water) """
+
     sbj_w_hjb = Trick("springball jump with hi jump boots (no water)", Items.Morph, Items.Speedball, Items.HiJump)
     """ springball jump with hi jump boots (no water) """
 
