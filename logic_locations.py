@@ -472,7 +472,16 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Ocean Vent Supply Depot": lambda loadout: (
         (meanderingPassage in loadout) and
         (Morph in loadout) and  # inside the room with the item
-        (
+        (  # down
+            (Super in loadout) or
+            ((Aqua in loadout) and (Screw in loadout)) or
+            (  # right room intended way down
+                ((can_bomb(1) in loadout) or (Screw in loadout)) and
+                ((Tricks.movement_moderate in loadout) or (energy_req(150) in loadout) or (MetroidSuit in loadout))
+            ) or
+            (Tricks.super_sink_easy in loadout)  # door-stuck to start super sink
+        ) and
+        (  # up
             ((Super in loadout) and (
                 (Tricks.morph_jump_3_tile_water in loadout) or
                 (Speedball in loadout) or
@@ -484,14 +493,11 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             ((can_use_pbs(1) in loadout) and (
                 (MetroidSuit in loadout) or
                 (energy_req(880) in loadout) or
-                ((Aqua in loadout) and (energy_req(650) in loadout))
+                ((Aqua in loadout) and (energy_req(650) in loadout)) or
+                (loadout.has_all(Varia, Aqua, energy_req(450)))
             )) or
 
-            # super sink down, xray climb up
-            (
-                (Tricks.super_sink_easy in loadout) and  # door-stuck to start super sink
-                (Tricks.xray_climb in loadout)
-            )
+            (Tricks.xray_climb in loadout)
         )
     ),
     "Sediment Flow": lambda loadout: (
@@ -1165,7 +1171,11 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (Early.craterLedge in loadout)
     ),
     "Magma Lake Cache": lambda loadout: (
-        (ElevatorToMagmaLakeR in loadout) and (GravityBoots in loadout) and (icePod in loadout) and (Morph in loadout)
+        (ElevatorToMagmaLakeR in loadout) and
+        (GravityBoots in loadout) and
+        (icePod in loadout) and
+        (Morph in loadout) and
+        ((Tricks.movement_moderate in loadout) or (HiJump in loadout) or (Speedball in loadout))
     ),
     "Shrine Of The Animate Spark": lambda loadout: (
         (enterSuzi in loadout) and
