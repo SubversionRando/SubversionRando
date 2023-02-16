@@ -316,7 +316,7 @@ class SandLand:
 
         # Gravity boots are not required to get this.
         # The only difficulty is shooting the wall in the right place (when you'll fall quickly).
-        ((SpeedBooster in loadout) and (Tricks.movement_moderate in loadout))
+        (Tricks.ocean_top_without_grav_boots in loadout)
     ))
     """
     I wouldn't make a logic shortcut just for a single location.

@@ -155,6 +155,10 @@ class Tricks:
     spazer_into_lower_pirate_lab = Trick("", Items.Spazer)
     """ She's made of wood! """
 
+    ocean_top_without_grav_boots = Trick("use speedbooster to get to Ocean Shore: Top without Gravity Boots",
+                                         Items.SpeedBooster)
+    """ use speedbooster to get to Ocean Shore: Top without Gravity Boots """
+
 
 trick_name_lookup = {
     trick: trick_name

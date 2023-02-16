@@ -329,7 +329,7 @@ _possible_places = {
         "Weapon Locker",
 
         "Ocean Shore: Bottom",
-        "Ocean Shore: Top",  # not in casual
+        "Ocean Shore: Top",  # not in casual or medium
         "Subterranean Burrow",
     ])
 }
@@ -370,7 +370,7 @@ def test_restrictive_item_locations(logic: frozenset[Trick]) -> None:
         this_loadout()
 
         for loc_name in _possible_places[excluded_item]:
-            assert found[loc_name] or (logic is casual and loc_name == "Ocean Shore: Top"), \
+            assert found[loc_name] or ((logic is casual or logic is medium) and loc_name == "Ocean Shore: Top"), \
                 f"logic thinks {excluded_item[0]} can't be at {loc_name}"
 
 
@@ -469,7 +469,6 @@ _possible_places_area = {
         ]),
         Items.GravityBoots: frozenset([
             "Ocean Shore: Bottom",
-            "Ocean Shore: Top",
             "Subterranean Burrow",
             "Loading Dock Storage Area",
         ])
