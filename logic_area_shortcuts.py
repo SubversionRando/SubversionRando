@@ -810,6 +810,10 @@ class PirateLab:
         (Tricks.sbj_underwater_w_hjb in loadout) or
         # joonie gave up on trying to get out with SBJ no HJB, he wondered if bob could do it
         ((Tricks.uwu_2_tile in loadout) and (HiJump in loadout))
+
+        # another way to get out is uwu-2 up to hydrology security,
+        # but that's not worth putting in logic because with all the same items and skills,
+        # you can uwu-2 to hydrodynamic chamber
     ))
 
     waterGauntlet_oneWay = LogicShortcut(lambda loadout: (

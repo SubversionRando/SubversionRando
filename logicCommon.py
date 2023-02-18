@@ -55,8 +55,7 @@ def ammo_req(amount: int) -> LogicShortcut:
 
 
 crystal_flash = LogicShortcut(lambda loadout: (
-    # 110 because there are too many times when you'll need ammo for something else
-    loadout.has_all(Items.Morph, Items.PowerBomb, ammo_req(110))
+    loadout.has_all(Items.Morph, Items.PowerBomb, ammo_req(100))
 ))
 
 
@@ -107,7 +106,9 @@ def varia_or_hell_run(energy: int, *, heat_and_metroid_suit_not_required: bool =
             (energy_req(hell_run_energy(
                 _adjust_for_other_suits((energy + 100) // 2, loadout, heat_and_metroid_suit_not_required), loadout
             )) in loadout) and
-            (crystal_flash in loadout)
+            (crystal_flash in loadout) and
+            # 110 because there are too many times when you'll need ammo for something else during hell run
+            (ammo_req(110) in loadout)
         )
     ))
 

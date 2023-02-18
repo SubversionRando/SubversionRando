@@ -390,7 +390,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (SunkenNestL in loadout) and
         (GravityBoots in loadout) and
         (Morph in loadout) and
-        (Spazer in loadout) and
+        ((Spazer in loadout) or (
+            (hiJumpSuperSink in loadout) and (bonkCeilingSuperSink in loadout)
+        )) and
         ((HiJump in loadout) or (SpeedBooster in loadout) or (canFly in loadout))
     ),
     "Subterranean Burrow": lambda loadout: (
@@ -1167,7 +1169,14 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (SunkenNestL in loadout) and
         (GravityBoots in loadout) and
         (can_bomb(2) in loadout) and
-        ((can_use_pbs(1) in loadout) or (Super in loadout)) and
+        ((can_use_pbs(1) in loadout) or (Super in loadout) or (
+            # from the door to impact crater alcove
+            (Tricks.xray_climb in loadout) and  # up
+            (Tricks.super_sink_easy in loadout) and  # down
+            (Tricks.movement_moderate in loadout)
+            # movement_moderate because you can't see when you're done xray climbing,
+            # just have to morph and hope you're not soft-locked
+        )) and
         (Early.craterLedge in loadout)
     ),
     "Magma Lake Cache": lambda loadout: (
@@ -1921,7 +1930,11 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ) or (
             # super sink
             # enter
-            ((bonkCeilingSuperSink in loadout) or (crystal_flash in loadout)) and
+            (
+                (bonkCeilingSuperSink in loadout) or
+                (crystal_flash in loadout) or
+                ((Tricks.super_sink_easy in loadout) and (Super in loadout))  # get stuck in door to Great Spore Hall
+            ) and
             # exit
             (Tricks.super_sink_easy in loadout) and
             (Morph in loadout)
