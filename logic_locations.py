@@ -744,7 +744,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (SequesteredInfernoL in loadout) and
             (FireHive.infernalSequestration in loadout) and
             (FireHive.crossways in loadout) and
-            (icePod in loadout)
+            ((icePod in loadout) or (FireHive.westHiveTunnel in loadout))
         ) or (
             (HiveBurrowL in loadout) and
             (FireHive.hiveBurrow in loadout)
@@ -762,7 +762,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((
             (VulnarDepthsElevatorEL in loadout) and
             (FireHive.hiveEntrance in loadout) and
-            (icePod in loadout) and
+            ((icePod in loadout) or (FireHive.westHiveTunnel in loadout)) and
             (FireHive.crossways in loadout) and
             (pinkDoor in loadout) and
             # TODO: something that can kill red pirates, in case door color changes
@@ -792,7 +792,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((
             (VulnarDepthsElevatorEL in loadout) and
             (FireHive.hiveEntrance in loadout) and
-            (icePod in loadout) and
+            ((icePod in loadout) or (FireHive.westHiveTunnel in loadout)) and
             (FireHive.crossways in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and
@@ -836,7 +836,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((
             (VulnarDepthsElevatorEL in loadout) and
             (FireHive.hiveEntrance in loadout) and
-            (icePod in loadout) and
+            ((icePod in loadout) or (FireHive.westHiveTunnel in loadout)) and
             (FireHive.crossways in loadout) and
             (FireHive.crosswaysToCourtyard in loadout)
         ) or (
@@ -855,7 +855,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             ((
                 (VulnarDepthsElevatorEL in loadout) and
                 (FireHive.hiveEntrance in loadout) and
-                (icePod in loadout) and
+                ((icePod in loadout) or (FireHive.westHiveTunnel in loadout)) and
                 (FireHive.crossways in loadout) and
                 (FireHive.crosswaysToCourtyard in loadout)
             ) or (
@@ -1002,6 +1002,11 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((can_bomb(2) in loadout) or (
             (Speedball in loadout) and
             (Morph in loadout)
+        ) or (
+            (Tricks.short_charge_2 in loadout) and
+            (HiJump in loadout) and
+            (SpaceJump in loadout) and
+            (Tricks.movement_moderate in loadout)
         )) and
         # get out of chamber of wind
         (
@@ -1021,9 +1026,6 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         # and use shinespark through it
         # He had no space jump boost, nor hi jump boots. Those would make it easier
         # https://clips.twitch.tv/AntsyVivaciousFriesNotLikeThis-SW5bAw7fOAyQnJfP
-
-        # TODO: something like that ^ is a lot easier if you have screw (don't need morph)
-        # just have to shinespark through the right door
     ),
     "Water Garden": lambda loadout: (
         (GravityBoots in loadout) and
@@ -1468,7 +1470,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             ((
                 (VulnarDepthsElevatorEL in loadout) and
                 (FireHive.hiveEntrance in loadout) and
-                (icePod in loadout) and
+                ((icePod in loadout) or (FireHive.westHiveTunnel in loadout)) and
                 (FireHive.crossways in loadout) and
                 (FireHive.crosswaysToCourtyard in loadout)
             ) or (
@@ -1732,7 +1734,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (SequesteredInfernoL in loadout) and
             (FireHive.infernalSequestration in loadout) and
             (FireHive.crossways in loadout) and
-            (icePod in loadout)
+            ((icePod in loadout) or (FireHive.westHiveTunnel in loadout))
         ) or (
             (HiveBurrowL in loadout) and
             (FireHive.hiveBurrow in loadout)
@@ -1742,7 +1744,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((
             (VulnarDepthsElevatorEL in loadout) and
             (FireHive.hiveEntrance in loadout) and
-            (icePod in loadout)
+            ((icePod in loadout) or (FireHive.westHiveTunnel in loadout))
         ) or (
             (SequesteredInfernoL in loadout) and
             (FireHive.infernalSequestration in loadout) and
@@ -1750,7 +1752,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ) or (
             (HiveBurrowL in loadout) and
             (FireHive.hiveBurrow in loadout) and
-            (icePod in loadout)
+            ((icePod in loadout) or (FireHive.westHiveTunnel in loadout))
         ) or (
             (collapsedHive in loadout) and
             (FireHive.crossways in loadout)
@@ -1761,7 +1763,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((
             (VulnarDepthsElevatorEL in loadout) and
             (FireHive.hiveEntrance in loadout) and
-            (icePod in loadout) and
+            ((icePod in loadout) or (FireHive.westHiveTunnel in loadout)) and
             (FireHive.crossways in loadout)
         ) or (
             (SequesteredInfernoL in loadout) and

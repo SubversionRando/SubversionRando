@@ -1170,6 +1170,28 @@ class FireHive:
     ))
     """ from elevator to infested passage """
 
+    westHiveTunnel = LogicShortcut(lambda loadout: (
+        # This hell run is 452 + the 1-way hell run in hive entrance
+        (varia_or_hell_run(1002, heat_and_metroid_suit_not_required=True) in loadout) and
+
+        # There are a few ways to do this:
+        #  - spike suit from sealed shaft (short charge through 2 doors)
+        #  - spike suit from guard station bridge and path of fire (screw attack through red pirate)
+        #  - gravity fall from infested passage (screw attack through rippers, space jump to avoid clipping into ground)
+        (Tricks.movement_zoast in loadout) and
+        ((Tricks.short_charge_4 in loadout) or (
+            (Tricks.short_charge_2 in loadout) and
+            (Screw in loadout) and
+            ((pinkDoor in loadout) or (
+                (SpaceJump in loadout) and
+                (FireHive.crossways in loadout)
+            ))
+        )) and
+        (Morph in loadout) and
+        (GravityBoots in loadout)
+    ))
+    """ get around the ice pods in infested passage (expert only) """
+
     ancientBasinAccess = LogicShortcut(lambda loadout: (
         (
             (can_bomb(3) in loadout) or

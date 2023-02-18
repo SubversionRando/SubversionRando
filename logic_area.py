@@ -769,14 +769,14 @@ area_logic: AreaLogicType = {
         ("VulnarDepthsElevatorER", "SequesteredInfernoL"): lambda loadout: (
             (GravityBoots in loadout) and
             (FireHive.hiveEntrance in loadout) and
-            (icePod in loadout) and
+            ((icePod in loadout) or (FireHive.westHiveTunnel in loadout)) and
             (FireHive.crossways in loadout) and
             (FireHive.infernalSequestration in loadout)
         ),
         ("VulnarDepthsElevatorER", "CollapsedPassageR"): lambda loadout: (
             (GravityBoots in loadout) and
             (FireHive.hiveEntrance in loadout) and
-            (icePod in loadout) and
+            ((icePod in loadout) or (FireHive.westHiveTunnel in loadout)) and
             (FireHive.crossways in loadout) and
             (FireHive.crosswaysToCourtyard in loadout) and
             (Super in loadout) and  # door to ancient basin access
@@ -790,14 +790,14 @@ area_logic: AreaLogicType = {
         ("HiveBurrowL", "SequesteredInfernoL"): lambda loadout: (
             (GravityBoots in loadout) and
             (FireHive.hiveBurrow in loadout) and
-            (icePod in loadout) and
+            ((icePod in loadout) or (FireHive.westHiveTunnel in loadout)) and
             (FireHive.crossways in loadout) and
             (FireHive.infernalSequestration in loadout)
         ),
         ("HiveBurrowL", "CollapsedPassageR"): lambda loadout: (
             (GravityBoots in loadout) and
             (FireHive.hiveBurrow in loadout) and
-            (icePod in loadout) and
+            ((icePod in loadout) or (FireHive.westHiveTunnel in loadout)) and
             (FireHive.crossways in loadout) and
             (FireHive.crosswaysToCourtyard in loadout) and
             (Super in loadout) and  # door to ancient basin access
@@ -807,13 +807,13 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (FireHive.infernalSequestration in loadout) and
             (FireHive.crossways in loadout) and
-            (icePod in loadout) and
+            ((icePod in loadout) or (FireHive.westHiveTunnel in loadout)) and
             (FireHive.hiveEntrance in loadout)
         ),
         ("SequesteredInfernoL", "HiveBurrowL"): lambda loadout: (
             (GravityBoots in loadout) and
             (FireHive.hiveBurrow in loadout) and
-            (icePod in loadout) and
+            ((icePod in loadout) or (FireHive.westHiveTunnel in loadout)) and
             (FireHive.crossways in loadout) and
             (FireHive.infernalSequestration in loadout)
         ),
@@ -830,13 +830,13 @@ area_logic: AreaLogicType = {
             (pinkDoor in loadout) and  # into ancient basin
             (FireHive.crosswaysToCourtyard in loadout) and
             (FireHive.crossways in loadout) and
-            (icePod in loadout) and
+            ((icePod in loadout) or (FireHive.westHiveTunnel in loadout)) and
             (FireHive.hiveEntrance in loadout)
         ),
         ("CollapsedPassageR", "HiveBurrowL"): lambda loadout: (
             (GravityBoots in loadout) and
             (FireHive.hiveBurrow in loadout) and
-            (icePod in loadout) and
+            ((icePod in loadout) or (FireHive.westHiveTunnel in loadout)) and
             (FireHive.crossways in loadout) and
             (FireHive.crosswaysToCourtyard in loadout) and
             (Super in loadout) and  # door to ancient basin access

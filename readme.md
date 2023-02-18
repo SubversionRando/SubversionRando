@@ -75,6 +75,20 @@ Turning the power off is never in logic, unless you can turn it back on before y
 
 ---
 
+## Casual logic requirements
+
+In casual logic (with no logic tricks), you might be required to:
+  - infinite bomb jump
+  - wall-jump
+  - mid-air morph in a space that is 5 tiles high
+  - 1-tap short charge
+     - This just means press the d-pad to start moving before pressing the dash button.
+  <!-- there isn't a trick for this, but it will never be required in casual, because it's always combined with some other trick
+  - underwater wall jump in a space 1-tile wide
+     - If you just hold the d-pad left or right and repeatedly press jump, you'll get to the top of a space that is 1 tile wide. -->
+
+---
+
 ## notes on options
 
 Casual logic notes: -c
