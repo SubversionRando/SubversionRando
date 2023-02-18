@@ -1,7 +1,7 @@
 """ This is for logic shortcuts that apply only to 1 specific area. """
 
 from item_data import items_unpackable
-from logicCommon import ammo_req, can_bomb, can_use_pbs, energy_req, hell_run_energy, varia_or_hell_run
+from logicCommon import ammo_req, can_bomb, can_use_pbs, crystal_flash, energy_req, hell_run_energy, varia_or_hell_run
 from logic_shortcut import LogicShortcut
 from logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor,
@@ -790,11 +790,15 @@ class PirateLab:
 
     isobaric = LogicShortcut(lambda loadout: (
         (Morph in loadout) and
-        (
+        (  # left to right
             (shootThroughWalls in loadout) or
             (Tricks.spazer_into_lower_pirate_lab in loadout)
         ) and
-        (Bombs in loadout)  # open gate from right side (and the 2-tile morph jump to get into that passage)
+
+        # 2-tile morph jump to get into the passage, or jump from further away like monitoring station
+        ((Speedball in loadout) or (can_bomb(1) in loadout) or (Tricks.movement_zoast in loadout)) and
+
+        ((Bombs in loadout) or (crystal_flash in loadout))  # open gate from right side
     ))
     """ gate into the pirate lab """
 
