@@ -391,7 +391,10 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         (Morph in loadout) and
         ((Spazer in loadout) or (
-            (hiJumpSuperSink in loadout) and (bonkCeilingSuperSink in loadout)
+            (hiJumpSuperSink in loadout) and
+            ((bonkCeilingSuperSink in loadout) or (Tricks.super_sink_easy in loadout))
+            # the position for the easy super sink to get out is right above where you pick up the item
+            # spam jump (respin) while holding left on the d-pad
         )) and
         ((HiJump in loadout) or (SpeedBooster in loadout) or (canFly in loadout))
     ),
@@ -611,12 +614,15 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
                 (Tricks.movement_moderate in loadout)
             ) or
 
-            # an ice beam shot can clip through the platform from beneath to hit the top left switch
-            ((Ice in loadout) and (Tricks.wave_gate_glitch in loadout) and (Tricks.movement_moderate in loadout))
+            # a non-normal beam shot can clip through the platform from beneath to hit the top left switch
+            (
+                loadout.has_any(Ice, Plasma, Spazer) and
+                (Tricks.wave_gate_glitch in loadout) and
+                (Tricks.movement_moderate in loadout)
+            )
             # I tried for a while with normal beam and couldn't get it.
             # (If it's possible, I think it's too hard to put in logic.)
             # TODO: do we want a different trick for this?
-            # TODO: check plasma and spazer
         )
     ),
     "Archives: Front": lambda loadout: (

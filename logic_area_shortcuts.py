@@ -125,7 +125,10 @@ class SkyWorld:
         # TODO: Should these numbers depend on damage amp and accel charge?
         (
             (MetroidSuit in loadout) and
-            (Varia in loadout) and
+            ((varia_or_hell_run(2001) in loadout) or (
+                (Hypercharge in loadout) and  # increases damage of the hyper beam you get from Metroid Suit
+                (varia_or_hell_run(1520) in loadout)
+            )) and
             ((energy_req(850) in loadout) or (
                 (Tricks.movement_moderate in loadout) and
                 (energy_req(650) in loadout)
@@ -133,7 +136,6 @@ class SkyWorld:
                 (Tricks.movement_zoast in loadout) and
                 (energy_req(450) in loadout)
             ))
-            # TODO: energy w/o varia?
         ) or (
             (Charge in loadout) and
             (Hypercharge in loadout) and
@@ -1362,7 +1364,10 @@ class DrayLand:
             (Charge in loadout) and
             (Hypercharge in loadout)
         ) or (
-            (ammo_req(250) in loadout)
+            (ammo_req(350) in loadout) and
+            (Tricks.movement_zoast in loadout) and
+            (Screw in loadout) and
+            (Aqua in loadout)
         ))
         # TODO: improve this logic
     ))
