@@ -1714,7 +1714,13 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (ElevatorToMagmaLakeR in loadout) and (GravityBoots in loadout) and (DrayLand.killGT in loadout)
     ),
     "Lava Pool": lambda loadout: (
-        loadout.has_all(GravityBoots, lava_run(664, 1258), MetroidSuit, can_bomb(1)) and
+        loadout.has_all(GravityBoots, can_bomb(1)) and
+        ((
+            (lava_run(664, 1258) in loadout) and (MetroidSuit in loadout)
+        ) or (
+            # no metroid suit
+            (Varia in loadout) and (Aqua in loadout) and (energy_req(hell_run_energy(650, loadout)) in loadout)
+        )) and
         ((
             (FieryGalleryL in loadout) and
             (Verdite.fieryTrail in loadout)

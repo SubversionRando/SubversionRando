@@ -879,7 +879,9 @@ class PirateLab:
 
     centralTopToMid = LogicShortcut(lambda loadout: (
         (Screw in loadout) or
-        ((Tricks.super_sink_easy in loadout) and (Tricks.xray_climb in loadout))
+        ((bonkCeilingSuperSink in loadout) and (Tricks.xray_climb in loadout))
+        # you might be able to do a super sink from a door stuck,
+        # but that might get you stuck in the middle and require a harder super sink
     ))
 
     centralCorridorWater = LogicShortcut(lambda loadout: (
