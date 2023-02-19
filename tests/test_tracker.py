@@ -33,8 +33,11 @@ def test_loc_names_from_input() -> None:
 
     # aliases
     assert t.loc_names_from_input("warrior shrine top") == ["Warrior Shrine: Top"]
+    assert t.loc_names_from_input("warrior top") == ["Warrior Shrine: Top"]
     assert t.loc_names_from_input("warrior shrine bottom") == ["Warrior Shrine: Bottom"]
+    assert t.loc_names_from_input("warrior bot") == ["Warrior Shrine: Bottom"]
     assert t.loc_names_from_input("warrior shrine mid") == ["Warrior Shrine: Middle"]
+    assert t.loc_names_from_input("warrior mid") == ["Warrior Shrine: Middle"]
     assert t.loc_names_from_input("warrior shrine etank") == ["Warrior Shrine: Middle"]
     assert t.loc_names_from_input("briar bot") == ['Briar: Bottom']
     assert t.loc_names_from_input("briar top") == ["Briar: Top"]
@@ -68,6 +71,20 @@ def test_loc_names_from_input() -> None:
     assert t.loc_names_from_input("fervor") == ["Shrine Of Fervor"]
     assert t.loc_names_from_input("animate spark") == ["Shrine Of The Animate Spark"]
     assert t.loc_names_from_input("animate") == ["Shrine Of The Animate Spark"]
+    assert t.loc_names_from_input("sandy burrow top") == ["Sandy Burrow: Top"]
+    assert t.loc_names_from_input("burrow top") == ["Sandy Burrow: Top"]
+    assert t.loc_names_from_input("sandy burrow bot") == ["Sandy Burrow: Bottom"]
+    assert t.loc_names_from_input("burrow bot") == ["Sandy Burrow: Bottom"]
+    assert t.loc_names_from_input("path of swords") == ["Path Of Swords"]
+    assert t.loc_names_from_input("swords") == ["Path Of Swords"]
+    assert t.loc_names_from_input("central corridor left") == ["Central Corridor: Left"]
+    assert t.loc_names_from_input("central left") == ["Central Corridor: Left"]
+    assert t.loc_names_from_input("central corridor right") == ["Central Corridor: Right"]
+    assert t.loc_names_from_input("central right") == ["Central Corridor: Right"]
+    assert t.loc_names_from_input("main hive chamber") == ["Hive Main Chamber"]
+    assert t.loc_names_from_input("hive main chamber") == ["Hive Main Chamber"]
+    assert t.loc_names_from_input("main hive") == ["Hive Main Chamber"]
+    assert t.loc_names_from_input("hive main") == ["Hive Main Chamber"]
 
     all_locations = pullCSV()
     for loc_name in all_locations:
