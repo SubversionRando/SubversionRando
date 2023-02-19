@@ -85,6 +85,10 @@ def test_loc_names_from_input() -> None:
     assert t.loc_names_from_input("hive main chamber") == ["Hive Main Chamber"]
     assert t.loc_names_from_input("main hive") == ["Hive Main Chamber"]
     assert t.loc_names_from_input("hive main") == ["Hive Main Chamber"]
+    assert t.loc_names_from_input("ocean top") == ["Ocean Shore: Top"]
+    assert t.loc_names_from_input("ocean shore top") == ["Ocean Shore: Top"]
+    assert t.loc_names_from_input("ocean bot") == ["Ocean Shore: Bottom"]
+    assert t.loc_names_from_input("ocean shore bot") == ["Ocean Shore: Bottom"]
 
     all_locations = pullCSV()
     for loc_name in all_locations:
