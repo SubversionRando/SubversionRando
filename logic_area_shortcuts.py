@@ -223,7 +223,15 @@ class Early:
             # no bombs or speedbooster needed
             (Aqua in loadout) and
             (GravityBoots in loadout) and
-            (Screw in loadout) and
+            (
+                (Screw in loadout) or
+                (
+                    (Tricks.super_sink_easy in loadout) and
+                    (Tricks.morphless_tunnel_crawl in loadout)
+                    # turnaround cancel to move door-stuck super sink pose away from door
+                ) or
+                (bonkCeilingSuperSink in loadout)
+            ) and
             (Morph in loadout) and
             (
                 (Speedball in loadout) or
@@ -231,7 +239,11 @@ class Early:
                 (Tricks.wave_gate_glitch in loadout)
             ) and
             (
-                (Tricks.morph_jump_3_tile in loadout) or
+                (
+                    (Tricks.morph_jump_3_tile in loadout) and
+                    (Tricks.movement_zoast in loadout)
+                    # have to get this morph jump, with no opposite wall, fast before shot block respawns
+                ) or
                 (Speedball in loadout) or
                 (can_bomb(1) in loadout)
             ) and
@@ -792,7 +804,10 @@ class PirateLab:
 
     isobaric = LogicShortcut(lambda loadout: (
         (Morph in loadout) and
-        (  # left to right
+
+        # left to right
+        (can_bomb(1) in loadout) and  # stand to shoot switch
+        (
             (shootThroughWalls in loadout) or
             (Tricks.spazer_into_lower_pirate_lab in loadout)
         ) and

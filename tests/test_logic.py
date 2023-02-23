@@ -788,6 +788,110 @@ def test_no_bomb_blocks(logic: frozenset[Trick]) -> None:
             assert found[loc_name], f"expert logic thinks bomb blocks are needed for {loc_name}"
 
 
+_no_bomb_blocks_or_speed = frozenset([
+    "Aft Battery",
+    "Docking Port 3",
+    "Docking Port 4",
+    "Forward Battery",
+    "Gantry",
+    "Ready Room",
+    "Torpedo Bay",
+    "Weapon Locker",
+    "Eddy Channels",
+    "Impact Crater",
+    "Ocean Shore: Bottom",
+    "Ocean Shore: Top",
+    "Ocean Vent Supply Depot",
+    "Sandy Burrow: Bottom",
+    "Sandy Cache",
+    "Sandy Gully",
+    "Sediment Floor",
+    "Sediment Flow",
+    "Shrine Of The Penumbra",
+    "Submarine Alcove",
+    "Submarine Nest",
+    "Subterranean Burrow",
+    "Archives: Front",
+    "Arena",
+    "Grand Vault",
+    "Hall Of The Elders",
+    "Monitoring Station",
+    "Sensor Maintenance: Top",
+    "Trophobiotic Chamber",
+    "Vulnar Caves Entrance",
+    "Warrior Shrine: Bottom",
+    "Mining Cache",
+])
+
+
+_no_bomb_blocks_or_speed_expert = frozenset([
+    "Mezzanine Concourse",
+    "West Spore Field",
+
+    # all of this group enabled by getting through causeway without (bombs, pbs, screw, speed)
+    "Antelier",
+    "Briar: Bottom",
+    "Containment Area",
+    "Equipment Locker",
+    "Foundry",
+    "Hydrodynamic Chamber",
+    "Loading Dock Storage Area",
+    "Norak Escarpment",
+    "Restricted Area",
+    "Shrine Of Fervor",
+    "Weapon Research",
+
+    "Drawing Room",
+    "Glacier's Reach",
+    "Grand Promenade",
+    "Ice Cave",
+    "Reliquary Access",
+    "Syzygy Observatorium",
+])
+
+
+@pytest.mark.parametrize("logic", (casual, medium, expert))
+def test_no_bomb_blocks_or_speed(logic: frozenset[Trick]) -> None:
+    """ no bombs or PBs or Screw Attack or speed """
+    game, loadout = setup(logic)
+
+    for item in items_unpackable:
+        if item not in {Items.Bombs, Items.PowerBomb, Items.Screw, Items.SpeedBooster, Items.spaceDrop}:
+            loadout.append(item)
+
+    # some of the non-unique that can help in logic
+    for _ in range(12):
+        loadout.append(Items.Energy)
+        loadout.append(Items.LargeAmmo)
+    loadout.append(Items.SpaceJumpBoost)
+
+    found: dict[str, bool] = defaultdict(bool)
+
+    def this_loadout() -> None:
+        updateLogic(game.all_locations.values(), loadout)
+
+        for loc_name, loc in game.all_locations.items():
+            if loc["inlogic"]:
+                found[loc_name] = True
+                assert loc_name in _no_bomb_blocks_or_speed or (
+                    logic is expert and loc_name in _no_bomb_blocks_or_speed_expert
+                ), f"logic thinks no bomb/speed blocks are needed for {loc_name}"
+                print(loc_name)
+
+    this_loadout()
+    print(" -- space drop")
+    loadout.append(SunkenNestL)
+    loadout.append(Items.spaceDrop)
+    this_loadout()
+
+    for loc_name in _no_bomb_blocks_or_speed:
+        assert found[loc_name], f"logic thinks bomb/speed blocks are needed for {loc_name}"
+
+    if logic is expert:
+        for loc_name in _no_bomb_blocks_or_speed_expert:
+            assert found[loc_name], f"expert logic thinks bomb/speed blocks are needed for {loc_name}"
+
+
 # TODO: places that I can go with no bombs, pbs, or screw (doesn't include colosseum)
 # places that I can go with screw, no bombs, pbs (includes colosseum)
 
@@ -807,4 +911,4 @@ def test_no_bomb_blocks(logic: frozenset[Trick]) -> None:
 
 if __name__ == "__main__":
     # test_hard_required_items()
-    test_no_bomb_blocks(medium)
+    test_no_bomb_blocks_or_speed(expert)
