@@ -5,9 +5,9 @@ from logicCommon import ammo_req, can_bomb, can_use_pbs, crystal_flash, energy_r
 from logic_shortcut import LogicShortcut
 from logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor,
-    missileBarrier, electricHyper, killRippers, killYellowPirates,
-    plasmaWaveGate, icePod, can_crash_spaceport, hiJumpSuperSink,
-    bonkCeilingSuperSink, underwaterSuperSink
+    missileBarrier, electricHyper, killRippers, killGreenOrRedPirates,
+    killYellowPirates, plasmaWaveGate, icePod, can_crash_spaceport,
+    hiJumpSuperSink, bonkCeilingSuperSink, underwaterSuperSink
 )
 from trick_data import Tricks
 
@@ -195,6 +195,12 @@ class SkyWorld:
             (Tricks.movement_zoast in loadout) and
             ((HiJump in loadout) or (SpaceJump in loadout))
         )
+    ))
+
+    westTerminal = LogicShortcut(lambda loadout: (
+        (killGreenOrRedPirates in loadout) or
+        (energy_req(180) in loadout) or
+        (Tricks.movement_moderate in loadout)
     ))
 
 

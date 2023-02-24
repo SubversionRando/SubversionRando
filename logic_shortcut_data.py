@@ -90,7 +90,7 @@ killRippers = LogicShortcut(lambda loadout: (
 ))
 """ GET OUT OF MY WAY!! """
 
-killGreenPirates = LogicShortcut(lambda loadout: (
+killGreenOrRedPirates = LogicShortcut(lambda loadout: (
     (missileDamage in loadout) or
     (Charge in loadout) or
     (Ice in loadout) or

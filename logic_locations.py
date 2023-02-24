@@ -10,7 +10,7 @@ from logic_area_shortcuts import Early, SandLand, ServiceSector, SpacePort, Life
 from logic_shortcut import LogicShortcut
 from logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor, pinkSwitch,
-    missileBarrier, icePod, electricHyper, killRippers, killGreenPirates,
+    missileBarrier, icePod, electricHyper, killRippers, killGreenOrRedPirates,
     bonkCeilingSuperSink, hiJumpSuperSink
 )
 from trick_data import Tricks
@@ -168,7 +168,10 @@ norakToLifeTemple = LogicShortcut(lambda loadout: (
 railAccess = LogicShortcut(lambda loadout: (
     (GravityBoots in loadout) and
     (
-        (WestTerminalAccessL in loadout) or (
+        (
+            (WestTerminalAccessL in loadout) and
+            (SkyWorld.westTerminal in loadout)
+        ) or (
             (MezzanineConcourseL in loadout) and
             (SkyWorld.mezzanineShaft in loadout)
         ) or (
@@ -262,12 +265,12 @@ doorsToWestCorridorTop = LogicShortcut(lambda loadout: (
         (WestCorridorR in loadout)
     ) or (
         (ExcavationSiteL in loadout) and
-        (killGreenPirates in loadout)
+        (killGreenOrRedPirates in loadout)
     ) or (
         (ConstructionSiteL in loadout) and
         (PirateLab.constructionLToElevator in loadout) and
         (can_use_pbs(1) in loadout) and
-        (killGreenPirates in loadout)
+        (killGreenOrRedPirates in loadout)
     )
 ))
 """ pirate lab area doors to top of west corridor """
@@ -280,7 +283,7 @@ doorsToCentralCorridorBottom = LogicShortcut(lambda loadout: (
         (WestCorridorR in loadout) and
         ((
             # through PB tube
-            (killGreenPirates in loadout) and
+            (killGreenOrRedPirates in loadout) and
             (can_use_pbs(1) in loadout) and
             (PirateLab.epiphreaticIsobaric in loadout)
         ) or (
@@ -326,7 +329,7 @@ doorsToCentralCorridorMid = LogicShortcut(lambda loadout: (
         (WestCorridorR in loadout) and
         ((
             # through PB tube
-            (killGreenPirates in loadout) and
+            (killGreenOrRedPirates in loadout) and
             (can_use_pbs(1) in loadout) and
             (PirateLab.epiphreaticIsobaric in loadout) and
             (PirateLab.centralCorridorWater in loadout)
@@ -1178,7 +1181,29 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (SunkenNestL in loadout) and
         (GravityBoots in loadout) and
         (can_bomb(2) in loadout) and
-        ((can_use_pbs(1) in loadout) or (Super in loadout) or (
+        ((
+            (can_use_pbs(1) in loadout)
+        ) or (
+            (Super in loadout) and
+            # getting in and out with supers is not trivial
+            # right after super tunnel:
+            (
+                (Speedball in loadout) or
+                (can_bomb(1) in loadout) or
+                (Tricks.morph_jump_3_tile in loadout)
+            ) and
+
+            # exit
+            ((
+                (Tricks.super_sink_easy in loadout)
+            ) or (
+                (
+                    (Speedball in loadout) or
+                    (Bombs in loadout) or
+                    (Tricks.morph_jump_4_tile in loadout)
+                )
+            ))
+        ) or (
             # from the door to impact crater alcove
             (Tricks.xray_climb in loadout) and  # up
             (Tricks.super_sink_easy in loadout) and  # down
@@ -2017,7 +2042,12 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Weapon Research": lambda loadout: (
         (GravityBoots in loadout) and
         ((shootThroughWalls in loadout) or (MetroidSuit in loadout) or (bonkCeilingSuperSink in loadout)) and
-        ((can_bomb(5) in loadout) or ((Spazer in loadout) and (Morph in loadout))) and
+        (
+            (can_bomb(5) in loadout) or
+            ((can_bomb(4) in loadout) and (Tricks.movement_moderate in loadout)) or
+            ((can_bomb(3) in loadout) and (Tricks.movement_zoast in loadout)) or
+            ((Spazer in loadout) and (Morph in loadout))
+        ) and
         (doorsToCentralCorridorMid in loadout)
         # TODO: energy or movement or something to kill red pirates?
     ),

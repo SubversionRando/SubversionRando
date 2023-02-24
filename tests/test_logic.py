@@ -329,7 +329,6 @@ _possible_places = {
         "Weapon Locker",
 
         "Ocean Shore: Bottom",
-        "Ocean Shore: Top",  # not in casual or medium
         "Subterranean Burrow",
     ])
 }
@@ -370,7 +369,7 @@ def test_restrictive_item_locations(logic: frozenset[Trick]) -> None:
         this_loadout()
 
         for loc_name in _possible_places[excluded_item]:
-            assert found[loc_name] or ((logic is casual or logic is medium) and loc_name == "Ocean Shore: Top"), \
+            assert found[loc_name], \
                 f"logic thinks {excluded_item[0]} can't be at {loc_name}"
 
 
@@ -423,7 +422,6 @@ _possible_places_area = {
         ]),
         Items.GravityBoots: frozenset([
             "Ocean Shore: Bottom",
-            "Ocean Shore: Top",
             "Subterranean Burrow",
             "Loading Dock Storage Area",
         ])
@@ -602,7 +600,7 @@ _no_bombing = frozenset([
     "Vulnar Caves Entrance",
     "Warrior Shrine: Bottom",
     "Warrior Shrine: Top",
-    "Warrior Shrine: Middle",
+    # "Warrior Shrine: Middle",
     "West Spore Field",
     "Colosseum",
     "Magma Lake Cache",
@@ -678,8 +676,8 @@ def test_no_bombing_locations(logic: frozenset[Trick]) -> None:
     for loc_name in _no_bombing:
         assert (
             found[loc_name] or
-            (logic is casual and loc_name == "Warrior Shrine: Top") or
-            (logic in {casual, medium} and loc_name == "Warrior Shrine: Middle")
+            (logic is casual and loc_name == "Warrior Shrine: Top")  # or
+            # (logic in {casual, medium} and loc_name == "Warrior Shrine: Middle")
         ), f"logic thinks bombing is needed for {loc_name}"
 
 
