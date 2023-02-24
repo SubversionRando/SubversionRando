@@ -598,7 +598,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             )
         ) and
         ((Speedball in loadout) or (Tricks.mockball_hard in loadout)) and
-        ((can_use_pbs(1) in loadout) or (bonkCeilingSuperSink in loadout))
+        ((can_use_pbs(1) in loadout))  # or (bonkCeilingSuperSink in loadout))
+        # TODO: find out if super sink is possible from inside
     ),
     "Vulnar Caves Entrance": lambda loadout: (
         (sunkenNestToVulnar in loadout)
