@@ -326,11 +326,12 @@ class SandLand:
                 (HiJump in loadout) or  # debating attaching a trick to this for the difficulty of the jumps
                 (SpeedBooster in loadout)
             )
-        ) or
+        )
 
         # Gravity boots are not required to get this.
         # The only difficulty is shooting the wall in the right place (when you'll fall quickly).
-        (Tricks.ocean_top_without_grav_boots in loadout)
+        # (Tricks.ocean_top_without_grav_boots in loadout)
+        # This doesn't work. Some items spawn slower, so you can't pick it up before falling.
     ))
     """
     I wouldn't make a logic shortcut just for a single location.
@@ -994,6 +995,18 @@ class LifeTemple:
             (can_bomb(1) in loadout) and
             ((Speedball in loadout) or (Bombs in loadout))
         )) and
+        (
+            # hard morph jump from door to wellspring access into morph tunnel
+            (Aqua in loadout) or
+            (Speedball in loadout) or
+            (Tricks.movement_zoast in loadout) or
+
+            # hold spin with 1-tile-wide wall jump in hole waiting for water to go down,
+            # then fall down near surface of water and space jump into morph
+            # (easier with hi-jump boots unequipped)
+            ((SpaceJump in loadout) and (Tricks.movement_moderate in loadout))
+
+        ) and
         (
             ((SpeedBooster in loadout) and (LifeTemple.waterToVeranda in loadout)) or  # top door
             (HiJump in loadout) or
