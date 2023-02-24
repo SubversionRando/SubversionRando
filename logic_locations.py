@@ -1527,6 +1527,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Eddy Channels": lambda loadout: (
         (EleToTurbidPassageR in loadout) and
+        (pinkDoor in loadout) and
         (
             (Aqua in loadout) or
             (HiJump in loadout) or
