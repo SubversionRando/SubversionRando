@@ -1889,7 +1889,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         # top of frozen trail
         ((can_bomb(1) in loadout) or (breakIce in loadout) or (
-            loadout.has_all(Screw, Tricks.morphless_tunnel_crawl)
+            loadout.has_all(Screw, Tricks.morphless_tunnel_crawl) and
+            ((Tricks.movement_zoast in loadout) or (varia_or_hell_run(150) in loadout))
         )) and
         # bottom of frozen trail
         ((Morph in loadout) or (breakIce in loadout)) and
