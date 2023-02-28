@@ -399,7 +399,10 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # the position for the easy super sink to get out is right above where you pick up the item
             # spam jump (respin) while holding left on the d-pad
         )) and
-        ((HiJump in loadout) or (SpeedBooster in loadout) or (canFly in loadout))
+        ((HiJump in loadout) or (SpeedBooster in loadout) or (canFly in loadout) or (
+            loadout.has_all(Tricks.wall_jump_delayed, Tricks.movement_zoast)
+            # the hard wall jump that I heard is used in low% - from the wall between the platforms
+        ))
     ),
     "Subterranean Burrow": lambda loadout: (
         (SunkenNestL in loadout) and
