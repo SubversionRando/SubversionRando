@@ -636,7 +636,10 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (sunkenNestToVulnar in loadout) and
         (pinkDoor in loadout) and  # into way of the watcher
         (Morph in loadout) and
-        ((Speedball in loadout) or (Tricks.super_sink_easy in loadout))
+        ((Speedball in loadout) or (
+            (Tricks.super_sink_easy in loadout) and
+            (Tricks.movement_moderate in loadout)  # this 2-tile space is a little more difficult to get into than others
+        ))
     ),
     "Archives: Back": lambda loadout: (
         (sunkenNestToVulnar in loadout) and
