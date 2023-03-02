@@ -1989,7 +1989,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # super sink
             # enter
             (
-                (bonkCeilingSuperSink in loadout) or
+                # TODO: is there a simple setup for this bonk ceiling super sink?
+                # (bonkCeilingSuperSink in loadout) or
                 (crystal_flash in loadout) or
                 ((Tricks.super_sink_easy in loadout) and (Super in loadout))  # get stuck in door to Great Spore Hall
             ) and
