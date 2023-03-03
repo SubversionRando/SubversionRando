@@ -326,7 +326,7 @@ area_logic: AreaLogicType = {
         ("WestCorridorR", "ConstructionSiteL"): lambda loadout: (
             (GravityBoots in loadout) and
             ((
-                (killGreenOrRedPirates in loadout) and  # TODO: is this needed for either direction if start from corridor?
+                (killGreenOrRedPirates in loadout) and  # needed to go right if start from corridor
                 (can_use_pbs(1) in loadout)
             ) or (
                 (PirateLab.westCorridorToCentralTop in loadout) and
@@ -349,7 +349,7 @@ area_logic: AreaLogicType = {
                 (PirateLab.eastCorridor in loadout) and
                 (PirateLab.centralTopToMid in loadout) and
                 (PirateLab.westCorridorToCentralTop in loadout) and
-                (killGreenOrRedPirates in loadout)  # TODO: is this needed for either direction if you start from corridor?
+                (killGreenOrRedPirates in loadout)  # needed to return right even if you start from corridor
             ) or (  # low
                 (can_use_pbs(1) in loadout) and
                 (PirateLab.epiphreaticIsobaric in loadout) and
