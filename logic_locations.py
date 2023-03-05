@@ -1857,7 +1857,29 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (doorsToCentralCorridorBottom in loadout)
     ),
     "Restricted Area": lambda loadout: (
-        (MetroidSuit in loadout) and
+        (
+            (MetroidSuit in loadout) or
+            (
+                (bonkCeilingSuperSink in loadout) and
+                (
+                    (energy_req(201) in loadout) or
+                    (
+                        (energy_req(151) in loadout) and
+                        loadout.has_any(Varia, Aqua)
+                    )
+                ) and
+                (Tricks.clip_crouch in loadout)  # not a typical clip_crouch
+                # How to get up through laser:
+                #  1. run up the slope into the laser (with dash button)
+                #  2. release everything
+                #  3. tap left
+                #  4. press and hold jump
+                #  5. tap right
+                #  6. release jump
+                #  7. tap down
+                #  8. jump
+            )
+        ) and
         (doorsToCentralCorridorMid in loadout)
     ),
     "Foundry": lambda loadout: (
