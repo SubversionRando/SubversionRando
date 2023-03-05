@@ -131,10 +131,16 @@ class SkyWorld:
             )) and
             ((energy_req(850) in loadout) or (
                 (Tricks.movement_moderate in loadout) and
-                (energy_req(650) in loadout)
+                ((energy_req(650) in loadout) or (
+                    (crystal_flash in loadout) and
+                    (energy_req(450) in loadout)
+                ))
             ) or (
                 (Tricks.movement_zoast in loadout) and
-                (energy_req(450) in loadout)
+                ((energy_req(450) in loadout) or (
+                    (crystal_flash in loadout) and
+                    (energy_req(350) in loadout)
+                ))
             ))
         ) or (
             (Charge in loadout) and
