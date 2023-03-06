@@ -1420,6 +1420,27 @@ class SpacePort:
         # TODO: if I get up with xray, or (ice and super), then i can get back down with moonfall
     ))
 
+    loadingDock = LogicShortcut(lambda loadout: (
+        (
+            (GravityBoots in loadout) or
+            # don't need gravity boots if you shinespark up security area
+            ((SpeedBooster in loadout) and (MetroidSuit in loadout))
+        ) and
+        (
+            (MetroidSuit in loadout) or
+            (
+                # spike suit laser skip up and super sink down
+                (SpeedBooster in loadout) and
+                (Morph in loadout) and
+                (Tricks.movement_zoast in loadout) and
+                (bonkCeilingSuperSink in loadout)
+                # super sink in the column where the door to loading dock is
+                # further left will get stuck in the laser, further right will get too much velocity from the slope
+            )
+        )
+    ))
+    """ bottom of loading dock security area to loading dock """
+
 
 class Suzi:
     crossOceans = LogicShortcut(lambda loadout: (
