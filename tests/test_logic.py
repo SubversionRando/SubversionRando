@@ -424,6 +424,16 @@ _possible_places_area = {
             "Ocean Shore: Bottom",
             "Subterranean Burrow",
             "Loading Dock Storage Area",
+            # can be in these spaceport locations AFTER falling from spaceport
+            "Aft Battery",
+            "Forward Battery",
+            "Docking Port 3",
+            "Docking Port 4",
+            "Gantry",
+            "Ready Room",
+            "Torpedo Bay",
+            "Weapon Locker",
+            "Extract Storage",
         ])
     },
     "medium": {
@@ -471,6 +481,16 @@ _possible_places_area = {
             "Ocean Shore: Bottom",
             "Subterranean Burrow",
             "Loading Dock Storage Area",
+            # can be in these spaceport locations AFTER falling from spaceport
+            "Aft Battery",
+            "Forward Battery",
+            "Docking Port 3",
+            "Docking Port 4",
+            "Gantry",
+            "Ready Room",
+            "Torpedo Bay",
+            "Weapon Locker",
+            "Extract Storage",
         ])
     },
     "casual": {
@@ -517,6 +537,16 @@ _possible_places_area = {
             "Ocean Shore: Bottom",
             "Subterranean Burrow",
             "Loading Dock Storage Area",
+            # can be in these spaceport locations AFTER falling from spaceport
+            "Aft Battery",
+            "Forward Battery",
+            "Docking Port 3",
+            "Docking Port 4",
+            "Gantry",
+            "Ready Room",
+            "Torpedo Bay",
+            "Weapon Locker",
+            "Extract Storage",
         ])
     },
 }

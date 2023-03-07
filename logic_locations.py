@@ -48,8 +48,7 @@ topOfSpaceport = LogicShortcut(lambda loadout: (
     ) or (
         (spaceDrop in loadout) and
         (LoadingDockSecurityAreaL in loadout) and
-        (GravityBoots in loadout) and
-        (MetroidSuit in loadout) and
+        (SpacePort.loadingDock in loadout) and
         (SpacePort.spaceportTopFromElevator in loadout)
     ))
 ))
@@ -1266,8 +1265,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ) or (
             (spaceDrop in loadout) and
             (LoadingDockSecurityAreaL in loadout) and
-            (GravityBoots in loadout) and
-            (MetroidSuit in loadout)
+            (SpacePort.loadingDock in loadout)
         )
     ),
     "Ready Room": lambda loadout: (
@@ -1974,8 +1972,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ) or (
             (spaceDrop in loadout) and
             (LoadingDockSecurityAreaL in loadout) and
-            (GravityBoots in loadout) and
-            (MetroidSuit in loadout)
+            (SpacePort.loadingDock in loadout)
         )
     ),
     "Arena": lambda loadout: (
