@@ -1864,6 +1864,11 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
                     (
                         (energy_req(151) in loadout) and
                         loadout.has_any(Varia, Aqua)
+                    ) or
+                    (
+                        (Tricks.movement_zoast in loadout)
+                        # possible to get out without taking any damage by morph rolling into pixel-perfect position
+                        # then up to crouch and jump
                     )
                 ) and
                 (Tricks.clip_crouch in loadout)  # not a typical clip_crouch
