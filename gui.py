@@ -1,7 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
-from game import CypherItems, GameOptions
+try:
+    from typing import Literal
+except ImportError:
+    input("requires Python 3.9 or higher... press enter to quit")
+    exit(1)
 
+from game import CypherItems, GameOptions
 from gui_scroll_frame import ScrollFrame
 from gui_toggled_frame import ToggledFrame
 try:
@@ -94,11 +99,16 @@ def main() -> None:
         logic_frame, variable=escape_shortcuts_value, text="escape shortcuts"
     ).grid(sticky=tk.E, column=2, row=2)
 
-    mmb_value = tk.IntVar()
+    fill_options: dict[str, Literal['M', 'MM', 'D', 'S', 'B']] = {
+        "full random": "D",
+        "major/minor bias": "B",
+        "major/minor": "MM"
+    }
 
-    ttk.Checkbutton(
-        logic_frame, variable=mmb_value, text="major/minor bias"
-    ).grid(sticky=tk.E, column=3, row=2)
+    fill_select = ttk.Combobox(logic_frame)
+    fill_select["values"] = tuple(fill_options.keys())
+    fill_select.set("full random")
+    fill_select.grid(sticky=tk.E, column=3, row=2)
 
     cypher_label = ttk.Label(logic_frame, text="Shrine Of The Animate Spark and Enervation Chamber have:")
     cypher_label.grid(sticky=tk.W, column=0, row=3, columnspan=4)
@@ -128,7 +138,7 @@ def main() -> None:
 
         options = GameOptions(logic,
                               bool(area_rando_value.get()),
-                              "B" if mmb_value.get() else "D",
+                              fill_options[fill_select.get()],
                               bool(small_spaceport_value.get()),
                               bool(escape_shortcuts_value.get()),
                               cypher_option)
