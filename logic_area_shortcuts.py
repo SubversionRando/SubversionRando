@@ -1369,7 +1369,7 @@ class DrayLand:
 
     killGT = LogicShortcut(lambda loadout: (
         # TODO: measure hell run (whichever is the slowest out of the options that don't require varia)
-        (varia_or_hell_run(350) in loadout) and
+        (varia_or_hell_run(450) in loadout) and
         (
             loadout.has_all(Varia, Charge) or
             loadout.has_all(Charge, Hypercharge) or
@@ -1377,7 +1377,7 @@ class DrayLand:
                 loadout.has_all(Charge, Ice, Wave, DamageAmp, AccelCharge) and
                 ((Spazer in loadout) or (Plasma in loadout))
             ) or
-            loadout.has_all(Super, ammo_req(200)) or
+            loadout.has_all(Super, ammo_req(200), varia_or_hell_run(850)) or
             loadout.has_all(Tricks.patience, Varia, Missile)
         )
     ))
