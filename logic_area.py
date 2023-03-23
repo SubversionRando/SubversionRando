@@ -46,7 +46,7 @@ area_logic: AreaLogicType = {
                     (HiJump in loadout) or (SpaceJumpBoost in loadout)
                 )  # 1 SJ boost enough with no hjb
             ) or (SpeedBooster in loadout) or (
-                (Morph in loadout) and (Bombs in loadout)
+                (Tricks.infinite_bomb_jump in loadout)
             ))
         ),
         ("SunkenNestL", "CraterR"): lambda loadout: (
@@ -57,7 +57,7 @@ area_logic: AreaLogicType = {
                     (HiJump in loadout) or (SpaceJumpBoost in loadout)
                 )  # 1 SJ boost enough with no hjb
             ) or (SpeedBooster in loadout) or (
-                (Morph in loadout) and (Bombs in loadout)
+                (Tricks.infinite_bomb_jump in loadout)
             ))
         ),
         ("SunkenNestL", "RuinedConcourseBL"): lambda loadout: (

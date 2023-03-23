@@ -1612,8 +1612,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (SpaceJumpBoost in loadout)
             # TODO: how many sjb required?
         ) or (
-            (Bombs in loadout) and
-            (Morph in loadout) and
+            (Tricks.infinite_bomb_jump in loadout) and
             (Tricks.movement_moderate in loadout)
         ) or (
             (SpeedBooster in loadout) and

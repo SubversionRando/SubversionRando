@@ -295,8 +295,7 @@ class Early:
 
     craterLedge = LogicShortcut(lambda loadout: (
         ((
-            # IBJ
-            (Morph in loadout) and (Bombs in loadout)
+            (Tricks.infinite_bomb_jump in loadout)
         ) or (
             (SpaceJump in loadout) and
             ((HiJump in loadout) or (SpaceJumpBoost in loadout) or (Tricks.wall_jump_precise in loadout))
@@ -583,7 +582,7 @@ class ServiceSector:
                 loadout.has_any(SpaceJumpBoost, HiJump)
             )) or
             (SpeedBooster in loadout) or
-            (Bombs in loadout) or
+            (Tricks.infinite_bomb_jump in loadout) or
             ((Ice in loadout) and (Tricks.sbj_no_hjb in loadout))
         )
     ))
@@ -1024,7 +1023,7 @@ class LifeTemple:
             (HiJump in loadout) or
             (Tricks.wall_jump_precise in loadout) or  # around 2-tile ledge with no hjb
             ((SpaceJump in loadout) and (SpaceJumpBoost in loadout)) or
-            (loadout.has_all(Morph, Bombs) and loadout.has_any(Aqua, Tricks.movement_moderate))
+            (loadout.has_all(Tricks.infinite_bomb_jump) and loadout.has_any(Aqua, Tricks.movement_moderate))
             # have to start bomb jump mid-air if no aqua
         )
     ))
@@ -1300,7 +1299,7 @@ class Geothermal:
             (SpeedBooster in loadout) or
             (SpaceJump in loadout) or
             (Grapple in loadout) or
-            (loadout.has_all(Aqua, Morph, Bombs)) or
+            (loadout.has_all(Aqua, Tricks.infinite_bomb_jump)) or
             ((Aqua in loadout) and (Tricks.gravity_jump in loadout))
         )
     ))
@@ -1451,8 +1450,7 @@ class Suzi:
             # TODO: how many sjb required?
             # TODO: how many sjb required without hjb?
         ) or (
-            (Bombs in loadout) and
-            (Morph in loadout) and
+            (Tricks.infinite_bomb_jump in loadout) and
             (Tricks.movement_moderate in loadout)
             # TODO: how hard is this in spine reef? Do we need separate for spine reef and moughra lagoon?
         ) or (
