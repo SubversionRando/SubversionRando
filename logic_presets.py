@@ -5,6 +5,7 @@ from trick_data import Tricks
 casual: frozenset[Trick] = frozenset()  # empty
 
 medium = frozenset([
+    Tricks.infinite_bomb_jump,
     Tricks.crouch_or_downgrab,
     Tricks.dark_easy,
     Tricks.dark_medium,

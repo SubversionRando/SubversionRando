@@ -13,7 +13,9 @@ from trick_data import Tricks
 ) = items_unpackable
 
 canFly = LogicShortcut(lambda loadout: (
-    (GravityBoots in loadout) and ((SpaceJump in loadout) or loadout.has_all(Morph, Bombs))
+    (GravityBoots in loadout) and (
+        (SpaceJump in loadout) or (Tricks.infinite_bomb_jump in loadout)
+    )
 ))
 shootThroughWalls = LogicShortcut(lambda loadout: (
     (Wave in loadout) or ((Charge in loadout) and (Hypercharge in loadout))

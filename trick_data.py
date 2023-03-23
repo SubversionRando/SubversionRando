@@ -3,6 +3,9 @@ from trick import Trick
 
 
 class Tricks:
+    infinite_bomb_jump = Trick("use bombs to gain infinite height", Items.Morph, Items.Bombs)
+    """ use bombs to gain infinite height """
+
     sbj_underwater_no_hjb = Trick("underwater springball jump - no hi jump boots", Items.Morph, Items.Speedball)
     """ underwater springball jump - no hi jump boots """
 
