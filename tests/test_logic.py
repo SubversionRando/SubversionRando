@@ -54,7 +54,7 @@ def test_start_logic() -> None:
     print("  with planet")
     for loc in accessible:
         print(loc["fullitemname"])
-    assert len(accessible) == 4, "add Ocean Shore: Bottom"
+    assert len(accessible) == 5, "add Subterranean Burrow and Ocean Shore: Bottom"
 
     game, _ = setup(expert)
     loadout = Loadout(game, loadout.contents)
@@ -63,7 +63,7 @@ def test_start_logic() -> None:
     print("  with expert")
     for loc in accessible:
         print(loc["fullitemname"])
-    assert len(accessible) == 4, "nothing else? really?"
+    assert len(accessible) == 5, "nothing else? really?"
 
     loadout.append(Items.Morph)
     accessible = update_acc()

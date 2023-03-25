@@ -404,8 +404,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ))
     ),
     "Subterranean Burrow": lambda loadout: (
-        (SunkenNestL in loadout) and
-        ((Morph in loadout) or (GravityBoots in loadout))
+        (SunkenNestL in loadout)
     ),
     "Sandy Cache": lambda loadout: (
         (OceanShoreR in loadout) and

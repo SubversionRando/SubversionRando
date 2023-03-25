@@ -28,6 +28,7 @@ import areaRando
 from romWriter import RomWriter
 from solver import hard_required_locations, required_tricks, solve, spoil_play_through
 from spaceport_door_data import shrink_spaceport, spaceport_doors
+from terrain_patch import subterranean
 from trick import Trick
 from trick_data import Tricks
 
@@ -283,6 +284,12 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
     #   which is vanilla and probably not used anyway
     #   use by writing 0x18 to the high byte of a gray door plm param, OR'ed with the low bit of the 9-low-bits id part
     romWriter.writeBytes(0x23e33, b"\x38\x38\x38\x38")  # set the carry bit (a lot)
+
+    # subterranean burrow terrain
+    romWriter.writeBytes(0x2f51c4, subterranean)
+    p_level_data = b'\xc4\xd1\xde'  # ded1c4
+    romWriter.writeBytes(0x7dac7, p_level_data)
+    romWriter.writeBytes(0x7daad, p_level_data)
 
     if game.options.small_spaceport:
         romWriter.writeBytes(0x106283, b'\x71\x01')  # zebetite health
