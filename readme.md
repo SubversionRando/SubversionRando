@@ -54,7 +54,7 @@ This should create a randomized rom with the given name in the roms folder and a
 
 All the logic is symmetrical. This means getting out is required to go in.
 
-For example, Speed Ball cannot be at the vanilla Speed Ball location in the Archives, because it requires Speed Ball to get out.
+For example, Speed Booster cannot be at the vanilla Speed Booster location, because it requires Speed Booster to get out.
 
 If you can't get out of a location, you shouldn't go in, because you might be soft-locked.
 
@@ -66,7 +66,7 @@ Common pitfalls:
   - Shrine Of The Penumbra (behind Kraid) requires Dark Visor or Power Bombs.
   - Going through Magma Pump (in either direction) is not in logic unless you can open the plasma + wave gate.
   - Hot Spring requires a morph jump underwater in a 2-tile space (Speed Ball, or Aqua Suit and bombing).
-  - Archives requires Speed Ball.
+  - Archives requires Speed Ball or advanced tricks.
 
 Also, the logic assumes you pick up everything you can from the space port before falling from the space port.
 So if you don't pick up everything you can before you free fall, you might be stuck.
@@ -78,7 +78,6 @@ Turning the power off is never in logic, unless you can turn it back on before y
 ## Casual logic requirements
 
 In casual logic (with no logic tricks), you might be required to:
-  - infinite bomb jump
   - wall-jump
   - mid-air morph in a space that is 5 tiles high
   - 1-tap short charge
@@ -92,25 +91,26 @@ In casual logic (with no logic tricks), you might be required to:
 ## notes on options
 
 Casual logic notes: -c
-Casual logic is meant to mimic the "intended" experience of Subversion, with its few moments of suitless underwater movement, no hellruns, and no "gate glitches" in logic. Logic regarding the shutdown, and Suzi is overly cautious so I would be surprised to find any progress there.
+Casual logic is meant to mimic the "intended" experience of Subversion, with its few moments of suitless underwater movement, no hellruns, and no glitches in logic.
 
 Medium logic notes: -u
 A logic level between Casual and Expert, including a few common tricks.
 
 Expert logic notes: -e
-Notable tricks in expert logic include p-shooter-only gate glitches, single springball jumps, and hellruns. Once you have 5 E-tanks, most hellruns are in logic. Items and areas in lava require Metroid Suit.
+Notable tricks in expert logic include p-shooter-only gate glitches, single springball jumps, hellruns, and super-sink. Once you have 5 E-tanks, most hellruns are in logic.
 
-Speedrun fill notes: -s
-This mostly works like the speedrun fill of varia.run, as I understand it. After the initial placement of Missile, Morph, and Gravity Boots, all progression items are put into a progression pool and placed into any available location. This often puts powerful items "on the way" to your goal and makes for a speedy experience. Fun!
 
-Medium fill notes: -m
-To make for a more layered logical experience, the progression items are placed into a low-power and high-power pool. Most often, this gives you a few progression items early that open up other areas which may have more high-power items to beat the game. This leads to a slower, more calculated experience.
+Major/Minor Bias fill notes: -b
+Unique item locations are more likely to have unique items, but it's not 100%. This is only unique items, and not energy tanks.
+The hint system is modified in this mode to try to hint a minor location.
 
 Major/Minor fill notes: -mm
-Compatible with casual/expert/etc logic and places Unique+Energy items at the Unique+Energy locations. 23 unique and 16 energy locations in all. While this puts the hard-to-reach unique locations into the major pool, energy tanks seem to be sprinkled around, making this option a nice balance of hard-to-reach items and available energy locations. Note that Refuel tanks, damage amps, accel charge, and space jump boosts are all in the minor pool.
+Places Unique+Energy items at the Unique+Energy locations. 23 unique and 16 energy locations in all. While this puts the hard-to-reach unique locations into the major pool, energy tanks seem to be sprinkled around, making this option a nice balance of hard-to-reach items and available energy locations. Note that Refuel tanks, damage amps, accel charge, and space jump boosts are all in the minor pool.
+
 
 Area Rando notes: -a
-Logically shuffles the major areas of the game and places items in logical places according to the door placement. Also creates a "logical" escape due to some map changes that happen during the final escape. (Warning: the elevator out of Sky Temple is bugged during the escape, so do NOT use it!) For now, this logic does not account for turning the power on/off to collect items. Now compatible with casual or expert logic, and speedrun or medium fill. Not currently compatible with major-minor.
+Logically shuffles the major areas of the game and places items in logical places according to the door placement.
+This is unlikely to work when combined with casual logic and major/minor fill.
 
 ---
 
