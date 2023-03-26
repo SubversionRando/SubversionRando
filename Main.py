@@ -141,9 +141,9 @@ def Main(argv: list[str]) -> None:
     area_rando = False
     if workingArgs.area:
         area_rando = True
-        if fillChoice == "MM":
-            fillChoice = "D"
-            print("Cannot use Major-Minor in Area rando currently. Using assumed fill instead.")
+        # if fillChoice == "MM":
+        #     fillChoice = "D"
+        #     print("Cannot use Major-Minor in Area rando currently. Using assumed fill instead.")
 
     small_spaceport = False
     if workingArgs.smallspaceport:
@@ -199,7 +199,7 @@ def generate(options: GameOptions) -> Game:
         print("Starting randomization attempt:", randomizeAttempts)
         game.item_placement_spoiler = f"Starting randomization attempt: {randomizeAttempts}\n"
         # now start randomizing
-        if options.fill_choice in {"D", "B"}:
+        if options.fill_choice in {"D", "B", "MM"}:
             seedComplete = assumed_fill(game)
         else:
             seedComplete = forward_fill(game)
@@ -360,11 +360,24 @@ def assumed_fill(game: Game) -> bool:
     loadout = Loadout(game)
     fill_algorithm = fillAssumed.FillAssumed(game.connections)
 
-    if game.options.cypher_items == CypherItems.SmallAmmo:
+    if game.options.cypher_items == CypherItems.SmallAmmo and game.options.fill_choice != "MM":
         game.all_locations["Shrine Of The Animate Spark"]["item"] = Items.SmallAmmo
         game.all_locations["Enervation Chamber"]["item"] = Items.SmallAmmo
         fill_algorithm.extra_items.remove(Items.SmallAmmo)
         fill_algorithm.extra_items.remove(Items.SmallAmmo)
+        game.item_placement_spoiler += f"Shrine Of The Animate Spark - - - {Items.SmallAmmo[0]}\n"
+        game.item_placement_spoiler += f"Enervation Chamber - - - {Items.SmallAmmo[0]}\n"
+
+    if game.options.fill_choice == "MM":  # major/minor
+        first, second = Items.Missile, Items.GravityBoots
+        if Tricks.wave_gate_glitch in game.options.logic and random.random() < 0.5:
+            first, second = second, first
+        game.all_locations["Torpedo Bay"]["item"] = first
+        game.all_locations["Subterranean Burrow"]["item"] = second
+        fill_algorithm.prog_items.remove(first)
+        fill_algorithm.prog_items.remove(second)
+        game.item_placement_spoiler += f"Torpedo Bay - - - {first[0]}\n"
+        game.item_placement_spoiler += f"Subterranean Burrow - - - {second[0]}\n"
 
     n_items_to_place = fill_algorithm.count_items_remaining()
     assert n_items_to_place <= len(game.all_locations), \

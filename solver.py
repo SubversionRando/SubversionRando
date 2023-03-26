@@ -98,11 +98,14 @@ def solve(game: Game,
         check_for_new_area_doors()
         play_through.spheres.append(Sphere(True))
         for loc in unused_locations:
+
             # special case: major/minor can put missiles or grav boots in sandy cache even though it's not in logic
+            # old major minor code obsolete, but it doesn't hurt
             if game.options.fill_choice == "MM" and loc['fullitemname'] == "Sandy Cache" and loc['item'] in {
                 Items.GravityBoots, Items.Missile
             }:
                 loc['inlogic'] = True
+
             if loc['inlogic']:
                 loc_name = loc['fullitemname']
                 item = loc['item']
