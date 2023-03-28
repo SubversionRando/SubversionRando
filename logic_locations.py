@@ -2075,13 +2075,13 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (PirateLab.westCorridorToCentralTop in loadout) and
             ((PirateLab.waterGauntlet_oneWay in loadout) or (
                 # backdoor main hydrology research
-                loadout.has_any(Aqua, HiJump, Tricks.sbj_underwater_no_hjb)
+                loadout.has_any(Aqua, HiJump, Tricks.sbj_underwater_no_hjb, Tricks.xray_climb)
             ))
         ) or (
             (doorsToCentralCorridorMid in loadout) and
             (PirateLab.centralTopToMid in loadout) and
             # backdoor main hydrology research
-            loadout.has_any(Aqua, HiJump, Tricks.sbj_underwater_no_hjb)
+            loadout.has_any(Aqua, HiJump, Tricks.sbj_underwater_no_hjb, Tricks.xray_climb)
         )) and
         (PirateLab.exitMainHydrologyResearch in loadout)
         # can gravity jump (no Aqua Suit)
