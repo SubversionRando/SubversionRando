@@ -291,6 +291,22 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
     romWriter.writeBytes(0x7dac7, p_level_data)
     romWriter.writeBytes(0x7daad, p_level_data)
 
+    # rotate save files
+    romWriter.writeBytes(
+        0xff60,          # some empty space
+        b'\xad\x52\x09'  # lda $0952  # save slot
+        b'\xc9\x02\x00'  # cmp #$0002
+        b'\x30\x03'      # bmi 03
+        b'\xa9\xff\xff'  # lda #$ffff
+        b'\x1a'          # inc
+        b'\x8d\x52\x09'  # sta $0952
+        b'\x4c\x35\xef'  # jmp $ef35  # the place where 818000 originally jumped to
+    )
+    romWriter.writeBytes(
+        0x8000,          # save code
+        b'\x4c\x60\xff'  # jmp that code above  (changed from jmp $ef35)
+    )
+
     if game.options.small_spaceport:
         romWriter.writeBytes(0x106283, b'\x71\x01')  # zebetite health
         romWriter.writeBytes(0x204b3, b'\x08')  # fake zebetite hits taken
