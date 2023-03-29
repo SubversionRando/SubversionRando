@@ -803,11 +803,13 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((can_bomb(1) in loadout) or (Speedball in loadout)) and
         # hell run from farm in outer chamber to item and back to farm
         (
-            (varia_or_hell_run(1150, heat_and_metroid_suit_not_required=True) in loadout) or
+            (Varia in loadout) or  # can't hell run without certain items
             (
                 (varia_or_hell_run(850, heat_and_metroid_suit_not_required=True) in loadout) and
                 (
-                    loadout.has_any(Speedball, MetroidSuit)
+                    (Speedball in loadout) or
+                    loadout.has_all(Tricks.morph_jump_4_tile, Tricks.movement_zoast, MetroidSuit) or
+                    loadout.has_all(Ice, Wave)
                 )
             )
         ) and
