@@ -800,18 +800,38 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (icePod in loadout) and
         (GravityBoots in loadout) and
         (Morph in loadout) and
-        ((can_bomb(1) in loadout) or (Speedball in loadout)) and
+        ((can_bomb(2) in loadout) or (Speedball in loadout)) and
         # hell run from farm in outer chamber to item and back to farm
         (
             (Varia in loadout) or  # can't hell run without certain items
             (
-                (varia_or_hell_run(850, heat_and_metroid_suit_not_required=True) in loadout) and
+                # 1010 from guard station to farm - 810 from farm to farm
+                (varia_or_hell_run(810, heat_and_metroid_suit_not_required=True) in loadout) and
                 (
                     (Speedball in loadout) or
                     loadout.has_all(Tricks.morph_jump_4_tile, Tricks.movement_zoast, MetroidSuit) or
                     loadout.has_all(Ice, Wave)
                 )
             )
+        ) and
+        # even if not hell running, need to be able to gt through magma furnace
+        (
+            loadout.has_any(energy_req(180), MetroidSuit, Tricks.movement_moderate) and
+            (
+                (Speedball in loadout) or
+                (loadout.has_all(Ice, Wave)) or
+                (
+                    # kill yellow guys
+                    ((can_bomb(6) in loadout) or (loadout.has_all(Charge, Hypercharge))) and
+                    (Tricks.morph_jump_4_tile in loadout)
+                ) or
+                loadout.has_all(Tricks.movement_zoast, Tricks.morph_jump_4_tile)  # while in i frames
+            )
+        ) and
+        # magma forge
+        (
+            loadout.has_any(Ice, SpaceJump, Tricks.wall_jump_precise) or
+            ((killRippers in loadout) and (Tricks.infinite_bomb_jump in loadout))
         ) and
         ((
             (VulnarDepthsElevatorEL in loadout) and
