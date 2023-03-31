@@ -39,7 +39,9 @@ class SkyWorld:
             ))
         )) and
         # exit in grand promenade
-        ((Screw in loadout) or (can_bomb(1) in loadout))
+        ((Screw in loadout) or (can_bomb(1) in loadout)) and
+        (varia_or_hell_run(98) in loadout)
+        # right is never used without left, so only putting hell run in left
     ))
     """ including the exit in grand promenade """
 
