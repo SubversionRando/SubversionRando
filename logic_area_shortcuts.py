@@ -50,15 +50,23 @@ class SkyWorld:
         ((Screw in loadout) or (hiJumpSuperSink in loadout)) and
         # meeting hall
         ((
-            # through top right
+            # through top
             (Morph in loadout) and
             ((can_bomb(1) in loadout) or (Screw in loadout)) and  # break bomb blocks
-            ((Speedball in loadout) or (can_bomb(1) in loadout))  # 2-tile space morph jump
+            ((Speedball in loadout) or (can_bomb(1) in loadout) or (  # 2-tile space morph jump
+                (Tricks.super_sink_easy in loadout) and (varia_or_hell_run(150) in loadout)
+            ))
         ) or (
-            # not through top right
+            # not through top
             # through plasma tunnel
             (breakIce in loadout) and
-            ((Morph in loadout) or (Tricks.morphless_tunnel_crawl in loadout))
+            ((Morph in loadout) or (
+                (Tricks.morphless_tunnel_crawl in loadout) and
+                (
+                    (varia_or_hell_run(350) in loadout) or
+                    (Tricks.movement_zoast in loadout)
+                )
+            ))
         ))
     ))
     """ including the entrance in grand promenade """
