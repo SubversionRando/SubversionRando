@@ -1060,9 +1060,9 @@ class LifeTemple:
             (SpaceJump in loadout) and
             (Tricks.movement_moderate in loadout)
         ) or (
-            (Bombs in loadout) and
-            (Tricks.movement_zoast in loadout)  # TODO: I don't know what trick this is
-        ) or (
+            #     (Bombs in loadout) and
+            #     (Tricks.movement_zoast in loadout)  # TODO: I don't know what trick this is
+            # ) or (
             (SpeedBooster in loadout) and  # 1-tap short charge from norak perimeter
             (Tricks.movement_moderate in loadout)
         ))
