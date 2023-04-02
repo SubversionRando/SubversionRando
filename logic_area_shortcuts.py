@@ -1042,30 +1042,32 @@ class LifeTemple:
     brook = LogicShortcut(lambda loadout: (
         (GravityBoots in loadout) and
         (Morph in loadout) and
-        ((
-            (Aqua in loadout)
-        ) or (
-            (SpaceJump in loadout) and
-            (HiJump in loadout)
-        ) or (
-            (Ice in loadout) and
-            (Tricks.freeze_hard in loadout)
-        ) or (
-            (HiJump in loadout) and
-            (Tricks.movement_moderate in loadout)
-        ) or (
-            (Speedball in loadout) and
-            (Tricks.sbj_underwater_no_hjb in loadout)  # is this harder at the surface of the water?
-        ) or (
-            (SpaceJump in loadout) and
-            (Tricks.movement_moderate in loadout)
-        ) or (
-            #     (Bombs in loadout) and
-            #     (Tricks.movement_zoast in loadout)  # TODO: I don't know what trick this is
-            # ) or (
-            (SpeedBooster in loadout) and  # 1-tap short charge from norak perimeter
-            (Tricks.movement_moderate in loadout)
+        (loadout.has_any(Tricks.wall_jump_precise, HiJump, SpaceJump, Tricks.infinite_bomb_jump) or (
+            (SpeedBooster in loadout) and (Tricks.movement_moderate in loadout)
         ))
+
+        # old stuff that was required before lowering the water in norak brook
+        # ((
+        #     (Aqua in loadout)
+        # ) or (
+        #     (SpaceJump in loadout) and
+        #     (HiJump in loadout)
+        # ) or (
+        #     (Ice in loadout) and
+        #     (Tricks.freeze_hard in loadout)
+        # ) or (
+        #     (HiJump in loadout) and
+        #     (Tricks.movement_moderate in loadout)
+        # ) or (
+        #     (Speedball in loadout) and
+        #     (Tricks.sbj_underwater_no_hjb in loadout)  # is this harder at the surface of the water?
+        # ) or (
+        #     (SpaceJump in loadout) and
+        #     (Tricks.movement_moderate in loadout)
+        # ) or (
+        #     (SpeedBooster in loadout) and  # 1-tap short charge from norak perimeter
+        #     (Tricks.movement_moderate in loadout)
+        # ))
     ))
     """ to get across Norak Brook (bottom right to left) """
 

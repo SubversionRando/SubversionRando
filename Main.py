@@ -291,6 +291,12 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
     romWriter.writeBytes(0x7dac7, p_level_data)
     romWriter.writeBytes(0x7daad, p_level_data)
 
+    # lower the water slightly in norak brook, to get up without aqua suit
+    # (because it's too easy to go down without thinking about it)
+    # This is the lower byte of "Base Y position"
+    # in the FX (18ea0) of the State Headers of Norak Brook (8be5)
+    romWriter.writeBytes(0x18ea2, b'\xbb')  # changed from a7
+
     # rotate save files
     romWriter.writeBytes(
         0xff60,          # some empty space
