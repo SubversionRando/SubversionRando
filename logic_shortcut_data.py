@@ -80,7 +80,7 @@ underwaterSuperSink = LogicShortcut(lambda loadout: (
         (Tricks.patience in loadout) or
         (Xray in loadout) or
         (Tricks.movement_zoast in loadout)
-    )
+    ) and False  # TODO: see if this is not that hard and I didn't just happen to fail it 50 times in a row
 ))
 """ no bonk, no Aqua Suit, no hi jump """
 
