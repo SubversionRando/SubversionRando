@@ -438,7 +438,16 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         (missileDamage in loadout) and  # eye door
         (pinkDoor in loadout) and  # 2 pink doors if I don't have (morph and (hjb or aqua))
-        ((Aqua in loadout) or (Tricks.sbj_underwater_w_hjb in loadout)) and
+
+        # up to door in kraid's lair
+        ((
+            (Aqua in loadout) and
+            (loadout.has_any(canFly, HiJump, Tricks.gravity_jump, Tricks.short_charge_2, Tricks.sbj_no_hjb))
+        ) or (
+            # without aqua
+            (Tricks.sbj_underwater_w_hjb in loadout)
+        )) and
+
         ((
             (can_bomb(1) in loadout) and
             (DarkVisor in loadout)
