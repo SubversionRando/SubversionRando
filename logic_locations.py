@@ -1865,9 +1865,17 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (Aqua in loadout) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_water in loadout)
         ) and
         (icePod in loadout) and
-        (MetroidSuit in loadout) and
         (can_bomb(3) in loadout) and
-        (lava_run(450, 640) in loadout)  # TODO: remeasure this with aqua suit
+        ((
+            (MetroidSuit in loadout) and
+            (lava_run(450, 640) in loadout)  # TODO: remeasure this with aqua suit
+        ) or (
+            loadout.has_all(Aqua, Varia, energy_req(hell_run_energy(930, loadout))) and
+            loadout.has_any(Screw, Super)
+        ) or (
+            loadout.has_all(Aqua, Varia, can_use_pbs(1), Speedball, energy_req(hell_run_energy(705, loadout))) and
+            loadout.has_any(Screw, Super)
+        ))
     ),
     "Hydrodynamic Chamber": lambda loadout: (
         (GravityBoots in loadout) and
