@@ -83,8 +83,7 @@ class FillAssumed(FillAlgorithm):
     def _get_empty_locations(self, all_locations: dict[str, Location]) -> list[Location]:
         return [loc for loc in all_locations.values() if loc["item"] is None]
 
-    @staticmethod
-    def transform_spaceport(available_locations: list[Location], item_to_place: Item) -> list[Location]:
+    def transform_spaceport(self, available_locations: list[Location], item_to_place: Item) -> list[Location]:
         """
         transform the distribution of locations to work against spaceport front-loading
 
@@ -96,6 +95,18 @@ class FillAssumed(FillAlgorithm):
             for loc in available_locations:
                 if (
                     (loc["fullitemname"] == "Torpedo Bay" and item_to_place == Items.GravityBoots) or
+
+                    # if the locking item is already placed, then it's safe to put progression in spaceport
+                    (loc["fullitemname"] == "Extract Storage" and (
+                        (Items.PowerBomb not in self.prog_items) or (
+                            (Items.MetroidSuit not in self.prog_items) and
+                            (Items.Hypercharge not in self.prog_items) and
+                            ((Items.Ice not in self.prog_items) or (Items.Super not in self.prog_items))
+                        )
+                    )) or
+                    (loc["fullitemname"] == "Ready Room" and Items.Super not in self.prog_items) or
+                    (loc["fullitemname"] in {"Forward Battery", "Aft Battery"} and Items.Morph not in self.prog_items) or
+                    (loc["fullitemname"] in {"Docking Port 3", "Docking Port 4"} and Items.Grapple not in self.prog_items) or
                     loc["fullitemname"] not in spacePortLocs
                 ):
                     # number of copies can be tuned
