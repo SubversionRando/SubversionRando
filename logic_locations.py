@@ -1421,6 +1421,10 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # TODO:logic shortcut for how many space jump boost
         ) or (
             (Tricks.movement_zoast in loadout)
+        ) or (
+            # gravity jump off disappearing blocks
+            (Tricks.movement_moderate in loadout) and
+            (Tricks.gravity_jump in loadout)
         ))
         # TODO: rusty said an expert can do this with just gravity boots and hi jump boots
         # I don't see how.
