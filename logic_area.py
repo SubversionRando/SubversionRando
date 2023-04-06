@@ -275,13 +275,13 @@ area_logic: AreaLogicType = {
     },
     "PirateLab": {
         ("ExcavationSiteL", "WestCorridorR"): lambda loadout: (
-            (GravityBoots in loadout) and (killGreenOrRedPirates in loadout)
+            (GravityBoots in loadout) and (killGreenOrRedPirates(5) in loadout)
         ),
         ("ExcavationSiteL", "FoyerR"): lambda loadout: (
             (GravityBoots in loadout) and
             (canOpen(FoyerR) in loadout) and
             ((  # high
-                (killGreenOrRedPirates in loadout) and
+                (killGreenOrRedPirates(5) in loadout) and
                 (PirateLab.westCorridorToCentralTop in loadout) and
                 (PirateLab.centralTopToMid in loadout) and
                 (PirateLab.eastCorridor in loadout)
@@ -300,7 +300,7 @@ area_logic: AreaLogicType = {
         ("ExcavationSiteL", "AlluringCenoteR"): lambda loadout: (
             (GravityBoots in loadout) and
             ((  # high
-                (killGreenOrRedPirates in loadout) and
+                (killGreenOrRedPirates(5) in loadout) and
                 (PirateLab.westCorridorToCentralTop in loadout) and
                 (PirateLab.centralTopToMid in loadout) and
                 ((Screw in loadout) or (MetroidSuit in loadout)) and
@@ -314,7 +314,7 @@ area_logic: AreaLogicType = {
             ))
         ),
         ("WestCorridorR", "ExcavationSiteL"): lambda loadout: (
-            (GravityBoots in loadout) and (killGreenOrRedPirates in loadout)
+            (GravityBoots in loadout) and (killGreenOrRedPirates(5) in loadout)
         ),
         ("WestCorridorR", "FoyerR"): lambda loadout: (
             (GravityBoots in loadout) and
@@ -326,7 +326,7 @@ area_logic: AreaLogicType = {
         ("WestCorridorR", "ConstructionSiteL"): lambda loadout: (
             (GravityBoots in loadout) and
             ((
-                (killGreenOrRedPirates in loadout) and  # needed to go right if start from corridor
+                (killGreenOrRedPirates(5) in loadout) and  # needed to go right if start from corridor
                 (can_use_pbs(1) in loadout)
             ) or (
                 (PirateLab.westCorridorToCentralTop in loadout) and
@@ -349,7 +349,7 @@ area_logic: AreaLogicType = {
                 (PirateLab.eastCorridor in loadout) and
                 (PirateLab.centralTopToMid in loadout) and
                 (PirateLab.westCorridorToCentralTop in loadout) and
-                (killGreenOrRedPirates in loadout)  # needed to return right even if you start from corridor
+                (killGreenOrRedPirates(5) in loadout)  # needed to return right even if you start from corridor
             ) or (  # low
                 (can_use_pbs(1) in loadout) and
                 (PirateLab.epiphreaticIsobaric in loadout) and
@@ -386,12 +386,12 @@ area_logic: AreaLogicType = {
                 (PirateLab.centralCorridorWater in loadout) and
                 (PirateLab.centralTopToMid in loadout) and
                 (PirateLab.westCorridorToCentralTop in loadout) and
-                (killGreenOrRedPirates in loadout)
+                (killGreenOrRedPirates(5) in loadout)
             ))
         ),
         ("ConstructionSiteL", "WestCorridorR"): lambda loadout: (
             (GravityBoots in loadout) and
-            (killGreenOrRedPirates in loadout) and
+            (killGreenOrRedPirates(5) in loadout) and
             (can_use_pbs(1) in loadout) and
             (PirateLab.constructionLToElevator in loadout)
         ),
@@ -408,7 +408,7 @@ area_logic: AreaLogicType = {
             (PirateLab.constructionLToElevator in loadout) and
             ((  # top
                 (can_use_pbs(1) in loadout) and
-                (killGreenOrRedPirates in loadout) and
+                (killGreenOrRedPirates(5) in loadout) and
                 (PirateLab.westCorridorToCentralTop in loadout) and
                 (PirateLab.centralTopToMid in loadout)
             ) or (  # bottom
@@ -421,7 +421,7 @@ area_logic: AreaLogicType = {
         ("AlluringCenoteR", "ExcavationSiteL"): lambda loadout: (
             (GravityBoots in loadout) and
             ((  # top
-                (killGreenOrRedPirates in loadout) and
+                (killGreenOrRedPirates(5) in loadout) and
                 (PirateLab.westCorridorToCentralTop in loadout) and
                 (PirateLab.centralTopToMid in loadout)
             ) or (  # bottom
@@ -443,7 +443,7 @@ area_logic: AreaLogicType = {
                 (PirateLab.centralCorridorWater in loadout) and
                 (PirateLab.epiphreaticIsobaric in loadout) and
                 (can_use_pbs(1) in loadout) and
-                (killGreenOrRedPirates in loadout)
+                (killGreenOrRedPirates(5) in loadout)
             ))
         ),
         ("AlluringCenoteR", "FoyerR"): lambda loadout: (
@@ -460,7 +460,7 @@ area_logic: AreaLogicType = {
             ((  # top
                 (PirateLab.centralTopToMid in loadout) and
                 (PirateLab.westCorridorToCentralTop in loadout) and
-                (killGreenOrRedPirates in loadout) and
+                (killGreenOrRedPirates(5) in loadout) and
                 (can_use_pbs(1) in loadout)
             ) or (  # bottom
                 (PirateLab.centralCorridorWater in loadout) and

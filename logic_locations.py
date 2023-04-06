@@ -264,12 +264,12 @@ doorsToWestCorridorTop = LogicShortcut(lambda loadout: (
         (WestCorridorR in loadout)
     ) or (
         (ExcavationSiteL in loadout) and
-        (killGreenOrRedPirates in loadout)
+        (killGreenOrRedPirates(5) in loadout)
     ) or (
         (ConstructionSiteL in loadout) and
         (PirateLab.constructionLToElevator in loadout) and
         (can_use_pbs(1) in loadout) and
-        (killGreenOrRedPirates in loadout)
+        (killGreenOrRedPirates(5) in loadout)
     )
 ))
 """ pirate lab area doors to top of west corridor """
@@ -282,7 +282,7 @@ doorsToCentralCorridorBottom = LogicShortcut(lambda loadout: (
         (WestCorridorR in loadout) and
         ((
             # through PB tube
-            (killGreenOrRedPirates in loadout) and
+            (killGreenOrRedPirates(5) in loadout) and
             (can_use_pbs(1) in loadout) and
             (PirateLab.epiphreaticIsobaric in loadout)
         ) or (
@@ -328,7 +328,7 @@ doorsToCentralCorridorMid = LogicShortcut(lambda loadout: (
         (WestCorridorR in loadout) and
         ((
             # through PB tube
-            (killGreenOrRedPirates in loadout) and
+            (killGreenOrRedPirates(5) in loadout) and
             (can_use_pbs(1) in loadout) and
             (PirateLab.epiphreaticIsobaric in loadout) and
             (PirateLab.centralCorridorWater in loadout)

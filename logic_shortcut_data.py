@@ -92,16 +92,20 @@ killRippers = LogicShortcut(lambda loadout: (
 ))
 """ GET OUT OF MY WAY!! """
 
-killGreenOrRedPirates = LogicShortcut(lambda loadout: (
-    (missileDamage in loadout) or
-    (Charge in loadout) or
-    (Ice in loadout) or
-    (Wave in loadout) or
-    (Plasma in loadout) or
-    (can_bomb(1) in loadout) or
-    (Spazer in loadout) or
-    (Screw in loadout)
-))
+
+def killGreenOrRedPirates(super_count: int) -> LogicShortcut:
+    return LogicShortcut(lambda loadout: (
+        (Missile in loadout) or
+        ((Super in loadout) and (ammo_req(super_count * 5) in loadout)) or
+        (Charge in loadout) or
+        (Ice in loadout) or
+        (Wave in loadout) or
+        (Plasma in loadout) or
+        (can_bomb(1) in loadout) or
+        (Spazer in loadout) or
+        (Screw in loadout)
+    ))
+
 
 killYellowPirates = LogicShortcut(lambda loadout: (
     (Charge in loadout) or

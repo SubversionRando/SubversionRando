@@ -214,7 +214,7 @@ class SkyWorld:
     ))
 
     westTerminal = LogicShortcut(lambda loadout: (
-        (killGreenOrRedPirates in loadout) or
+        (killGreenOrRedPirates(3) in loadout) or
         (energy_req(180) in loadout) or
         (Tricks.movement_moderate in loadout)
     ))
@@ -529,7 +529,7 @@ class SandLand:
             ((Tricks.movement_moderate in loadout) or (
                 (Super in loadout) and
                 (SandLand.eddy in loadout)
-                # If no aqua suit, assume the player will fall into eddy channels
+                # If no aqua suit, need hi jump to not fall into eddy channels
                 # get out of eddy, and Supers to get back into Sediment Floor
             ))
         ))
@@ -926,7 +926,7 @@ class PirateLab:
     centralCorridorWater = LogicShortcut(lambda loadout: (
         ((
             (Tricks.movement_zoast in loadout)  # gravity jump through door
-            # https://vimeo.com/user130979419
+            # https://vimeo.com/776860978
             # (not gravity jump trick because that requires Aqua Suit)
         ) or (
             (Aqua in loadout)
