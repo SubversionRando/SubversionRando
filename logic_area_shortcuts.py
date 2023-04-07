@@ -703,8 +703,12 @@ class Verdite:
     # TODO: all the places where we only check for this and sporous nook should also check from raging pit
     # because it could require less energy if we have PBs
     fieryTrail = LogicShortcut(lambda loadout: (
-        (varia_or_hell_run(550, heat_and_metroid_suit_not_required=True) in loadout)
-        # TODO: a different amount if I have screw and space jump and shootThroughWalls
+        (varia_or_hell_run(550, heat_and_metroid_suit_not_required=True) in loadout) or
+        (
+            loadout.has_all(
+                SpaceJump, Screw, shootThroughWalls, varia_or_hell_run(310, heat_and_metroid_suit_not_required=True)
+            )
+        )
     ))
     """ fiery gallery and burning trail """
 
