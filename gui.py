@@ -110,8 +110,8 @@ def main() -> None:
     fill_select.set("full random")
     fill_select.grid(sticky=tk.E, column=3, row=2)
 
-    cypher_label = ttk.Label(logic_frame, text="Shrine Of The Animate Spark and Enervation Chamber have:")
-    cypher_label.grid(sticky=tk.W, column=0, row=3, columnspan=4)
+    cypher_label = ttk.Label(logic_frame, text="Thunder Laboratory has:")
+    cypher_label.grid(sticky=tk.E, column=0, row=3, columnspan=2)
 
     cypher_options = {
         "Anything": CypherItems.Anything,
@@ -122,7 +122,7 @@ def main() -> None:
     cypher_select = ttk.Combobox(logic_frame)
     cypher_select["values"] = tuple(cypher_options.keys())
     cypher_select.set("Something not required")
-    cypher_select.grid(sticky=tk.W, column=0, row=4, columnspan=4)
+    cypher_select.grid(sticky=tk.W, column=2, row=3, columnspan=2)
 
     name_label = ttk.Label(logic_frame, text="")
     name_label.grid(column=0, row=5)
