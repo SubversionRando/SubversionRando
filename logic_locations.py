@@ -2035,6 +2035,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "West Spore Field": lambda loadout: (
         ((
             (sunkenNestToVulnar in loadout) and
+            (Morph in loadout) and
+            (loadout.has_any(Tricks.morph_jump_3_tile_up_1, can_bomb(1), Speedball)) and
             (pinkDoor in loadout)  # into west spore field
         ) or (
             (SporeFieldTR in loadout) and
