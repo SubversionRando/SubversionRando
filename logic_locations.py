@@ -226,7 +226,8 @@ meanderingPassage = LogicShortcut(lambda loadout: (
         (SandLand.turbidToSedFloor in loadout) and
         (pinkDoor in loadout) and  # door to meandering passage
         ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
-    ))
+    )) and
+    (loadout.has_any(Tricks.movement_moderate, energy_req(130)))  # puyos hurt
     # hint: snail will help you up meandering passage
 ))
 """ from OceanShoreR or EleToTurbidPassageR to bottom of meandering passage"""
