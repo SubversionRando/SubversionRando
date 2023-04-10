@@ -1,5 +1,8 @@
+import json
+import os
 import tkinter as tk
 from tkinter import ttk
+from typing import TypedDict
 try:
     from typing import Literal
 except ImportError:
@@ -19,7 +22,14 @@ from trick import Trick
 from trick_data import Tricks
 
 
+SETTINGS_FILE_NAME = "gui_settings.json"
+
+
 _trick_to_name = {v: k for k, v in vars(Tricks).items() if isinstance(v, Trick)}
+
+
+class GuiSettings(TypedDict):
+    logic: dict[str, int]
 
 
 def main() -> None:
@@ -46,6 +56,34 @@ def main() -> None:
                 borderwidth=1, relief="solid", padding=2
             ).grid(sticky=tk.W, column=1, row=row_i)
             row_i += 1
+
+    def save_logic() -> None:
+        logic_data = {
+            k: v.get() for k, v in logic_selections.items()
+        }
+        data: GuiSettings = {
+            "logic": logic_data
+        }
+        with open(SETTINGS_FILE_NAME, "w") as settings_file:
+            json.dump(data, settings_file)
+
+    def load_logic() -> None:
+        if os.path.isfile(SETTINGS_FILE_NAME):
+            with open(SETTINGS_FILE_NAME) as settings_file:
+                content = settings_file.read()
+                data: GuiSettings = json.loads(content)
+                if isinstance(data, dict) and isinstance(data["logic"], dict):  # type: ignore
+                    logic = data["logic"]
+                    for k, v in logic.items():
+                        if k in logic_selections:
+                            if isinstance(v, int):  # type: ignore
+                                logic_selections[k].set(v)
+                            else:
+                                print(f"invalid value in {SETTINGS_FILE_NAME}, {k=}: {v=}")  # type: ignore
+                else:
+                    print(f"invalid data in {SETTINGS_FILE_NAME}:\n{content}")  # type: ignore
+
+    load_logic()
 
     def preset_buttons() -> None:
         ROW = 0
@@ -128,6 +166,8 @@ def main() -> None:
     name_label.grid(column=0, row=5)
 
     def roll_button_action() -> None:
+        save_logic()
+
         logic: frozenset[Trick] = frozenset([
             getattr(Tricks, trick_name)
             for trick_name in logic_selections
@@ -147,6 +187,13 @@ def main() -> None:
         name_label.config(text=name)
 
     ttk.Button(logic_frame, text="roll", command=roll_button_action).grid(column=1, row=5)
+
+    def on_closing() -> None:
+        save_logic()
+        root.destroy()
+
+    root.protocol("WM_DELETE_WINDOW", on_closing)
+
     root.mainloop()
 
 
