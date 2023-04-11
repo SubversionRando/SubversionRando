@@ -9,10 +9,10 @@ except ImportError:
     input("requires Python 3.9 or higher... press enter to quit")
     exit(1)
 
-from game import CypherItems, GameOptions
-from gui_scroll_frame import ScrollFrame
-from gui_toggled_frame import ToggledFrame
 try:
+    from game import CypherItems, GameOptions
+    from gui_scroll_frame import ScrollFrame
+    from gui_toggled_frame import ToggledFrame
     import logic_presets
 except TypeError:
     input("requires Python 3.9 or higher... press enter to quit")
