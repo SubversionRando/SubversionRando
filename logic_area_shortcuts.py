@@ -1482,7 +1482,7 @@ class Suzi:
         loadout.has_all(GravityBoots,
                         SpeedBooster,
                         Super,
-                        shootThroughWalls,
+                        Wave,  # Vesper Point is possible without Wave, but pretty hard
                         can_use_pbs(1),
                         Aqua,
                         pinkDoor,
