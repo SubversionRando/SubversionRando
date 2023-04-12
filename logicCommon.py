@@ -65,14 +65,17 @@ def hell_run_energy(min_energy: int, loadout: "Loadout") -> int:
 
     based on tricks
     """
-    # not checking Metroid Suit because we would need to separate heat from cold
     if Tricks.hell_run_hard in loadout:
         return min_energy
     if Tricks.hell_run_medium in loadout:
         return (min_energy * 3) // 2
     if Tricks.hell_run_easy in loadout:
         return min_energy * 2
-    return 90001
+
+    # this number is tuned to make it so
+    # fiery trail with space jump and screw hell runs are barely unobtainable
+    # (but sky temple hell runs are obtainable)
+    return int(min_energy ** 1.5046)
 
 
 def _adjust_for_other_suits(energy_required: int, loadout: "Loadout", heat_and_metroid_suit_not_required: bool) -> int:

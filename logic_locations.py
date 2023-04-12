@@ -1600,10 +1600,33 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout)
     ),
     "Icy Flow": lambda loadout: (
-        (railAccess in loadout) and (GravityBoots in loadout) and (SpeedBooster in loadout) and (breakIce in loadout)
+        (railAccess in loadout) and
+        (GravityBoots in loadout) and
+        (SpeedBooster in loadout) and
+        (breakIce in loadout) and
+        ((
+            (varia_or_hell_run(111) in loadout)
+        ) or (
+            ((Screw in loadout) or (
+                (Charge in loadout) and
+                (Hypercharge in loadout)
+            )) and  # easier to farm health
+            (varia_or_hell_run(88) in loadout)
+        ))
     ),
     "Ice Cave": lambda loadout: (
-        (railAccess in loadout) and (GravityBoots in loadout) and (breakIce in loadout)
+        (railAccess in loadout) and
+        (GravityBoots in loadout) and
+        (breakIce in loadout) and
+        ((
+            (varia_or_hell_run(111) in loadout)
+        ) or (
+            ((Screw in loadout) or (
+                (Charge in loadout) and
+                (Hypercharge in loadout)
+            )) and  # easier to farm health
+            (varia_or_hell_run(88) in loadout)
+        ))
     ),
     "Antechamber": lambda loadout: (
         (railAccess in loadout) and (GravityBoots in loadout) and (can_use_pbs(1) in loadout)
