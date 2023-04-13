@@ -842,7 +842,11 @@ class PirateLab:
         # 2-tile morph jump to get into the passage, or jump from further away like monitoring station
         ((Speedball in loadout) or (can_bomb(1) in loadout) or (Tricks.movement_zoast in loadout)) and
 
-        ((Bombs in loadout) or (crystal_flash in loadout))  # open gate from right side
+        ((Bombs in loadout) or (
+            (crystal_flash in loadout) and
+            # get in isobaric vent from right and still have 100 ammo left for CF
+            ((Speedball in loadout) or (ammo_req(110) in loadout))
+        ))  # open gate from right side
     ))
     """ gate into the pirate lab """
 
