@@ -742,8 +742,31 @@ class Verdite:
         ) and
 
         (GravityBoots in loadout) and
+        # lava pool and mining site (mostly mining site, because lava pool is simpler)
         # 4 pbs - beta, lava pool, vulnar elevator, placid pool
-        (can_bomb(4) in loadout) and  # lava pool and mining site (lava pool could be screw, but not mining site)
+        ((can_bomb(4) in loadout) or (
+            # shenanigans to get through bomb blocks in mining site beta
+            (Screw in loadout) and
+            (
+                # no hell run without morph and expert
+                (Varia in loadout) or
+                ((Tricks.movement_zoast in loadout) and (bonkCeilingSuperSink in loadout))
+            ) and
+            (  # down in mining site beta
+                # door stuck, and turnaround cancel to move
+                ((Tricks.super_sink_easy in loadout) and (Tricks.morphless_tunnel_crawl in loadout)) or
+                # or normal
+                (bonkCeilingSuperSink in loadout) or
+                # go down without super sink (with screw)
+                ((Tricks.movement_zoast in loadout) and (Tricks.morphless_tunnel_crawl in loadout))
+            ) and
+            # possible to get through beta with ice clip instead of screw, but that doesn't get through lava pool
+            (  # up in mining site beta
+                (Morph in loadout) or
+                ((Tricks.movement_zoast in loadout) and (Tricks.morphless_tunnel_crawl in loadout))
+                # bomb blocks will reform fast, so you can't use turnaround cancel going right
+            )
+        )) and
         (
             (varia_or_hell_run(937, heat_and_metroid_suit_not_required=True) in loadout) or
             (
