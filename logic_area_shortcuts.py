@@ -1028,6 +1028,7 @@ class LifeTemple:
                 (Tricks.wall_jump_precise in loadout) or
                 (SpeedBooster in loadout)
             )) or
+            loadout.has_all(SpeedBooster, Tricks.wall_jump_precise, Tricks.movement_moderate) or  # no hi jump
             loadout.has_any(canFly, Tricks.freeze_hard) or
             loadout.has_all(Tricks.short_charge_4, Tricks.movement_zoast)  # stutter
         ))
