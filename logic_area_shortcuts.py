@@ -1130,7 +1130,8 @@ class LifeTemple:
 
     veranda = LogicShortcut(lambda loadout: (
         ((  # bottom to top
-            (Tricks.short_charge_3 in loadout)
+            (Tricks.short_charge_3 in loadout) or
+            (loadout.has_all(SpeedBooster, Tricks.movement_moderate))  # hopper nest
         ) or (
             (  # bottom to middle
                 ((
