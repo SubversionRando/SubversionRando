@@ -575,7 +575,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (ServiceSector.eastSpore in loadout)
         )) and
         ((DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
-        (can_bomb(1) in loadout) and
+        (can_bomb(2) in loadout) and
         (Morph in loadout) and
         (GravityBoots in loadout) and
         # 5-tile morph jump
