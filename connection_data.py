@@ -75,6 +75,8 @@ area_doors: dict[str, AreaDoor] = {
 misc_doors: dict[str, AreaDoor] = {
     'AuroraUnitWreckageL': AreaDoor('1a598', '008000000106000000800000', 'Daphne', 'AuroraUnitWreckageL', 3),
     'WreckedMachineRoomR': AreaDoor('194ac', 'a5ec00090f06000000800000', 'Daphne', 'WreckedMachineRoomR', 3),
+    'WreckedCrewQuartersAccessL': AreaDoor('1be44', '9b8500040106000000800000', 'Daphne', 'WreckedCrewQuartersAccessL', 3),
+    'RockyRidgeR': AreaDoor('1bb80', '91ba00014e46040400800000', 'Daphne', 'RockyRidgeR', 3),
 }
 
 vanilla_doors: "dict[AreaDoor, Union[Item, LogicShortcut]]" = {

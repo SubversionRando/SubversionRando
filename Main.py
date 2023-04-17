@@ -12,6 +12,7 @@ try:  # container type annotations 3.9
 except TypeError:
     input("requires Python 3.9 or higher... press enter to quit")
     exit(1)
+from daphne_gate import get_daphne_gate, get_air_lock_bytes
 from fillInterface import FillAlgorithm
 from game import CypherItems, Game, GameOptions
 from hints import choose_hint_location, get_hint_spoiler_text, write_hint_to_rom
@@ -25,6 +26,7 @@ import fillMajorMinor
 import fillAssumed
 import fillSpeedrun
 import areaRando
+from new_terrain_writer import TerrainWriter
 from romWriter import RomWriter
 from solver import hard_required_locations, required_tricks, solve, spoil_play_through
 from spaceport_door_data import shrink_spaceport, spaceport_doors
@@ -189,6 +191,10 @@ def generate(options: GameOptions) -> Game:
                 VanillaAreas(),
                 seeeed)
     while not seedComplete :
+        if game.options.daphne_gate:
+            daphne_blocks = get_daphne_gate(game.options)
+            game.daphne_blocks = daphne_blocks
+
         if game.options.area_rando:  # area rando
             game.connections = areaRando.RandomizeAreas()
             # print(Connections) #test
@@ -285,11 +291,27 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
     #   use by writing 0x18 to the high byte of a gray door plm param, OR'ed with the low bit of the 9-low-bits id part
     romWriter.writeBytes(0x23e33, b"\x38\x38\x38\x38")  # set the carry bit (a lot)
 
-    # subterranean burrow terrain
-    romWriter.writeBytes(0x2f51c4, subterranean)
-    p_level_data = b'\xc4\xd1\xde'  # ded1c4
-    romWriter.writeBytes(0x7dac7, p_level_data)
-    romWriter.writeBytes(0x7daad, p_level_data)
+    tw = TerrainWriter(romWriter)
+
+    tw.write(subterranean, [0x7dac7, 0x7daad])
+
+    if game.options.daphne_gate:
+        wrecked_bytes, non_default_bytes, default_bytes = get_air_lock_bytes(game.daphne_blocks)
+        tw.write(non_default_bytes, [0x7eb2d])
+        tw.write(default_bytes, [0x7eb13])
+        tw.write(wrecked_bytes, [0x782ab, 0x782c5])
+
+        # harder to go left through speed blocks
+        if (game.daphne_blocks.one == "Speed" and not (  # speed on top
+            # horizontal shinespark from broken platform before door
+            Tricks.short_charge_2 in game.options.logic and
+            Tricks.movement_moderate in game.options.logic
+        )) or (game.daphne_blocks.two == "Speed" and not (  # speed on bottom
+            # mockball over broken platform before door
+            Tricks.short_charge_3 in game.options.logic and
+            Tricks.mockball_hard in game.options.logic
+        )):
+            romWriter.connect_doors(misc_doors["WreckedCrewQuartersAccessL"], misc_doors["RockyRidgeR"], one_way=True)
 
     # lower the water slightly in norak brook, to get up without aqua suit
     # (because it's too easy to go down without thinking about it)
@@ -337,6 +359,8 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
         spoiler_file.write('\n\n')
         spoiler_file.write(required_locations_spoiler(game))
         spoiler_file.write('\n')
+        spoiler_file.write(daphne_gate_spoiler(game))
+        spoiler_file.write('\n')
         spoiler_file.write(required_tricks_spoiler(game))
         spoiler_file.write('\n')
         spoiler_file.write(logic_tricks_spoiler(game))
@@ -354,6 +378,10 @@ def required_locations_spoiler(game: Game) -> str:
         item_name = item[0] if item else "Nothing"
         spoiler_text += f"  {loc_name}  --  {item_name}\n"
     return spoiler_text
+
+
+def daphne_gate_spoiler(game: Game) -> str:
+    return f"wrecked daphne gate requires: {game.daphne_blocks.one} or {game.daphne_blocks.two}\n"
 
 
 def required_tricks_spoiler(game: Game) -> str:

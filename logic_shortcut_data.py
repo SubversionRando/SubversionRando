@@ -150,7 +150,7 @@ can_win = LogicShortcut(lambda loadout: (
     (can_crash_spaceport in loadout) and
     (area_doors["RockyRidgeTrailL"] in loadout) and
     (GravityBoots in loadout) and
-    (Screw in loadout) and
+    (loadout.game.daphne_blocks.logic in loadout) and
     (pinkDoor in loadout) and  # top entrance to MB
     (can_use_pbs(1) in loadout) and  # to enter detonator room
     # 1 because there's an enemy in the room where you need 2 pbs, that normally drops 10 ammo

@@ -112,6 +112,11 @@ Area Rando notes: -a
 Logically shuffles the major areas of the game and places items in logical places according to the door placement.
 This is unlikely to work when combined with casual logic and major/minor fill.
 
+
+randomize wrecked daphne gate:
+Changes the Screw Attack blocks in the Wrecked Air Lock to two different kinds of blocks, so you will need 1 of two random items to enter the final area (instead of the normal Screw Attack requirement).
+The items that will let you through the gate are displayed in the Air Lock before it is crashed.
+
 ---
 
 ## hints

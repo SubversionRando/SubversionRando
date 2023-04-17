@@ -148,8 +148,14 @@ def main() -> None:
     fill_select.set("full random")
     fill_select.grid(sticky=tk.E, column=3, row=2)
 
+    daphne_gate_value = tk.IntVar()
+
+    ttk.Checkbutton(
+        logic_frame, variable=daphne_gate_value, text="randomize wrecked daphne gate"
+    ).grid(sticky=tk.E, column=0, row=3, columnspan=2)
+
     cypher_label = ttk.Label(logic_frame, text="Thunder Laboratory has:")
-    cypher_label.grid(sticky=tk.E, column=0, row=3, columnspan=2)
+    cypher_label.grid(sticky=tk.E, column=0, row=4, columnspan=2)
 
     cypher_options = {
         "Anything": CypherItems.Anything,
@@ -160,7 +166,7 @@ def main() -> None:
     cypher_select = ttk.Combobox(logic_frame)
     cypher_select["values"] = tuple(cypher_options.keys())
     cypher_select.set("Something not required")
-    cypher_select.grid(sticky=tk.W, column=2, row=3, columnspan=2)
+    cypher_select.grid(sticky=tk.W, column=2, row=4, columnspan=2)
 
     name_label = ttk.Label(logic_frame, text="")
     name_label.grid(column=0, row=5)
@@ -181,7 +187,8 @@ def main() -> None:
                               fill_options[fill_select.get()],
                               bool(small_spaceport_value.get()),
                               bool(escape_shortcuts_value.get()),
-                              cypher_option)
+                              cypher_option,
+                              bool(daphne_gate_value.get()))
         game = generate(options)
         name = write_rom(game)
         name_label.config(text=name)
