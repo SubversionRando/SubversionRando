@@ -2004,12 +2004,12 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ) or (
             # don't have to climb the right wall of glacier's reach
             loadout.has_any(HiJump, SpaceJump) and
-            (varia_or_hell_run(301) in loadout)
+            (varia_or_hell_run(331) in loadout)  # TODO: remeasure
         ) or (
             # Wave makes a big difference to avoid getting hit by one enemy that you can shoot through the wall
             (Wave in loadout) and
             loadout.has_any(Spazer, DamageAmp) and
-            (varia_or_hell_run(230) in loadout)
+            (varia_or_hell_run(280) in loadout)  # TODO: remeasure
         ) or (
             # can kill blue rippers (without using ammo) for high drop rate on health
             # can farm to full health at the door between Icy Flow and Frozen Trail
@@ -2019,7 +2019,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (varia_or_hell_run(88) in loadout)
         ) or (
             (breakIce in loadout) and
-            (varia_or_hell_run(179) in loadout)
+            (varia_or_hell_run(338) in loadout)
         ))
     ),
     "Sitting Room": lambda loadout: (
