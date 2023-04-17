@@ -123,10 +123,10 @@ class FillAssumed(FillAlgorithm):
         tr: list[Location] = []
         for loc in available_locations:
             if item_to_place in _unique_items and loc["fullitemname"] in majorLocs:
-                for _ in range(30):
+                for _ in range(40):
                     tr.append(loc)
             elif item_to_place not in _unique_items and loc["fullitemname"] not in majorLocs:
-                for _ in range(5):
+                for _ in range(7):
                     tr.append(loc)
             else:
                 tr.append(loc)
