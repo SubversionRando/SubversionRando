@@ -1115,7 +1115,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (Tricks.crouch_or_downgrab in loadout)
         ) or (
             (Speedball in loadout) and
-            (Tricks.sbj_underwater_no_hjb in loadout)
+            (Tricks.sbj_underwater_no_hjb in loadout) and
+            (Tricks.crouch_or_downgrab in loadout)
         ) or (
             (Ice in loadout) and
             (ammo_req(20) in loadout) and  # a few supers to knock worm off the wall
