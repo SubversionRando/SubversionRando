@@ -1413,8 +1413,11 @@ class DrayLand:
     """ to lower lava in magma chamber """
 
     killGT = LogicShortcut(lambda loadout: (
-        # TODO: measure hell run (whichever is the slowest out of the options that don't require varia)
-        (varia_or_hell_run(450) in loadout) and
+        (varia_or_hell_run(1733, heat_and_metroid_suit_not_required=True) in loadout) and
+
+        # in case CF is needed, need to be able to get up to the item platform
+        (loadout.has_any(Varia, Tricks.wall_jump_precise, SpaceJump)) and
+
         (
             loadout.has_all(Varia, Charge) or
             loadout.has_all(Charge, Hypercharge) or
@@ -1422,7 +1425,8 @@ class DrayLand:
                 loadout.has_all(Charge, Ice, Wave, DamageAmp, AccelCharge) and
                 ((Spazer in loadout) or (Plasma in loadout))
             ) or
-            loadout.has_all(Super, ammo_req(200), varia_or_hell_run(850)) or
+            loadout.has_all(Super, ammo_req(230), varia_or_hell_run(2460)) or
+            loadout.has_all(Super, ammo_req(150), Varia, energy_req(1210)) or
             loadout.has_all(Tricks.patience, Varia, Missile)
         )
     ))
