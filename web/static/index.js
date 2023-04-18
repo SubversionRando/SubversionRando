@@ -117,6 +117,7 @@ function setup_roll_button() {
         const small_spaceport_box = document.getElementById("small-spaceport");
         const escape_shortcuts_box = document.getElementById("escape-shortcuts");
         const mmb_box = document.getElementById("mmb");
+        const daphne_box = document.getElementById("daphne-gate");
         const cypher_select = document.getElementById("cypher");
 
         const params = {
@@ -125,7 +126,8 @@ function setup_roll_button() {
             "escape_shortcuts": escape_shortcuts_box.checked,
             "mmb": mmb_box.checked,
             "cypher": cypher_select.value,
-            "tricks": activated_trick_names
+            "tricks": activated_trick_names,
+            "daphne_gate": daphne_box.checked
         };
         roll_button.disabled = true;
         const roll_response = await fetch("/rollseed", {method: "POST", headers: {'Content-Type': 'text/json'}, body: JSON.stringify(params)});

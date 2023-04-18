@@ -42,6 +42,7 @@ class WebParams(TypedDict):
     mmb: bool
     cypher: str
     tricks: list[str]
+    daphne_gate: bool
 
 
 @app.route('/rollseed', methods=['POST'])
@@ -57,7 +58,8 @@ def roll_seed() -> flask.Response:
                           "B" if params["mmb"] else "D",
                           bool(params["small_spaceport"]),
                           bool(params["escape_shortcuts"]),
-                          getattr(CypherItems, params["cypher"]))
+                          getattr(CypherItems, params["cypher"]),
+                          bool(params["daphne_gate"]))
     game = Main.generate(options)
     Main.write_rom(game, romWriter)
     response = flask.make_response(romWriter.getFinalIps())
