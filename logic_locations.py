@@ -1489,7 +1489,11 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (PlacidPoolR in loadout) and
         (GravityBoots in loadout) and
         (can_use_pbs(1) in loadout) and
-        (icePod in loadout) and
+        ((icePod in loadout) or (
+            (Aqua in loadout) and
+            (hiJumpSuperSink in loadout) and
+            (Tricks.clip_crouch in loadout)
+        )) and
         ((Aqua in loadout) or (
             (HiJump in loadout) and (Tricks.crouch_or_downgrab in loadout)
         ) or (
