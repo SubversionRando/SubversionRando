@@ -511,9 +511,11 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # lava room
             ((can_use_pbs(1) in loadout) and (
                 (MetroidSuit in loadout) or
-                (energy_req(880) in loadout) or
-                ((Aqua in loadout) and (energy_req(650) in loadout)) or
-                (loadout.has_all(Varia, Aqua, energy_req(450)))
+                (energy_req(hell_run_energy(610, loadout)) in loadout) or
+                ((Aqua in loadout) and (
+                    (energy_req(hell_run_energy(310, loadout)) in loadout)
+                )) or
+                (loadout.has_all(Varia, Aqua, energy_req(hell_run_energy(210, loadout))))
             )) or
 
             (Tricks.xray_climb in loadout)
