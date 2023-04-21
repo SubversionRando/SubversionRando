@@ -633,7 +633,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
 
             # a non-normal beam shot can clip through the platform from beneath to hit the top left switch
             (
-                loadout.has_any(Ice, Plasma, Spazer) and
+                loadout.has_any(Ice, Plasma, Spazer, Charge) and
                 (Tricks.wave_gate_glitch in loadout) and
                 (Tricks.movement_moderate in loadout)
             )
