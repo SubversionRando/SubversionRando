@@ -53,8 +53,16 @@ plasmaWaveGate = LogicShortcut(lambda loadout: (
 ))
 """ the switches that are blocked by plasma+wave barriers """
 
+iceSBA = LogicShortcut(lambda loadout: (
+    loadout.has_all(Ice, Charge, PowerBomb)
+))
+
 plasmaSBA = LogicShortcut(lambda loadout: (
     loadout.has_all(Plasma, Charge, PowerBomb)
+))
+
+spazerSBA = LogicShortcut(lambda loadout: (
+    loadout.has_all(Spazer, Charge, PowerBomb)
 ))
 
 hiJumpSuperSink = LogicShortcut(lambda loadout: (
