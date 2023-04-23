@@ -1380,6 +1380,42 @@ class Geothermal:
     ))
     """ top left of Magma Pump to middle of Reservoir Maintenance Tunnel (includes plasma+wave gate) """
 
+    control = LogicShortcut(lambda loadout: (
+        (Screw in loadout) or
+        (
+            # It's possible to accidentally turn off the generator during the xray climb.
+            # That could softlock by locking you in terrain. So avoid it:
+            # Only xray climb turning left until you get 1.5 tiles above door level.
+            # Then start turning right to get out of the wall.
+            (Tricks.xray_climb in loadout) and
+            (Tricks.super_sink_easy in loadout) and
+            ((Morph in loadout) or (Tricks.morphless_tunnel_crawl in loadout))
+        )
+    ))
+    """ up and down central control room """
+
+    mainBoiler = LogicShortcut(lambda loadout: (
+        (loadout.has_any(HiJump, canFly, Grapple, Ice, Tricks.sbj_no_hjb)) and  # left side of main boiler
+
+        ((
+            # not fall in lava (or have metroid suit)
+            (loadout.has_any(MetroidSuit, SpaceJump, Grapple, Tricks.wall_jump_delayed)) and
+            # difficult wall jumps to not fall in lava
+            (varia_or_hell_run(849, heat_and_metroid_suit_not_required=True) in loadout)
+            # TODO: patience and refill in room with red pirates (low drop rate)
+        ) or (
+            # fall in lava
+            (varia_or_hell_run(1250, heat_and_metroid_suit_not_required=True) in loadout)
+            # TODO: patience and refill in room with red pirates (low drop rate)
+        ) or (
+            # because some paths will require Metroid Suit anyway
+            (MetroidSuit in loadout) and
+            (varia_or_hell_run(871) in loadout)
+            # TODO: patience and refill in room with red pirates (low drop rate)
+        ))
+    ))
+    """ hell run includes electromechanical engine """
+
     intakePump = LogicShortcut(lambda loadout: (
         # TODO: super sink and xray climb up and down thermal res beta
         (Geothermal.thermalResBeta in loadout) and
