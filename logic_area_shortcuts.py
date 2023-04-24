@@ -7,7 +7,8 @@ from logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor,
     missileBarrier, electricHyper, killRippers, killGreenOrRedPirates,
     killYellowPirates, plasmaWaveGate, icePod, can_crash_spaceport,
-    hiJumpSuperSink, bonkCeilingSuperSink, underwaterSuperSink
+    hiJumpSuperSink, bonkCeilingSuperSink, underwaterSuperSink, iceSBA,
+    plasmaSBA, spazerSBA
 )
 from trick_data import Tricks
 
@@ -481,7 +482,13 @@ class SandLand:
                 ) and
 
                 # going up, shoot the switch through the wall, or use the shinespark path
-                ((shootThroughWalls in loadout) or loadout.has_all(Aqua, SpeedBooster))
+                (
+                    (shootThroughWalls in loadout) or
+                    (iceSBA in loadout) or  # stand underneath or to the left of switch
+                    (plasmaSBA in loadout) or
+                    (spazerSBA in loadout) or
+                    loadout.has_all(Aqua, SpeedBooster)
+                )
             )
             # joonie did the super sink into the visor switch tunnel
             # but with save states, and bob said he doesn't have a good setup for it
@@ -644,6 +651,18 @@ class ServiceSector:
         loadout.has_all(GravityBoots, DarkVisor, can_bomb(1))
     ))
     """ transfer station - not including shoot through walls, because that's only required in 1 direction """
+
+    transferGateRight = LogicShortcut(lambda loadout: (
+        (shootThroughWalls in loadout) or
+        (iceSBA in loadout) or
+        (plasmaSBA in loadout) or
+        (spazerSBA in loadout) or
+        (
+            (Tricks.wave_gate_glitch in loadout) and
+            (Tricks.movement_moderate in loadout) and
+            (loadout.has_any(Plasma, Spazer, Ice, Charge))
+        )
+    ))
 
 
 # TODO: use more of these in location logic where relevant
@@ -1221,7 +1240,7 @@ class FireHive:
             ((canFly in loadout) or (Tricks.wall_jump_delayed in loadout))
             # no SJB needed with easy wall jumps - 1 space jump can get you to the long walls
         ) or (
-            (Tricks.xray_climb in loadout)
+            (Tricks.xray_climb in loadout)  # right side, because slope on the left stops it
         )) and
         (Morph in loadout) and  # required for either bottom or east hive tunnel
         (GravityBoots in loadout)
