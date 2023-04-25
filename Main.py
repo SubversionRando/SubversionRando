@@ -6,6 +6,7 @@ except ImportError:
     input("requires Python 3.9 or higher... press enter to quit")
     exit(1)
 import argparse
+import time
 
 try:  # container type annotations 3.9
     from connection_data import SunkenNestL, VanillaAreas, area_doors, misc_doors
@@ -13,6 +14,7 @@ except TypeError:
     input("requires Python 3.9 or higher... press enter to quit")
     exit(1)
 from daphne_gate import get_daphne_gate, get_air_lock_bytes
+from fillForward import fill_major_minor
 from fillInterface import FillAlgorithm
 from game import CypherItems, Game, GameOptions
 from hints import choose_hint_location, get_hint_spoiler_text, write_hint_to_rom
@@ -157,7 +159,8 @@ def Main(argv: list[str]) -> None:
 
     options = GameOptions(logic, area_rando, fillChoice, small_spaceport, escape_shortcuts, CypherItems.NotRequired)
     game = generate(options)
-    write_rom(game)
+    rom_name = write_rom(game)
+    write_spoiler_file(game, rom_name)
 
 
 def verify_cypher_not_required(seedComplete: bool, game: Game) -> bool:
@@ -174,6 +177,7 @@ def verify_cypher_not_required(seedComplete: bool, game: Game) -> bool:
 
 
 def generate(options: GameOptions) -> Game:
+    """ if generation fails, game.hint_data will be None """
     # hudFlicker=""
     # while hudFlicker != "Y" and hudFlicker != "N" :
     #     hudFlicker= input("Enter Y to patch HUD flicker on emulator, or N to decline:")
@@ -186,6 +190,7 @@ def generate(options: GameOptions) -> Game:
 
     seedComplete = False
     randomizeAttempts = 0
+    start_time = time.perf_counter()
     game = Game(options,
                 all_locations,
                 VanillaAreas(),
@@ -196,17 +201,26 @@ def generate(options: GameOptions) -> Game:
             game.daphne_blocks = daphne_blocks
 
         if game.options.area_rando:  # area rando
-            game.connections = areaRando.RandomizeAreas()
+            force_normal_early = (
+                (
+                    Tricks.movement_moderate not in game.options.logic or
+                    Tricks.wave_gate_glitch not in game.options.logic
+                ) and game.options.fill_choice == "MM"
+            )
+            game.connections = areaRando.RandomizeAreas(force_normal_early)
             # print(Connections) #test
+        if time.perf_counter() - start_time > 70:
+            print(f"Giving up after {randomizeAttempts} attempts. Help?")
+            return game
         randomizeAttempts += 1
-        if randomizeAttempts > 1000 :
-            print("Giving up after 1000 attempts. Help?")
-            break
         print("Starting randomization attempt:", randomizeAttempts)
         game.item_placement_spoiler = f"Starting randomization attempt: {randomizeAttempts}\n"
         # now start randomizing
         if options.fill_choice in {"D", "B", "MM"}:
-            seedComplete = assumed_fill(game)
+            if options.fill_choice == "MM" and randomizeAttempts > 15:
+                seedComplete = fill_major_minor(game)
+            else:
+                seedComplete = assumed_fill(game)
         else:
             seedComplete = forward_fill(game)
 
@@ -245,20 +259,9 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
         # remove .sfc extension and dirs
         romWriter.setBaseFilename(rom1_path[:-4].split("/")[-1])
 
-    spoilerSave = game.item_placement_spoiler + '\n'
-
-    # add area transitions to spoiler
-    if game.options.area_rando:
-        for door1, door2 in game.connections:
-            spoilerSave += f"{door1.area_name} {door1.name} << >> {door2.area_name} {door2.name}\n"
-
-    _completable, play_through, _locs = solve(game)
-    solve_lines = spoil_play_through(play_through)
-
     if game.hint_data:
         hint_loc_name, hint_loc_marker = game.hint_data
         write_hint_to_rom(hint_loc_name, hint_loc_marker, romWriter)
-        spoilerSave += get_hint_spoiler_text(hint_loc_name, hint_loc_marker)
 
     if game.options.area_rando:
         areaRando.write_area_doors(game.connections, romWriter)
@@ -349,25 +352,51 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
 
     print("Done!")
     print(f"Filename is {rom_name}")
-    with open(f"spoilers/{rom_name}.spoiler.txt", "w") as spoiler_file:
-        spoiler_file.write(f"RNG Seed: {game.seed}\n\n")
-        spoiler_file.write("\n Spoiler \n\n Spoiler \n\n Spoiler \n\n Spoiler \n\n")
-        spoiler_file.write(spoilerSave)
-        spoiler_file.write('\n\n')
-        for solve_line in solve_lines:
-            spoiler_file.write(solve_line + '\n')
-        spoiler_file.write('\n\n')
-        spoiler_file.write(required_locations_spoiler(game))
-        spoiler_file.write('\n')
-        spoiler_file.write(daphne_gate_spoiler(game))
-        spoiler_file.write('\n')
-        spoiler_file.write(required_tricks_spoiler(game))
-        spoiler_file.write('\n')
-        spoiler_file.write(logic_tricks_spoiler(game))
-        spoiler_file.write('\n')
-    print(f"Spoiler file is spoilers/{rom_name}.spoiler.txt")
 
     return rom_name
+
+
+def get_spoiler(game: Game) -> str:
+    """ the text in the spoiler file """
+
+    spoilerSave = game.item_placement_spoiler + '\n'
+
+    # add area transitions to spoiler
+    if game.options.area_rando:
+        for door1, door2 in game.connections:
+            spoilerSave += f"{door1.area_name} {door1.name} << >> {door2.area_name} {door2.name}\n"
+
+    if game.hint_data:
+        hint_loc_name, hint_loc_marker = game.hint_data
+        spoilerSave += get_hint_spoiler_text(hint_loc_name, hint_loc_marker)
+
+    _completable, play_through, _locs = solve(game)
+    solve_lines = spoil_play_through(play_through)
+
+    s = f"RNG Seed: {game.seed}\n\n"
+    s += "\n Spoiler \n\n Spoiler \n\n Spoiler \n\n Spoiler \n\n"
+    s += spoilerSave
+    s += '\n\n'
+    for solve_line in solve_lines:
+        s += solve_line + '\n'
+    s += '\n\n'
+    s += required_locations_spoiler(game)
+    s += '\n'
+    s += daphne_gate_spoiler(game)
+    s += '\n'
+    s += required_tricks_spoiler(game)
+    s += '\n'
+    s += logic_tricks_spoiler(game)
+    s += '\n'
+
+    return s
+
+
+def write_spoiler_file(game: Game, rom_name: str) -> None:
+    text = get_spoiler(game)
+    with open(f"spoilers/{rom_name}.spoiler.txt", "w") as spoiler_file:
+        spoiler_file.write(text)
+    print(f"Spoiler file is spoilers/{rom_name}.spoiler.txt")
 
 
 def required_locations_spoiler(game: Game) -> str:
@@ -442,6 +471,8 @@ def assumed_fill(game: Game) -> bool:
             game.item_placement_spoiler += f'{message}\n'
             break
         placeLocation, placeItem = placePair
+        # if placeItem in {Items.Morph, Items.Bombs, Items.Speedball, Items.PowerBomb}:
+        #     print(f"DEBUG: placing {placeItem[0]} in {placeLocation['fullitemname']}")
         placeLocation["item"] = placeItem
         game.item_placement_spoiler += f"{placeLocation['fullitemname']} - - - {placeItem[0]}\n"
 
@@ -530,7 +561,6 @@ def forward_fill(game: Game) -> bool:
 
 
 if __name__ == "__main__":
-    import time
     t0 = time.perf_counter()
     Main(sys.argv)
     t1 = time.perf_counter()

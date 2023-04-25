@@ -192,12 +192,13 @@ class FillAssumed(FillAlgorithm):
         elif loadout.game.options.fill_choice == "MM":
             available_locations = self.transform_mm(available_locations, item_to_place)
         if len(available_locations) == 0:
+            # print(f"DEBUG: failing to place {item_to_place[0]}")
             return None
 
         available_locations = self.transform_spaceport(available_locations, item_to_place)
+        # if item_to_place == Items.Morph:
+        #     print(f"DEBUG: morph locations: {[loc['fullitemname'] for loc in available_locations]}")
 
-        # This magic number 2 could be an option for "How loaded do you want the spaceport to be?"
-        # (lower number means more progression items in spaceport)
         return random.choice(available_locations), item_to_place
 
     def count_items_remaining(self) -> int:

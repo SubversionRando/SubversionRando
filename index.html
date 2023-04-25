@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Subversion Rando</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    <script src='index.js'></script>
+</head>
+<body>
+    <div>
+        <label for="rom">original Subversion rom version 1.2</label>
+        <input type="file" id="rom" name="rom" accept=".sfc, .smc" />
+    </div>
+    <div>
+        <span>logic presets:</span>
+        <span id="preset-buttons"></span>
+    </div>
+    <div>
+        <button id="collapse-control">customize logic</button>
+        <div id="trick-container">
+            <table id="tricks"></table>
+        </div> 
+    </div>
+    <div>
+        <label for="fill">fill:</label>
+
+        <select name="fill" id="fill">
+            <option value="D" selected="selected">full random</option>
+            <option value="B">major/minor bias</option>
+            <option value="MM">major/minor</option>
+        </select> 
+    </div>
+    <div>
+        <input type="checkbox" id="area-rando"/>
+        <label for="area-rando">area rando</label>
+        <input type="checkbox" id="small-spaceport" checked="true"/>
+        <label for="small-spaceport">small spaceport</label>
+        <input type="checkbox" id="escape-shortcuts"/>
+        <label for="escape-shortcuts">escape shortcuts</label>
+    </div>
+    <div>
+        <input type="checkbox" id="daphne-gate"/>
+        <label for="daphne-gate">randomize wrecked daphne gate</label>
+    </div>
+    <div>
+        <label for="cypher">Thunder Laboratory has:</label>
+
+        <select name="cypher" id="cypher">
+            <option value="Anything">Anything</option>
+            <option value="NotRequired" selected="selected">Something not required</option>
+            <option value="SmallAmmo">Small Ammo Tanks</option>
+        </select> 
+    </div>
+    <div>
+        <button id="roll-button">roll</button><br /><span>Generation can take up to 90 seconds, and your browser might stop responding.</span>
+    </div>
+    <div id="status"></div>
+    <py-config>
+        [[fetch]]
+        files = ["areaRando.py", "connection_data.py", "daphne_gate.py", "daphne_gate_types.py", "door_logic.py",
+                 "fillAssumed.py", "fillForward.py", "fillMajorMinor.py", "fillMedium.py", "fillInterface.py",
+                 "fillSpeedrun.py", "item_data.py", "game.py", "hints.py", "loadout.py", "location_data.py",
+                 "logicCommon.py", "logicInterface.py", "logic_area.py", "logic_area_shortcuts.py",
+                 "logic_locations.py", "logic_presets.py", "logic_shortcut.py", "logic_shortcut_data.py",
+                 "logic_updater.py", "new_terrain_writer.py", "romWriter.py", "solver.py", "spaceport_door_data.py",
+                 "subversiondata12.csv", "terrain_patch.py", "trick.py", "trick_data.py", "Main.py"]
+    </py-config>
+    <py-script src="./index.py"></py-script>
+</body>
+</html>

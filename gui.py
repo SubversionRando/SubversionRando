@@ -17,7 +17,7 @@ try:
 except TypeError:
     input("requires Python 3.9 or higher... press enter to quit")
     exit(1)
-from Main import generate, write_rom
+from Main import generate, write_rom, write_spoiler_file
 from trick import Trick
 from trick_data import Tricks
 
@@ -191,6 +191,7 @@ def main() -> None:
                               bool(daphne_gate_value.get()))
         game = generate(options)
         name = write_rom(game)
+        write_spoiler_file(game, name)
         name_label.config(text=name)
 
     ttk.Button(logic_frame, text="roll", command=roll_button_action).grid(column=1, row=5)

@@ -29,7 +29,11 @@ from romWriter import RomWriter
 ) = area_doors_unpackable
 
 
-def RandomizeAreas() -> list[tuple[AreaDoor, AreaDoor]]:
+def RandomizeAreas(force_normal_early: bool) -> list[tuple[AreaDoor, AreaDoor]]:
+    """
+    force_normal_early forces SunkenNestL to connect to OceanShoreR
+    This is necessary for casual major/minor.
+    """
     # Each location holds
     # [0]the data of its door
     # [1]the data of the vanilla door that goes here
@@ -150,6 +154,19 @@ def RandomizeAreas() -> list[tuple[AreaDoor, AreaDoor]]:
 
         # for h in LeftSideDoorsList :
         #     print(h[2],h[3])
+
+        if force_normal_early:
+            Connections.append((SunkenNestL, OceanShoreR))
+            OpenNodesL.remove(SunkenNestL)
+            RightSideDoorsList.remove(OceanShoreR)
+
+            VisitedAreas = VisitedAreas+[OceanShoreR.area_name]
+            for doorSearch in RightSideDoorsList:
+                if doorSearch.area_name in VisitedAreas:
+                    OpenNodesR += [doorSearch]
+            for doorClean in OpenNodesR:
+                if doorClean in RightSideDoorsList:
+                    RightSideDoorsList.remove(doorClean)
 
         while RightSideDoorsList != [] or LeftSideDoorsList != [] :
             # print("Lengths : OpenNodesL",len(OpenNodesL)," and OpenNodesR",len(OpenNodesR))
