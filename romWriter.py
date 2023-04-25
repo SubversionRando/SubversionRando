@@ -1,6 +1,7 @@
+import base64
 import enum
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
 
 if TYPE_CHECKING:
     from connection_data import AreaDoor
@@ -10,6 +11,7 @@ class RomWriterType(enum.IntEnum):
     null = 0
     file = 1
     ipsblob = 2
+    base64 = 3
 
 
 class RomWriter:
@@ -38,6 +40,13 @@ class RomWriter:
         instance.ipsblob = bytearray(b'PATCH')
         return instance
 
+    @classmethod
+    def fromBase64(cls, b64str: Union[str, bytes]) -> "RomWriter":
+        instance = cls()
+        instance.romWriterType = RomWriterType.base64
+        instance.rom_data = bytearray(base64.decodebytes(b64str.encode() if isinstance(b64str, str) else b64str))
+        return instance
+
     @staticmethod
     def createWorkingFileCopy(origFile: str) -> bytearray:
         if not os.path.exists(origFile):
@@ -56,7 +65,7 @@ class RomWriter:
         return True
 
     def writeBytes(self, address: int, data: bytes) -> None:
-        if self.romWriterType == RomWriterType.file:
+        if self.romWriterType in {RomWriterType.file, RomWriterType.base64}:
             assert len(self.rom_data) >= address + len(data)
             self.rom_data[address:address + len(data)] = data
         elif self.romWriterType == RomWriterType.ipsblob:
@@ -72,6 +81,8 @@ class RomWriter:
                 # normal patch data
                 self.ipsblob.extend(len(data).to_bytes(2, 'big'))
                 self.ipsblob.extend(data)
+        else:
+            raise ValueError(f"invalid rom writer type: {self.romWriterType}")
 
     def writeItem(self, address: int, plmid: bytes, ammoAmount: bytes = b"\x00") -> None:
         if len(plmid) != 2 or len(ammoAmount) != 1:
@@ -87,6 +98,8 @@ class RomWriter:
                 file.write(self.rom_data)
         elif self.romWriterType == RomWriterType.ipsblob:
             self.ipsblob.extend(b'EOF')
+        elif self.romWriterType == RomWriterType.base64:
+            pass
 
     def getFinalIps(self) -> bytearray:
         if self.romWriterType != RomWriterType.ipsblob:
@@ -94,6 +107,11 @@ class RomWriter:
         if bytes(self.ipsblob[-3:]) != b'EOF':
             raise Exception('getFinalIps() called before finalizeRom()')
         return self.ipsblob
+
+    def getBase64RomData(self) -> bytes:
+        if self.romWriterType == RomWriterType.ipsblob:
+            raise ValueError('getBase64RomData() called on ipsblob-typed RomWriter')
+        return base64.encodebytes(self.rom_data)
 
     def setBaseFilename(self, baseFilename: str) -> None:
         self.baseFilename = baseFilename
