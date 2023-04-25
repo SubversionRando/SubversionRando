@@ -4,7 +4,15 @@ contact randorandy (ironrusty) or strotlog or beauxq (buxnq) with questions
 
 ---
 
-## setup / install
+## generate from website
+
+The easiest way to play: https://subversionrando.github.io/SubversionRando/
+
+---
+
+## generate from source code
+
+### setup / install
 
 1. install Python from [https://www.python.org/](https://www.python.org/)
    - requires Python 3.9 or higher
@@ -16,17 +24,13 @@ contact randorandy (ironrusty) or strotlog or beauxq (buxnq) with questions
 
 3. put your Subversion 1.2 rom in the `roms` directory with this filename: `Subversion12.sfc`
 
----
+### generate from gui
 
-## generate from gui
+ - run `gui.py`
 
-run `gui.py`
+### generate from command line
 
----
-
-## generate from command line
-
-run `Main.py` in console
+ - run `Main.py` in console
 
 optionally, command line arguments are available:
 ```
@@ -68,7 +72,7 @@ Common pitfalls:
   - Hot Spring requires a morph jump underwater in a 2-tile space (Speed Ball, or Aqua Suit and bombing).
   - Archives requires Speed Ball or advanced tricks.
 
-Also, the logic assumes you pick up everything you can from the space port before falling from the space port.
+**Also important:** the logic assumes you pick up everything you can from the space port before falling from the space port.
 So if you don't pick up everything you can before you free fall, you might be stuck.
 
 Turning the power off is never in logic, unless you can turn it back on before you leave the Geothermal Energy Plant.
