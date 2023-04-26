@@ -1039,7 +1039,16 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (can_use_pbs(1) in loadout)
         ) or (
             (bonkCeilingSuperSink in loadout) and
-            (can_bomb(1) in loadout)
+            (
+                (can_bomb(1) in loadout) or
+
+                loadout.has_all(bonkCeilingSuperSink, Tricks.morphless_tunnel_crawl)
+                # get slopekiller above the right tile of the bomb blocks or the left tile of the bomb blocks
+                # (for a 4-tile or 5-tile vertical space respectively)
+                # then use turn around cancel to move slope killer to the 1st tile right of the bomb blocks
+                # (don't move too far right, there's terrain that will mess up the super sink
+                #  - keep a few pixels over the bomb blocks)
+            )
         ))
     ),
     "Shrine Of Fervor": lambda loadout: (

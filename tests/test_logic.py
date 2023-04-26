@@ -636,6 +636,7 @@ _no_bombing = frozenset([
     "Magma Lake Cache",
     "Mining Cache",
     "Antelier",
+    "Briar: Top",
     "Briar: Bottom",
     "Chamber Of Wind",
     "Containment Area",
@@ -706,7 +707,8 @@ def test_no_bombing_locations(logic: frozenset[Trick]) -> None:
     for loc_name in _no_bombing:
         assert (
             found[loc_name] or
-            (logic is casual and loc_name == "Warrior Shrine: Top")  # or
+            (logic is casual and loc_name == "Warrior Shrine: Top") or
+            (logic in {casual, medium} and loc_name == "Briar: Top")  # or
             # (logic in {casual, medium} and loc_name == "Warrior Shrine: Middle")
         ), f"logic thinks bombing is needed for {loc_name}"
 
@@ -766,6 +768,7 @@ _more_no_bomb_blocks_for_expert = frozenset([
     "Restricted Area",
     "Weapon Research",
     "Norak Escarpment",
+    "Briar: Top",
     "Briar: Bottom",
     "Shrine Of Fervor",
     "Water Garden",
@@ -858,6 +861,7 @@ _no_bomb_blocks_or_speed_expert = frozenset([
 
     # all of this group enabled by getting through causeway without (bombs, pbs, screw, speed)
     "Antelier",
+    "Briar: Top",
     "Briar: Bottom",
     "Containment Area",
     "Equipment Locker",
