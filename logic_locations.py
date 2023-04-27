@@ -939,45 +939,33 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (Grapple in loadout) and
         (Morph in loadout) and
         (GravityBoots in loadout) and
-        # this isn't the same as a morph_jump_3_tile, but I don't know if it's worth making another trick
-        ((Tricks.morph_jump_3_tile in loadout) or (Speedball in loadout) or (can_bomb(1) in loadout)) and
+        ((Tricks.morph_jump_3_tile_up_1 in loadout) or (Speedball in loadout) or (can_bomb(1) in loadout)) and
         # which area door to come from
         ((
-            (ReservoirMaintenanceTunnelR in loadout) and
-            (Screw in loadout) and
-            (can_bomb(1) in loadout) and
-            ((Aqua in loadout) or (
-                (Tricks.freeze_hard in loadout) and
-                (Ice in loadout) and
-                ((Tricks.movement_zoast in loadout) or (HiJump in loadout))
+            # from below
+            ((
+                (ReservoirMaintenanceTunnelR in loadout) and
+                (can_bomb(1) in loadout)
+            ) or (
+                (MagmaPumpL in loadout) and
+                (Geothermal.thermalResGamma in loadout)
             )) and
-            (varia_or_hell_run(80) in loadout) and  # cold room
-            # not requiring metroid suit
+            (Geothermal.thermalResBeta in loadout) and
+            (Geothermal.control in loadout) and
             ((  # security matrix
-                loadout.has_all(MetroidSuit, DarkVisor, shootThroughWalls, varia_or_hell_run(311))
-            ) or (  # main boiler
-                (
-                    # not fall in lava (or have metroid suit)
-                    (loadout.has_any(MetroidSuit, SpaceJump, Grapple, Tricks.wall_jump_delayed)) and
-                    # difficult wall jumps to not fall in lava
-                    (varia_or_hell_run(849, heat_and_metroid_suit_not_required=True) in loadout)
-                    # TODO: patience and refill in room with red pirates (low drop rate)
-                ) or (
-                    # fall in lava
-                    (loadout.has_any(HiJump, canFly, Grapple, Ice)) and  # left side of main boiler
-                    (varia_or_hell_run(1250, heat_and_metroid_suit_not_required=True) in loadout)
-                    # TODO: patience and refill in room with red pirates (low drop rate)
-                )
+                loadout.has_all(MetroidSuit, DarkVisor, varia_or_hell_run(311))
+                # Metroid suit allows you to shoot switches that would normally need shootThroughWalls
+            ) or (
+                (Geothermal.mainBoiler in loadout)
             ))
         ) or (
             # The ways that come in the top of central corridor require metroid suit
             (MetroidSuit in loadout) and
             ((  # security matrix
-                loadout.has_all(DarkVisor, shootThroughWalls, varia_or_hell_run(311))
+                loadout.has_all(DarkVisor, varia_or_hell_run(311))
+                # Metroid suit allows you to shoot switches that would normally need shootThroughWalls
             ) or (  # main boiler
-                (loadout.has_any(HiJump, canFly, Grapple, Ice)) and  # left side of main boiler
-                (varia_or_hell_run(871) in loadout)
-                # TODO: patience and refill in room with red pirates (low drop rate)
+                (Geothermal.mainBoiler in loadout)
             )) and
             (
                 (ThermalReservoir1R in loadout) and
@@ -995,7 +983,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         # which area door to come from
         ((
             (ReservoirMaintenanceTunnelR in loadout) and
-            (Screw in loadout) and
+            (Geothermal.control in loadout) and
             (can_bomb(1) in loadout) and
             (Geothermal.thermalResBeta in loadout) and
             ((True))  # or (Grapple in loadout) or (MetroidSuit in loadout))
@@ -1013,7 +1001,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (MagmaPumpL in loadout) and
             (Geothermal.thermalResGamma in loadout) and
             (Geothermal.thermalResBeta in loadout) and
-            (Screw in loadout) and
+            (Geothermal.control in loadout) and
             ((True))  # or (Grapple in loadout) or (MetroidSuit in loadout))
             # This `True` represents the ability to turn the power off and back on again (requiring Screw)
             # It's here in case we disable turning off the power.
@@ -1541,12 +1529,12 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ) or (
             (GeneratorAccessTunnelL in loadout) and
             (MetroidSuit in loadout) and  # top laser puzzles are 1 way w/o metroid suit
-            (Screw in loadout) and
+            (Geothermal.control in loadout) and
             (can_use_pbs(3) in loadout)
         ) or (
             (ThermalReservoir1R in loadout) and
             (MetroidSuit in loadout) and
-            (Screw in loadout) and
+            (Geothermal.control in loadout) and
             (Geothermal.thermalResAlpha in loadout)
         ))
     ),
