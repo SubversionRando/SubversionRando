@@ -873,7 +873,7 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (Geothermal.thermalResGamma in loadout) and
             (Geothermal.thermalResBeta in loadout) and
-            (Screw in loadout) and
+            (Geothermal.control in loadout) and
             (MetroidSuit in loadout) and
             (Geothermal.thermalResAlpha in loadout)
         ),
@@ -881,7 +881,7 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (Geothermal.thermalResGamma in loadout) and
             (Geothermal.thermalResBeta in loadout) and
-            (Screw in loadout) and
+            (Geothermal.control in loadout) and
             (MetroidSuit in loadout) and
             (can_use_pbs(2) in loadout)
         ),
@@ -899,7 +899,7 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (can_bomb(1) in loadout) and
             (Geothermal.thermalResBeta in loadout) and
-            (Screw in loadout) and
+            (Geothermal.control in loadout) and
             (MetroidSuit in loadout) and
             (Geothermal.thermalResAlpha in loadout)
         ),
@@ -907,7 +907,7 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (can_bomb(1) in loadout) and
             (Geothermal.thermalResBeta in loadout) and
-            (Screw in loadout) and
+            (Geothermal.control in loadout) and
             (MetroidSuit in loadout) and
             (can_use_pbs(2) in loadout)
         ),
@@ -924,14 +924,14 @@ area_logic: AreaLogicType = {
         ("IntakePumpR", "ThermalReservoir1R"): lambda loadout: (
             (GravityBoots in loadout) and
             (Geothermal.intakePump in loadout) and
-            (Screw in loadout) and
+            (Geothermal.control in loadout) and
             (MetroidSuit in loadout) and
             (Geothermal.thermalResAlpha in loadout)
         ),
         ("IntakePumpR", "GeneratorAccessTunnelL"): lambda loadout: (
             (GravityBoots in loadout) and
             (Geothermal.intakePump in loadout) and
-            (Screw in loadout) and
+            (Geothermal.control in loadout) and
             (MetroidSuit in loadout) and
             (can_use_pbs(2) in loadout)
         ),
@@ -939,7 +939,7 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (Geothermal.thermalResAlpha in loadout) and
             (MetroidSuit in loadout) and
-            (Screw in loadout) and
+            (Geothermal.control in loadout) and
             (Geothermal.thermalResBeta in loadout) and
             (Geothermal.thermalResGamma in loadout)
         ),
@@ -947,7 +947,7 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (Geothermal.thermalResAlpha in loadout) and
             (MetroidSuit in loadout) and
-            (Screw in loadout) and
+            (Geothermal.control in loadout) and
             (Geothermal.thermalResBeta in loadout) and
             (can_bomb(1) in loadout)
         ),
@@ -955,7 +955,7 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (Geothermal.thermalResAlpha in loadout) and
             (MetroidSuit in loadout) and
-            (Screw in loadout) and
+            (Geothermal.control in loadout) and
             (Geothermal.intakePump in loadout)
         ),
         ("ThermalReservoir1R", "GeneratorAccessTunnelL"): lambda loadout: (
@@ -967,7 +967,7 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (can_use_pbs(2) in loadout) and
             (MetroidSuit in loadout) and
-            (Screw in loadout) and
+            (Geothermal.control in loadout) and
             (Geothermal.thermalResBeta in loadout) and
             (Geothermal.thermalResGamma in loadout)
         ),
@@ -975,7 +975,7 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (can_use_pbs(2) in loadout) and
             (MetroidSuit in loadout) and
-            (Screw in loadout) and
+            (Geothermal.control in loadout) and
             (Geothermal.thermalResBeta in loadout) and
             (can_bomb(1) in loadout)
         ),
@@ -983,7 +983,7 @@ area_logic: AreaLogicType = {
             (GravityBoots in loadout) and
             (can_use_pbs(2) in loadout) and
             (MetroidSuit in loadout) and
-            (Screw in loadout) and
+            (Geothermal.control in loadout) and
             (Geothermal.intakePump in loadout)
         ),
         ("GeneratorAccessTunnelL", "ThermalReservoir1R"): lambda loadout: (
