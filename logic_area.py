@@ -475,7 +475,7 @@ area_logic: AreaLogicType = {
                             ServiceSector.westSpore,
                             ServiceSector.eastSpore,
                             ServiceSector.transfer,
-                            shootThroughWalls)
+                            ServiceSector.transferGateRight)
         ),
         ("FieldAccessL", "CellarR"): lambda loadout: (
             (GravityBoots in loadout) and
@@ -524,7 +524,7 @@ area_logic: AreaLogicType = {
             (pinkDoor in loadout) and  # cellar to crumbling
             (ServiceSector.crumblingBasement in loadout) and
             (ServiceSector.transfer in loadout) and
-            (shootThroughWalls in loadout)
+            (ServiceSector.transferGateRight in loadout)
         ),
         ("CellarR", "SubbasementFissureL"): lambda loadout: (
             (GravityBoots in loadout) and
@@ -546,7 +546,8 @@ area_logic: AreaLogicType = {
             (can_use_pbs(1) in loadout) and  # door to waste
             (ServiceSector.wasteProcessingTraverse in loadout) and
             (ServiceSector.crumblingBasement in loadout) and
-            (ServiceSector.transfer in loadout)
+            (ServiceSector.transfer in loadout) and
+            (ServiceSector.transferGateRight in loadout)
         ),
         ("SubbasementFissureL", "CellarR"): lambda loadout: (
             (GravityBoots in loadout) and
