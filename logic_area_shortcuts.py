@@ -642,7 +642,11 @@ class ServiceSector:
         # It's not worth putting in logic that something is required when it's not required,
         # just for the case that someone falls in the water without it.
         (GravityBoots in loadout) and
-        (Tricks.dark_easy in loadout) and
+        ((DarkVisor in loadout) or (
+            (Tricks.dark_easy in loadout) and
+            ((energy_req(181) in loadout) or (Tricks.movement_zoast in loadout))
+            # movement_zoast here represents knowing where all the crabs are coming from
+        )) and
         (can_bomb(1) in loadout)
     ))
 
