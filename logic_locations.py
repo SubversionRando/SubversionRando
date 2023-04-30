@@ -522,7 +522,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         )
     ),
     "Sediment Flow": lambda loadout: (
-        # similar to sediment floor
+        # similar to sediment floor and part of eddy
         loadout.has_all(GravityBoots, Aqua) and
         ((
             (OceanShoreR in loadout) and
@@ -1381,7 +1381,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         )
     ),
     "Sediment Floor": lambda loadout: (
-        # similar to sediment flow
+        # similar to sediment flow and part of eddy
         (GravityBoots in loadout) and
         ((
             (OceanShoreR in loadout) and
@@ -1636,24 +1636,28 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (railAccess in loadout) and (GravityBoots in loadout) and (can_use_pbs(1) in loadout)
     ),
     "Eddy Channels": lambda loadout: (
-        (EleToTurbidPassageR in loadout) and
-        (pinkDoor in loadout) and
+        (meanderingPassage in loadout) and  # exit
         (
-            (Aqua in loadout) or
-            (HiJump in loadout) or
-            ((Ice in loadout) and (Tricks.freeze_hard in loadout))
+            # all the ways to get to the eddy entrance
+            # this section similar to sediment flow and sediment floor
+            ((
+                (OceanShoreR in loadout) and
+                ((  # from left
+                    (SandLand.shaftToGreenMoon in loadout) and
+                    (Super in loadout)
+                ) or (  # from right
+                    (SandLand.GreenMoonDown in loadout)
+                ))
+            ) or (
+                (EleToTurbidPassageR in loadout) and
+                (SandLand.turbidToSedFloor in loadout) and
+                (pinkDoor in loadout)  # turbid passage to sediment floor
+            ) or (
+                (Super in loadout)  # from meandering
+            ))
         ) and
         (Morph in loadout) and
         (SandLand.eddy in loadout) and
-
-        (
-            (Super in loadout) or
-            (Aqua in loadout) or
-            (Tricks.movement_zoast in loadout)
-        ) and
-        # with Aqua Suit or good movement, you can open the pink door in sediment floor
-        # so you don't need supers to get back
-
         (GravityBoots in loadout) and
         (loadout.has_any(DarkVisor, Tricks.dark_medium))
     ),
