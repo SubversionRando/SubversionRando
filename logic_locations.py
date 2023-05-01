@@ -2166,7 +2166,16 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Weapon Research": lambda loadout: (
         (GravityBoots in loadout) and
-        ((shootThroughWalls in loadout) or (MetroidSuit in loadout) or (bonkCeilingSuperSink in loadout)) and
+        (
+            loadout.has_any(shootThroughWalls, plasmaSBA, spazerSBA, MetroidSuit, bonkCeilingSuperSink) or
+
+            ((iceSBA in loadout) and (Tricks.movement_moderate in loadout))
+            # Stand in the middle of the last tile of the ledge, above the laser.
+            # The sound of the Ice SBA, has an oscillating pitch.
+            # Consider the highest pitch to be the beat. Start counting with 1.
+            # On beat 19 (beat 3 of the 5th measure of 4/4), jump,
+            # and morph or aim down before hitting the ceiling.
+        ) and
         (
             (can_bomb(5) in loadout) or
             ((can_bomb(4) in loadout) and (Tricks.movement_moderate in loadout)) or
