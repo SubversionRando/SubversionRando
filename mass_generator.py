@@ -14,24 +14,24 @@ from typing import Iterator, Literal, Optional
 
 from Main import generate
 from connection_data import AreaDoor
-from game import Game, GameOptions
+from game import CypherItems, Game, GameOptions
 from location_data import Location
 from logic_presets import casual, expert, medium
 from trick_data import trick_name_lookup
 
 
-desc = "ECU-w-and-wo-area-rando-D-T-F"
+desc = "ECU-w-and-wo-area-rando-D-T-F-cypher-anything"
 game_count = 1000
 
 
 def game_source() -> Iterator[Game]:
     while True:
-        yield generate(GameOptions(expert, False, "D", True, False))
-        yield generate(GameOptions(casual, False, "D", True, False))
-        yield generate(GameOptions(medium, False, "D", True, False))
-        yield generate(GameOptions(expert, True, "D", True, False))
-        yield generate(GameOptions(casual, True, "D", True, False))
-        yield generate(GameOptions(medium, True, "D", True, False))
+        yield generate(GameOptions(expert, False, "D", True, False, CypherItems.Anything))
+        yield generate(GameOptions(casual, False, "D", True, False, CypherItems.Anything))
+        yield generate(GameOptions(medium, False, "D", True, False, CypherItems.Anything))
+        yield generate(GameOptions(expert, True, "D", True, False, CypherItems.Anything))
+        yield generate(GameOptions(casual, True, "D", True, False, CypherItems.Anything))
+        yield generate(GameOptions(medium, True, "D", True, False, CypherItems.Anything))
 
 
 class GameData:
