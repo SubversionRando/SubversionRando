@@ -11,7 +11,7 @@ from logic_shortcut import LogicShortcut
 from logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor, pinkSwitch,
     missileBarrier, icePod, electricHyper, killRippers, killGreenOrRedPirates,
-    bonkCeilingSuperSink, hiJumpSuperSink
+    bonkCeilingSuperSink, hiJumpSuperSink, iceSBA, plasmaSBA, spazerSBA
 )
 from trick_data import Tricks
 
