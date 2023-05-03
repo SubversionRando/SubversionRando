@@ -457,11 +457,21 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ) or (
             (DarkVisor in loadout) and
             (Morph in loadout) and
-            (shootThroughWalls in loadout) and
-            (
-                (Tricks.morph_jump_4_tile in loadout) or
-                (Speedball in loadout)
-            )
+            ((
+                # shoot the switch through the wall
+                # (could hit with plasma special beam, but with that, you could just get through with PBs)
+                (shootThroughWalls in loadout) and
+                (
+                    (Tricks.morph_jump_4_tile in loadout) or  # get on top of the switch
+                    (Speedball in loadout)
+                )
+            ) or (
+                # If I have dark visor, but no way to shoot through the wall to hit it:
+                # super sink on top of the switch
+                (Screw in loadout) and
+                (Speedball in loadout) and
+                (bonkCeilingSuperSink in loadout)
+            ))
         ))
     ),
     "Benthic Cache Access": lambda loadout: (
