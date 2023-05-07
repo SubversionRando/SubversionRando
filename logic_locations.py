@@ -1074,7 +1074,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         # get out of chamber of wind
         (
             (Tricks.short_charge_2 in loadout) or
-            (canFly in loadout) or
+            (canFly in loadout) or  # combine with wall jumps if no SJB
 
             ((HiJump in loadout) and (Tricks.wall_jump_precise in loadout))
             # with speedbooster, jump high enough to wall jump on top ledges
