@@ -1152,17 +1152,15 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (railAccess in loadout) and
         (GravityBoots in loadout) and
         (can_bomb(4) in loadout) and
-        (
-            (
-                (varia_or_hell_run(151) in loadout)
-            ) or (
-                ((Screw in loadout) or (
-                    (Charge in loadout) and
-                    (Hypercharge in loadout)
-                )) and  # easier to farm health
-                (varia_or_hell_run(98) in loadout)
-            )
-        )
+        ((
+            (varia_or_hell_run(151) in loadout)
+        ) or (
+            ((Screw in loadout) or (
+                (Charge in loadout) and
+                (Hypercharge in loadout)
+            )) and  # easier to farm health
+            (varia_or_hell_run(98) in loadout)
+        ))
     ),
     "Reliquary Access": lambda loadout: (
         # get to the item
