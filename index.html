@@ -15,6 +15,23 @@
         <input type="file" id="rom" name="rom" accept=".sfc, .smc" />
     </div>
     <div>
+        <ul>
+            <li>
+            The logic assumes you pick up everything you can from the space port before falling from the space port.
+            <br>
+            So if you don't pick up everything you can before you free fall, you might be stuck.
+            </li>
+            <li>Turning the power off is never in logic, unless you can turn it back on before you leave the Geothermal Energy Plant.</li>
+            <li>
+            All the logic is symmetrical. This means getting out is required to go in.
+            <br>
+            For example, Speed Booster cannot be at the vanilla Speed Booster location, because it requires Speed Booster to get out.
+            <br>
+            If you can't get out of a location, you shouldn't go in, because you might be soft-locked.
+            </li>
+        </ul>
+    </div>
+    <div>
         <span>logic presets:</span>
         <span id="preset-buttons"></span>
     </div>
