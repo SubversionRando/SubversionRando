@@ -346,6 +346,7 @@ class SandLand:
                 loadout.has_all(Tricks.movement_moderate, Tricks.wall_jump_delayed) or
                 (canFly in loadout) or
                 (HiJump in loadout) or  # debating attaching a trick to this for the difficulty of the jumps
+                loadout.has_all(Tricks.wall_jump_precise, Ice) or
                 (SpeedBooster in loadout)
             )
         )
