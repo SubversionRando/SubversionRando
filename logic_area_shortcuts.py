@@ -1026,7 +1026,10 @@ class PirateLab:
         (Grapple in loadout) and
         (SpeedBooster in loadout) and
         (Morph in loadout) and
-        (Speedball in loadout) and
+        ((Speedball in loadout) or (
+            (Tricks.movement_zoast in loadout) and  # TODO: verify whether stutter is needed
+            (Tricks.short_charge_4 in loadout)
+        )) and
         (can_use_pbs(1) in loadout)
     ))
     """ use the cenote passage into pirate lab (not past the item) """
