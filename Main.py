@@ -270,7 +270,7 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
         write_location(romWriter, loc)
 
     # Suit animation skip patch
-    romWriter.writeBytes(0x20717, b"\xea\xea\xea\xea")
+    romWriter.writeBytes(0x20718, b"\xba\xde\x91")
     # Flickering hud removal patch
     # if hudFlicker == "Y" :
     #     writeBytes(0x547a, b"\x02")
