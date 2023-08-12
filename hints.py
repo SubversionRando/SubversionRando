@@ -156,7 +156,8 @@ def choose_hint_location(game: Game) -> None:
                     (
                         (not mmb) or
                         sphere_loc not in majorLocs
-                    )
+                    ) and
+                    sphere_loc in hard_locs
                 ):
                     hint_loc_name = sphere_loc
                     break
