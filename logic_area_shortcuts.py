@@ -1582,6 +1582,10 @@ class Suzi:
                         can_use_pbs(1),
                         Aqua,
                         pinkDoor,
-                        Suzi.crossOceans)
+                        Speedball,  # getting out of Cypher 1 requires speedball or some Bob-type shenanigans
+                        Suzi.crossOceans) and
+        # The Speedbooster puzzle for cypher 7 is a bit difficult without speedball
+        ((Speedball in loadout) or (Tricks.movement_moderate in loadout)) and
+        (loadout.has_any(Speedball, Bombs, Tricks.morph_jump_4_tile))  # cypher 2 - leaving room
     ))
     """ get all of the cyphers """
