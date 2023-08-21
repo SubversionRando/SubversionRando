@@ -1,7 +1,9 @@
+from collections import defaultdict, deque
+from collections.abc import Iterable
 import random
+from typing import Optional
 
 from connection_data import AreaDoor, area_doors_unpackable
-from logic_updater import otherDoor as find_other_door
 from romWriter import RomWriter
 
 # RandomizeAreas shuffles the locations and checks that the ship connects to daphne properly
@@ -29,6 +31,80 @@ from romWriter import RomWriter
 ) = area_doors_unpackable
 
 
+def escape_path(connections: Iterable[tuple[AreaDoor, AreaDoor]]) -> Optional[list[str]]:
+    adj: dict[str, dict[str, bool]] = {
+        door_a.name: {
+            door_b.name: True
+            for door_b in area_doors_unpackable
+            if door_a.area_name == door_b.area_name
+        }
+        for door_a in area_doors_unpackable
+    }
+
+    def disconnect_all(door: AreaDoor) -> None:
+        adj[door.name] = {}
+        for dests in adj.values():
+            dests[door.name] = False
+
+    # sky elevators don't work during escape, so no condenser
+    disconnect_all(ElevatorToCondenserL)
+
+    # ship is separated
+    disconnect_all(SunkenNestL)
+    disconnect_all(CraterR)
+
+    # west terminal up elevator is disabled (down elevator is ok)
+    adj[WestTerminalAccessL.name] = {}
+
+    # if enter norak brook from left, can't go anywhere
+    adj[NorakBrookL.name] = {}
+
+    # from Mezzanine Concourse, can only go west
+    adj[MezzanineConcourseL.name] = {WestTerminalAccessL.name: True}
+
+    # TODO: check: If you enter Vulnar Canyon through VulnarCanyonL during escape, can you go out CanyonPassageR?
+    adj[VulnarCanyonL.name][CanyonPassageR.name] = False  # delete this line if you can
+
+    # add all area connections
+    for door_a, door_b in connections:
+        adj[door_a.name][door_b.name] = True
+        adj[door_b.name][door_a.name] = True
+
+    # pprint(adj)
+
+    sources: dict[str, Optional[str]] = {
+        RockyRidgeTrailL.name: None
+    }
+    visited: dict[str, bool] = defaultdict(bool)
+    bfs_queue: deque[str] = deque([RockyRidgeTrailL.name])
+
+    while len(bfs_queue):
+        current = bfs_queue.popleft()
+        if not visited[current]:
+            visited[current] = True
+            if current == CraterR.name or current == SunkenNestL.name:
+                break
+            for neighbor in adj[current]:
+                if adj[current][neighbor]:
+                    if neighbor not in sources:
+                        sources[neighbor] = current
+                    bfs_queue.append(neighbor)
+
+    if CraterR.name in sources:
+        reverse_path = [CraterR.name]
+    elif SunkenNestL.name in sources:
+        reverse_path = [SunkenNestL.name]
+    else:
+        return None
+
+    while reverse_path[-1] != RockyRidgeTrailL.name:
+        source = sources[reverse_path[-1]]
+        assert source, f"sources didn't lead back to daphne: {sources}"
+        reverse_path.append(source)
+
+    return list(reversed(reverse_path))
+
+
 def RandomizeAreas(force_normal_early: bool) -> list[tuple[AreaDoor, AreaDoor]]:
     """
     force_normal_early forces SunkenNestL to connect to OceanShoreR
@@ -41,60 +117,13 @@ def RandomizeAreas(force_normal_early: bool) -> list[tuple[AreaDoor, AreaDoor]]:
     # [3]the name of the door
     # [4]region
 
-    def findDaphne(fromDoor: AreaDoor) -> bool:
-        # print("fromDoor:",fromDoor[3])
-        # print("pathToDaphne:",pathToDaphne)
-        testcases = []
-        otherDoor = find_other_door(fromDoor, Connections)
-        # print("Declaring otherDoor: ",otherDoor)
-        # print("otherDoor:",otherDoor[3])
-        if (otherDoor == RockyRidgeTrailL) :
-            # print("FoundDaphne:")
-            # for item in pathToDaphne:
-            #     print("  ", item[3])
-            return True
-        if (otherDoor in pathToDaphne) :
-            # print("Circling back on",otherDoor)
-            return False
-        if (otherDoor in [RuinedConcourseBL, RuinedConcourseTR, CausewayR, SporeFieldTR, SporeFieldBR]) :
-            testcases = [RuinedConcourseBL, RuinedConcourseTR, CausewayR, SporeFieldTR, SporeFieldBR]
-        if (otherDoor in [OceanShoreR, EleToTurbidPassageR, PileAnchorL]) :
-            testcases = [OceanShoreR, EleToTurbidPassageR, PileAnchorL]
-        if (otherDoor in [WestTerminalAccessL, MezzanineConcourseL, VulnarCanyonL, CanyonPassageR]) :
-            testcases = [WestTerminalAccessL, MezzanineConcourseL, VulnarCanyonL, CanyonPassageR]
-        if (otherDoor in [ElevatorToWellspringL, NorakBrookL, NorakPerimeterTR, NorakPerimeterBL]) :
-            testcases = [ElevatorToWellspringL, NorakBrookL, NorakPerimeterTR, NorakPerimeterBL]
-        if (otherDoor in [ExcavationSiteL, WestCorridorR, FoyerR, ConstructionSiteL, AlluringCenoteR]) :
-            testcases = [ExcavationSiteL, WestCorridorR, FoyerR, ConstructionSiteL, AlluringCenoteR]
-        if (otherDoor in [FieldAccessL, TransferStationR, CellarR, SubbasementFissureL]) :
-            testcases = [FieldAccessL, TransferStationR, CellarR, SubbasementFissureL]
-        if (otherDoor in [VulnarDepthsElevatorEL, VulnarDepthsElevatorER, SequesteredInfernoL, CollapsedPassageR]) :
-            testcases = [VulnarDepthsElevatorEL, VulnarDepthsElevatorER, SequesteredInfernoL, CollapsedPassageR]
-        if (otherDoor in [MagmaPumpL, ReservoirMaintenanceTunnelR, IntakePumpR, ThermalReservoir1R, GeneratorAccessTunnelL]) :
-            testcases = [MagmaPumpL, ReservoirMaintenanceTunnelR, IntakePumpR, ThermalReservoir1R, GeneratorAccessTunnelL]
-        if (otherDoor in [ElevatorToMagmaLakeR, MagmaPumpAccessR]) :
-            testcases = [ElevatorToMagmaLakeR, MagmaPumpAccessR]
-        if (otherDoor in [FieryGalleryL, RagingPitL, HollowChamberR, PlacidPoolR, SporousNookL]) :
-            testcases = [FieryGalleryL, RagingPitL, HollowChamberR, PlacidPoolR, SporousNookL]
-        soFar = False
-        if testcases == [] :
-            return False
-        pathToDaphne.append(otherDoor)
-        for eachOtherExit in testcases:
-            if (eachOtherExit not in pathToDaphne):
-                pathToDaphne.append(eachOtherExit)
-                check = findDaphne(eachOtherExit)
-                soFar = (soFar or check)
-        return soFar
-
     Connections: list[tuple[AreaDoor, AreaDoor]] = []
     areaAttempts = 0
     connected = False
     while not connected :
         areaAttempts += 1
         if areaAttempts > 1000 :
-            print("Tried 1000 times. help?")
-            connected = True  # This is a lie, but it breaks the loop
+            raise TimeoutError("> 1000 attempts for area rando")
         print("**********Trying to get a good escape attempt:", areaAttempts)
 
         OpenNodesR = [CraterR,
@@ -245,9 +274,9 @@ def RandomizeAreas(force_normal_early: bool) -> list[tuple[AreaDoor, AreaDoor]]:
         # print(len(Connections), "Connections created:")
         # for item in Connections :
             # print(item[0][2], item[0][3], " << >> ", item[1][2], item[1][3])
-        pathToDaphne = [CraterR, SunkenNestL]
-        # check for valid area configuration
-        if findDaphne(CraterR) or findDaphne(SunkenNestL) :
+
+        # check for valid escape
+        if escape_path(Connections):
             connected = True
 
     return Connections

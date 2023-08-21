@@ -365,6 +365,14 @@ def get_spoiler(game: Game) -> str:
     if game.options.area_rando:
         for door1, door2 in game.connections:
             spoilerSave += f"{door1.area_name} {door1.name} << >> {door2.area_name} {door2.name}\n"
+        spoilerSave += "\n"
+        spoilerSave += " --- possible escape path ---\n"
+        path = areaRando.escape_path(game.connections)
+        if path is None:
+            spoilerSave += "path error\n"
+        else:
+            for door in path:
+                spoilerSave += f"  {door}\n"
 
     if game.hint_data:
         hint_loc_name, hint_loc_marker = game.hint_data
