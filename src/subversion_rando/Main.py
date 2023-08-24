@@ -187,18 +187,17 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
     if game.options.area_rando:
         areaA = "A"
 
-    roms_path = resolve_one_up_if_needed(Path("roms"), ORIGINAL_ROM_NAME)
     rom_name = f"Sub{logicChoice}{game.options.fill_choice}{areaA}{game.seed}.sfc"
-    rom1_path = roms_path.joinpath(rom_name)
-    rom_clean_path = roms_path.joinpath(ORIGINAL_ROM_NAME)
 
     if romWriter is None:
+        roms_path = resolve_one_up_if_needed(Path("roms"), ORIGINAL_ROM_NAME)
+        rom1_path = roms_path.joinpath(rom_name)
+        rom_clean_path = roms_path.joinpath(ORIGINAL_ROM_NAME)
         romWriter = RomWriter.fromFilePaths(origRomPath=rom_clean_path)
     else :
-        # remove .sfc extension and dirs
-        romWriter.setBaseFilename(rom1_path.stem)
-        # This is untested, currently not used for anything.
-        # (all calls to `write_rom` give no `romWriter`)
+        # remove .sfc extension
+        romWriter.setBaseFilename(rom_name[:-4])
+        rom1_path = None
 
     if game.hint_data:
         hint_loc_name, hint_loc_marker = game.hint_data
