@@ -1,5 +1,12 @@
 from typing import Iterable
 
+# python version check
+try:
+    _ = tuple[str]
+except TypeError:
+    input("requires Python 3.9 or higher... press enter to quit")
+    exit(1)
+
 Item = tuple[str, bytes, bytes, bytes, bytes]
 """ Name, Visible, Chozo, Hidden, AmmoQty """
 
