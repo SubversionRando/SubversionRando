@@ -24,13 +24,9 @@ The easiest way to play: https://subversionrando.github.io/SubversionRando/
 
 3. put your Subversion 1.2 rom in the `roms` directory with this filename: `Subversion12.sfc`
 
-### generate from gui
-
- - run `gui.py`
-
 ### generate from command line
 
- - run `Main.py` in console
+ - run `src/Main.py` in console
 
 optionally, command line arguments are available:
 ```
