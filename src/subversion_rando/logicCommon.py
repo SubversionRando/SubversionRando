@@ -2,12 +2,12 @@
 
 from typing import TYPE_CHECKING
 
-from item_data import Item, Items
-from logic_shortcut import LogicShortcut
-from trick_data import Tricks
+from .item_data import Item, Items
+from .logic_shortcut import LogicShortcut
+from .trick_data import Tricks
 
 if TYPE_CHECKING:
-    from loadout import Loadout
+    from .loadout import Loadout
 
 # TODO: Does some logic around Ocean Shore need to be different
 # if Metroid Suit and Supers are in early spaceport?

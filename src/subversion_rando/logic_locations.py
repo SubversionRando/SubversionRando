@@ -1,19 +1,19 @@
 from typing import Callable
 
-from connection_data import area_doors_unpackable
-from item_data import items_unpackable
-from loadout import Loadout
-from logicCommon import ammo_req, can_bomb, can_use_pbs, crystal_flash, \
+from .connection_data import area_doors_unpackable
+from .item_data import items_unpackable
+from .loadout import Loadout
+from .logicCommon import ammo_req, can_bomb, can_use_pbs, crystal_flash, \
     energy_req, hell_run_energy, lava_run, varia_or_hell_run
-from logic_area_shortcuts import Early, SandLand, ServiceSector, SpacePort, LifeTemple, SkyWorld, \
+from .logic_area_shortcuts import Early, SandLand, ServiceSector, SpacePort, LifeTemple, SkyWorld, \
     FireHive, PirateLab, Verdite, Geothermal, Suzi, DrayLand
-from logic_shortcut import LogicShortcut
-from logic_shortcut_data import (
+from .logic_shortcut import LogicShortcut
+from .logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor, pinkSwitch,
     missileBarrier, icePod, electricHyper, killRippers, killGreenOrRedPirates,
     bonkCeilingSuperSink, hiJumpSuperSink, iceSBA, plasmaSBA, spazerSBA
 )
-from trick_data import Tricks
+from .trick_data import Tricks
 
 (
     CraterR, SunkenNestL, RuinedConcourseBL, RuinedConcourseTR, CausewayR,

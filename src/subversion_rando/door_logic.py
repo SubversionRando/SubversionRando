@@ -1,5 +1,5 @@
-from connection_data import AreaDoor, area_doors
-from logic_shortcut import LogicShortcut
+from .connection_data import AreaDoor, area_doors
+from .logic_shortcut import LogicShortcut
 
 
 def canOpen(door: AreaDoor) -> LogicShortcut:

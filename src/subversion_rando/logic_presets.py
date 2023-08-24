@@ -1,5 +1,5 @@
-from trick import Trick
-from trick_data import Tricks
+from .trick import Trick
+from .trick_data import Tricks
 
 
 casual: frozenset[Trick] = frozenset()  # empty

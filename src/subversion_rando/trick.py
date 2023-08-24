@@ -1,5 +1,6 @@
 from typing import Iterator, NoReturn
-from item_data import Item
+
+from .item_data import Item
 
 
 class Trick:

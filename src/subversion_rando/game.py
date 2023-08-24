@@ -2,13 +2,13 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import TYPE_CHECKING, Literal, Mapping, Optional, Union
 
-from connection_data import AreaDoor, vanilla_doors
-from daphne_gate_types import DaphneBlocks
-from item_data import Item, Items
-from location_data import Location
-from logic_shortcut import LogicShortcut
+from .connection_data import AreaDoor, vanilla_doors
+from .daphne_gate_types import DaphneBlocks
+from .item_data import Item, Items
+from .location_data import Location
+from .logic_shortcut import LogicShortcut
 if TYPE_CHECKING:
-    from trick import Trick
+    from .trick import Trick
 
 
 def door_factory() -> "dict[AreaDoor, Union[Item, LogicShortcut]]":

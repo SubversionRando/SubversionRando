@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Literal, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from logic_shortcut import LogicShortcut
+    from .logic_shortcut import LogicShortcut
 
 
 Block = tuple[int, int, int]

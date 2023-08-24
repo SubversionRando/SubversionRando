@@ -1,16 +1,16 @@
 """ This is for logic shortcuts that apply only to 1 specific area. """
 
-from item_data import items_unpackable
-from logicCommon import ammo_req, can_bomb, can_use_pbs, crystal_flash, energy_req, hell_run_energy, varia_or_hell_run
-from logic_shortcut import LogicShortcut
-from logic_shortcut_data import (
+from .item_data import items_unpackable
+from .logicCommon import ammo_req, can_bomb, can_use_pbs, crystal_flash, energy_req, hell_run_energy, varia_or_hell_run
+from .logic_shortcut import LogicShortcut
+from .logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor,
     missileBarrier, electricHyper, killRippers, killGreenOrRedPirates,
     killYellowPirates, plasmaWaveGate, icePod, can_crash_spaceport,
     hiJumpSuperSink, bonkCeilingSuperSink, underwaterSuperSink, iceSBA,
     plasmaSBA, spazerSBA
 )
-from trick_data import Tricks
+from .trick_data import Tricks
 
 (
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,

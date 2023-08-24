@@ -1,13 +1,13 @@
 import random
 
-from daphne_gate_types import Block, BlockKey, DaphneBlocks
-from game import GameOptions
-from item_data import Items
-from logic_shortcut import LogicShortcut
-from terrain_patch import wrecked_air_lock, wrecked_air_lock_screw_bts, \
+from .daphne_gate_types import Block, BlockKey, DaphneBlocks
+from .game import GameOptions
+from .item_data import Items
+from .logic_shortcut import LogicShortcut
+from .terrain_patch import wrecked_air_lock, wrecked_air_lock_screw_bts, \
     wrecked_air_lock_screw_layer_1, air_lock_default, air_lock_non_default, \
     air_lock_hint_layer_1
-from trick_data import Tricks
+from .trick_data import Tricks
 
 NOT_REQUIRED_PROBABILITY = 0.9486832980505
 """ 2 samples from this will have 10% chance of choosing at least one from required """

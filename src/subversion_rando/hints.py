@@ -1,20 +1,20 @@
 import random
 from typing import Optional
 
-from game import Game
-from connection_data import area_doors
-from item_data import Item, Items
-from loadout import Loadout
-from location_data import pullCSV, majorLocs
-from logicCommon import varia_or_hell_run, can_bomb
-from logic_area_shortcuts import SkyWorld, LifeTemple
-from logic_locations import ruinedConcourseBDoorToEldersTop, greaterInferno, railAccess, norakToLifeTemple
-from logic_shortcut import LogicShortcut
-from logic_shortcut_data import can_crash_spaceport, pinkDoor, missileDamage, shootThroughWalls
-from logic_updater import updateLogic
-from romWriter import RomWriter
-from solver import PlayThrough, hard_required_locations, solve
-from trick_data import Tricks
+from .game import Game
+from .connection_data import area_doors
+from .item_data import Item, Items
+from .loadout import Loadout
+from .location_data import pullCSV, majorLocs
+from .logicCommon import varia_or_hell_run, can_bomb
+from .logic_area_shortcuts import SkyWorld, LifeTemple
+from .logic_locations import ruinedConcourseBDoorToEldersTop, greaterInferno, railAccess, norakToLifeTemple
+from .logic_shortcut import LogicShortcut
+from .logic_shortcut_data import can_crash_spaceport, pinkDoor, missileDamage, shootThroughWalls
+from .logic_updater import updateLogic
+from .romWriter import RomWriter
+from .solver import PlayThrough, hard_required_locations, solve
+from .trick_data import Tricks
 
 
 hint_data = {

@@ -1,13 +1,13 @@
 from collections import Counter
 from typing import TYPE_CHECKING, Any, Iterable, Iterator, Optional, Union
 
-from connection_data import AreaDoor
-from item_data import Item
-from logic_shortcut import LogicShortcut
-from trick import Trick
+from .connection_data import AreaDoor
+from .item_data import Item
+from .logic_shortcut import LogicShortcut
+from .trick import Trick
 
 if TYPE_CHECKING:
-    from game import Game
+    from .game import Game
 
 
 class ItemCounter(Counter[Union[Item, AreaDoor]]):

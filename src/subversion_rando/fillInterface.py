@@ -1,10 +1,10 @@
 import abc
 from typing import Optional
 
-from connection_data import AreaDoor
-from item_data import Item
-from loadout import Loadout
-from location_data import Location
+from .connection_data import AreaDoor
+from .item_data import Item
+from .loadout import Loadout
+from .location_data import Location
 
 # `abc`` means the algorithm isn't implemented here
 # This is just defining what the algorithm needs to implement.

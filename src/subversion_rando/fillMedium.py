@@ -1,11 +1,11 @@
 from typing import Optional
 import random
-from connection_data import AreaDoor
 
-from fillInterface import FillAlgorithm
-from item_data import Item, items_unpackable
-from loadout import Loadout
-from location_data import Location
+from .connection_data import AreaDoor
+from .fillInterface import FillAlgorithm
+from .item_data import Item, items_unpackable
+from .loadout import Loadout
+from .location_data import Location
 
 # this will not update any of the parameters it is given
 # but it will return an item to place at a location

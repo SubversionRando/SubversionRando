@@ -1,7 +1,8 @@
 import csv
+import pathlib
 from typing import Optional, TypedDict, cast
 
-from item_data import Item
+from .item_data import Item
 
 
 # other unused columns in Location:
@@ -82,7 +83,8 @@ def pullCSV() -> dict[str, Location]:
     def commentfilter(line: str) -> bool:
         return (line[0] != '#')
 
-    with open('subversiondata12.csv', 'r') as csvfile:
+    path = pathlib.Path(__file__).parent.resolve()
+    with open(path.joinpath('subversiondata12.csv'), 'r') as csvfile:
         reader = csv.DictReader(filter(commentfilter, csvfile))
         for row in reader:
             # commas within fields -> array

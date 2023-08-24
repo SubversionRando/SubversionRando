@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
-from connection_data import AreaDoor
+from .connection_data import AreaDoor
 
 if TYPE_CHECKING:
-    from romWriter import RomWriter
+    from .romWriter import RomWriter
 
 spaceport_doors = {
     "StationCorridorL": AreaDoor('1a5ec', '85dc00040116000100800000', 'SpacePort', 'StationCorridorL', 6),

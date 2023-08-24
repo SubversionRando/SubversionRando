@@ -1,3 +1,4 @@
+from pathlib import Path
 import random
 import sys
 try:  # Literal 3.8
@@ -9,32 +10,34 @@ import argparse
 import time
 
 try:  # container type annotations 3.9
-    from connection_data import SunkenNestL, VanillaAreas, area_doors, misc_doors
+    from .connection_data import SunkenNestL, VanillaAreas, area_doors, misc_doors
 except TypeError:
     input("requires Python 3.9 or higher... press enter to quit")
     exit(1)
-from daphne_gate import get_daphne_gate, get_air_lock_bytes
-from fillForward import fill_major_minor
-from fillInterface import FillAlgorithm
-from game import CypherItems, Game, GameOptions
-from hints import choose_hint_location, get_hint_spoiler_text, write_hint_to_rom
-from item_data import Item, Items
-from loadout import Loadout
-from location_data import Location, pullCSV, spacePortLocs
-from logic_presets import casual, expert, medium
-import logic_updater
-import fillMedium
-import fillMajorMinor
-import fillAssumed
-import fillSpeedrun
-import areaRando
-from new_terrain_writer import TerrainWriter
-from romWriter import RomWriter
-from solver import hard_required_locations, required_tricks, solve, spoil_play_through
-from spaceport_door_data import shrink_spaceport, spaceport_doors
-from terrain_patch import subterranean
-from trick import Trick
-from trick_data import Tricks
+from .daphne_gate import get_daphne_gate, get_air_lock_bytes
+from .fillForward import fill_major_minor
+from .fillInterface import FillAlgorithm
+from .game import CypherItems, Game, GameOptions
+from .hints import choose_hint_location, get_hint_spoiler_text, write_hint_to_rom
+from .item_data import Item, Items
+from .loadout import Loadout
+from .location_data import Location, pullCSV, spacePortLocs
+from .logic_presets import casual, expert, medium
+from . import logic_updater
+from . import fillMedium
+from . import fillMajorMinor
+from . import fillAssumed
+from . import fillSpeedrun
+from . import areaRando
+from .new_terrain_writer import TerrainWriter
+from .romWriter import RomWriter
+from .solver import hard_required_locations, required_tricks, solve, spoil_play_through
+from .spaceport_door_data import shrink_spaceport, spaceport_doors
+from .terrain_patch import subterranean
+from .trick import Trick
+from .trick_data import Tricks
+
+ORIGINAL_ROM_NAME = "Subversion12.sfc"
 
 
 def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
@@ -236,6 +239,30 @@ def generate(options: GameOptions) -> Game:
     return game
 
 
+def resolve_one_up_if_needed(rel_dir: Path, file_check: Optional[str] = None) -> Path:
+    """
+    looks for `rel_dir` either in the current working directory or in the parent (..)
+
+    If `file_check` is given, it will also require that file to be in that directory.
+
+    returns the relative directory found
+
+    raises `FileNotFoundError` if not found
+    """
+    if rel_dir.exists() and (
+        file_check is None or rel_dir.joinpath(file_check).exists()
+    ):
+        return rel_dir
+
+    up_one = Path("..").joinpath(rel_dir)
+    if up_one.exists() and (
+        file_check is None or up_one.joinpath(file_check).exists()
+    ):
+        return up_one
+
+    raise FileNotFoundError(f"can't find: {rel_dir if file_check is None else rel_dir.joinpath(file_check)}")
+
+
 def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
     logicChoice: Literal["E", "U", "C", "Q"] = "Q"
     if game.options.logic == casual:
@@ -249,15 +276,18 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
     if game.options.area_rando:
         areaA = "A"
 
+    roms_path = resolve_one_up_if_needed(Path("roms"), ORIGINAL_ROM_NAME)
     rom_name = f"Sub{logicChoice}{game.options.fill_choice}{areaA}{game.seed}.sfc"
-    rom1_path = f"roms/{rom_name}"
-    rom_clean_path = "roms/Subversion12.sfc"
+    rom1_path = roms_path.joinpath(rom_name)
+    rom_clean_path = roms_path.joinpath(ORIGINAL_ROM_NAME)
 
-    if romWriter is None :
+    if romWriter is None:
         romWriter = RomWriter.fromFilePaths(origRomPath=rom_clean_path)
     else :
         # remove .sfc extension and dirs
-        romWriter.setBaseFilename(rom1_path[:-4].split("/")[-1])
+        romWriter.setBaseFilename(rom1_path.stem)
+        # This is untested, currently not used for anything.
+        # (all calls to `write_rom` give no `romWriter`)
 
     if game.hint_data:
         hint_loc_name, hint_loc_marker = game.hint_data
@@ -402,9 +432,12 @@ def get_spoiler(game: Game) -> str:
 
 def write_spoiler_file(game: Game, rom_name: str) -> None:
     text = get_spoiler(game)
-    with open(f"spoilers/{rom_name}.spoiler.txt", "w") as spoiler_file:
+    spoiler_dir = resolve_one_up_if_needed(Path("spoilers"))
+    spoiler_file_name = f"{rom_name}.spoiler.txt"
+    spoiler_path = spoiler_dir.joinpath(spoiler_file_name)
+    with open(spoiler_path, "w") as spoiler_file:
         spoiler_file.write(text)
-    print(f"Spoiler file is spoilers/{rom_name}.spoiler.txt")
+    print(f"Spoiler file is {spoiler_path}")
 
 
 def required_locations_spoiler(game: Game) -> str:

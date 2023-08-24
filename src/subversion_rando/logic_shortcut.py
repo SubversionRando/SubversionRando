@@ -1,7 +1,7 @@
 from typing import Callable, TYPE_CHECKING, NoReturn
 
 if TYPE_CHECKING:
-    from loadout import Loadout
+    from .loadout import Loadout
 
 
 class LogicShortcut:

@@ -1,8 +1,8 @@
-from connection_data import area_doors
-from item_data import items_unpackable
-from logic_shortcut import LogicShortcut
-from logicCommon import ammo_req, can_bomb, can_use_pbs
-from trick_data import Tricks
+from .connection_data import area_doors
+from .item_data import items_unpackable
+from .logic_shortcut import LogicShortcut
+from .logicCommon import ammo_req, can_bomb, can_use_pbs
+from .trick_data import Tricks
 
 (
     Missile, Super, PowerBomb, Morph, GravityBoots, Speedball, Bombs, HiJump,

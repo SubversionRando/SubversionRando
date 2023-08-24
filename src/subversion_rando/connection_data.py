@@ -1,10 +1,10 @@
 """ data for the connections in area rando """
 from typing import TYPE_CHECKING, NamedTuple, Union
 
-from item_data import Item, Items
-from logicCommon import can_use_pbs
+from .item_data import Item, Items
+from .logicCommon import can_use_pbs
 if TYPE_CHECKING:
-    from logic_shortcut import LogicShortcut
+    from .logic_shortcut import LogicShortcut
 
 
 class AreaDoor(NamedTuple):

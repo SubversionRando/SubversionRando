@@ -1,10 +1,10 @@
 from collections import Counter
 import random
 
-from game import Game
-from item_data import Item, Items
-from location_data import Location, majorLocs, eTankLocs
-from solver import solve
+from .game import Game
+from .item_data import Item, Items
+from .location_data import Location, majorLocs, eTankLocs
+from .solver import solve
 
 _minor_logic_items = {
     Items.DamageAmp: 6,

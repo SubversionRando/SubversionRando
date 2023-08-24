@@ -1,15 +1,15 @@
 from dataclasses import dataclass, field
 from typing import Optional
 
-from connection_data import AreaDoor, SunkenNestL, area_doors
-from game import Game
-from item_data import Items
-from loadout import Loadout
-from location_data import Location, spacePortLocs
-from logic_shortcut_data import can_fall_from_spaceport, can_win
-from logic_updater import updateLogic
-from trick import Trick
-from trick_data import Tricks
+from .connection_data import AreaDoor, SunkenNestL, area_doors
+from .game import Game
+from .item_data import Items
+from .loadout import Loadout
+from .location_data import Location, spacePortLocs
+from .logic_shortcut_data import can_fall_from_spaceport, can_win
+from .logic_updater import updateLogic
+from .trick import Trick
+from .trick_data import Tricks
 
 
 @dataclass

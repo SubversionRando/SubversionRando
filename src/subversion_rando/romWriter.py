@@ -1,10 +1,11 @@
 import base64
 import enum
 import os
-from typing import TYPE_CHECKING, Optional, Union
+from pathlib import Path
+from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
-    from connection_data import AreaDoor
+    from .connection_data import AreaDoor
 
 
 class RomWriterType(enum.IntEnum):
@@ -27,7 +28,7 @@ class RomWriter:
         self.baseFilename = ''
 
     @classmethod
-    def fromFilePaths(cls, origRomPath: str) -> "RomWriter":
+    def fromFilePaths(cls, origRomPath: Union[Path, str]) -> "RomWriter":
         instance = cls()
         instance.romWriterType = RomWriterType.file
         instance.rom_data = RomWriter.createWorkingFileCopy(origRomPath)
@@ -48,7 +49,7 @@ class RomWriter:
         return instance
 
     @staticmethod
-    def createWorkingFileCopy(origFile: str) -> bytearray:
+    def createWorkingFileCopy(origFile: Union[Path, str]) -> bytearray:
         if not os.path.exists(origFile):
             raise Exception(f'origFile not found: {origFile}')
         with open(origFile, 'rb') as orig:
@@ -91,7 +92,7 @@ class RomWriter:
         self.writeBytes(address, plmid)
         self.writeBytes(address+5, ammoAmount)
 
-    def finalizeRom(self, filename: Optional[str] = None) -> None:
+    def finalizeRom(self, filename: Union[str, Path, None] = None) -> None:
         if self.romWriterType == RomWriterType.file:
             assert filename
             with open(filename, "wb") as file:

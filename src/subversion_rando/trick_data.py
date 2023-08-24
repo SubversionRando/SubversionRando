@@ -1,5 +1,5 @@
-from item_data import Items
-from trick import Trick
+from .item_data import Items
+from .trick import Trick
 
 
 class Tricks:

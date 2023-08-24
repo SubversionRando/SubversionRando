@@ -1,12 +1,12 @@
 import random
 from typing import Optional
 
-from connection_data import AreaDoor
-from fillInterface import FillAlgorithm
-from item_data import Item, Items
-from loadout import Loadout
-from location_data import Location, spacePortLocs, majorLocs, eTankLocs
-from solver import solve
+from .connection_data import AreaDoor
+from .fillInterface import FillAlgorithm
+from .item_data import Item, Items
+from .loadout import Loadout
+from .location_data import Location, spacePortLocs, majorLocs, eTankLocs
+from .solver import solve
 
 _minor_logic_items = {
     Items.DamageAmp: 6,

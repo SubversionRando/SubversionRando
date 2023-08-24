@@ -3,8 +3,8 @@ from collections.abc import Iterable
 import random
 from typing import Optional
 
-from connection_data import AreaDoor, area_doors_unpackable
-from romWriter import RomWriter
+from .connection_data import AreaDoor, area_doors_unpackable
+from .romWriter import RomWriter
 
 # RandomizeAreas shuffles the locations and checks that the ship connects to daphne properly
 # updateAreaLogic is like a logic updater for area doors connecting to other area doors

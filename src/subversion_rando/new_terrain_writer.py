@@ -1,5 +1,5 @@
 
-from romWriter import RomWriter, RomWriterType
+from .romWriter import RomWriter, RomWriterType
 
 
 class TerrainWriter:

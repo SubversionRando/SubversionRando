@@ -1,15 +1,15 @@
-from connection_data import area_doors_unpackable
-from door_logic import canOpen
-from item_data import items_unpackable
-from logicCommon import can_bomb, can_use_pbs, lava_run
-from logic_area_shortcuts import SandLand, ServiceSector, LifeTemple, \
+from .connection_data import area_doors_unpackable
+from .door_logic import canOpen
+from .item_data import items_unpackable
+from .logicCommon import can_bomb, can_use_pbs, lava_run
+from .logic_area_shortcuts import SandLand, ServiceSector, LifeTemple, \
     SkyWorld, FireHive, PirateLab, Verdite, Geothermal, Early
-from logicInterface import AreaLogicType
-from logic_shortcut_data import (
+from .logicInterface import AreaLogicType
+from .logic_shortcut_data import (
     shootThroughWalls, breakIce, pinkDoor, missileBarrier, icePod,
     electricHyper, killGreenOrRedPirates, underwaterSuperSink
 )
-from trick_data import Tricks
+from .trick_data import Tricks
 
 (
     CraterR, SunkenNestL, RuinedConcourseBL, RuinedConcourseTR, CausewayR,
