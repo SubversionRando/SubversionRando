@@ -76,6 +76,7 @@ sensorMaintenance = LogicShortcut(lambda loadout: (
         (Screw in loadout) and
         (missileBarrier in loadout)
     )) and
+    # TODO: hypercharge and a number of accel charges for each skill level
     (Morph in loadout) and
     ((Tricks.mockball_hard in loadout) or (Speedball in loadout)) and
     ((Tricks.morph_jump_3_tile in loadout) or (Speedball in loadout) or (
@@ -2128,7 +2129,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # lower lava
             (DrayLand.killGT in loadout) and
             (DrayLand.lakeMonitoringStation in loadout) and
-            (varia_or_hell_run(652, heat_and_metroid_suit_not_required=True) in loadout)
+            # This is the hell run if GT is already dead. Killing GT will be a different hell run.
+            (varia_or_hell_run(851, heat_and_metroid_suit_not_required=True) in loadout)
         ) or (
             # lava dive
             (MetroidSuit in loadout) and
