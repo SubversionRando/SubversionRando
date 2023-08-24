@@ -12,12 +12,12 @@ import pickle
 import sys
 from typing import Iterator, Literal, Optional
 
-from Main import generate
-from connection_data import AreaDoor
-from game import CypherItems, Game, GameOptions
-from location_data import Location
-from logic_presets import casual, expert, medium
-from trick_data import trick_name_lookup
+from subversion_rando.Main import generate
+from subversion_rando.connection_data import AreaDoor
+from subversion_rando.game import CypherItems, Game, GameOptions
+from subversion_rando.location_data import Location
+from subversion_rando.logic_presets import casual, expert, medium
+from subversion_rando.trick_data import trick_name_lookup
 
 
 desc = "ECU-w-and-wo-area-rando-D-T-F-cypher-anything"

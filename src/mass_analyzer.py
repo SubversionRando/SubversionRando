@@ -3,7 +3,7 @@
 from collections import Counter
 import pickle
 
-from item_data import Items
+from subversion_rando.item_data import Items
 from mass_generator import GameData
 
 
