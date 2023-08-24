@@ -6,12 +6,12 @@ file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
 sys.path.append(str(root))
 
-from connection_data import area_doors
-from door_logic import canOpen
-from game import Game, GameOptions
-from item_data import Items
-from loadout import Loadout
-from logic_presets import casual
+from subversion_rando.connection_data import area_doors
+from subversion_rando.door_logic import canOpen
+from subversion_rando.game import Game, GameOptions
+from subversion_rando.item_data import Items
+from subversion_rando.loadout import Loadout
+from subversion_rando.logic_presets import casual
 
 
 _test_options = GameOptions(casual, False, "D", True)

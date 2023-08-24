@@ -4,15 +4,15 @@ from difflib import get_close_matches
 import os
 import sys
 
-from connection_data import AreaDoor, VanillaAreas, area_doors
-from game import CypherItems, Game, GameOptions
-from item_data import Item, Items, all_items
-from loadout import Loadout
-from location_data import Location, pullCSV, spacePortLocs
-from logic_presets import casual, expert, medium
-from solver import required_doors, solve
-from trick import Trick
-from trick_data import Tricks, trick_name_lookup
+from subversion_rando.connection_data import AreaDoor, VanillaAreas, area_doors
+from subversion_rando.game import CypherItems, Game, GameOptions
+from subversion_rando.item_data import Item, Items, all_items
+from subversion_rando.loadout import Loadout
+from subversion_rando.location_data import Location, pullCSV, spacePortLocs
+from subversion_rando.logic_presets import casual, expert, medium
+from subversion_rando.solver import required_doors, solve
+from subversion_rando.trick import Trick
+from subversion_rando.trick_data import Tricks, trick_name_lookup
 
 _name_aliases = {
     "Warrior Shrine: AmmoTank Top": "Warrior Shrine: Top",

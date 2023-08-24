@@ -2,18 +2,19 @@
 import sys
 from pathlib import Path
 import pytest
-from game import Game, GameOptions
-from trick import Trick
+from subversion_rando.game import Game, GameOptions
+from subversion_rando.trick import Trick
 
 file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
 sys.path.append(str(root))
 
-from item_data import Items
-from loadout import Loadout
-from logicCommon import ammo_in_loadout, ammo_req, energy_from_tanks, crystal_flash, energy_req, varia_or_hell_run
-from logic_presets import casual, expert
-from logic_shortcut import LogicShortcut
+from subversion_rando.item_data import Items
+from subversion_rando.loadout import Loadout
+from subversion_rando.logicCommon import ammo_in_loadout, ammo_req, \
+    energy_from_tanks, crystal_flash, energy_req, varia_or_hell_run
+from subversion_rando.logic_presets import casual, expert
+from subversion_rando.logic_shortcut import LogicShortcut
 
 
 def test_energy_from_tanks() -> None:
@@ -140,12 +141,12 @@ def test_use_as_bool() -> None:
 
     with pytest.raises(TypeError):
         _ = (
-            can_bomb_jump and (Items.Charge in loadout)
+            can_bomb_jump and (Items.Charge in loadout)  # type: ignore
         )
 
     with pytest.raises(TypeError):
         _ = (
-            can_bomb_jump or (Items.Screw in loadout)
+            can_bomb_jump or (Items.Screw in loadout)  # type: ignore
         )
 
 

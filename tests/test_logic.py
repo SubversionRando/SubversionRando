@@ -8,15 +8,15 @@ file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
 sys.path.append(str(root))
 
-from connection_data import SunkenNestL, VanillaAreas, area_doors
-from game import Game, GameOptions
-from item_data import Items, items_unpackable
-from loadout import Loadout
-from location_data import Location, pullCSV
-from logic_presets import casual, medium, expert
-from logic_shortcut_data import can_win
-from logic_updater import updateLogic
-from trick import Trick
+from subversion_rando.connection_data import SunkenNestL, VanillaAreas, area_doors
+from subversion_rando.game import Game, GameOptions
+from subversion_rando.item_data import Items, items_unpackable
+from subversion_rando.loadout import Loadout
+from subversion_rando.location_data import Location, pullCSV
+from subversion_rando.logic_presets import casual, medium, expert
+from subversion_rando.logic_shortcut_data import can_win
+from subversion_rando.logic_updater import updateLogic
+from subversion_rando.trick import Trick
 
 # TODO: test that all locations are obtainable with no tricks
 

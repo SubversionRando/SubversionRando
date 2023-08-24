@@ -5,7 +5,7 @@ file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
 sys.path.append(str(root))
 
-from location_data import pullCSV
+from subversion_rando.location_data import pullCSV
 import tracker
 from tracker import Tracker
 
