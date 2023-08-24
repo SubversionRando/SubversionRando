@@ -26,6 +26,8 @@ The easiest way to play: https://subversionrando.github.io/SubversionRando/
 
 ### generate from command line
 
+#### old way that doesn't have as many options available
+
  - run `src/Main.py` in console
 
 optionally, command line arguments are available:
@@ -45,6 +47,11 @@ optionally, command line arguments are available:
 
  -o   : Smaller Spaceport
 ```
+
+#### edit a python script for the full range of options
+
+ - edit `src/local_generation.py` in the `options` section for the options you want
+ - then run that file
 
 This should create a randomized rom with the given name in the roms folder and a spoiler log (.txt) in the spoilers folder.
 
@@ -75,54 +82,70 @@ Turning the power off is never in logic, unless you can turn it back on before y
 
 ---
 
-## Casual logic requirements
+## logic presets
 
-In casual logic (with no logic tricks), you might be required to:
-  - wall-jump
-  - mid-air morph in a space that is 5 tiles high
-  - 1-tap short charge
-     - This just means press the d-pad to start moving before pressing the dash button.
-  <!-- there isn't a trick for this, but it will never be required in casual, because it's always combined with some other trick
-  - underwater wall jump in a space 1-tile wide
-     - If you just hold the d-pad left or right and repeatedly press jump, you'll get to the top of a space that is 1 tile wide. -->
+ - Casual logic: -c
+    - Casual logic is meant to mimic the "intended" experience of Subversion, with its few moments of suitless underwater movement, no hellruns, and no glitches in logic.
+    - In casual logic (with no logic tricks), you might be required to:
+       - wall-jump
+       - mid-air morph in a space that is 5 tiles high
+       - 1-tap short charge
+          - This just means press the d-pad to start moving before pressing the dash button.
+       <!-- there isn't a trick for this, but it will never be required in casual, because it's always combined with some other trick
+       - underwater wall jump in a space 1-tile wide
+          - If you just hold the d-pad left or right and repeatedly press jump, you'll get to the top of a space that is 1 tile wide. -->
+
+ - Medium logic: -u
+    - A logic level between Casual and Expert, including a few common tricks.
+
+ - Expert logic: -e
+    - Notable tricks in expert logic include p-shooter-only gate glitches, single springball jumps, hellruns, and super-sink. Once you have 5 E-tanks, most hellruns are in logic.
 
 ---
 
-## notes on options
+## fill options
 
-Casual logic notes: -c
-Casual logic is meant to mimic the "intended" experience of Subversion, with its few moments of suitless underwater movement, no hellruns, and no glitches in logic.
+ - Full Random: -d
+    - The default fill. Any item can be in any location within logic.
 
-Medium logic notes: -u
-A logic level between Casual and Expert, including a few common tricks.
+ - Major/Minor Bias: -b
+    - Unique item locations are more likely to have unique items, but it's not 100%.
+       - This is only unique items, and not energy tanks.
+    - The hint system is modified in this mode to try to hint an important minor location.
 
-Expert logic notes: -e
-Notable tricks in expert logic include p-shooter-only gate glitches, single springball jumps, hellruns, and super-sink. Once you have 5 E-tanks, most hellruns are in logic.
+ - Major/Minor: -mm
+    - Places Unique+Energy items at the Unique+Energy locations. 23 unique and 16 energy locations in all. While this puts the hard-to-reach unique locations into the major pool, energy tanks seem to be sprinkled around, making this option a nice balance of hard-to-reach items and available energy locations. Note that Refuel tanks, damage amps, accel charge, and space jump boosts are all in the minor pool.
 
+---
 
-Major/Minor Bias fill notes: -b
-Unique item locations are more likely to have unique items, but it's not 100%. This is only unique items, and not energy tanks.
-The hint system is modified in this mode to try to hint a minor location.
+## other options
 
-Major/Minor fill notes: -mm
-Places Unique+Energy items at the Unique+Energy locations. 23 unique and 16 energy locations in all. While this puts the hard-to-reach unique locations into the major pool, energy tanks seem to be sprinkled around, making this option a nice balance of hard-to-reach items and available energy locations. Note that Refuel tanks, damage amps, accel charge, and space jump boosts are all in the minor pool.
-
-
-Area Rando notes: -a
-Logically shuffles the major areas of the game and places items in logical places according to the door placement.
-This is unlikely to work when combined with casual logic and major/minor fill.
+ - Area Rando: -a
+    - Logically shuffles the major areas of the game and places items in logical places according to the door placement.
+    - This is unlikely to work when combined with casual logic and major/minor fill because of restrictive logic.
 
 
-randomize wrecked daphne gate:
-Changes the Screw Attack blocks in the Wrecked Air Lock to two different kinds of blocks, so you will need 1 of two random items to enter the final area (instead of the normal Screw Attack requirement).
-The items that will let you through the gate are displayed in the Air Lock before it is crashed.
+ - small spaceport: -o
+    - This removes some rooms from the spaceport so you don't have to run around as much at the beginning of the seed.
+    - This also reduces the missile requirements for zebetites, pink doors, and eye doors.
+
+
+ - escape shortcuts:
+    - The paths during escape sequences are shortened.
+    - In area rando, the final escape sequence is never shortened.
+       - (Part of the fun of area rando is finding your way out.)
+
+
+ - randomize wrecked daphne gate:
+    - Changes the Screw Attack blocks in the Wrecked Air Lock to two different kinds of blocks, so you will need 1 of two random items to enter the final area (instead of the normal Screw Attack requirement).
+    - The items that will let you through the gate are displayed in the Air Lock before it is crashed.
 
 ---
 
 ## hints
 
 Somewhere in the bestiary of the log book, there's a hint for the location of an important item.
-(In order to see the bestiary text, you have to kill the boss.)
+(Kill the boss to see the bestiary text.)
 
 The 10 bestiary entries are: Torizo, Spore Spawn, Kraid, Crocomire, Phantoon, Botwoon, Draygon, Ridley, Metroids, Aurora Unit
 
