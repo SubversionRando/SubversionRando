@@ -1,1 +1,2 @@
-# If this file is empty, then github pages won't host it (last time I tested).
+# github pages, be default, doesn't serve files that begin with underscore
+# This can be changed by putting the file ".nojekyll" in the root of the repository.
