@@ -2,7 +2,10 @@ import base64
 import enum
 import os
 from pathlib import Path
+import pathlib
 from typing import TYPE_CHECKING, Union
+
+from subversion_rando.ips import patch
 
 if TYPE_CHECKING:
     from .connection_data import AreaDoor
@@ -32,11 +35,13 @@ class RomWriter:
         instance = cls()
         instance.romWriterType = RomWriterType.file
         instance.rom_data = RomWriter.createWorkingFileCopy(origRomPath)
+        instance.patch_if_vanilla()
         return instance
 
     @classmethod
     def fromBlankIps(cls) -> "RomWriter":
         instance = cls()
+        # TODO: ips type doesn't support vanilla SM rom
         instance.romWriterType = RomWriterType.ipsblob
         instance.ipsblob = bytearray(b'PATCH')
         return instance
@@ -46,6 +51,7 @@ class RomWriter:
         instance = cls()
         instance.romWriterType = RomWriterType.base64
         instance.rom_data = bytearray(base64.decodebytes(b64str.encode() if isinstance(b64str, str) else b64str))
+        instance.patch_if_vanilla()
         return instance
 
     @staticmethod
@@ -130,3 +136,14 @@ class RomWriter:
             self.writeBytes(int(door1.address, 16)+2, b"\x40")
             if not one_way:
                 self.writeBytes(int(door2.address, 16)+2, b"\x40")
+
+    def patch_if_vanilla(self) -> None:
+        if len(self.rom_data) != 4194304:  # subversion rom
+            if len(self.rom_data) == 3145728:  # vanilla SM
+                patch_path = pathlib.Path(__file__).parent.resolve()
+                with open(patch_path.joinpath('subversion.1.2.ips'), 'rb') as file:
+                    patch_data: bytes = file.read()
+                self.rom_data = bytearray(patch(self.rom_data, patch_data))
+                assert len(self.rom_data) == 4194304, f"patch made file {len(self.rom_data)}"
+            else:
+                raise ValueError(f"invalid rom {len(self.rom_data)} - need subversion 1.2 or vanilla SM, unheadered")
