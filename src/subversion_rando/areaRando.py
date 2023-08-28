@@ -105,7 +105,7 @@ def escape_path(connections: Iterable[tuple[AreaDoor, AreaDoor]]) -> Optional[li
     return list(reversed(reverse_path))
 
 
-def RandomizeAreas(force_normal_early: bool) -> list[tuple[AreaDoor, AreaDoor]]:
+def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> list[tuple[AreaDoor, AreaDoor]]:
     """
     force_normal_early forces SunkenNestL to connect to OceanShoreR
     This is necessary for casual major/minor.
@@ -117,14 +117,18 @@ def RandomizeAreas(force_normal_early: bool) -> list[tuple[AreaDoor, AreaDoor]]:
     # [3]the name of the door
     # [4]region
 
+    if not (seed is None):
+        random.seed(seed)
+
     Connections: list[tuple[AreaDoor, AreaDoor]] = []
     areaAttempts = 0
     connected = False
     while not connected :
         areaAttempts += 1
         if areaAttempts > 1000 :
-            raise TimeoutError("> 1000 attempts for area rando")
-        print("**********Trying to get a good escape attempt:", areaAttempts)
+            raise TimeoutError("> 1000 attempts for subversion area rando")
+        if seed is None:
+            print("**********Trying to get a good escape attempt:", areaAttempts)
 
         OpenNodesR = [CraterR,
                       RuinedConcourseTR,
