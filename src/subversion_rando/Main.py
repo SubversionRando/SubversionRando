@@ -199,6 +199,33 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
         romWriter.setBaseFilename(rom_name[:-4])
         rom1_path = None
 
+    apply_rom_patches(game, romWriter)
+
+    romWriter.finalizeRom(rom1_path)
+
+    print("Done!")
+    print(f"Filename is {rom_name}")
+
+    return rom_name
+
+
+def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
+    """
+    - bestiary hint
+    - area rando
+    - put items in locations
+    - suit animation skip
+    - chozo and hidden for Morph PLM
+    - skip intro
+    - disable demos
+    - area rando doors always flashing
+    - subterranean burrow terrain - anti-softlock
+    - randomized wrecked daphne gate
+    - lower water in Norak Brook
+    - rotate save files
+    - small spaceport
+    - escape shortcuts
+    """
     if game.hint_data:
         hint_loc_name, hint_loc_marker = game.hint_data
         write_hint_to_rom(hint_loc_name, hint_loc_marker, romWriter)
@@ -287,13 +314,6 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
         romWriter.connect_doors(spaceport_doors['BridgeL'], spaceport_doors['StationCorridorBR'], one_way=True)
         if not game.options.area_rando:
             romWriter.connect_doors(misc_doors["AuroraUnitWreckageL"], area_doors["CraterR"], one_way=True)
-
-    romWriter.finalizeRom(rom1_path)
-
-    print("Done!")
-    print(f"Filename is {rom_name}")
-
-    return rom_name
 
 
 def get_spoiler(game: Game) -> str:
