@@ -16,6 +16,7 @@ class Location(TypedDict):
     hiddenness: str
     alternateroomlocids: list[int]
     alternateroomdifferenthiddenness: str
+    alternateplmparamlo: Optional[int]
     inlogic: bool
     item: Optional[Item]
 
@@ -98,6 +99,12 @@ def pullCSV() -> dict[str, Location]:
             row['plmtypeid'] = int(row['plmtypeid'], 16)
             row['plmparamhi'] = int(row['plmparamhi'], 16)
             row['plmparamlo'] = int(row['plmparamlo'], 16)
+            if len(row['alternateplmparamlo']):
+                row['alternateplmparamlo'] = int(row['alternateplmparamlo'], 16)
+            else:
+                # There is a plmparamlo 0, but none of the alternates are 0
+                # so we can say `if loc['alternateplmparamlo']`
+                row['alternateplmparamlo'] = None
             # new key: 'inlogic'
             row['inlogic'] = False
             # the item that we place in this location
