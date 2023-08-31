@@ -1,7 +1,7 @@
 # reference: https://zerosoft.zophar.net/ips.php http://justsolve.archiveteam.org/wiki/IPS_(binary_patch_format)
 
 
-def patch(original_bytes: bytes, patch_bytes: bytes) -> bytes:
+def patch(original_bytes: bytes, patch_bytes: bytes) -> bytearray:
     """ `patch_bytes` is the data in the IPS file """
     if not (patch_bytes[:5] == b"PATCH" and patch_bytes[-3:] == b"EOF"):
         raise ValueError(f"invalid IPS patch: {patch_bytes[:5]!r}, {patch_bytes[-3:]!r}")
