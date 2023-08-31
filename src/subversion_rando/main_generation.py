@@ -199,6 +199,7 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
         romWriter.setBaseFilename(rom_name[:-4])
         rom1_path = None
 
+    write_locations(game, romWriter)
     apply_rom_patches(game, romWriter)
 
     romWriter.finalizeRom(rom1_path)
@@ -209,11 +210,20 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
     return rom_name
 
 
+def write_locations(game: Game, romWriter: RomWriter) -> None:
+    """
+    write all items into their locations
+
+    not compatible with multiworld
+    """
+    for loc in game.all_locations.values():
+        write_location(romWriter, loc)
+
+
 def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     """
     - bestiary hint
     - area rando
-    - put items in locations
     - suit animation skip
     - chozo and hidden for Morph PLM
     - skip intro
@@ -232,9 +242,6 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
 
     if game.options.area_rando:
         areaRando.write_area_doors(game.connections, romWriter)
-    # write all items into their locations
-    for loc in game.all_locations.values():
-        write_location(romWriter, loc)
 
     # Suit animation skip patch
     romWriter.writeBytes(0x20717, b"\xea\xea\xea\xea")
