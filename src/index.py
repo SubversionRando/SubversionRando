@@ -11,7 +11,7 @@ from subversion_rando.logic_presets import casual, expert, medium
 from subversion_rando.romWriter import RomWriter
 from subversion_rando.trick import Trick
 from subversion_rando.trick_data import Tricks, trick_name_lookup
-from subversion_rando.Main import generate, get_spoiler, write_rom
+from subversion_rando.main_generation import generate, get_spoiler, write_rom
 
 Element: Any  # pyscript built-in
 

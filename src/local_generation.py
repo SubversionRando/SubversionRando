@@ -9,7 +9,7 @@
 # It's all case-sensitive. ("True" or "False", not "true" or "false")
 
 from subversion_rando.game import CypherItems, GameOptions
-from subversion_rando.Main import generate, write_rom, write_spoiler_file
+from subversion_rando.main_generation import generate, write_rom, write_spoiler_file
 from subversion_rando.trick_data import Tricks
 
 

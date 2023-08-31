@@ -12,7 +12,7 @@ import pickle
 import sys
 from typing import Iterator, Literal, Optional
 
-from subversion_rando.Main import generate
+from subversion_rando.main_generation import generate
 from subversion_rando.connection_data import AreaDoor
 from subversion_rando.game import CypherItems, Game, GameOptions
 from subversion_rando.location_data import Location

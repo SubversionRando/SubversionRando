@@ -9,7 +9,7 @@ import time
 
 from subversion_rando.game import CypherItems, GameOptions
 from subversion_rando.logic_presets import casual, expert, medium
-from subversion_rando.Main import generate, write_rom, write_spoiler_file
+from subversion_rando.main_generation import generate, write_rom, write_spoiler_file
 
 
 def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
