@@ -55,6 +55,20 @@ class RomWriter:
         return instance
 
     @staticmethod
+    def index_to_snes_addr(i: int) -> int:
+        """ converts a PC rom offset to a SNES lorom address """
+        a = ((i << 1) & 0x7f0000) + 0x800000
+        b = (i & 0x7fff) + 0x8000
+        snes = a | b
+        return snes
+
+    @staticmethod
+    def snes_to_index_addr(addr: int) -> int:
+        """ converts a SNES lorom address to a PC rom offset """
+        pc = ((addr & 0x7f0000) >> 1) | (addr & 0x7fff)
+        return pc
+
+    @staticmethod
     def createWorkingFileCopy(origFile: Union[Path, str]) -> bytearray:
         if not os.path.exists(origFile):
             raise Exception(f'origFile not found: {origFile}')
@@ -143,7 +157,7 @@ class RomWriter:
                 patch_path = pathlib.Path(__file__).parent.resolve()
                 with open(patch_path.joinpath('subversion.1.2.ips'), 'rb') as file:
                     patch_data: bytes = file.read()
-                self.rom_data = bytearray(patch(self.rom_data, patch_data))
+                self.rom_data = patch(self.rom_data, patch_data)
                 assert len(self.rom_data) == 4194304, f"patch made file {len(self.rom_data)}"
             else:
                 raise ValueError(f"invalid rom {len(self.rom_data)} - need subversion 1.2 or vanilla SM, unheadered")
