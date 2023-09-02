@@ -1,6 +1,10 @@
 from .item_data import Items
 from .trick import Trick
 
+# adding new tricks has a cost
+# custom logic strings will break
+# unless you add them at the end?
+
 
 class Tricks:
     infinite_bomb_jump = Trick("use bombs to gain infinite height", Items.Morph, Items.Bombs)
