@@ -7,7 +7,7 @@ from typing import Any, Literal, Optional, TypedDict
 import js  # type: ignore
 
 from subversion_rando.game import CypherItems, Game, GameOptions
-from subversion_rando.logic_presets import casual, expert, medium
+from subversion_rando.logic_presets import casual, expert, medium, custom_logic_str_from_tricks
 from subversion_rando.romWriter import RomWriter
 from subversion_rando.trick import Trick
 from subversion_rando.trick_data import Tricks, trick_name_lookup
@@ -118,3 +118,8 @@ def roll4() -> None:
 
 populate_tricks()
 populate_presets()
+
+
+def get_logic_str(trick_names: list[str]) -> str:
+    tricks: frozenset[Trick] = frozenset([getattr(Tricks, trick_name) for trick_name in trick_names])
+    return custom_logic_str_from_tricks(tricks)

@@ -58,6 +58,19 @@ function setup_collapsible() {
     });
 }
 
+function setup_logic_string() {
+    console.log("setup logic string button");
+    const logic_str_btn = document.getElementById("logic-str-btn");
+    const logic_str_out = document.getElementById("logic-str-out");
+
+    logic_str_btn.addEventListener("click", () => {
+        const activated_trick_names = get_activated_trick_names();
+        const python_get_logic_str = pyscript.interpreter.globals.get('get_logic_str');
+        const result_str = python_get_logic_str(activated_trick_names);
+        logic_str_out.innerText = result_str;
+    });
+}
+
 async function populate_presets(preset_data) {
     /* stuff moved to pyscript
     console.log("populate presets");
@@ -173,18 +186,23 @@ const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
     return blob;
 }
 
+function get_activated_trick_names() {
+    const activated_trick_names = [];
+    const tricks_table = document.getElementById("tricks");
+    for (const row of tricks_table.firstChild.children) {
+        const checkbox = row.firstChild.firstChild;
+        const trick_name = row.children[1].firstChild.innerText
+        if (checkbox.checked) {
+            activated_trick_names.push(trick_name);
+        }
+    }
+    return activated_trick_names;
+}
+
 function setup_roll_button() {
     const roll_button = document.getElementById("roll-button");
     roll_button.addEventListener("click", async () => {
-        const activated_trick_names = [];
-        const tricks_table = document.getElementById("tricks");
-        for (const row of tricks_table.firstChild.children) {
-            const checkbox = row.firstChild.firstChild;
-            const trick_name = row.children[1].firstChild.innerText
-            if (checkbox.checked) {
-                activated_trick_names.push(trick_name);
-            }
-        }
+        const activated_trick_names = get_activated_trick_names();
         const area_rando_box = document.getElementById("area-rando");
         const small_spaceport_box = document.getElementById("small-spaceport");
         const escape_shortcuts_box = document.getElementById("escape-shortcuts");
@@ -279,4 +297,5 @@ window.addEventListener("load", (event) => {
     // populate_presets(trick_promise);
     setup_roll_button();
     setup_file_loader();
+    setup_logic_string();
 });
