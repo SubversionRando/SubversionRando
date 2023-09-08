@@ -1,6 +1,6 @@
 import csv
 import pathlib
-from typing import Optional, TypedDict, cast
+from typing import IO, Optional, TypedDict, cast
 
 from .item_data import Item
 
@@ -78,15 +78,21 @@ eTankLocs = frozenset([
 ])
 
 
-def pullCSV() -> dict[str, Location]:
-    csvdict: dict[str, Location] = {}
+def pullCSV(csv_file: Optional[IO[str]] = None) -> dict[str, Location]:
+    locations: dict[str, Location] = {}
 
-    def commentfilter(line: str) -> bool:
+    def comment_filter(line: str) -> bool:
         return (line[0] != '#')
 
-    path = pathlib.Path(__file__).parent.resolve()
-    with open(path.joinpath('subversiondata12.csv'), 'r') as csvfile:
-        reader = csv.DictReader(filter(commentfilter, csvfile))
+    file: IO[str]
+    if not csv_file:
+        path = pathlib.Path(__file__).parent.resolve()
+        file = open(path.joinpath('subversiondata12.csv'), 'r')
+    else:
+        file = csv_file
+
+    with file as csv_f:
+        reader = csv.DictReader(filter(comment_filter, csv_f))
         for row in reader:
             # commas within fields -> array
             row['locids'] = row['locids'].split(',')
@@ -109,5 +115,5 @@ def pullCSV() -> dict[str, Location]:
             row['inlogic'] = False
             # the item that we place in this location
             row["item"] = None
-            csvdict[row['fullitemname']] = cast(Location, row)
-    return csvdict
+            locations[row['fullitemname']] = cast(Location, row)
+    return locations

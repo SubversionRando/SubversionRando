@@ -3,9 +3,9 @@ import enum
 import os
 from pathlib import Path
 import pathlib
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Optional, Union
 
-from subversion_rando.ips import patch
+from .ips import patch
 
 if TYPE_CHECKING:
     from .connection_data import AreaDoor
@@ -23,6 +23,7 @@ class RomWriter:
     rom_data: bytearray
     ipsblob: bytearray
     baseFilename: str
+    _sub12_patch_data: Optional[bytes] = None
 
     def __init__(self) -> None:
         self.romWriterType = RomWriterType.null
@@ -31,10 +32,11 @@ class RomWriter:
         self.baseFilename = ''
 
     @classmethod
-    def fromFilePaths(cls, origRomPath: Union[Path, str]) -> "RomWriter":
+    def fromFilePaths(cls, orig_rom_path: Union[Path, str], sub12_patch_data: Optional[bytes] = None) -> "RomWriter":
         instance = cls()
+        instance._sub12_patch_data = sub12_patch_data
         instance.romWriterType = RomWriterType.file
-        instance.rom_data = RomWriter.createWorkingFileCopy(origRomPath)
+        instance.rom_data = RomWriter.createWorkingFileCopy(orig_rom_path)
         instance.patch_if_vanilla()
         return instance
 
@@ -154,9 +156,12 @@ class RomWriter:
     def patch_if_vanilla(self) -> None:
         if len(self.rom_data) != 4194304:  # subversion rom
             if len(self.rom_data) == 3145728:  # vanilla SM
-                patch_path = pathlib.Path(__file__).parent.resolve()
-                with open(patch_path.joinpath('subversion.1.2.ips'), 'rb') as file:
-                    patch_data: bytes = file.read()
+                if self._sub12_patch_data:
+                    patch_data: bytes = self._sub12_patch_data
+                else:
+                    patch_path = pathlib.Path(__file__).parent.resolve()
+                    with open(patch_path.joinpath('subversion.1.2.ips'), 'rb') as file:
+                        patch_data = file.read()
                 self.rom_data = patch(self.rom_data, patch_data)
                 assert len(self.rom_data) == 4194304, f"patch made file {len(self.rom_data)}"
             else:
