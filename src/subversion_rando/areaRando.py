@@ -53,6 +53,10 @@ def escape_path(connections: Iterable[tuple[AreaDoor, AreaDoor]]) -> Optional[li
     disconnect_all(SunkenNestL)
     disconnect_all(CraterR)
 
+    # casual logic can't go through hive burrow
+    disconnect_all(HiveBurrowL)
+    # TODO: make it so Hive Burrow is allowed in expert logic?
+
     # west terminal up elevator is disabled (down elevator is ok)
     adj[WestTerminalAccessL.name] = {}
 
