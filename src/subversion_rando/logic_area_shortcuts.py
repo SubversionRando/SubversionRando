@@ -495,6 +495,16 @@ class SandLand:
                     (spazerSBA in loadout) or
                     loadout.has_all(Aqua, SpeedBooster)
                 )
+            ) or
+            (
+                # On the left side of the higher morph tunnel,
+                # there is a 2-tile space for slope-killer.
+                # Super-sink 4 turn-arounds (after you start falling),
+                # then morph, un-morph, morph, un-morph...
+                # until you can move in the lower morph tunnel.
+                # Speedbooster can get you back up.
+                loadout.has_all(Morph, Aqua, SpeedBooster, Tricks.super_sink_easy) and
+                loadout.has_any(Speedball, can_bomb(1))
             )
             # joonie did the super sink into the visor switch tunnel
             # but with save states, and bob said he doesn't have a good setup for it
