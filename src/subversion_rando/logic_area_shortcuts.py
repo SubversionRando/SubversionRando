@@ -224,7 +224,12 @@ class SkyWorld:
 class Early:
     cisternAccessTunnel = LogicShortcut(lambda loadout: (
         (Morph in loadout) and
-        loadout.has_any(Speedball, Bombs, PowerBomb, Tricks.movement_moderate)
+        (
+            loadout.has_any(Speedball, Bombs, PowerBomb, Tricks.movement_moderate) or
+            # special case: In area rando, casual logic needs to be able to do this trick.
+            # Otherwise, there aren't enough places to put progression items.
+            (loadout.game.options.area_rando)
+        )
         # speedball or fast morph helps you follow your bullet to the shotblock
     ))
     """ Cistern Access Tunnel with a shot block in it """

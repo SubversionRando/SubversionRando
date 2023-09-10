@@ -31,7 +31,7 @@ from .new_terrain_writer import TerrainWriter
 from .romWriter import RomWriter
 from .solver import hard_required_locations, required_tricks, solve, spoil_play_through
 from .spaceport_door_data import shrink_spaceport, spaceport_doors
-from .terrain_patch import subterranean
+from .terrain_patch import hall_of_the_elders, subterranean
 from .trick import Trick
 from .trick_data import Tricks
 
@@ -271,6 +271,7 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     tw = TerrainWriter(romWriter)
 
     tw.write(subterranean, [0x7dac7, 0x7daad])
+    tw.write(hall_of_the_elders, [0x79781])
 
     if game.options.daphne_gate:
         wrecked_bytes, non_default_bytes, default_bytes = get_air_lock_bytes(game.daphne_blocks)

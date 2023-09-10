@@ -140,13 +140,15 @@ ruinedConcourseBDoorToEldersTop = LogicShortcut(lambda loadout: (
         # TODO: or sbj without hi jump? or space jump with how many boosts?
 
         (Morph in loadout)
-    )) and
-    (  # exit gate
-        (shootThroughWalls in loadout) or
-        (can_bomb(1) in loadout) or
-        (Tricks.wave_gate_glitch in loadout) or
-        (Screw in loadout)
-    )
+    ))
+    # This is what it needed before the terrain change
+    # and
+    # (  # exit gate
+    #     (shootThroughWalls in loadout) or
+    #     (can_bomb(1) in loadout) or
+    #     (Tricks.wave_gate_glitch in loadout) or
+    #     (Screw in loadout)
+    # )
 ))
 """ ruinedConcourseBDoorToEldersBottom + getting to the door at the top of the room """
 
