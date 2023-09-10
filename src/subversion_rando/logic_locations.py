@@ -122,7 +122,7 @@ ruinedConcourseBDoorToEldersTop = LogicShortcut(lambda loadout: (
         ((HiJump in loadout) and (Tricks.wall_jump_delayed in loadout))
         # tight wall jump from lower chozo statue to higher chozo statue))
     ) or (
-        ((HiJump in loadout) and (SpeedBooster in loadout) and (Tricks.wall_jump_precise in loadout))
+        loadout.has_all(HiJump, SpeedBooster, Tricks.wall_jump_precise, Aqua)
         # speedbooster jump from lower chozo statue to higher chozo statue wall))
     ) or (
         (SpaceJump in loadout)
@@ -764,6 +764,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (can_bomb(2) in loadout) or
             loadout.has_all(can_bomb(1), Speedball) or
             loadout.has_all(Morph, Speedball, shootThroughWalls)
+            # wall morph or hi jump or space jump or ibj
         ) and
         ((
             (FieryGalleryL in loadout) and
