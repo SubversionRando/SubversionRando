@@ -201,8 +201,17 @@ def generate_goals(game, romWriter):
 	if count > max_goal_count:
 		raise Exception(f'Cannot generate {count} goals, which is more than the maximum allowed of {max_goal_count}.')
 
+	valid_events = list(events)
+	if game.options.area_rando:
+		bad_events = ["POWER OFF"]
+		valid_events = [
+			[sub_event for sub_event in event if sub_event[1] not in bad_events] 
+			for event in valid_events
+		]
+	valid_events = [event for event in valid_events if event]
+
 	# select goals
-	goals = [random.sample(subgoals, 1)[0] for subgoals in random.sample(events, count)]
+	goals = [random.sample(subgoals, 1)[0] for subgoals in random.sample(valid_events, count)]
 
 	# write room init function to check state conditions
 	romWriter.writeBytes(final_room_init_address, struct.pack('<H', check_event_func))
