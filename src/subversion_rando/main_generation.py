@@ -323,6 +323,9 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
         if not game.options.area_rando:
             romWriter.connect_doors(misc_doors["AuroraUnitWreckageL"], area_doors["CraterR"], one_way=True)
 
+    if game.option.skip_crash_space_port
+        romWriter.writeBytes(0x07BAA1, b'\x35\xE6') # also use state (skip test for state 1D)
+
 
 def get_spoiler(game: Game) -> str:
     """ the text in the spoiler file """
