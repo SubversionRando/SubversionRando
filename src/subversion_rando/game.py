@@ -36,6 +36,7 @@ class GameOptions:
     escape_shortcuts: bool = False
     cypher_items: CypherItems = CypherItems.NotRequired
     daphne_gate: bool = False
+    objective_rando: int = 0
 
 
 @dataclass

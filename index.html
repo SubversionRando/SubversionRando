@@ -76,6 +76,11 @@
         </select> 
     </div>
     <div>
+        <label for="objective-rando">Objectives</label>
+        <input type="number" id="objective-rando" value="0"/>
+    </div>
+
+    <div>
         <button id="roll-button">roll</button><br /><span>Generation can take up to 90 seconds, and your browser might stop responding.</span>
     </div>
     <div id="status"></div>
@@ -122,7 +127,9 @@
             "subversion_rando/subversion.1.2.ips",
             "subversion_rando/terrain_patch.py",
             "subversion_rando/trick.py",
-            "subversion_rando/trick_data.py"
+            "subversion_rando/trick_data.py",
+            "subversion_rando/goal.py",
+            "subversion_rando/objective_rando.ips"
         ]
     </py-config>
     <py-script src="./src/index.py"></py-script>
