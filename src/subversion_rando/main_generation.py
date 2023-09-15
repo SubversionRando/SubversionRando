@@ -34,6 +34,7 @@ from .spaceport_door_data import shrink_spaceport, spaceport_doors
 from .terrain_patch import hall_of_the_elders, subterranean
 from .trick import Trick
 from .trick_data import Tricks
+from .open_escape import patch_open_escape
 
 ORIGINAL_ROM_NAME = "Subversion12.sfc"
 
@@ -322,6 +323,10 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
         romWriter.connect_doors(spaceport_doors['BridgeL'], spaceport_doors['StationCorridorBR'], one_way=True)
         if not game.options.area_rando:
             romWriter.connect_doors(misc_doors["AuroraUnitWreckageL"], area_doors["CraterR"], one_way=True)
+
+    if game.options.open_escape:
+        romWriter.apply_IPS('open_escape.ips')
+        patch_open_escape(game, romWriter)
 
 
 def get_spoiler(game: Game) -> str:

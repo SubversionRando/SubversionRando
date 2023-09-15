@@ -44,6 +44,13 @@ def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
 
     parser.add_argument('-r', '--escapeshortcuts', action="store_true",
                         help='shortens the escape paths - (final escape shortened only if not area rando)')
+
+    parser.add_argument('--daphne_gate', action="store_true",
+                        help='???')
+
+    parser.add_argument('--open_escape', action="store_true",
+                        help='Allows open access to the whole world during the final escape sequence')
+
     args = parser.parse_args(sys_args)
     # print(args)
     return args
@@ -87,7 +94,15 @@ def Main(argv: list[str]) -> None:
     if workingArgs.escapeshortcuts:
         escape_shortcuts = True
 
-    options = GameOptions(logic, area_rando, fillChoice, small_spaceport, escape_shortcuts, CypherItems.NotRequired)
+    daphne_gate = False
+    if workingArgs.daphne_gate:
+        daphne_gate = True
+
+    open_escape = False
+    if workingArgs.open_escape:
+        open_escape = True
+
+    options = GameOptions(logic, area_rando, fillChoice, small_spaceport, escape_shortcuts, CypherItems.NotRequired, daphne_gate, open_escape)
     game = generate(options)
     rom_name = write_rom(game)
     write_spoiler_file(game, rom_name)
