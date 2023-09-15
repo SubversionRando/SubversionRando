@@ -28,13 +28,13 @@ from . import fillAssumed
 from . import fillSpeedrun
 from . import areaRando
 from .new_terrain_writer import TerrainWriter
+from .open_escape import patch_open_escape
 from .romWriter import RomWriter
 from .solver import hard_required_locations, required_tricks, solve, spoil_play_through
 from .spaceport_door_data import shrink_spaceport, spaceport_doors
 from .terrain_patch import hall_of_the_elders, subterranean
 from .trick import Trick
 from .trick_data import Tricks
-from .open_escape import patch_open_escape
 
 ORIGINAL_ROM_NAME = "Subversion12.sfc"
 
@@ -236,6 +236,7 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     - rotate save files
     - small spaceport
     - escape shortcuts
+    - open escape path
     """
     if game.hint_data:
         hint_loc_name, hint_loc_marker = game.hint_data
@@ -324,9 +325,8 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
         if not game.options.area_rando:
             romWriter.connect_doors(misc_doors["AuroraUnitWreckageL"], area_doors["CraterR"], one_way=True)
 
-    if game.options.open_escape:
-        romWriter.apply_IPS('open_escape.ips')
-        patch_open_escape(game, romWriter)
+    romWriter.apply_IPS('open_escape.ips')
+    patch_open_escape(romWriter)
 
 
 def get_spoiler(game: Game) -> str:

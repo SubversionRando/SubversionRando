@@ -52,7 +52,6 @@ class WebParams(TypedDict):
     cypher: str
     tricks: list[str]
     daphne_gate: bool
-    open_escape: bool
 
 
 # the roll process is divided up to make the ui more responsive,
@@ -94,8 +93,7 @@ def roll2(params_str: str) -> None:
                           bool(params["small_spaceport"]),
                           bool(params["escape_shortcuts"]),
                           getattr(CypherItems, params["cypher"]),
-                          bool(params["daphne_gate"]),
-                          bool(params["open_escape"]))
+                          bool(params["daphne_gate"]))
     print(options)
 
 

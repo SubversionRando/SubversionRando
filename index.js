@@ -209,7 +209,6 @@ function setup_roll_button() {
         const fill_select = document.getElementById("fill");
         const daphne_box = document.getElementById("daphne-gate");
         const cypher_select = document.getElementById("cypher");
-        const open_escape_box = document.getElementById("open-escape");
 
         const params = {
             "area_rando": area_rando_box.checked,
@@ -218,8 +217,7 @@ function setup_roll_button() {
             "fill": fill_select.value,
             "cypher": cypher_select.value,
             "tricks": activated_trick_names,
-            "daphne_gate": daphne_box.checked,
-            "open_escape": open_escape_box.checked,
+            "daphne_gate": daphne_box.checked
         };
         roll_button.disabled = true;
         const status_div = document.getElementById("status");
