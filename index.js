@@ -52,7 +52,7 @@ function setup_collapsible() {
             trick_container.style.maxHeight = "0px";
             trick_container.style.overflowY = "hidden";
         } else {
-            trick_container.style.maxHeight = "400px";
+            trick_container.style.maxHeight = "380px";
             trick_container.style.overflowY = "auto";
         }
     });
