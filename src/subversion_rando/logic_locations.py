@@ -661,7 +661,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (Morph in loadout) and
         ((Speedball in loadout) or (
             (Tricks.super_sink_easy in loadout) and
-            (Tricks.movement_moderate in loadout)  # this 2-tile space is a little more difficult to get into than others
+            (Tricks.movement_moderate in loadout)
+            # this 2-tile space is a little more difficult to get into than others
         ))
     ),
     "Archives: Back": lambda loadout: (
@@ -859,6 +860,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             loadout.has_any(Ice, SpaceJump, Tricks.wall_jump_precise) or
             ((killRippers in loadout) and (Tricks.infinite_bomb_jump in loadout))
         ) and
+        # twisted tunnel wall morph or ibj or space or hi jump
         ((
             (VulnarDepthsElevatorEL in loadout) and
             (FireHive.hiveEntrance in loadout) and
@@ -1385,6 +1387,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (meanderingPassage in loadout) and
         (Morph in loadout) and
         (
+            # casual wall morph or hjb or space or ibj
             (Aqua in loadout) or
             (Tricks.sbj_underwater_w_hjb in loadout) or
             loadout.has_all(Tricks.sbj_underwater_no_hjb, Tricks.freeze_hard) or
