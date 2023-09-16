@@ -7,7 +7,8 @@ from subversion_rando.item_data import Items
 from mass_generator import GameData
 
 
-file_name = "data/ECU-w-and-wo-area-rando-D-T-F-2023-01-17-10-41-50.dat"
+file_name = "data/ECU-w-and-wo-area-rando-MMB-cypher-anything-before-transform-adjust-2023-04-01-12-07-51.dat"
+file_name = "data/ECU-w-and-wo-area-rando-MMB-cypher-anything-2023-04-01-11-12-52.dat"
 
 
 def read_games() -> list[GameData]:
@@ -22,6 +23,33 @@ def read_games() -> list[GameData]:
     return games
 
 
+_unique_items = frozenset([
+    Items.Missile,
+    Items.Morph,
+    Items.GravityBoots,
+    Items.Super,
+    Items.Grapple,
+    Items.PowerBomb,
+    Items.Speedball,
+    Items.Bombs,
+    Items.HiJump,
+    Items.Aqua,
+    Items.DarkVisor,
+    Items.Wave,
+    Items.SpeedBooster,
+    Items.Spazer,
+    Items.Varia,
+    Items.Ice,
+    Items.MetroidSuit,
+    Items.Plasma,
+    Items.Screw,
+    Items.SpaceJump,
+    Items.Charge,
+    Items.Hypercharge,
+    Items.Xray,
+])
+
+
 def main() -> None:
     games = read_games()
 
@@ -29,19 +57,18 @@ def main() -> None:
     item_counts: Counter[str] = Counter()
     for g in games:
         for loc_name, loc in g.all_locations.items():
-            if loc["item"] == Items.Morph:
+            if loc["item"] in _unique_items:
                 loc_counts[loc_name] += 1
-                break
 
-        item = g.all_locations["Gantry"]["item"]
+        item = g.all_locations["Docking Port 4"]["item"]
         assert item
         item_counts[item[0]] += 1
 
-    for b in loc_counts:
-        print(f"{b}: {loc_counts[b]}")
+    for b, c in loc_counts.most_common():
+        print(f"{b}: {c}")
     print()
-    for b in item_counts:
-        print(f"{b}: {item_counts[b]}")
+    for b, c in item_counts.most_common():
+        print(f"{b}: {c}")
 
 
 if __name__ == "__main__":
