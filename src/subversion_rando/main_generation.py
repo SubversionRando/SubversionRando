@@ -236,6 +236,8 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     - rotate save files
     - small spaceport
     - escape shortcuts
+    - objective rando
+    - skip crash space port
     """
     if game.hint_data:
         hint_loc_name, hint_loc_marker = game.hint_data
@@ -328,6 +330,8 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
         romWriter.apply_IPS('objective_rando.ips')
         generate_goals(game, romWriter)
 
+    if game.options.skip_crash_space_port:
+        romWriter.writeBytes(0x07BAA1, b'\x35\xE6')  # also use state (skip test for state 1D)
 
 
 def get_spoiler(game: Game) -> str:

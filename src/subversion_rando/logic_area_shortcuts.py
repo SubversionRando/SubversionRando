@@ -1284,6 +1284,7 @@ class FireHive:
 
     hiveEntrance = LogicShortcut(lambda loadout: (
         (pinkDoor in loadout) and  # between hive entrance and elevator
+        # wall morph or ibj or space or hi jump
         ((can_bomb(4) in loadout) or (
             (Speedball in loadout) and
             (can_bomb(3) in loadout)

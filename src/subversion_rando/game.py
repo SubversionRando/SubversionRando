@@ -37,6 +37,7 @@ class GameOptions:
     cypher_items: CypherItems = CypherItems.NotRequired
     daphne_gate: bool = False
     objective_rando: int = 0
+    skip_crash_space_port: bool = False
 
 
 @dataclass

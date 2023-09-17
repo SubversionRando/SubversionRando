@@ -52,7 +52,7 @@ function setup_collapsible() {
             trick_container.style.maxHeight = "0px";
             trick_container.style.overflowY = "hidden";
         } else {
-            trick_container.style.maxHeight = "400px";
+            trick_container.style.maxHeight = "380px";
             trick_container.style.overflowY = "auto";
         }
     });
@@ -210,6 +210,7 @@ function setup_roll_button() {
         const daphne_box = document.getElementById("daphne-gate");
         const cypher_select = document.getElementById("cypher");
         const objectives_box = document.getElementById("objective-rando");
+        const skip_crash_space_port_box = document.getElementById("skip-crash-space-port");
 
         const params = {
             "area_rando": area_rando_box.checked,
@@ -219,7 +220,8 @@ function setup_roll_button() {
             "cypher": cypher_select.value,
             "tricks": activated_trick_names,
             "daphne_gate": daphne_box.checked,
-            "objective_rando": objectives_box.value
+            "objective_rando": objectives_box.value,
+            "skip_crash_space_port": skip_crash_space_port_box.checked
         };
         roll_button.disabled = true;
         const status_div = document.getElementById("status");

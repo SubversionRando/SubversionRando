@@ -50,6 +50,11 @@ def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
 
     parser.add_argument('--goals', default=0, type=int,
                         help='number of randomized objectives (0 for disabled)')
+
+    parser.add_argument(
+        '--skipcrashspaceport', action="store_true",
+        help='A second GFS Daphne starts crashed in Lomyr Valley, removing the requirement to crash the Space Port'
+    )
     args = parser.parse_args(sys_args)
     # print(args)
     return args
@@ -97,9 +102,13 @@ def Main(argv: list[str]) -> None:
     if workingArgs.daphne_gate:
         daphne_gate = True
 
-    options = GameOptions(logic, area_rando, fillChoice, small_spaceport, 
-        escape_shortcuts, CypherItems.NotRequired, workingArgs.daphne_gate, workingArgs.goals)
+    skip_crash_space_port = False
+    if workingArgs.skipcrashspaceport:
+        skip_crash_space_port = True
 
+    options = GameOptions(logic, area_rando, fillChoice, small_spaceport,
+                          escape_shortcuts, CypherItems.NotRequired,
+                          daphne_gate, workingArgs.goals, skip_crash_space_port)
     game = generate(options)
     rom_name = write_rom(game)
     write_spoiler_file(game, rom_name)
