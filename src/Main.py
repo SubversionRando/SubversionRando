@@ -44,6 +44,14 @@ def commandLineArgs(sys_args: list[str]) -> argparse.Namespace:
 
     parser.add_argument('-r', '--escapeshortcuts', action="store_true",
                         help='shortens the escape paths - (final escape shortened only if not area rando)')
+
+    parser.add_argument('--daphne_gate', action="store_true",
+                        help='???')
+
+    parser.add_argument(
+        '--skipcrashspaceport', action="store_true",
+        help='A second GFS Daphne starts crashed in Lomyr Valley, removing the requirement to crash the Space Port'
+    )
     args = parser.parse_args(sys_args)
     # print(args)
     return args
@@ -87,7 +95,17 @@ def Main(argv: list[str]) -> None:
     if workingArgs.escapeshortcuts:
         escape_shortcuts = True
 
-    options = GameOptions(logic, area_rando, fillChoice, small_spaceport, escape_shortcuts, CypherItems.NotRequired)
+    daphne_gate = False
+    if workingArgs.daphne_gate:
+        daphne_gate = True
+
+    skip_crash_space_port = False
+    if workingArgs.skipcrashspaceport:
+        skip_crash_space_port = True
+
+    options = GameOptions(logic, area_rando, fillChoice, small_spaceport,
+                          escape_shortcuts, CypherItems.NotRequired,
+                          daphne_gate, skip_crash_space_port)
     game = generate(options)
     rom_name = write_rom(game)
     write_spoiler_file(game, rom_name)
