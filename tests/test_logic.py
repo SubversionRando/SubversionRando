@@ -1,12 +1,5 @@
 from collections import defaultdict
-import sys
-from pathlib import Path
 import pytest
-
-# import hacks, because this project is not a python package
-file = Path(__file__).resolve()
-parent, root = file.parent, file.parents[1]
-sys.path.append(str(root))
 
 from subversion_rando.connection_data import SunkenNestL, VanillaAreas, area_doors
 from subversion_rando.game import Game, GameOptions

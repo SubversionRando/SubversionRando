@@ -1,14 +1,7 @@
-# import hacks, because this project is not a python package
-import sys
-from pathlib import Path
 import pytest
+
 from subversion_rando.game import Game, GameOptions
 from subversion_rando.trick import Trick
-
-file = Path(__file__).resolve()
-parent, root = file.parent, file.parents[1]
-sys.path.append(str(root))
-
 from subversion_rando.item_data import Items
 from subversion_rando.loadout import Loadout
 from subversion_rando.logicCommon import ammo_in_loadout, ammo_req, \
