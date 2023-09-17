@@ -328,6 +328,9 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     romWriter.apply_IPS('open_escape.ips')
     patch_open_escape(romWriter)
 
+    if game.options.skip_crash_space_port:
+        romWriter.writeBytes(0x07BAA1, b'\x35\xE6')  # also use state (skip test for state 1D)
+
 
 def get_spoiler(game: Game) -> str:
     """ the text in the spoiler file """

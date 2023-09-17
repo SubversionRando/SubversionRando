@@ -155,7 +155,10 @@ can_crash_spaceport = LogicShortcut(lambda loadout: (
 ))
 
 can_win = LogicShortcut(lambda loadout: (
-    (can_crash_spaceport in loadout) and
+    (
+        (loadout.game.options.skip_crash_space_port) or
+        (can_crash_spaceport in loadout)
+    ) and
     (area_doors["RockyRidgeTrailL"] in loadout) and
     (GravityBoots in loadout) and
     (loadout.game.daphne_blocks.logic in loadout) and
@@ -185,6 +188,9 @@ can_win = LogicShortcut(lambda loadout: (
             (Charge in loadout)
         )
     ) and
+    # We don't want new players getting stuck behind the laser with no Metroid Suit.
+    # So doing it without Metroid Suit requires something around expert logic.
+    (loadout.has_any(MetroidSuit, Tricks.movement_zoast)) and
     # back to ship
     ((area_doors["SunkenNestL"] in loadout) or (area_doors["CraterR"] in loadout))
     # TODO: this isn't enough for back to ship because some doors are grey
