@@ -124,6 +124,10 @@ def generate(options: GameOptions) -> Game:
             )
             game.connections = areaRando.RandomizeAreas(force_normal_early)
             # print(Connections) #test
+
+        if game.options.objective_rando > 0:
+            game.goals = generate_goals(game.options)
+
         if time.perf_counter() - start_time > 70:
             print(f"Giving up after {randomizeAttempts} attempts. Help?")
             return game
@@ -141,9 +145,6 @@ def generate(options: GameOptions) -> Game:
 
         if game.options.cypher_items == CypherItems.NotRequired:
             seedComplete = verify_cypher_not_required(seedComplete, game)
-
-    if game.options.objective_rando > 0:
-        game.goals = generate_goals(game.options)
 
     # make this optional?
     # If someone doesn't want hints, they can just not look at the log.
