@@ -4,7 +4,8 @@ import random
 import struct
 import itertools
 
-from .game import Game
+from .game import CypherItems, GameOptions
+from .goals import Event, Goals
 from .romWriter import RomWriter
 
 base_event_id = 0xF2
@@ -69,8 +70,6 @@ message_box_map = {
     '/': 0x281A,
     '\\': 0x681A,
 }
-
-Event = tuple[int, str, str]
 
 events: list[list[Event]] = [
     [(0x40, "KRAID",        "DEFEAT KRAID IN THE SUBMARINE LAIR.")],
@@ -149,19 +148,19 @@ def ConvertToText(text: str, event: int) -> bytes:
 
 def ConvertToMessagebox(text: str) -> bytes:
     text = f'___{text:^26}___'
-    text = [message_box_map.get(c, 0x280F) for c in text]
-    text = [struct.pack('<H', c) for c in text]
-    text = bytes(itertools.chain.from_iterable(text))
-    return text
+    text_codes = [message_box_map.get(c, 0x280F) for c in text]
+    text_words = [struct.pack('<H', c) for c in text_codes]
+    text_bytes = bytes(itertools.chain.from_iterable(text_words))
+    return text_bytes
 
 
 def GetShortAddress(address: int) -> int:
     return (address & 0x007FFF) | 0x8000
 
 
-def WriteLogEntry(romWriter: RomWriter, address: int, index: int, event: int, label: str, text: str) -> int:
-    label = ConvertToLabel(label)
-    text = ConvertToText(text, base_hint_solve_id + index)
+def WriteLogEntry(romWriter: RomWriter, address: int, index: int, event: int, name: str, description: str) -> int:
+    label = ConvertToLabel(name)
+    text = ConvertToText(description, base_hint_solve_id + index)
 
     label_start = address + 8
     text_start = label_start + len(label)
@@ -203,39 +202,49 @@ def WriteMessageBoxes(romWriter: RomWriter, address: int, goals: list[Event]) ->
     romWriter.writeBytes(address, struct.pack('<HHH', 0x8436, 0x825A, GetShortAddress(message_address)))
 
 
-def generate_goals(game: Game, romWriter: RomWriter) -> None:
-    count = game.options.objective_rando
-    if count > max_goal_count:
-        raise Exception(f'Cannot generate {count} goals, which is more than the maximum allowed of {max_goal_count}.')
+def generate_goals(options: GameOptions) -> Goals:
+    count = options.objective_rando
 
-    valid_events = list(events)
-    if game.options.area_rando:
-        bad_events = ["POWER OFF"]
-        valid_events = [
-            [sub_event for sub_event in event if sub_event[1] not in bad_events] 
-            for event in valid_events
-        ]
+    bad_events: list[str] = []
+    if options.area_rando:
+        bad_events.append("POWER OFF")
+    if options.cypher_items != CypherItems.Anything:
+        bad_events.append("HYPER TORIZO")
+
+    valid_events = [
+        [sub_event for sub_event in event if sub_event[1] not in bad_events] 
+        for event in events
+    ]
     valid_events = [event for event in valid_events if event]
+
+    max_with_options = min(max_goal_count, len(valid_events), len(map_stations))
+
+    if count > max_with_options:
+        count = max_with_options
 
     # select goals
     goals = [random.sample(subgoals, 1)[0] for subgoals in random.sample(valid_events, count)]
 
+    remaining_map_stations = list(map_stations)
+    random.shuffle(remaining_map_stations)
+
+    return Goals(goals, remaining_map_stations)
+
+
+def write_goals(goals: Goals, romWriter: RomWriter) -> None:
     # write room init function to check state conditions
     romWriter.writeBytes(final_room_init_address, struct.pack('<H', check_event_func))
 
     # write event list
-    data = bytes([goal[0] for goal in goals])
+    data = bytes([goal[0] for goal in goals.objectives])
     romWriter.writeBytes(event_address, data)
 
-    WriteLogs(romWriter, log_mission_address, goals)
-    WriteMessageBoxes(romWriter, messages_boxes_address + (base_message_id * 6), goals)
+    WriteLogs(romWriter, log_mission_address, goals.objectives)
+    WriteMessageBoxes(romWriter, messages_boxes_address + (base_message_id * 6), goals.objectives)
 
     # write out map station plm data
-    remaining_map_stations = list(map_stations)
-    random.shuffle(remaining_map_stations)
-    for i, map_station in enumerate(remaining_map_stations):
-        i = i % len(goals)
-        goal = goals[i]
+    for i, map_station in enumerate(goals.map_station_order):
+        i = i % len(goals.objectives)
 
         # change map station into message station
         romWriter.writeBytes(map_station + 0, struct.pack('<H', 0xF2C0))

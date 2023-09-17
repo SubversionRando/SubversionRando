@@ -34,7 +34,7 @@ from .spaceport_door_data import shrink_spaceport, spaceport_doors
 from .terrain_patch import hall_of_the_elders, subterranean
 from .trick import Trick
 from .trick_data import Tricks
-from .goal import generate_goals
+from .goal import generate_goals, write_goals
 
 ORIGINAL_ROM_NAME = "Subversion12.sfc"
 
@@ -141,6 +141,9 @@ def generate(options: GameOptions) -> Game:
 
         if game.options.cypher_items == CypherItems.NotRequired:
             seedComplete = verify_cypher_not_required(seedComplete, game)
+
+    if game.options.objective_rando > 0:
+        game.goals = generate_goals(game.options)
 
     # make this optional?
     # If someone doesn't want hints, they can just not look at the log.
@@ -328,7 +331,7 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
 
     if game.options.objective_rando > 0:
         romWriter.apply_IPS('objective_rando.ips')
-        generate_goals(game, romWriter)
+        write_goals(game.goals, romWriter)
 
     if game.options.skip_crash_space_port:
         romWriter.writeBytes(0x07BAA1, b'\x35\xE6')  # also use state (skip test for state 1D)

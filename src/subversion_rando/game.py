@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Literal, Mapping, Optional, Union
 
 from .connection_data import AreaDoor, vanilla_doors
 from .daphne_gate_types import DaphneBlocks
+from .goals import Goals
 from .item_data import Item, Items
 from .location_data import Location
 from .logic_shortcut import LogicShortcut
@@ -51,3 +52,4 @@ class Game:
     item_placement_spoiler: str = ""
     hint_data: Optional[tuple[str, bytes]] = None
     daphne_blocks: DaphneBlocks = field(default_factory=daphne_factory)
+    goals: Goals = field(default_factory=Goals)

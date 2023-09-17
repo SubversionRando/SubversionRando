@@ -65,7 +65,9 @@ options = GameOptions(
     small_spaceport=True,
     escape_shortcuts=True,
     cypher_items=CypherItems.SmallAmmo,  # SmallAmmo Anything NotRequired
-    daphne_gate=True
+    daphne_gate=True,
+    objective_rando=5,
+    skip_crash_space_port=True
 )
 
 game = generate(options)

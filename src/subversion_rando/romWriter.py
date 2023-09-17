@@ -167,7 +167,7 @@ class RomWriter:
             else:
                 raise ValueError(f"invalid rom {len(self.rom_data)} - need subversion 1.2 or vanilla SM, unheadered")
 
-    def apply_IPS(self, ips_path) -> None:
+    def apply_IPS(self, ips_path: Union[str, Path]) -> None:
         patch_path = pathlib.Path(__file__).parent.resolve()
         with open(patch_path.joinpath(ips_path), 'rb') as file:
             patch_data = file.read()
