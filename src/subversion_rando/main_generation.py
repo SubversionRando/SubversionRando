@@ -28,6 +28,7 @@ from . import fillAssumed
 from . import fillSpeedrun
 from . import areaRando
 from .new_terrain_writer import TerrainWriter
+from .open_escape import patch_open_escape
 from .romWriter import RomWriter
 from .solver import hard_required_locations, required_tricks, solve, spoil_play_through
 from .spaceport_door_data import shrink_spaceport, spaceport_doors
@@ -235,6 +236,7 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     - rotate save files
     - small spaceport
     - escape shortcuts
+    - open escape path
     """
     if game.hint_data:
         hint_loc_name, hint_loc_marker = game.hint_data
@@ -322,6 +324,9 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
         romWriter.connect_doors(spaceport_doors['BridgeL'], spaceport_doors['StationCorridorBR'], one_way=True)
         if not game.options.area_rando:
             romWriter.connect_doors(misc_doors["AuroraUnitWreckageL"], area_doors["CraterR"], one_way=True)
+
+    romWriter.apply_IPS('open_escape.ips')
+    patch_open_escape(romWriter)
 
     if game.options.skip_crash_space_port:
         romWriter.writeBytes(0x07BAA1, b'\x35\xE6')  # also use state (skip test for state 1D)
