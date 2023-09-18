@@ -163,6 +163,7 @@ can_win = LogicShortcut(lambda loadout: (
     (GravityBoots in loadout) and
     (Morph in loadout) and
     (loadout.game.daphne_blocks.logic in loadout) and
+    (can_bomb(2) in loadout) and  # wrecked main engineering (2 for exit)
     (pinkDoor in loadout) and  # top entrance to MB
     (  # to enter detonator room
         (loadout.game.options.skip_crash_space_port) or
