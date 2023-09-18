@@ -329,7 +329,10 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     patch_open_escape(romWriter)
 
     if game.options.skip_crash_space_port:
+        # Crash GFS Daphne room starts in crashed state
         romWriter.writeBytes(0x07BAA1, b'\x35\xE6')  # also use state (skip test for state 1D)
+        # Wrecked Engineering Room uses escape level data to remove PB requirement
+        romWriter.writeBytes(0x07E06B, b'\x7D\xCB\xC6') # change level data pointer
 
 
 def get_spoiler(game: Game) -> str:

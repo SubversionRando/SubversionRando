@@ -163,9 +163,13 @@ can_win = LogicShortcut(lambda loadout: (
     (GravityBoots in loadout) and
     (loadout.game.daphne_blocks.logic in loadout) and
     (pinkDoor in loadout) and  # top entrance to MB
-    (can_use_pbs(1) in loadout) and  # to enter detonator room
-    # 1 because there's an enemy in the room where you need 2 pbs, that normally drops 10 ammo
-
+    (
+        (loadout.game.options.skip_crash_space_port) or
+        # skip_crash_space_port option removes the PB requirement
+        (can_use_pbs(1) in loadout) and  # to enter detonator room
+        # 1 because there's an enemy in the room where you need 2 pbs, that normally drops 10 ammo
+    ) and
+    
     # This next part for leaving the detonator room
     # TODO: add tricks
     # (aqua suit because of the acid that starts rising up)
