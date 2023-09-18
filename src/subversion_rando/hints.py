@@ -1,90 +1,35 @@
 import random
 from typing import Optional
 
-from .game import Game
 from .connection_data import area_doors
+from .game import Game
 from .item_data import Item, Items
 from .loadout import Loadout
 from .location_data import pullCSV, majorLocs
-from .logicCommon import varia_or_hell_run, can_bomb
-from .logic_area_shortcuts import SkyWorld, LifeTemple
-from .logic_locations import ruinedConcourseBDoorToEldersTop, greaterInferno, railAccess, norakToLifeTemple
+from .logic_boss_kill import BossKill
+from .logic_boss_reach import BossReach
 from .logic_shortcut import LogicShortcut
-from .logic_shortcut_data import can_crash_spaceport, pinkDoor, missileDamage, shootThroughWalls
 from .logic_updater import updateLogic
 from .romWriter import RomWriter
 from .solver import PlayThrough, hard_required_locations, solve
-from .trick_data import Tricks
+
+
+def _reach_and_kill(b: str) -> LogicShortcut:
+    return LogicShortcut(lambda loadout: (
+        loadout.has_all(getattr(BossReach, b), getattr(BossKill, b))
+    ))
+# TODO: unit test that runs this lambda, to make sure getattr gets right type
 
 
 hint_data = {
-    b'THE CHOZO HAVE A WEAKNESS IN': ("Torizo", 1, LogicShortcut(lambda loadout: (
-        (ruinedConcourseBDoorToEldersTop in loadout)
-    ))),
-    b'BODY IS COVERED WITH A HARDENED': ("Botwoon", 2, LogicShortcut(lambda loadout: (
-        (can_crash_spaceport in loadout) and (area_doors["OceanShoreR"] in loadout)
-    ))),
-    b'STURDY IN ORDER TO SURVIVE IN': ("Draygon", 4, LogicShortcut(lambda loadout: (
-        (greaterInferno in loadout)
-    ))),
-    b'EXOSKELETON HAS BEEN MODIFIED USING SOME': ("Ridley", 4, LogicShortcut(lambda loadout: (
-        (SkyWorld.killRidley in loadout) and
-        (Items.Super in loadout) and
-        (Items.GravityBoots in loadout) and
-        (railAccess in loadout) and
-        (SkyWorld.anticipation in loadout) and
-        (varia_or_hell_run(90) in loadout)
-    ))),
-    b'PIRATES\x87. THEIR SKIN IS': ("Kraid", 2, LogicShortcut(lambda loadout: (
-        (area_doors["OceanShoreR"] in loadout) and
-        (Items.GravityBoots in loadout) and
-        (pinkDoor in loadout) and  # 2 pink doors if I don't have (morph and (hjb or aqua))
-        (missileDamage in loadout) and
-        ((Items.Aqua in loadout) or (
-            (Tricks.sbj_underwater_w_hjb in loadout) and
-            (Tricks.movement_zoast in loadout)
-        ))
-    ))),
-    b'AROUND THEM. IT IS LIKELY THAT': ("Crocomire", 3, LogicShortcut(lambda loadout: (
-        (Items.GravityBoots in loadout) and
-        (norakToLifeTemple in loadout) and
-        (LifeTemple.veranda in loadout) and
-        (Items.SpeedBooster in loadout) and
-        (Items.Super in loadout)  # door to elevator to jungle's heart
-    ))),
-    b'PHANTOON\x87 CAN CLOAK': ("Phantoon", 3, LogicShortcut(lambda loadout: (
-        (Items.Super in loadout) and
-        (railAccess in loadout) and
-        (SkyWorld.anticipation in loadout) and
-        (Items.GravityBoots in loadout) and
-        ((SkyWorld.killRidley in loadout) or (
-            (can_bomb(1) in loadout) and
-            (loadout.has_any(Items.Bombs, Items.Speedball, Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile))
-        )) and
-        # get out
-        (SkyWorld.killPhantoon in loadout) and
-        (can_bomb(3) in loadout) and
-        (
-            (SkyWorld.meetingHallToLeft in loadout) or
-            (SkyWorld.killRidley in loadout)
-        )
-    ))),
-    b'FUNGUS AND CAN CHANGE THE STRUCTURE OF': ("Spore Spawn", 2, LogicShortcut(lambda loadout: (
-        ((
-            (area_doors["FieldAccessL"] in loadout) and
-            ((shootThroughWalls in loadout) or (Tricks.wave_gate_glitch in loadout))
-        ) or (
-            (area_doors["TransferStationR"] in loadout) and
-            (Items.DarkVisor in loadout) and
-            (pinkDoor in loadout)  # between east spore field and ESF access
-        )) and
-        ((Items.DarkVisor in loadout) or (Tricks.dark_easy in loadout)) and
-        (can_bomb(1) in loadout) and
-        (Items.Morph in loadout) and
-        (Items.GravityBoots in loadout) and
-        # 5-tile morph jump
-        (pinkDoor in loadout)  # between spore collection and spore generator access
-    ))),
+    b'THE CHOZO HAVE A WEAKNESS IN': ("Torizo", 1, _reach_and_kill("bomb_torizo")),
+    b'BODY IS COVERED WITH A HARDENED': ("Botwoon", 2, _reach_and_kill("botwoon")),
+    b'STURDY IN ORDER TO SURVIVE IN': ("Draygon", 4, _reach_and_kill("draygon")),
+    b'EXOSKELETON HAS BEEN MODIFIED USING SOME': ("Ridley", 4, _reach_and_kill("ridley")),
+    b'PIRATES\x87. THEIR SKIN IS': ("Kraid", 2, _reach_and_kill("kraid")),
+    b'AROUND THEM. IT IS LIKELY THAT': ("Crocomire", 3, _reach_and_kill("crocomire")),
+    b'PHANTOON\x87 CAN CLOAK': ("Phantoon", 3, _reach_and_kill("phantoon")),
+    b'FUNGUS AND CAN CHANGE THE STRUCTURE OF': ("Spore Spawn", 2, _reach_and_kill("spore_spawn")),
     b'COMMANDEERED THESE AND BUILT THEM INTO': ("Aurora", 1, LogicShortcut(lambda loadout: (
         loadout.game.all_locations["Weapon Locker"] in solve(loadout.game)[2]
         # only valid if doors don't change color

@@ -28,6 +28,7 @@ from . import fillAssumed
 from . import fillSpeedrun
 from . import areaRando
 from .new_terrain_writer import TerrainWriter
+from .open_escape import patch_open_escape
 from .romWriter import RomWriter
 from .solver import hard_required_locations, required_tricks, solve, spoil_play_through
 from .spaceport_door_data import shrink_spaceport, spaceport_doors
@@ -241,6 +242,7 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     - small spaceport
     - escape shortcuts
     - objective rando
+    - open escape path
     - skip crash space port
     """
     if game.hint_data:
@@ -333,6 +335,9 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     if game.options.objective_rando > 0:
         romWriter.apply_IPS('objective_rando.ips')
         write_goals(game.goals, romWriter)
+
+    romWriter.apply_IPS('open_escape.ips')
+    patch_open_escape(romWriter)
 
     if game.options.skip_crash_space_port:
         romWriter.writeBytes(0x07BAA1, b'\x35\xE6')  # also use state (skip test for state 1D)
