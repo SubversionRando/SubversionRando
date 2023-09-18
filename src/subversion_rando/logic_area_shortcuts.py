@@ -2,13 +2,14 @@
 
 from .item_data import items_unpackable
 from .logicCommon import ammo_req, can_bomb, can_use_pbs, crystal_flash, energy_req, hell_run_energy, varia_or_hell_run
+from .logic_boss_kill import BossKill
 from .logic_shortcut import LogicShortcut
 from .logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor,
     missileBarrier, electricHyper, killRippers, killGreenOrRedPirates,
     killYellowPirates, plasmaWaveGate, icePod, can_crash_spaceport,
     hiJumpSuperSink, bonkCeilingSuperSink, underwaterSuperSink, iceSBA,
-    plasmaSBA, spazerSBA
+    plasmaSBA, spazerSBA, pinkSwitch
 )
 from .trick_data import Tricks
 
@@ -120,59 +121,6 @@ class SkyWorld:
     ))
     """ traverse condenser room """
 
-    killPhantoon = LogicShortcut(lambda loadout: (
-        (DarkVisor in loadout) and
-        loadout.has_any(missileDamage, Charge) and
-        ((Tricks.movement_zoast in loadout) or (
-            (Tricks.movement_moderate in loadout) and
-            (energy_req(250) in loadout)
-        ) or (
-            (energy_req(450) in loadout)
-        ))
-    ))
-
-    killRidley = LogicShortcut(lambda loadout: (
-        # These numbers are all guesses, they might need to be tuned.
-        # TODO: Should these numbers depend on damage amp and accel charge?
-        (
-            (MetroidSuit in loadout) and
-            ((varia_or_hell_run(2001) in loadout) or (
-                (Hypercharge in loadout) and  # increases damage of the hyper beam you get from Metroid Suit
-                (varia_or_hell_run(1520) in loadout)
-            )) and
-            ((energy_req(850) in loadout) or (
-                (Tricks.movement_moderate in loadout) and
-                ((energy_req(650) in loadout) or (
-                    (crystal_flash in loadout) and
-                    (energy_req(450) in loadout)
-                ))
-            ) or (
-                (Tricks.movement_zoast in loadout) and
-                ((energy_req(450) in loadout) or (
-                    (crystal_flash in loadout) and
-                    (energy_req(350) in loadout)
-                ))
-            ))
-        ) or (
-            (Charge in loadout) and
-            (Hypercharge in loadout) and
-            ((
-                (energy_req(480) in loadout) and
-                (varia_or_hell_run(680) in loadout)
-            ) or (
-                (Tricks.movement_moderate in loadout) and
-                (energy_req(280) in loadout) and
-                (varia_or_hell_run(480) in loadout)
-            ) or (
-                (Tricks.movement_zoast in loadout) and
-                (energy_req(80) in loadout) and
-                (varia_or_hell_run(280) in loadout)
-                # TODO: test - I did this (no suits), but I had a few accel charges and damage amps.
-                # Can it be done with no damage amp or accel charge?
-            ))
-        )
-    ))
-
     anticipation = LogicShortcut(lambda loadout: (
         # this is mostly about exit logic, because it doesn't take anything to get into anticipation chamber
         (GravityBoots in loadout) and
@@ -185,11 +133,11 @@ class SkyWorld:
             # get out by killing phantoon
 
             # first get to phantoon
-            ((SkyWorld.killRidley in loadout) or (
+            ((BossKill.ridley in loadout) or (
                 (can_bomb(1) in loadout) and
                 (loadout.has_any(Bombs, Speedball, Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile))
             )) and
-            (SkyWorld.killPhantoon in loadout) and
+            (BossKill.phantoon in loadout) and
 
             # then get out
             (can_bomb(3) in loadout) and
@@ -324,6 +272,73 @@ class Early:
         ))
     ))
     """ get up to the ledge in top left of impact crater """
+
+    eldersBottom = LogicShortcut(lambda loadout: (
+        (GravityBoots in loadout) and
+        ((
+            (Morph in loadout) and
+            (pinkSwitch in loadout)
+        ) or (
+            # through cistern
+            ((
+                (Aqua in loadout) and
+                (
+                    (HiJump in loadout) or (canFly in loadout) or (Tricks.gravity_jump in loadout)
+                )
+            ) or (
+                (HiJump in loadout) and
+                (Ice in loadout)  # freeze fish
+            ) or (
+                (Tricks.sbj_underwater_w_hjb in loadout)  # TODO: verify this
+            ) or (
+                # short charge through door in cistern access tunnel and immersion pool
+                (Tricks.short_charge_3 in loadout) and (
+                    (Tricks.crouch_or_downgrab in loadout) or
+                    (HiJump in loadout)
+                )
+            ))
+            # TODO: more tricks for coming through cistern without aqua suit?
+        ))
+    ))
+    """ bottom of Ruined Concourse to bottom of Hall Of The Elders """
+
+    eldersTop = LogicShortcut(lambda loadout: (
+        (Early.eldersBottom in loadout) and
+        ((
+            (missileDamage in loadout)
+        ) or (
+            ((HiJump in loadout) and (Tricks.wall_jump_delayed in loadout))
+            # tight wall jump from lower chozo statue to higher chozo statue))
+        ) or (
+            loadout.has_all(HiJump, SpeedBooster, Tricks.wall_jump_precise, Aqua)
+            # speedbooster jump from lower chozo statue to higher chozo statue wall))
+        ) or (
+            (SpaceJump in loadout)
+        ) or (
+            (Aqua in loadout) and (canFly in loadout)
+            # bomb jump from in water
+        ) or (
+            # the morph/unmorph jump that bob did in 2nd quest low%
+            # (rusty also did it)
+            # no hi jump required, but need a way to get up to the bottom statue
+            (Tricks.movement_zoast in loadout) and
+
+            # to get up to the bottom statue
+            ((Aqua in loadout) or (HiJump in loadout)) and
+            # TODO: or sbj without hi jump? or space jump with how many boosts?
+
+            (Morph in loadout)
+        ))
+        # This is what it needed before the terrain change
+        # and
+        # (  # exit gate
+        #     (shootThroughWalls in loadout) or
+        #     (can_bomb(1) in loadout) or
+        #     (Tricks.wave_gate_glitch in loadout) or
+        #     (Screw in loadout)
+        # )
+    ))
+    """ bottom of Ruined Concourse to top of Hall Of The Elders (includes eldersBottom) """
 
 
 # TODO: SandLand location logic doesn't use these shortcuts as much as they should
@@ -603,6 +618,28 @@ class SandLand:
 
     and able to return
     """
+
+    shaftToSubmarineNest = LogicShortcut(lambda loadout: (
+        (pinkDoor in loadout) and
+        (
+            ((Aqua in loadout) and (
+                (Morph in loadout) or
+                (Tricks.gravity_jump in loadout) or
+                (Ice in loadout) or
+                (SpaceJump in loadout)
+                # TODO: probably more options here
+            )) or
+            (
+                (HiJump in loadout) and
+                (
+                    (Ice in loadout) or
+                    ((Tricks.crouch_or_downgrab in loadout) and (Morph in loadout)) or
+                    (Tricks.sbj_underwater_w_hjb in loadout)
+                )
+            ) or
+            (Tricks.sbj_underwater_no_hjb in loadout)
+        )
+    ))
 
 
 class ServiceSector:
@@ -1378,6 +1415,53 @@ class FireHive:
     ))
     """ hive burrow left door to infested passage (varia and super sink required) """
 
+    twisted = LogicShortcut(lambda loadout: (
+        (icePod in loadout) and
+        (GravityBoots in loadout) and
+        (Morph in loadout) and
+        # 2-tile morph jump next to the ice pod
+        ((can_bomb(1) in loadout) or (Speedball in loadout)) and
+        (varia_or_hell_run(211, heat_and_metroid_suit_not_required=True) in loadout)
+        # wall morph or ibj or space or hi jump
+    ))
+    """ Twisted Tunnel to farm in Outer Chamber """
+
+    magmaFurnace = LogicShortcut(lambda loadout: (
+        # hell run from farm in outer chamber to item and back to farm
+        (
+            (Varia in loadout) or  # can't hell run without certain items
+            (
+                # 1010 from guard station to farm - 810 from farm to farm
+                (varia_or_hell_run(810, heat_and_metroid_suit_not_required=True) in loadout) and
+                (
+                    (Speedball in loadout) or
+                    loadout.has_all(Tricks.morph_jump_4_tile, Tricks.movement_zoast, MetroidSuit) or
+                    (loadout.has_all(Ice, Wave, can_bomb(1)))
+                )
+            )
+        ) and
+        # even if not hell running, need to be able to gt through magma furnace
+        (
+            loadout.has_any(energy_req(180), MetroidSuit, Tricks.movement_moderate) and
+            (
+                (Speedball in loadout) or
+                (loadout.has_all(Ice, Wave, can_bomb(1))) or
+                (
+                    # kill yellow guys
+                    ((can_bomb(6) in loadout) or (loadout.has_all(Charge, Hypercharge))) and
+                    (Tricks.morph_jump_4_tile in loadout)
+                ) or
+                loadout.has_all(Tricks.movement_zoast, Tricks.morph_jump_4_tile)  # while in i frames
+            )
+        ) and
+        # magma forge
+        (
+            loadout.has_any(Ice, SpaceJump, Tricks.wall_jump_precise) or
+            ((killRippers in loadout) and (Tricks.infinite_bomb_jump in loadout))
+        )
+    ))
+    """ farm in Outer Chamber to Fire's Bane Shrine """
+
 
 class Geothermal:
     thermalResAlpha = LogicShortcut(lambda loadout: (
@@ -1491,55 +1575,6 @@ class DrayLand:
     ))
     """ to lower lava in magma chamber """
 
-    killGT = LogicShortcut(lambda loadout: (
-        (varia_or_hell_run(1733, heat_and_metroid_suit_not_required=True) in loadout) and
-
-        # in case CF is needed, need to be able to get up to the item platform
-        (loadout.has_any(Varia, Tricks.wall_jump_precise, SpaceJump)) and
-
-        (
-            loadout.has_all(Varia, Charge) or
-            loadout.has_all(Charge, Hypercharge) or
-            (
-                loadout.has_all(Charge, Ice, Wave, DamageAmp, AccelCharge) and
-                ((Spazer in loadout) or (Plasma in loadout))
-            ) or
-            loadout.has_all(Super, ammo_req(230), varia_or_hell_run(2460)) or
-            loadout.has_all(Super, ammo_req(150), Varia, energy_req(1210)) or
-            loadout.has_all(Tricks.patience, Varia, Missile)
-        )
-    ))
-
-    killDraygon = LogicShortcut(lambda loadout: (
-        ((Aqua in loadout) or (
-            (Tricks.movement_moderate in loadout) and (energy_req(850) in loadout)
-        ) or (
-            (Tricks.movement_zoast in loadout) and (energy_req(161) in loadout)
-        ) or (
-            # hypercharge makes up for not having aqua
-            (Charge in loadout) and
-            (Hypercharge in loadout)
-        )) and
-        ((energy_req(850) in loadout) or (
-            (Tricks.movement_moderate in loadout) and
-            (energy_req(450) in loadout)
-        ) or (
-            (Tricks.movement_zoast in loadout)
-        )) and
-        ((
-            (Varia in loadout)
-        ) or (
-            (Charge in loadout) and
-            (Hypercharge in loadout)
-        ) or (
-            (ammo_req(350) in loadout) and
-            (Tricks.movement_zoast in loadout) and
-            (Screw in loadout) and
-            (Aqua in loadout)
-        ))
-        # TODO: improve this logic
-    ))
-
 
 class SpacePort:
     spaceportTopFromElevator = LogicShortcut(lambda loadout: (
@@ -1605,3 +1640,18 @@ class Suzi:
         (loadout.has_any(Speedball, Bombs, Tricks.morph_jump_4_tile))  # cypher 2 - leaving room
     ))
     """ get all of the cyphers """
+
+    enter = LogicShortcut(lambda loadout: (
+        (GravityBoots in loadout) and
+        (shootThroughWalls in loadout) and
+        ((
+            (energy_req(350) in loadout) and
+            (Tricks.movement_zoast in loadout)
+        ) or (
+            (energy_req(550) in loadout) and
+            (Tricks.movement_moderate in loadout)
+        ) or (
+            (energy_req(750) in loadout)
+        ))
+    ))
+    """ mostly about the energy requirement """

@@ -7,6 +7,8 @@ from .logicCommon import ammo_req, can_bomb, can_use_pbs, crystal_flash, \
     energy_req, hell_run_energy, lava_run, varia_or_hell_run
 from .logic_area_shortcuts import Early, SandLand, ServiceSector, SpacePort, LifeTemple, SkyWorld, \
     FireHive, PirateLab, Verdite, Geothermal, Suzi, DrayLand
+from .logic_boss_kill import BossKill
+from .logic_boss_reach import BossReach
 from .logic_shortcut import LogicShortcut
 from .logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor, pinkSwitch,
@@ -86,72 +88,6 @@ sensorMaintenance = LogicShortcut(lambda loadout: (
 ))
 """ logic is almost the same for the 2 sensor maintenance items """
 
-ruinedConcourseBDoorToEldersBottom = LogicShortcut(lambda loadout: (
-    (RuinedConcourseBL in loadout) and
-    (GravityBoots in loadout) and
-    ((
-        (pinkDoor in loadout)  # pink gate switch
-    ) or (
-        # through cistern
-        ((
-            (Aqua in loadout) and
-            (
-                (HiJump in loadout) or (canFly in loadout) or (Tricks.gravity_jump in loadout)
-            )
-        ) or (
-            (HiJump in loadout) and
-            (Ice in loadout)  # freeze fish
-        ) or (
-            (Tricks.sbj_underwater_w_hjb in loadout)  # TODO: verify this
-        ) or (
-            # short charge through door in cistern access tunnel and immersion pool
-            (Tricks.short_charge_3 in loadout) and (
-                (Tricks.crouch_or_downgrab in loadout) or
-                (HiJump in loadout)
-            )
-        ))
-        # TODO: more tricks for coming through cistern without aqua suit?
-    ))
-))
-
-ruinedConcourseBDoorToEldersTop = LogicShortcut(lambda loadout: (
-    (ruinedConcourseBDoorToEldersBottom in loadout) and
-    ((
-        (missileDamage in loadout)
-    ) or (
-        ((HiJump in loadout) and (Tricks.wall_jump_delayed in loadout))
-        # tight wall jump from lower chozo statue to higher chozo statue))
-    ) or (
-        loadout.has_all(HiJump, SpeedBooster, Tricks.wall_jump_precise, Aqua)
-        # speedbooster jump from lower chozo statue to higher chozo statue wall))
-    ) or (
-        (SpaceJump in loadout)
-    ) or (
-        (Aqua in loadout) and (canFly in loadout)
-        # bomb jump from in water
-    ) or (
-        # the morph/unmorph jump that bob did in 2nd quest low%
-        # (rusty also did it)
-        # no hi jump required, but need a way to get up to the bottom statue
-        (Tricks.movement_zoast in loadout) and
-
-        # to get up to the bottom statue
-        ((Aqua in loadout) or (HiJump in loadout)) and
-        # TODO: or sbj without hi jump? or space jump with how many boosts?
-
-        (Morph in loadout)
-    ))
-    # This is what it needed before the terrain change
-    # and
-    # (  # exit gate
-    #     (shootThroughWalls in loadout) or
-    #     (can_bomb(1) in loadout) or
-    #     (Tricks.wave_gate_glitch in loadout) or
-    #     (Screw in loadout)
-    # )
-))
-""" ruinedConcourseBDoorToEldersBottom + getting to the door at the top of the room """
-
 norakToLifeTemple = LogicShortcut(lambda loadout: (
     (
         (NorakBrookL in loadout) and
@@ -195,17 +131,7 @@ collapsedHive = LogicShortcut(lambda loadout: (
 
 enterSuzi = LogicShortcut(lambda loadout: (
     (TramToSuziIslandR in loadout) and
-    (GravityBoots in loadout) and
-    (shootThroughWalls in loadout) and
-    ((
-        (energy_req(350) in loadout) and
-        (Tricks.movement_zoast in loadout)
-    ) or (
-        (energy_req(550) in loadout) and
-        (Tricks.movement_moderate in loadout)
-    ) or (
-        (energy_req(750) in loadout)
-    ))
+    (Suzi.enter in loadout)
 ))
 """ from suzi area door to inside with energy requirement """
 
@@ -362,35 +288,6 @@ doorsToCentralCorridorMid = LogicShortcut(lambda loadout: (
 ))
 """ pirate lab area doors to middle of central corridor """
 
-greaterInferno = LogicShortcut(lambda loadout: (
-    (MagmaPumpAccessR in loadout) and
-    (GravityBoots in loadout) and
-    (can_use_pbs(1) in loadout) and  # door
-    (Super in loadout) and
-    # getting through the heat
-    (lava_run(850, 1850) in loadout) and
-    # hell run without aqua will require crystal flash
-    (MetroidSuit in loadout) and
-    # open gate
-    ((  # with switch
-        (
-            (Aqua in loadout) and
-            (can_bomb(2) in loadout)
-        ) or (
-            # no aqua
-            (Speedball in loadout) and
-            (can_bomb(2) in loadout)  # for getting stuck in crumbles
-        )
-    ) or (  # shoot through gate
-        (Tricks.wave_gate_glitch in loadout) and
-        # This is not the normal usage of this trick, but I don't want to make a trick just for this.
-        (shootThroughWalls in loadout)
-    )) and
-    (DrayLand.killDraygon in loadout) and
-    ((Aqua in loadout) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_water in loadout))  # exit
-))
-""" because this is also used for draygon in hint system """
-
 location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Impact Crater": lambda loadout: (  # under ship
         (SunkenNestL in loadout) and
@@ -417,25 +314,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Submarine Nest": lambda loadout: (
         (OceanShoreR in loadout) and
         (GravityBoots in loadout) and
-        (pinkDoor in loadout) and  # 2 pink doors if I don't have (morph and (hjb or aqua))
-        (
-            ((Aqua in loadout) and (
-                (Morph in loadout) or
-                (Tricks.gravity_jump in loadout) or
-                (Ice in loadout) or
-                (SpaceJump in loadout)
-                # TODO: probably more options here
-            )) or
-            (
-                (HiJump in loadout) and
-                (
-                    (Ice in loadout) or
-                    ((Tricks.crouch_or_downgrab in loadout) and (Morph in loadout)) or
-                    (Tricks.sbj_underwater_w_hjb in loadout)
-                )
-            ) or
-            (Tricks.sbj_underwater_no_hjb in loadout)
-        )
+        (SandLand.shaftToGreenMoon in loadout) and
+        (SandLand.shaftToSubmarineNest in loadout)
     ),
     "Shrine Of The Penumbra": lambda loadout: (
         (OceanShoreR in loadout) and
@@ -616,7 +496,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (RuinedConcourseBL in loadout) and (GravityBoots in loadout) and (can_bomb(1) in loadout)
     ),
     "Warrior Shrine: Middle": lambda loadout: (
-        (ruinedConcourseBDoorToEldersTop in loadout) and
+        (RuinedConcourseBL in loadout) and
+        (Early.eldersTop in loadout) and
         (Morph in loadout) and
         (pinkDoor in loadout) and  # to warrior shrine access
         (
@@ -634,7 +515,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (sunkenNestToVulnar in loadout)
     ),
     "Crypt": lambda loadout: (
-        (ruinedConcourseBDoorToEldersTop in loadout) and
+        (RuinedConcourseBL in loadout) and
+        (Early.eldersTop in loadout) and
         (can_bomb(3) in loadout) and
         (
             (shootThroughWalls in loadout) or
@@ -738,7 +620,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ((Tricks.morph_jump_4_tile in loadout) or (Bombs in loadout) or (Speedball in loadout))
     ),
     "Greater Inferno": lambda loadout: (
-        (greaterInferno in loadout)
+        (BossReach.draygon in loadout) and
+        (BossKill.draygon in loadout)
     ),
     "Burning Depths Cache": lambda loadout: (
         (MagmaPumpAccessR in loadout) and
@@ -824,43 +707,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout)
     ),
     "Fire's Bane Shrine": lambda loadout: (
-        (icePod in loadout) and
-        (GravityBoots in loadout) and
-        (Morph in loadout) and
-        ((can_bomb(2) in loadout) or (Speedball in loadout)) and
-        # hell run from farm in outer chamber to item and back to farm
-        (
-            (Varia in loadout) or  # can't hell run without certain items
-            (
-                # 1010 from guard station to farm - 810 from farm to farm
-                (varia_or_hell_run(810, heat_and_metroid_suit_not_required=True) in loadout) and
-                (
-                    (Speedball in loadout) or
-                    loadout.has_all(Tricks.morph_jump_4_tile, Tricks.movement_zoast, MetroidSuit) or
-                    loadout.has_all(Ice, Wave)
-                )
-            )
-        ) and
-        # even if not hell running, need to be able to gt through magma furnace
-        (
-            loadout.has_any(energy_req(180), MetroidSuit, Tricks.movement_moderate) and
-            (
-                (Speedball in loadout) or
-                (loadout.has_all(Ice, Wave)) or
-                (
-                    # kill yellow guys
-                    ((can_bomb(6) in loadout) or (loadout.has_all(Charge, Hypercharge))) and
-                    (Tricks.morph_jump_4_tile in loadout)
-                ) or
-                loadout.has_all(Tricks.movement_zoast, Tricks.morph_jump_4_tile)  # while in i frames
-            )
-        ) and
-        # magma forge
-        (
-            loadout.has_any(Ice, SpaceJump, Tricks.wall_jump_precise) or
-            ((killRippers in loadout) and (Tricks.infinite_bomb_jump in loadout))
-        ) and
-        # twisted tunnel wall morph or ibj or space or hi jump
+        (FireHive.twisted in loadout) and
+        (FireHive.magmaFurnace in loadout) and
+
         ((
             (VulnarDepthsElevatorEL in loadout) and
             (FireHive.hiveEntrance in loadout) and
@@ -1174,16 +1023,16 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (railAccess in loadout) and
         (SkyWorld.anticipation in loadout) and
         (GravityBoots in loadout) and
-        ((SkyWorld.killRidley in loadout) or (
+        ((BossKill.ridley in loadout) or (
             (can_bomb(1) in loadout) and
             (loadout.has_any(Bombs, Speedball, Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile))
         )) and
         # get out
         ((
-            (SkyWorld.killRidley in loadout) and
+            (BossKill.ridley in loadout) and
             (SkyWorld.anticipation in loadout)
         ) or (
-            (SkyWorld.killPhantoon in loadout) and
+            (BossKill.phantoon in loadout) and
             (can_bomb(3) in loadout) and
             (SkyWorld.meetingHallToLeft in loadout)
         ))
@@ -1203,7 +1052,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ) or (
             (SkyWorld.anticipation in loadout) and
             (Super in loadout) and
-            (SkyWorld.killRidley in loadout)
+            (BossKill.ridley in loadout)
         ))
     ),
     "Armory Cache 2": lambda loadout: (
@@ -1215,9 +1064,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ) or (
             (Super in loadout) and
             (can_bomb(2) in loadout) and
-            (SkyWorld.killPhantoon in loadout) and
+            (BossKill.phantoon in loadout) and
             loadout.has_any(
-                Bombs, Speedball, Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile, SkyWorld.killRidley
+                Bombs, Speedball, Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile, BossKill.ridley
             ) and
             (SkyWorld.meetingHallToLeft in loadout)  # exit
         ))
@@ -1231,9 +1080,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ) or (
             (Super in loadout) and
             (can_bomb(2) in loadout) and
-            (SkyWorld.killPhantoon in loadout) and
+            (BossKill.phantoon in loadout) and
             loadout.has_any(
-                Bombs, Speedball, Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile, SkyWorld.killRidley
+                Bombs, Speedball, Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile, BossKill.ridley
             ) and
             (SkyWorld.meetingHallToLeft in loadout)  # exit
         ))
@@ -1447,7 +1296,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         # joonie said he thinks it's possible with double sbj (w hjb), but he gave up trying
     ),
     "Hall Of The Elders": lambda loadout: (
-        (ruinedConcourseBDoorToEldersBottom in loadout) and
+        (RuinedConcourseBL in loadout) and
+        (Early.eldersBottom in loadout) and
         (
             (missileDamage in loadout) or
             (Aqua in loadout) or
@@ -1461,12 +1311,14 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         )
     ),
     "Warrior Shrine: Bottom": lambda loadout: (
-        (ruinedConcourseBDoorToEldersTop in loadout) and
+        (RuinedConcourseBL in loadout) and
+        (Early.eldersTop in loadout) and
         (Morph in loadout) and
         (pinkDoor in loadout)
     ),
     "Warrior Shrine: Top": lambda loadout: (
-        (ruinedConcourseBDoorToEldersTop in loadout) and
+        (RuinedConcourseBL in loadout) and
+        (Early.eldersTop in loadout) and
         (Morph in loadout) and
         (pinkDoor in loadout) and  # to warrior shrine access
         (
@@ -1846,7 +1698,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ))
     ),
     "Colosseum": lambda loadout: (  # GT
-        (ElevatorToMagmaLakeR in loadout) and (GravityBoots in loadout) and (DrayLand.killGT in loadout)
+        (ElevatorToMagmaLakeR in loadout) and (GravityBoots in loadout) and (BossKill.gold_torizo in loadout)
     ),
     "Lava Pool": lambda loadout: (
         loadout.has_all(GravityBoots, can_bomb(1)) and
@@ -1915,7 +1767,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (
             (Aqua in loadout) or (Speedball in loadout) or (Tricks.morph_jump_3_tile_water in loadout)
         ) and
-        (icePod in loadout) and
+        (FireHive.twisted in loadout) and
         (can_bomb(3) in loadout) and
         ((
             (MetroidSuit in loadout) and
@@ -2077,7 +1929,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         )
     ),
     "Arena": lambda loadout: (
-        (ruinedConcourseBDoorToEldersTop in loadout)
+        (RuinedConcourseBL in loadout) and
+        (Early.eldersTop in loadout)
     ),
     "West Spore Field": lambda loadout: (
         ((
@@ -2133,7 +1986,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (can_use_pbs(1) in loadout) and  # (return logic)
         ((
             # lower lava
-            (DrayLand.killGT in loadout) and
+            (BossKill.gold_torizo in loadout) and
             (DrayLand.lakeMonitoringStation in loadout) and
             # This is the hell run if GT is already dead. Killing GT will be a different hell run.
             (varia_or_hell_run(851, heat_and_metroid_suit_not_required=True) in loadout)
