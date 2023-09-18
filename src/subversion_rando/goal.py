@@ -1,5 +1,3 @@
-# flake8: noqa: E241 space after comma
-
 import random
 import struct
 import itertools
@@ -88,20 +86,20 @@ events: list[list[Event]] = [
 ]
 
 
-map_stations = [
-    0x3FFDFE,  # [Area 0 (0F, 0F): OCEANIA MAP STATION           ]
-    0x3FF9A0,  # [Area 1 (13, 10): VULNAR CAVES MAP STATION      ]
-    0x3FE68E,  # [Area 2 (12, 07): MINES MAP STATION             ]
-    0x3FECA8,  # [Area 2 (20, 07): HIVE MAP STATION              ]
-    0x3FE594,  # [Area 3 (0D, 0F): LABORATORY MAP STATION        ]
-    0x3FE0D8,  # [Area 3 (2B, 14): JUNGLE RUINS MAP STATION      ]
-    0x3FDF4A,  # [Area 4 (19, 05): VULNAR PEAK MAP STATION       ]
-    0x3FDF8C,  # [Area 4 (24, 10): HYDRAULIC WORKS MAP STATION   ]
-    0x3FDB9C,  # [Area 5 (14, 18): SUZI RUINS MAP STATION        ]
-    0x3FD894,  # [Area 5 (28, 0E): REEF MAP STATION              ]
-    0x3FD402,  # [Area 6 (1B, 15): ORBITAL MAP STATION           ]
-    0x3FD4C0,  # [Area 6 (29, 10): GFS DAPHNE MAP STATION        ]
-]
+map_stations = {
+    0x3FFDFE: "OCEANIA MAP STATION",          # [Area 0 (0F, 0F):
+    0x3FF9A0: "VULNAR CAVES MAP STATION",     # [Area 1 (13, 10):
+    0x3FE68E: "MINES MAP STATION",            # [Area 2 (12, 07):
+    0x3FECA8: "HIVE MAP STATION",             # [Area 2 (20, 07):
+    0x3FE594: "LABORATORY MAP STATION",       # [Area 3 (0D, 0F):
+    0x3FE0D8: "JUNGLE RUINS MAP STATION",     # [Area 3 (2B, 14):
+    0x3FDF4A: "VULNAR PEAK MAP STATION",      # [Area 4 (19, 05):
+    0x3FDF8C: "HYDRAULIC WORKS MAP STATION",  # [Area 4 (24, 10):
+    0x3FDB9C: "SUZI RUINS MAP STATION",       # [Area 5 (14, 18):
+    0x3FD894: "REEF MAP STATION",             # [Area 5 (28, 0E):
+    0x3FD402: "ORBITAL MAP STATION",          # [Area 6 (1B, 15):
+    0x3FD4C0: "GFS DAPHNE MAP STATION",       # [Area 6 (29, 10):
+}
 
 
 def ConvertToLabel(text: str) -> bytes:
@@ -132,17 +130,17 @@ def ConvertToText(text: str, event: int) -> bytes:
     text += chr(0x01)
     text += chr((event >> 0) & 0xFF)
     text += chr((event >> 8) & 0xFF)
-    text += chr(0x83) # color blue
+    text += chr(0x83)  # color blue
     text += "MISSION@COMPLETED"
 
     # event not set text
     text += chr(0x02)
     text += chr((event >> 0) & 0xFF)
     text += chr((event >> 8) & 0xFF)
-    text += chr(0x82) # color red
+    text += chr(0x82)  # color red
     text += "[INCOMPLETE]@@@@@"
 
-    text += chr(0x00) # terminator
+    text += chr(0x00)  # terminator
     return text.encode('LATIN-1')
 
 
@@ -166,7 +164,9 @@ def WriteLogEntry(romWriter: RomWriter, address: int, index: int, event: int, na
     text_start = label_start + len(label)
     end = text_start + len(text)
 
-    header = struct.pack('<HHHH', GetShortAddress(label_start), GetShortAddress(text_start), 0, base_hint_solve_id + index)
+    header = struct.pack(
+        '<HHHH', GetShortAddress(label_start), GetShortAddress(text_start), 0, base_hint_solve_id + index
+    )
 
     romWriter.writeBytes(address, header)
     romWriter.writeBytes(label_start, label)
@@ -193,7 +193,7 @@ def WriteMessageBoxes(romWriter: RomWriter, address: int, goals: list[Event]) ->
     romWriter.writeBytes(message_address, message)
     address += 6
     message_address += len(message)
-    for i,goal in enumerate(goals):
+    for i, goal in enumerate(goals):
         message = ConvertToMessagebox(f'GOAL {chr(ord("A") + i)}: {goal[1]}')
         romWriter.writeBytes(address, struct.pack('<HHH', 0x8436, 0x825A, GetShortAddress(message_address)))
         romWriter.writeBytes(message_address, message)
@@ -212,7 +212,7 @@ def generate_goals(options: GameOptions) -> Goals:
         bad_events.append("HYPER TORIZO")
 
     valid_events = [
-        [sub_event for sub_event in event if sub_event[1] not in bad_events] 
+        [sub_event for sub_event in event if sub_event[1] not in bad_events]
         for event in events
     ]
     valid_events = [event for event in valid_events if event]
@@ -225,10 +225,10 @@ def generate_goals(options: GameOptions) -> Goals:
     # select goals
     goals = [random.sample(subgoals, 1)[0] for subgoals in random.sample(valid_events, count)]
 
-    remaining_map_stations = list(map_stations)
-    random.shuffle(remaining_map_stations)
+    map_station_order = list(map_stations.keys())
+    random.shuffle(map_station_order)
 
-    return Goals(goals, remaining_map_stations)
+    return Goals(goals, map_station_order)
 
 
 def write_goals(goals: Goals, romWriter: RomWriter) -> None:
@@ -251,3 +251,19 @@ def write_goals(goals: Goals, romWriter: RomWriter) -> None:
         # skip over the 2 bytes for the plm position
         # write message and event into plm arg
         romWriter.writeBytes(map_station + 4, struct.pack('BB', base_event_id + i, base_message_id + i + 1))
+
+
+def goal_spoiler(goals: Goals) -> str:
+    map_station_mapping: dict[Event, list[str]] = {
+        obj: []
+        for obj in goals.objectives
+    }
+    for i, map_station_addr in enumerate(goals.map_station_order):
+        i = i % len(goals.objectives)
+        # [:-12] removes " Map Station" to make them shorter
+        map_station_mapping[goals.objectives[i]].append(map_stations[map_station_addr][:-12].title())
+    out = "Objectives:\n"
+    for obj in goals.objectives:
+        station_list = ", ".join(map_station_mapping[obj])
+        out += f"{obj[1].title().rjust(19)}  hinted at  {station_list}\n"
+    return out

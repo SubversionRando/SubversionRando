@@ -16,6 +16,7 @@ from .daphne_gate import get_daphne_gate, get_air_lock_bytes
 from .fillForward import fill_major_minor
 from .fillInterface import FillAlgorithm
 from .game import CypherItems, Game, GameOptions
+from .goal import generate_goals, goal_spoiler, write_goals
 from .hints import choose_hint_location, get_hint_spoiler_text, write_hint_to_rom
 from .item_data import Item, Items
 from .loadout import Loadout
@@ -35,7 +36,6 @@ from .spaceport_door_data import shrink_spaceport, spaceport_doors
 from .terrain_patch import hall_of_the_elders, subterranean
 from .trick import Trick
 from .trick_data import Tricks
-from .goal import generate_goals, write_goals
 
 ORIGINAL_ROM_NAME = "Subversion12.sfc"
 
@@ -378,6 +378,8 @@ def get_spoiler(game: Game) -> str:
     s += required_locations_spoiler(game)
     s += '\n'
     s += daphne_gate_spoiler(game)
+    s += '\n'
+    s += goal_spoiler(game.goals)
     s += '\n'
     s += required_tricks_spoiler(game)
     s += '\n'
