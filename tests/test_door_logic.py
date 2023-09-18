@@ -1,11 +1,3 @@
-# import hacks, because this project is not a python package
-import sys
-from pathlib import Path
-
-file = Path(__file__).resolve()
-parent, root = file.parent, file.parents[1]
-sys.path.append(str(root))
-
 from subversion_rando.connection_data import area_doors
 from subversion_rando.door_logic import canOpen
 from subversion_rando.game import Game, GameOptions
