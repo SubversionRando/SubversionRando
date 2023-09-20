@@ -156,7 +156,7 @@ can_crash_spaceport = LogicShortcut(lambda loadout: (
 
 can_win = LogicShortcut(lambda loadout: (
     (
-        (loadout.game.options.skip_crash_space_port) or
+        (loadout.game.options.skip_crash()) or
         (can_crash_spaceport in loadout)
     ) and
     (area_doors["RockyRidgeTrailL"] in loadout) and
@@ -166,7 +166,7 @@ can_win = LogicShortcut(lambda loadout: (
     (can_bomb(2) in loadout) and  # wrecked main engineering (2 for exit)
     (pinkDoor in loadout) and  # top entrance to MB
     (  # to enter detonator room
-        (loadout.game.options.skip_crash_space_port) or
+        (loadout.game.options.skip_crash()) or
         # skip_crash_space_port option removes the PB requirement
         (can_use_pbs(1) in loadout)
         # 1 because there's an enemy in the room where you need 2 pbs, that normally drops 10 ammo

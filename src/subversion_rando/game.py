@@ -38,7 +38,12 @@ class GameOptions:
     cypher_items: CypherItems = CypherItems.NotRequired
     daphne_gate: bool = False
     objective_rando: int = 0
-    skip_crash_space_port: bool = False
+    _skip_crash_option_set: bool = False
+    """ protected because objective rando auto-enables this """
+
+    def skip_crash(self) -> bool:
+        """ objective rando automatically includes skip crash space port """
+        return self._skip_crash_option_set or self.objective_rando > 0
 
 
 @dataclass
