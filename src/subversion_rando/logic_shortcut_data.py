@@ -161,17 +161,27 @@ can_win = LogicShortcut(lambda loadout: (
     ) and
     (area_doors["RockyRidgeTrailL"] in loadout) and
     (GravityBoots in loadout) and
+    (Morph in loadout) and
     (loadout.game.daphne_blocks.logic in loadout) and
+    (can_bomb(2) in loadout) and  # wrecked main engineering (2 for exit)
     (pinkDoor in loadout) and  # top entrance to MB
-    (can_use_pbs(1) in loadout) and  # to enter detonator room
-    # 1 because there's an enemy in the room where you need 2 pbs, that normally drops 10 ammo
+    (  # to enter detonator room
+        (loadout.game.options.skip_crash_space_port) or
+        # skip_crash_space_port option removes the PB requirement
+        (can_use_pbs(1) in loadout)
+        # 1 because there's an enemy in the room where you need 2 pbs, that normally drops 10 ammo
+    ) and
 
     # This next part for leaving the detonator room
-    # TODO: add tricks
-    # (aqua suit because of the acid that starts rising up)
+
+    # to deal with the acid that starts rising up
+    (loadout.has_any(Aqua, Tricks.movement_moderate, can_use_pbs(4), Speedball)) and
+
+    # 2-tile space morph jump if you can't power bomb
     # (4 PBs is mostly for getting out after MB2, but also
     # because there was no opportunity to refill after the last one you used to get in)
-    ((Speedball in loadout) or (Aqua in loadout) or (can_bomb(4) in loadout)) and
+    ((Speedball in loadout) or (can_bomb(4) in loadout)) and
+
     # MB1, zebs, and glass (separate from pinkDoor to prepare for door cap rando)
     (missileDamage in loadout) and
     # kill MB 2
