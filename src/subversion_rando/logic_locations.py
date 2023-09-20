@@ -845,6 +845,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Depressurization Valve": lambda loadout: (
         (GravityBoots in loadout) and
+        (loadout.has_any(Morph, Screw)) and  # TODO: or blue keep?
         # which area door to come from
         ((
             (ReservoirMaintenanceTunnelR in loadout) and
@@ -1964,8 +1965,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             # super sink
             # enter
             (
-                # TODO: is there a simple setup for this bonk ceiling super sink?
-                # (bonkCeilingSuperSink in loadout) or
+                # For this super sink, unequip hi jump boots and press left to stand against door.
+                ((bonkCeilingSuperSink in loadout) and (Speedball in loadout)) or
+
                 (crystal_flash in loadout) or
                 ((Tricks.super_sink_easy in loadout) and (Super in loadout))  # get stuck in door to Great Spore Hall
             ) and
