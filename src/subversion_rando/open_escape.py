@@ -44,12 +44,15 @@ escape_rooms = {
     "WRECKED MACHINE ROOM":          (0x8FECB0, 0x8FECD1, 0xC91E, 0x0000, 0xE625),
 }
 
-# this escape rooms keep their alternate states to ensure that MB's room cannot be re-entered
+# these escape rooms keep their alternate states to ensure that some escape mechanics work
 escape_rooms_omit = (
     "AURORA UNIT WRECKAGE",      # Keeping the alternate state so that the fight works correctly
     "WRECKED MAINTENANCE DECK",  # Keeping the alternate state so that the timer cannot be restarted
     "WRECKED MAIN ENGINEERING",  # Keeping the alternate state so that MB cannot be re-entered
+    "VULNAR CAVES ACCESS",       # Keeping the ability to save animals - terrain patched to open passage to right
+    "IMPACT CRATER",             # Make sure the ship is there if space port hasn't been crashed
 )
+# TODO: change IMPACT CRATER grey doors to blue
 
 
 def patch_open_escape(romWriter: RomWriter) -> None:

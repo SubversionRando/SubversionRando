@@ -32,7 +32,7 @@ from .open_escape import patch_open_escape
 from .romWriter import RomWriter
 from .solver import hard_required_locations, required_tricks, solve, spoil_play_through
 from .spaceport_door_data import shrink_spaceport, spaceport_doors
-from .terrain_patch import hall_of_the_elders, subterranean
+from .terrain_patch import hall_of_the_elders, subterranean, vulnar_caves_access_open_escape
 from .trick import Trick
 from .trick_data import Tricks
 
@@ -327,6 +327,7 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
 
     romWriter.apply_IPS('open_escape.ips')
     patch_open_escape(romWriter)
+    tw.write(vulnar_caves_access_open_escape, [0x7eae7])
 
     if game.options.skip_crash_space_port:
         romWriter.writeBytes(0x07BAA1, b'\x35\xE6')  # also use state (skip test for state 1D)
