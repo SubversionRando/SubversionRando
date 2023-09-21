@@ -4,7 +4,8 @@ from .daphne_gate_types import Block, BlockKey, DaphneBlocks
 from .game import GameOptions
 from .item_data import Items
 from .logic_shortcut import LogicShortcut
-from .terrain_patch import wrecked_air_lock, wrecked_air_lock_screw_bts, \
+from .terrain_patch import Patch, Space
+from .terrain_patch_data import wrecked_air_lock, wrecked_air_lock_screw_bts, \
     wrecked_air_lock_screw_layer_1, air_lock_default, air_lock_non_default, \
     air_lock_hint_layer_1
 from .trick_data import Tricks
@@ -127,7 +128,7 @@ def get_daphne_gate(options: GameOptions) -> DaphneBlocks:
     return DaphneBlocks(one, two, gate_logic)
 
 
-def get_air_lock_bytes(db: DaphneBlocks) -> tuple[bytes, bytes, bytes]:
+def get_air_lock_bytes(db: DaphneBlocks) -> tuple[Patch, Patch, Patch]:
     """ wrecked, non-default, default """
     wrecked_air_lock_b = wrecked_air_lock.copy()
     for i, addr in enumerate(wrecked_air_lock_screw_layer_1):
@@ -156,4 +157,8 @@ def get_air_lock_bytes(db: DaphneBlocks) -> tuple[bytes, bytes, bytes]:
         air_lock_default_b[addr + 1] = block[1]
         air_lock_default_b[addr] = block[0]
 
-    return wrecked_air_lock_b, air_lock_non_default_b, air_lock_default_b
+    return (
+        Patch(wrecked_air_lock_b, [0x782ab, 0x782c5], Space(412, 1564770)),
+        Patch(air_lock_non_default_b, [0x7eb2d], Space(343, 1556578)),
+        Patch(air_lock_default_b, [0x7eb13], Space(349, 1557973))
+    )

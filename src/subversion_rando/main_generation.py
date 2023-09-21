@@ -32,7 +32,7 @@ from .open_escape import patch_open_escape
 from .romWriter import RomWriter
 from .solver import hard_required_locations, required_tricks, solve, spoil_play_through
 from .spaceport_door_data import shrink_spaceport, spaceport_doors
-from .terrain_patch import hall_of_the_elders, subterranean, vulnar_caves_access_open_escape
+from .terrain_patch_data import hall_of_the_elders, subterranean, vulnar_caves_access_open_escape
 from .trick import Trick
 from .trick_data import Tricks
 
@@ -110,7 +110,7 @@ def generate(options: GameOptions) -> Game:
                 all_locations,
                 VanillaAreas(),
                 seeeed)
-    while not seedComplete :
+    while not seedComplete:
         if game.options.daphne_gate:
             daphne_blocks = get_daphne_gate(game.options)
             game.daphne_blocks = daphne_blocks
@@ -195,7 +195,7 @@ def write_rom(game: Game, romWriter: Optional[RomWriter] = None) -> str:
         rom1_path = roms_path.joinpath(rom_name)
         rom_clean_path = roms_path.joinpath(ORIGINAL_ROM_NAME)
         romWriter = RomWriter.fromFilePaths(orig_rom_path=rom_clean_path)
-    else :
+    else:
         # remove .sfc extension
         romWriter.setBaseFilename(rom_name[:-4])
         rom1_path = None
@@ -272,14 +272,18 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
 
     tw = TerrainWriter(romWriter)
 
-    tw.write(subterranean, [0x7dac7, 0x7daad])
-    tw.write(hall_of_the_elders, [0x79781])
+    romWriter.apply_IPS('open_escape.ips')
+    patch_open_escape(romWriter)
+    tw.write(vulnar_caves_access_open_escape)
+
+    tw.write(subterranean)
+    tw.write(hall_of_the_elders)
 
     if game.options.daphne_gate:
-        wrecked_bytes, non_default_bytes, default_bytes = get_air_lock_bytes(game.daphne_blocks)
-        tw.write(non_default_bytes, [0x7eb2d])
-        tw.write(default_bytes, [0x7eb13])
-        tw.write(wrecked_bytes, [0x782ab, 0x782c5])
+        wrecked, non_default, default = get_air_lock_bytes(game.daphne_blocks)
+        tw.write(non_default)
+        tw.write(default)
+        tw.write(wrecked)
 
         # harder to go left through speed blocks
         if (game.daphne_blocks.one == "Speed" and not (  # speed on top
@@ -325,15 +329,11 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
         if not game.options.area_rando:
             romWriter.connect_doors(misc_doors["AuroraUnitWreckageL"], area_doors["CraterR"], one_way=True)
 
-    romWriter.apply_IPS('open_escape.ips')
-    patch_open_escape(romWriter)
-    tw.write(vulnar_caves_access_open_escape, [0x7eae7])
-
     if game.options.skip_crash_space_port:
         # Crash GFS Daphne room starts in crashed state
         romWriter.writeBytes(0x07BAA1, b'\x35\xE6')  # also use state (skip test for state 1D)
         # Wrecked Engineering Room uses escape level data to remove PB requirement
-        romWriter.writeBytes(0x07E06B, b'\x7D\xCB\xC6') # change level data pointer
+        romWriter.writeBytes(0x07E06B, b'\x7D\xCB\xC6')  # change level data pointer
 
 
 def get_spoiler(game: Game) -> str:
@@ -482,7 +482,7 @@ def assumed_fill(game: Game) -> bool:
 
 
 def forward_fill(game: Game) -> bool:
-    unusedLocations : list[Location] = []
+    unusedLocations: list[Location] = []
     unusedLocations.extend(game.all_locations.values())
     availableLocations: list[Location] = []
     # visitedLocations = []
@@ -514,7 +514,7 @@ def forward_fill(game: Game) -> bool:
         # for u in unusedLocations :
         #     print(u['fullitemname'])
 
-        if availableLocations == [] and unusedLocations != [] :
+        if availableLocations == [] and unusedLocations != []:
             print(f'Item placement was not successful. {len(unusedLocations)} locations remaining.')
             game.item_placement_spoiler += \
                 f'Item placement was not successful. {len(unusedLocations)} locations remaining.\n'
@@ -533,7 +533,7 @@ def forward_fill(game: Game) -> bool:
             break
         # it returns your location and item, which are handled here
         placeLocation, placeItem = placePair
-        if (placeLocation in unusedLocations) :
+        if (placeLocation in unusedLocations):
             unusedLocations.remove(placeLocation)
         placeLocation["item"] = placeItem
         availableLocations.remove(placeLocation)
@@ -544,7 +544,7 @@ def forward_fill(game: Game) -> bool:
         game.item_placement_spoiler += f"{placeLocation['fullitemname']} - - - {placeItem[0]}\n"
         # print(placeLocation['fullitemname']+placeItem[0])
 
-        if availableLocations == [] and unusedLocations == [] :
+        if availableLocations == [] and unusedLocations == []:
             print("Item placements successful.")
             game.item_placement_spoiler += "Item placements successful.\n"
             return True
