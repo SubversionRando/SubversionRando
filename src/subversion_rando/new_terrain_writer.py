@@ -24,7 +24,7 @@ class TerrainWriter:
             entry = self.emptied[i]
             if size_needed < entry.size:
                 self.emptied.pop(i)
-                print(f"using freed rom space {entry}")
+                # print(f"using freed rom space {entry}")
                 return entry.location
             i += 1
 
