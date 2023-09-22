@@ -63,7 +63,7 @@ def Main(argv: list[str]) -> None:
     workingArgs = commandLineArgs(argv[1:])
 
     logic = casual  # default
-    if workingArgs.expert :
+    if workingArgs.expert:
         logic = expert
     elif workingArgs.logicmedium:
         logic = medium
