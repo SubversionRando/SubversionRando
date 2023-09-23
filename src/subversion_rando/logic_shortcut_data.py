@@ -1,5 +1,6 @@
 from .connection_data import area_doors
 from .item_data import items_unpackable
+from .logic_goal import goal_logic
 from .logic_shortcut import LogicShortcut
 from .logicCommon import ammo_req, can_bomb, can_use_pbs
 from .trick_data import Tricks
@@ -159,6 +160,7 @@ can_win = LogicShortcut(lambda loadout: (
         (loadout.game.options.skip_crash()) or
         (can_crash_spaceport in loadout)
     ) and
+    (goal_logic(loadout.game.goals) in loadout) and
     (area_doors["RockyRidgeTrailL"] in loadout) and
     (GravityBoots in loadout) and
     (Morph in loadout) and
