@@ -6,8 +6,8 @@ from subversion_rando.game import Game, GameOptions
 from subversion_rando.item_data import Items, items_unpackable
 from subversion_rando.loadout import Loadout
 from subversion_rando.location_data import Location, pullCSV
+from subversion_rando.logic_goal import can_win
 from subversion_rando.logic_presets import casual, medium, expert
-from subversion_rando.logic_shortcut_data import can_win
 from subversion_rando.logic_updater import updateLogic
 from subversion_rando.trick import Trick
 
