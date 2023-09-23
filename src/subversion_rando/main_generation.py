@@ -272,7 +272,7 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
 
     tw = TerrainWriter(romWriter)
 
-    romWriter.apply_IPS('open_escape.ips')
+    # romWriter.apply_IPS('open_escape.ips')  # TODO: MB room lag from explosions and shaking during fight
     patch_open_escape(romWriter)
     tw.write(vulnar_caves_access_open_escape)
 
