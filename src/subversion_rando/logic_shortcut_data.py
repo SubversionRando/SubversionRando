@@ -128,6 +128,8 @@ killYellowPirates = LogicShortcut(lambda loadout: (
     ((Morph in loadout) and (Bombs in loadout) and (Tricks.patience in loadout))
 ))
 
+# game objectives
+
 can_fall_from_spaceport = LogicShortcut(lambda loadout: (
     loadout.has_any(Items.Morph, Items.Missile, shootThroughWalls, Items.Super, Tricks.wave_gate_glitch)
 ))

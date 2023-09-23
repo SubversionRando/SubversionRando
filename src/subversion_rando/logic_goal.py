@@ -40,8 +40,6 @@ def goal_logic(goals: Goals) -> LogicShortcut:
     ))
 
 
-# game objectives
-
 can_win = LogicShortcut(lambda loadout: (
     (
         (loadout.game.options.skip_crash()) or
