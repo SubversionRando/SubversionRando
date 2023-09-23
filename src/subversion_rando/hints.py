@@ -6,30 +6,22 @@ from .game import Game
 from .item_data import Item, Items
 from .loadout import Loadout
 from .location_data import pullCSV, majorLocs
-from .logic_boss_kill import BossKill
-from .logic_boss_reach import BossReach
+from .logic_boss_reach import reach_and_kill
 from .logic_shortcut import LogicShortcut
 from .logic_updater import updateLogic
 from .romWriter import RomWriter
 from .solver import PlayThrough, hard_required_locations, solve
 
 
-def _reach_and_kill(b: str) -> LogicShortcut:
-    return LogicShortcut(lambda loadout: (
-        loadout.has_all(getattr(BossReach, b), getattr(BossKill, b))
-    ))
-# TODO: unit test that runs this lambda, to make sure getattr gets right type
-
-
 hint_data = {
-    b'THE CHOZO HAVE A WEAKNESS IN': ("Torizo", 1, _reach_and_kill("bomb_torizo")),
-    b'BODY IS COVERED WITH A HARDENED': ("Botwoon", 2, _reach_and_kill("botwoon")),
-    b'STURDY IN ORDER TO SURVIVE IN': ("Draygon", 4, _reach_and_kill("draygon")),
-    b'EXOSKELETON HAS BEEN MODIFIED USING SOME': ("Ridley", 4, _reach_and_kill("ridley")),
-    b'PIRATES\x87. THEIR SKIN IS': ("Kraid", 2, _reach_and_kill("kraid")),
-    b'AROUND THEM. IT IS LIKELY THAT': ("Crocomire", 3, _reach_and_kill("crocomire")),
-    b'PHANTOON\x87 CAN CLOAK': ("Phantoon", 3, _reach_and_kill("phantoon")),
-    b'FUNGUS AND CAN CHANGE THE STRUCTURE OF': ("Spore Spawn", 2, _reach_and_kill("spore_spawn")),
+    b'THE CHOZO HAVE A WEAKNESS IN': ("Torizo", 1, reach_and_kill("bomb_torizo")),
+    b'BODY IS COVERED WITH A HARDENED': ("Botwoon", 2, reach_and_kill("botwoon")),
+    b'STURDY IN ORDER TO SURVIVE IN': ("Draygon", 4, reach_and_kill("draygon")),
+    b'EXOSKELETON HAS BEEN MODIFIED USING SOME': ("Ridley", 4, reach_and_kill("ridley")),
+    b'PIRATES\x87. THEIR SKIN IS': ("Kraid", 2, reach_and_kill("kraid")),
+    b'AROUND THEM. IT IS LIKELY THAT': ("Crocomire", 3, reach_and_kill("crocomire")),
+    b'PHANTOON\x87 CAN CLOAK': ("Phantoon", 3, reach_and_kill("phantoon")),
+    b'FUNGUS AND CAN CHANGE THE STRUCTURE OF': ("Spore Spawn", 2, reach_and_kill("spore_spawn")),
     b'COMMANDEERED THESE AND BUILT THEM INTO': ("Aurora", 1, LogicShortcut(lambda loadout: (
         loadout.game.all_locations["Weapon Locker"] in solve(loadout.game)[2]
         # only valid if doors don't change color

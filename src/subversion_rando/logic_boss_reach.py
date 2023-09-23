@@ -1,3 +1,4 @@
+from typing import Literal
 from .connection_data import area_doors
 from .item_data import Items
 from .logicCommon import can_bomb, can_use_pbs, lava_run, varia_or_hell_run
@@ -199,4 +200,16 @@ class BossReach:
         (area_doors["OceanShoreR"] in loadout) and
         (Items.GravityBoots in loadout) and
         (Items.Aqua in loadout)  # TODO: I haven't looked at logic closely here
+    ))
+
+
+_BossName = Literal[
+    "kraid", "spore_spawn", "bomb_torizo", "draygon", "dust_torizo",
+    "gold_torizo", "crocomire", "ridley", "phantoon", "hyper_torizo", "botwoon"
+]
+
+
+def reach_and_kill(b: _BossName) -> LogicShortcut:
+    return LogicShortcut(lambda loadout: (
+        loadout.has_all(getattr(BossReach, b), getattr(BossKill, b))
     ))

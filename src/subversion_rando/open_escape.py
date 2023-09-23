@@ -16,7 +16,7 @@ room.statelist.Last().state.FX2
 
 escape_rooms = {
     # (condition address, state address, default setup asm, default main asm, skip state value)
-    "IMPACT CRATER":                 (0x8FBB66, 0x8FBBA6, 0x91C9, 0xC116, 0xE625),
+    # "IMPACT CRATER":                 (0x8FBB66, 0x8FBBA6, 0x91C9, 0xC116, 0xE625),  # This caused unplayable lag.
     "VULNAR CAVES ACCESS":           (0x8FEAC6, 0x8FEAE7, 0x91D3, 0x0000, 0xE625),
     "WEST TERMINAL ACCESS":          (0x8F81D2, 0x8F81F3, 0x91D3, 0x0000, 0xE625),
     "EAST TERMINAL":                 (0x8FDDA8, 0x8FDDC9, 0x91D3, 0x0000, 0xE625),
@@ -50,7 +50,7 @@ escape_rooms_omit = (
     "WRECKED MAINTENANCE DECK",  # Keeping the alternate state so that the timer cannot be restarted
     "WRECKED MAIN ENGINEERING",  # Keeping the alternate state so that MB cannot be re-entered
     "VULNAR CAVES ACCESS",       # Keeping the ability to save animals - terrain patched to open passage to right
-    "IMPACT CRATER",             # Make sure the ship is there if space port hasn't been crashed
+    # "IMPACT CRATER",             # Make sure the ship is there if space port hasn't been crashed
 )
 # TODO: change IMPACT CRATER grey doors to blue
 
