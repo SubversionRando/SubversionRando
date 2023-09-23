@@ -6,7 +6,8 @@ from .game import Game
 from .item_data import Items
 from .loadout import Loadout
 from .location_data import Location, spacePortLocs
-from .logic_shortcut_data import can_fall_from_spaceport, can_win
+from .logic_goal import can_win
+from .logic_shortcut_data import can_fall_from_spaceport
 from .logic_updater import updateLogic
 from .trick import Trick
 from .trick_data import Tricks
