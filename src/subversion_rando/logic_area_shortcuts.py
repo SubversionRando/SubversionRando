@@ -1449,9 +1449,13 @@ class FireHive:
                 (
                     # kill yellow guys
                     ((can_bomb(6) in loadout) or (loadout.has_all(Charge, Hypercharge))) and
-                    (Tricks.morph_jump_4_tile in loadout)
+                    (Tricks.morph_jump_4_tile in loadout) and
+                    ((Aqua in loadout) or (HiJump in loadout))
                 ) or
-                loadout.has_all(Tricks.movement_zoast, Tricks.morph_jump_4_tile)  # while in i frames
+                (
+                    loadout.has_all(Tricks.movement_zoast, Tricks.morph_jump_4_tile) and
+                    ((Aqua in loadout) or (HiJump in loadout))
+                )  # while in i frames
             )
         ) and
         # magma forge
