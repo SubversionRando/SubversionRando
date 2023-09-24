@@ -49,34 +49,50 @@
         <label for="fill">fill:</label>
 
         <select name="fill" id="fill">
-            <option value="D" selected="selected">full random</option>
-            <option value="B">major/minor bias</option>
-            <option value="MM">major/minor</option>
+            <option value="D" selected="selected"
+                    title="Any item can be in any location within logic."
+            >full random</option>
+            <option value="B"
+                    title="Unique item locations are more likely to have unique items, but it's not 100%. &#013;This is only unique items, and not energy tanks. &#013; &#013;The hint system is modified in this mode to try to hint an important minor location."
+            >major/minor bias</option>
+            <option value="MM"
+                    title="Places Unique+Energy items at the Unique+Energy locations. 23 unique and 16 energy locations in all."
+            >major/minor</option>
         </select> 
     </div>
     <div>
         <input type="checkbox" id="area-rando"/>
-        <label for="area-rando">area rando</label>
+        <label for="area-rando"
+               title="Logically shuffles the major areas of the game and places items in logical places according to the door placement."
+        >area rando</label>
         <input type="checkbox" id="small-spaceport" checked="true"/>
-        <label for="small-spaceport">small spaceport</label>
+        <label for="small-spaceport"
+               title="This removes some rooms from the spaceport so you don't have to run around as much at the beginning of the seed. &#013; &#013;This also reduces the missile requirements for zebetites, pink doors, and eye doors."
+        >small spaceport</label>
         <input type="checkbox" id="escape-shortcuts"/>
-        <label for="escape-shortcuts">escape shortcuts</label>
+        <label for="escape-shortcuts"
+               title="The paths during escape sequences are shortened. &#013; &#013;In area rando, the final escape sequence is never shortened. &#013;   (Part of the fun of area rando is finding your way out.)"
+        >escape shortcuts</label>
     </div>
     <div>
         <input type="checkbox" id="daphne-gate"/>
-        <label for="daphne-gate">randomize wrecked daphne gate</label>
+        <label for="daphne-gate"
+               title="Changes the Screw Attack blocks in the Wrecked Air Lock to two different kinds of blocks, so you will need 1 of two random items to enter the final area (instead of the normal Screw Attack requirement). &#013; &#013;The items that will let you through the gate are displayed in the Air Lock before it is crashed."
+        >randomize wrecked daphne gate</label>
     </div>
     <div>
-        <label for="cypher">Thunder Laboratory has:</label>
+        <label for="cypher" title="This affects objective rando and 2 items.">Thunder Laboratory has:</label>
 
-        <select name="cypher" id="cypher">
+        <select name="cypher" id="cypher" title="This affects objective rando and 2 items.">
             <option value="Anything">Anything</option>
             <option value="NotRequired" selected="selected">Something not required</option>
             <option value="SmallAmmo">Small Ammo Tanks</option>
         </select> 
     </div>
     <div>
-        <label for="objective-rando">randomized objectives</label>
+        <label for="objective-rando"
+               title="Accessing map stations will reveal one of the objectives. The objectives are tracked in the Logbook Mission page. &#013; &#013;Crashing the space port is not required unless it is chosen as one of the objectives. &#013;(The GFS Daphne will be both docked at the space port and crashed on the planet at the same time.) &#013; &#013;The Power Bomb requirement to get to the wrecked Weapon Control Center is also removed."
+        >randomized objectives</label>
         <input type="checkbox" id="objective-rando"/>
         <span id="objective-count-span" style="display: none;">
             <input type="range" id="objective-count" name="objective-count" min="1" max="10" value="5" />
@@ -85,7 +101,9 @@
     </div>
     <div hidden>  <!-- auto-enabled in objective rando - see if there's demand to display this separate option -->
         <input type="checkbox" id="skip-crash-space-port"/>
-        <label for="skip-crash-space-port">skip crash space port</label>
+        <label for="skip-crash-space-port"
+               title="Crashing the space port is not required unless it is chosen as one of the objectives. &#013;(The GFS Daphne will be both docked at the space port and crashed on the planet at the same time.) &#013; &#013;The Power Bomb requirement to get to the wrecked Weapon Control Center is also removed."
+        >skip crash space port</label>
     </div>
 
     <div>
