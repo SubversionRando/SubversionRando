@@ -1,15 +1,51 @@
 from .connection_data import area_doors
+from .goals import Goals
 from .item_data import Items
 from .logicCommon import ammo_req, can_bomb, can_use_pbs
+from .logic_boss_reach import reach_and_kill
 from .logic_shortcut import LogicShortcut
 from .logic_shortcut_data import can_crash_spaceport, electricHyper, missileDamage, pinkDoor
 from .trick_data import Tricks
 
+
+_goal_logic: dict[str, LogicShortcut] = {
+    "KRAID": reach_and_kill("kraid"),
+    "SPORE SPAWN": reach_and_kill("spore_spawn"),
+    "BOMB TORIZO": reach_and_kill("bomb_torizo"),
+    "DRAYGON": reach_and_kill("draygon"),
+    "DUST TORIZO": reach_and_kill("dust_torizo"),
+    "GOLD TORIZO": reach_and_kill("gold_torizo"),
+    "CROCOMIRE": reach_and_kill("crocomire"),
+    "RIDLEY": reach_and_kill("ridley"),
+    "PHANTOON": reach_and_kill("phantoon"),
+    "HYPER TORIZO": reach_and_kill("hyper_torizo"),
+    "SPACE PORT": can_crash_spaceport,
+    "BOTWOON": reach_and_kill("botwoon"),
+    "POWER OFF": LogicShortcut(lambda loadout: (
+        # Saying we need basically everything is a workaround because we don't have power off logic.
+        loadout.has_all(
+            Items.Aqua, Items.Charge, Items.DarkVisor, Items.Grapple,
+            Items.GravityBoots, Items.Hypercharge, Items.MetroidSuit,
+            Items.Morph, Items.PowerBomb, Items.Screw, Items.Speedball,
+            Items.SpeedBooster, Items.Super
+        )
+    )),
+}
+
+
+def goal_logic(goals: Goals) -> LogicShortcut:
+    return LogicShortcut(lambda loadout: (
+        all(_goal_logic[obj[1]] in loadout
+            for obj in goals.objectives)
+    ))
+
+
 can_win = LogicShortcut(lambda loadout: (
     (
-        (loadout.game.options.skip_crash_space_port) or
+        (loadout.game.options.skip_crash()) or
         (can_crash_spaceport in loadout)
     ) and
+    (goal_logic(loadout.game.goals) in loadout) and
     (area_doors["RockyRidgeTrailL"] in loadout) and
     (Items.GravityBoots in loadout) and
     (Items.Morph in loadout) and
@@ -17,7 +53,7 @@ can_win = LogicShortcut(lambda loadout: (
     (can_bomb(2) in loadout) and  # wrecked main engineering (2 for exit)
     (pinkDoor in loadout) and  # top entrance to MB
     (  # to enter detonator room
-        (loadout.game.options.skip_crash_space_port) or
+        (loadout.game.options.skip_crash()) or
         # skip_crash_space_port option removes the PB requirement
         (can_use_pbs(1) in loadout)
         # 1 because there's an enemy in the room where you need 2 pbs, that normally drops 10 ammo

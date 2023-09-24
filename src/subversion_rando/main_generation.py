@@ -16,6 +16,7 @@ from .daphne_gate import get_daphne_gate, get_air_lock_bytes
 from .fillForward import fill_major_minor
 from .fillInterface import FillAlgorithm
 from .game import CypherItems, Game, GameOptions
+from .goal import generate_goals, goal_spoiler, write_goals
 from .hints import choose_hint_location, get_hint_spoiler_text, write_hint_to_rom
 from .item_data import Item, Items
 from .loadout import Loadout
@@ -124,6 +125,10 @@ def generate(options: GameOptions) -> Game:
             )
             game.connections = areaRando.RandomizeAreas(force_normal_early)
             # print(Connections) #test
+
+        if game.options.objective_rando > 0:
+            game.goals = generate_goals(game.options)
+
         if time.perf_counter() - start_time > 70:
             print(f"Giving up after {randomizeAttempts} attempts. Help?")
             return game
@@ -236,7 +241,9 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     - rotate save files
     - small spaceport
     - escape shortcuts
+    - objective rando
     - open escape path
+    - skip crash space port
     """
     if game.hint_data:
         hint_loc_name, hint_loc_marker = game.hint_data
@@ -329,7 +336,11 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
         if not game.options.area_rando:
             romWriter.connect_doors(misc_doors["AuroraUnitWreckageL"], area_doors["CraterR"], one_way=True)
 
-    if game.options.skip_crash_space_port:
+    if game.options.objective_rando > 0:
+        romWriter.apply_IPS('objective_rando.ips')
+        write_goals(game.goals, romWriter)
+
+    if game.options.skip_crash():
         # Crash GFS Daphne room starts in crashed state
         romWriter.writeBytes(0x07BAA1, b'\x35\xE6')  # also use state (skip test for state 1D)
         # Wrecked Engineering Room uses escape level data to remove PB requirement
@@ -371,6 +382,8 @@ def get_spoiler(game: Game) -> str:
     s += required_locations_spoiler(game)
     s += '\n'
     s += daphne_gate_spoiler(game)
+    s += '\n'
+    s += goal_spoiler(game.goals)
     s += '\n'
     s += required_tricks_spoiler(game)
     s += '\n'

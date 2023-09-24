@@ -52,6 +52,7 @@ class WebParams(TypedDict):
     cypher: str
     tricks: list[str]
     daphne_gate: bool
+    objective_rando: int
     skip_crash_space_port: bool
 
 
@@ -95,6 +96,7 @@ def roll2(params_str: str) -> None:
                           bool(params["escape_shortcuts"]),
                           getattr(CypherItems, params["cypher"]),
                           bool(params["daphne_gate"]),
+                          int(params["objective_rando"]),
                           bool(params["skip_crash_space_port"]))
     print(options)
 

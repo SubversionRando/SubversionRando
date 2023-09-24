@@ -209,6 +209,7 @@ function setup_roll_button() {
         const fill_select = document.getElementById("fill");
         const daphne_box = document.getElementById("daphne-gate");
         const cypher_select = document.getElementById("cypher");
+        const objectives_box = document.getElementById("objective-rando");
         const skip_crash_space_port_box = document.getElementById("skip-crash-space-port");
 
         const params = {
@@ -219,6 +220,7 @@ function setup_roll_button() {
             "cypher": cypher_select.value,
             "tricks": activated_trick_names,
             "daphne_gate": daphne_box.checked,
+            "objective_rando": objectives_box.value,
             "skip_crash_space_port": skip_crash_space_port_box.checked
         };
         roll_button.disabled = true;

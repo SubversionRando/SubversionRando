@@ -75,7 +75,11 @@
             <option value="SmallAmmo">Small Ammo Tanks</option>
         </select> 
     </div>
-    <div hidden>  <!-- hidden because bugs -->
+    <div>
+        <label for="objective-rando">randomized objectives</label>
+        <input type="number" id="objective-rando" value="0" style="width: 100px;"/>
+    </div>
+    <div hidden>  <!-- auto-enabled in objective rando - see if there's demand to display this separate option -->
         <input type="checkbox" id="skip-crash-space-port"/>
         <label for="skip-crash-space-port">skip crash space port</label>
     </div>
@@ -104,6 +108,8 @@
             "subversion_rando/fillSpeedrun.py",
             "subversion_rando/item_data.py",
             "subversion_rando/game.py",
+            "subversion_rando/goal.py",
+            "subversion_rando/goals.py",
             "subversion_rando/hints.py",
             "subversion_rando/ips.py",
             "subversion_rando/loadout.py",
@@ -123,6 +129,7 @@
             "subversion_rando/logic_updater.py",
             "subversion_rando/main_generation.py",
             "subversion_rando/new_terrain_writer.py",
+            "subversion_rando/objective_rando.ips",
             "subversion_rando/open_escape.ips",
             "subversion_rando/open_escape.py",
             "subversion_rando/romWriter.py",
