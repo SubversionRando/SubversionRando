@@ -210,7 +210,10 @@ function setup_roll_button() {
         const daphne_box = document.getElementById("daphne-gate");
         const cypher_select = document.getElementById("cypher");
         const objectives_box = document.getElementById("objective-rando");
+        const objectives_slider = document.getElementById("objective-count");
         const skip_crash_space_port_box = document.getElementById("skip-crash-space-port");
+
+        const objectives = objectives_box.checked ? objectives_slider.value : "0";
 
         const params = {
             "area_rando": area_rando_box.checked,
@@ -220,7 +223,7 @@ function setup_roll_button() {
             "cypher": cypher_select.value,
             "tricks": activated_trick_names,
             "daphne_gate": daphne_box.checked,
-            "objective_rando": objectives_box.value,
+            "objective_rando": objectives,
             "skip_crash_space_port": skip_crash_space_port_box.checked
         };
         roll_button.disabled = true;
@@ -295,6 +298,24 @@ function setup_roll_button() {
     });
 }
 
+function setup_objective_rando() {
+    const objectives_box = document.getElementById("objective-rando");
+    const objectives_slider_span = document.getElementById("objective-count-span");
+    const checkbox_handler = () => {
+        objectives_slider_span.style.display = objectives_box.checked ? "inline" : "none";
+    };
+    objectives_box.addEventListener("change", checkbox_handler);
+    checkbox_handler();
+
+    const objectives_slider = document.getElementById("objective-count");
+    const objectives_label = document.getElementById("objective-count-label");
+    const slider_handler = () => {
+        objectives_label.innerText = `${objectives_slider.value} objectives`
+    };
+    objectives_slider.addEventListener("input", slider_handler);
+    slider_handler();
+}
+
 window.addEventListener("load", (event) => {
     setup_collapsible();
     // const trick_promise = populate_tricks();
@@ -302,4 +323,5 @@ window.addEventListener("load", (event) => {
     setup_roll_button();
     setup_file_loader();
     setup_logic_string();
+    setup_objective_rando();
 });

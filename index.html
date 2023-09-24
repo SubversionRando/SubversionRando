@@ -77,7 +77,11 @@
     </div>
     <div>
         <label for="objective-rando">randomized objectives</label>
-        <input type="number" id="objective-rando" value="0" style="width: 100px;"/>
+        <input type="checkbox" id="objective-rando"/>
+        <span id="objective-count-span" style="display: none;">
+            <input type="range" id="objective-count" name="objective-count" min="1" max="10" value="5" />
+            <label for="objective-count" id="objective-count-label">5 objectives</label>
+        </span>
     </div>
     <div hidden>  <!-- auto-enabled in objective rando - see if there's demand to display this separate option -->
         <input type="checkbox" id="skip-crash-space-port"/>
