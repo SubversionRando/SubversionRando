@@ -26,6 +26,7 @@ class CypherItems(Enum):
     Anything = "Anything"
     NotRequired = "Something Not Required"
     SmallAmmo = "Small Ammo Tanks"
+    """ also restricts Suzi map stations from being required in objective rando """
 
 
 @dataclass

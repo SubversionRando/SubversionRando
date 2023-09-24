@@ -205,11 +205,11 @@ def WriteMessageBoxes(romWriter: RomWriter, address: int, goals: list[Event]) ->
 def generate_goals(options: GameOptions) -> Goals:
     count = options.objective_rando
 
-    bad_events: list[str] = []
+    bad_events: set[str] = set()
     if options.area_rando:
-        bad_events.append("POWER OFF")
+        bad_events.add("POWER OFF")
     if options.cypher_items != CypherItems.Anything:
-        bad_events.append("HYPER TORIZO")
+        bad_events.add("HYPER TORIZO")
 
     valid_events = [
         [sub_event for sub_event in event if sub_event[1] not in bad_events]
@@ -217,7 +217,14 @@ def generate_goals(options: GameOptions) -> Goals:
     ]
     valid_events = [event for event in valid_events if event]
 
-    max_with_options = min(max_goal_count, len(valid_events), len(map_stations))
+    bad_maps: list[int] = []  # list instead of set because we will still use this in the final order
+    if options.cypher_items == CypherItems.SmallAmmo:
+        bad_maps.extend(addr
+                        for addr, name in map_stations.items()
+                        if name in ("SUZI RUINS MAP STATION", "REEF MAP STATION"))
+    valid_maps = [addr for addr in map_stations.keys() if addr not in bad_maps]
+
+    max_with_options = min(max_goal_count, len(valid_events), len(valid_maps))
 
     if count > max_with_options:
         count = max_with_options
@@ -225,8 +232,12 @@ def generate_goals(options: GameOptions) -> Goals:
     # select goals
     goals = [random.sample(subgoals, 1)[0] for subgoals in random.sample(valid_events, count)]
 
-    map_station_order = list(map_stations.keys())
-    random.shuffle(map_station_order)
+    # select map station order
+    random.shuffle(valid_maps)
+    random.shuffle(bad_maps)
+    # putting bad maps at the end means they won't be required to find all the objectives
+    map_station_order = valid_maps + bad_maps
+    assert len(map_station_order) == len(map_stations), f"{map_station_order=}"
 
     return Goals(goals, map_station_order)
 
