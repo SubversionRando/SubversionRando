@@ -1501,7 +1501,15 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         ))
     ),
     "Antechamber": lambda loadout: (
-        (railAccess in loadout) and (GravityBoots in loadout) and (can_use_pbs(1) in loadout)
+        (railAccess in loadout) and
+        (GravityBoots in loadout) and
+        (
+            (can_use_pbs(1) in loadout) or
+
+            # xray up from left door, super sink down from right side, joonie used about 7 etanks with aqua
+            # hard energy req because you get hit by ghost while xray climbing and super sinking
+            loadout.has_all(Tricks.xray_climb, Tricks.super_sink_easy, varia_or_hell_run(1050), energy_req(220))
+        )
     ),
     "Eddy Channels": lambda loadout: (
         (meanderingPassage in loadout) and  # exit

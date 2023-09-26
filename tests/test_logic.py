@@ -396,6 +396,7 @@ _possible_places_area = {
             "Water Garden",
             "Armory Cache 2",
             "Armory Cache 3",
+            "Antechamber",
             "Drawing Room",
             "Glacier's Reach",
             "Grand Promenade",
@@ -577,7 +578,7 @@ def test_restrictive_item_locations_area_rando(logic: frozenset[Trick]) -> None:
                 if loc["inlogic"]:
                     found[loc_name] = True
                     assert loc_name in _possible_places_area[logic_name][excluded_item], \
-                        f"logic thinks {excluded_item[0]} can be at {loc_name}"
+                        f"logic thinks {excluded_item[0]} can be at {loc_name} in {logic_name}"
                     print(loc_name)
 
         this_loadout()
@@ -646,6 +647,7 @@ _no_bombing = frozenset([
     "Weapon Research",
     "Armory Cache 2",
     "Armory Cache 3",
+    "Antechamber",
     "Drawing Room",
     "Glacier's Reach",
     "Grand Promenade",
@@ -701,7 +703,7 @@ def test_no_bombing_locations(logic: frozenset[Trick]) -> None:
         assert (
             found[loc_name] or
             (logic is casual and loc_name == "Warrior Shrine: Top") or
-            (logic in {casual, medium} and loc_name == "Briar: Top")  # or
+            (logic in {casual, medium} and loc_name in {"Briar: Top", "Antechamber"})  # or
             # (logic in {casual, medium} and loc_name == "Warrior Shrine: Middle")
         ), f"logic thinks bombing is needed for {loc_name}"
 
@@ -755,6 +757,7 @@ _no_bomb_blocks = frozenset([
 ])
 
 _more_no_bomb_blocks_for_expert = frozenset([
+    "Antechamber",
     "West Spore Field",
     "Containment Area",
     "Foundry",
@@ -866,6 +869,7 @@ _no_bomb_blocks_or_speed_expert = frozenset([
     "Shrine Of Fervor",
     "Weapon Research",
 
+    "Antechamber",
     "Drawing Room",
     "Glacier's Reach",
     "Grand Promenade",
