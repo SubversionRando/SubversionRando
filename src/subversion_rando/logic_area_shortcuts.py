@@ -8,7 +8,7 @@ from .logic_shortcut_data import (
     canFly, shootThroughWalls, breakIce, missileDamage, pinkDoor,
     missileBarrier, electricHyper, killRippers, killGreenOrRedPirates,
     killYellowPirates, plasmaWaveGate, icePod, can_crash_spaceport,
-    hiJumpSuperSink, bonkCeilingSuperSink, underwaterSuperSink, iceSBA,
+    bonk7SuperSink, bonkCeilingSuperSink, underwaterSuperSink, iceSBA,
     plasmaSBA, spazerSBA, pinkSwitch
 )
 from .trick_data import Tricks
@@ -49,7 +49,7 @@ class SkyWorld:
 
     meetingHallToRight = LogicShortcut(lambda loadout: (
         # entrance in Grand Promenade
-        ((Screw in loadout) or (hiJumpSuperSink in loadout)) and
+        ((Screw in loadout) or (bonk7SuperSink in loadout)) and
         # meeting hall
         ((
             # through top

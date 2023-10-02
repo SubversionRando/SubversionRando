@@ -85,6 +85,17 @@ bonkCeilingSuperSink = LogicShortcut(lambda loadout: (
         (Tricks.movement_zoast in loadout)
     )
 ))
+""" bonk ceiling above 4- or 5-tile space """
+
+bonk7SuperSink = LogicShortcut(lambda loadout: (
+    (Tricks.super_sink_hard in loadout) and
+    (
+        (Tricks.patience in loadout) or
+        (Xray in loadout) or
+        (Tricks.movement_zoast in loadout)
+    )
+))
+""" bonk ceiling above 7-tile space """
 
 underwaterSuperSink = LogicShortcut(lambda loadout: (
     (Tricks.super_sink_hard in loadout) and
