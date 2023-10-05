@@ -18,7 +18,7 @@ from .fillInterface import FillAlgorithm
 from .game import CypherItems, Game, GameOptions
 from .goal import generate_goals, goal_spoiler, write_goals
 from .hints import choose_hint_location, get_hint_spoiler_text, write_hint_to_rom
-from .item_data import Item, Items
+from .item_data import Item, Items,  unique_items
 from .loadout import Loadout
 from .location_data import Location, pullCSV, spacePortLocs
 from .logic_presets import casual, expert, medium
@@ -28,6 +28,7 @@ from . import fillMajorMinor
 from . import fillAssumed
 from . import fillSpeedrun
 from . import areaRando
+from .map_icon_data import data as map_icon_data
 from .new_terrain_writer import TerrainWriter
 from .open_escape import patch_open_escape
 from .romWriter import RomWriter
@@ -69,6 +70,11 @@ def write_location(romWriter: RomWriter, location: Location) -> None:
         else:
             plmid_altroom = plmidFromHiddenness(item, location['alternateroomdifferenthiddenness'])
         romWriter.writeItem(address, plmid_altroom, item[4])
+
+    # set map dot size
+    table_entry = map_icon_data[location["plmparamlo"]]
+    major_item_addr = table_entry + 6
+    romWriter.writeBytes(major_item_addr, b"\x01" if item in unique_items else b"\x00")
 
 
 fillers: dict[str, Type[FillAlgorithm]] = {

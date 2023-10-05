@@ -177,3 +177,29 @@ all_items: dict[str, Item] = {
     item[0]: item
     for item in items_unpackable
 }
+
+unique_items: frozenset[Item] = frozenset([
+    Items.Missile,
+    Items.Morph,
+    Items.GravityBoots,
+    Items.Super,
+    Items.Grapple,
+    Items.PowerBomb,
+    Items.Speedball,
+    Items.Bombs,
+    Items.HiJump,
+    Items.Aqua,
+    Items.DarkVisor,
+    Items.Wave,
+    Items.SpeedBooster,
+    Items.Spazer,
+    Items.Varia,
+    Items.Ice,
+    Items.MetroidSuit,
+    Items.Plasma,
+    Items.Screw,
+    Items.SpaceJump,
+    Items.Charge,
+    Items.Hypercharge,
+    Items.Xray,
+])

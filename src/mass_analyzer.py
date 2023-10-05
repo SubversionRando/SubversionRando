@@ -3,7 +3,7 @@
 from collections import Counter
 import pickle
 
-from subversion_rando.item_data import Items
+from subversion_rando.item_data import unique_items
 from mass_generator import GameData
 
 
@@ -23,33 +23,6 @@ def read_games() -> list[GameData]:
     return games
 
 
-_unique_items = frozenset([
-    Items.Missile,
-    Items.Morph,
-    Items.GravityBoots,
-    Items.Super,
-    Items.Grapple,
-    Items.PowerBomb,
-    Items.Speedball,
-    Items.Bombs,
-    Items.HiJump,
-    Items.Aqua,
-    Items.DarkVisor,
-    Items.Wave,
-    Items.SpeedBooster,
-    Items.Spazer,
-    Items.Varia,
-    Items.Ice,
-    Items.MetroidSuit,
-    Items.Plasma,
-    Items.Screw,
-    Items.SpaceJump,
-    Items.Charge,
-    Items.Hypercharge,
-    Items.Xray,
-])
-
-
 def main() -> None:
     games = read_games()
 
@@ -57,7 +30,7 @@ def main() -> None:
     item_counts: Counter[str] = Counter()
     for g in games:
         for loc_name, loc in g.all_locations.items():
-            if loc["item"] in _unique_items:
+            if loc["item"] in unique_items:
                 loc_counts[loc_name] += 1
 
         item = g.all_locations["Docking Port 4"]["item"]

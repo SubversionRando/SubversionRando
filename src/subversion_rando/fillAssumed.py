@@ -3,9 +3,10 @@ from typing import Optional
 
 from .connection_data import AreaDoor
 from .fillInterface import FillAlgorithm
-from .item_data import Item, Items
+from .item_data import Item, Items, unique_items
 from .loadout import Loadout
 from .location_data import Location, spacePortLocs, majorLocs, eTankLocs
+from .location_weights import frequencies
 from .solver import solve
 
 _minor_logic_items = {
@@ -24,32 +25,6 @@ _minor_non_logic_items = {
 }
 """ items placed without logic """
 
-_unique_items: frozenset[Item] = frozenset([
-    Items.Missile,
-    Items.Morph,
-    Items.GravityBoots,
-    Items.Super,
-    Items.Grapple,
-    Items.PowerBomb,
-    Items.Speedball,
-    Items.Bombs,
-    Items.HiJump,
-    Items.Aqua,
-    Items.DarkVisor,
-    Items.Wave,
-    Items.SpeedBooster,
-    Items.Spazer,
-    Items.Varia,
-    Items.Ice,
-    Items.MetroidSuit,
-    Items.Plasma,
-    Items.Screw,
-    Items.SpaceJump,
-    Items.Charge,
-    Items.Hypercharge,
-    Items.Xray,
-])
-
 
 class FillAssumed(FillAlgorithm):
     connections: list[tuple[AreaDoor, AreaDoor]]
@@ -62,7 +37,7 @@ class FillAssumed(FillAlgorithm):
                  connections: list[tuple[AreaDoor, AreaDoor]]) -> None:
         self.connections = connections
 
-        self.prog_items = sorted(_unique_items)  # sort because iterating through set will not be the same every time
+        self.prog_items = sorted(unique_items)  # sort because iterating through set will not be the same every time
         assert len(self.prog_items) == len(set(self.prog_items)), "duplicate majors?"
         for it, n in _minor_logic_items.items():
             self.prog_items.extend([it for _ in range(n)])
@@ -90,7 +65,7 @@ class FillAssumed(FillAlgorithm):
         because 1 progression item in space port
         will lead to more progression items in spaceport
         """
-        if item_to_place in _unique_items:
+        if item_to_place in unique_items:
             distribution = available_locations.copy()
             for loc in available_locations:
                 if (
@@ -105,8 +80,12 @@ class FillAssumed(FillAlgorithm):
                         )
                     )) or
                     (loc["fullitemname"] == "Ready Room" and Items.Super not in self.prog_items) or
-                    (loc["fullitemname"] in {"Forward Battery", "Aft Battery"} and Items.Morph not in self.prog_items) or
-                    (loc["fullitemname"] in {"Docking Port 3", "Docking Port 4"} and Items.Grapple not in self.prog_items) or
+                    (loc["fullitemname"] in {
+                        "Forward Battery", "Aft Battery"
+                    } and Items.Morph not in self.prog_items) or
+                    (loc["fullitemname"] in {
+                        "Docking Port 3", "Docking Port 4"
+                    } and Items.Grapple not in self.prog_items) or
                     loc["fullitemname"] not in spacePortLocs
                 ):
                     # number of copies can be tuned
@@ -122,10 +101,10 @@ class FillAssumed(FillAlgorithm):
         """ transform the distribution of locations for major minor bias """
         tr: list[Location] = []
         for loc in available_locations:
-            if item_to_place in _unique_items and loc["fullitemname"] in majorLocs:
+            if item_to_place in unique_items and loc["fullitemname"] in majorLocs:
                 for _ in range(40):
                     tr.append(loc)
-            elif item_to_place not in _unique_items and loc["fullitemname"] not in majorLocs:
+            elif item_to_place not in unique_items and loc["fullitemname"] not in majorLocs:
                 for _ in range(7):
                     tr.append(loc)
             else:
@@ -133,9 +112,29 @@ class FillAssumed(FillAlgorithm):
         return tr
 
     @staticmethod
+    def transform_away_from_early(available_locations: list[Location], item_to_place: Item) -> list[Location]:
+        """ transform the distribution of locations to push progression away from early game areas """
+        tr: list[Location] = []
+        for loc in available_locations:
+            tr.append(loc)
+            tr.append(loc)
+            loc_name = loc["fullitemname"]
+            if item_to_place in unique_items:
+                if frequencies[loc_name] < 183:
+                    tr.append(loc)
+                    if frequencies[loc_name] < 154:
+                        tr.append(loc)
+            else:  # not unique item
+                if frequencies[loc_name] > 153:
+                    tr.append(loc)
+                    if frequencies[loc_name] > 182:
+                        tr.append(loc)
+        return tr
+
+    @staticmethod
     def transform_mm(available_locations: list[Location], item_to_place: Item) -> list[Location]:
         """ transform the distribution of locations for major minor """
-        major = item_to_place in _unique_items or item_to_place == Items.Energy
+        major = item_to_place in unique_items or item_to_place == Items.Energy
         tr: list[Location] = []
         for loc in available_locations:
             location_major = (loc["fullitemname"] in majorLocs or loc["fullitemname"] in eTankLocs)
@@ -191,6 +190,8 @@ class FillAssumed(FillAlgorithm):
             available_locations = self.transform_mmb(available_locations, item_to_place)
         elif loadout.game.options.fill_choice == "MM":
             available_locations = self.transform_mm(available_locations, item_to_place)
+        if False:  # testing
+            available_locations = self.transform_away_from_early(available_locations, item_to_place)
         if len(available_locations) == 0:
             # print(f"DEBUG: failing to place {item_to_place[0]}")
             return None

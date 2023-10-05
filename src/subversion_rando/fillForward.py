@@ -2,7 +2,7 @@ from collections import Counter
 import random
 
 from .game import Game
-from .item_data import Item, Items
+from .item_data import Item, Items, unique_items
 from .location_data import Location, majorLocs, eTankLocs
 from .solver import solve
 
@@ -21,32 +21,6 @@ _minor_non_logic_items = {
     Items.SmallAmmo: 26,
 }
 """ items placed without logic """
-
-_unique_items: frozenset[Item] = frozenset([
-    Items.Missile,
-    Items.Morph,
-    Items.GravityBoots,
-    Items.Super,
-    Items.Grapple,
-    Items.PowerBomb,
-    Items.Speedball,
-    Items.Bombs,
-    Items.HiJump,
-    Items.Aqua,
-    Items.DarkVisor,
-    Items.Wave,
-    Items.SpeedBooster,
-    Items.Spazer,
-    Items.Varia,
-    Items.Ice,
-    Items.MetroidSuit,
-    Items.Plasma,
-    Items.Screw,
-    Items.SpaceJump,
-    Items.Charge,
-    Items.Hypercharge,
-    Items.Xray,
-])
 
 
 def available_major_locations(game: Game) -> list[Location]:
@@ -90,7 +64,7 @@ def fill_major_minor(game: Game) -> bool:
     loc["item"] = Items.GravityBoots
     game.item_placement_spoiler += f"{loc['fullitemname']} - - - {Items.GravityBoots[0]}\n"
 
-    prog_items: list[Item] = sorted(_unique_items)  # sort because iterating through set will not be the same every time
+    prog_items: list[Item] = sorted(unique_items)  # sort because iterating through set will not be the same every time
     assert len(prog_items) == len(set(prog_items)), "duplicate majors?"
     for it, n in _minor_logic_items.items():
         prog_items.extend([it for _ in range(n)])
@@ -99,7 +73,7 @@ def fill_major_minor(game: Game) -> bool:
 
     major_items: Counter[Item] = Counter()
     for item in prog_items:
-        if (item in _unique_items or item == Items.Energy):
+        if (item in unique_items or item == Items.Energy):
             major_items[item] += 1
 
     fail_count = 0
@@ -115,7 +89,7 @@ def fill_major_minor(game: Game) -> bool:
             item = Items.PowerBomb
         elif major_items[Items.SpeedBooster] > 0 and random.random() < 0.125:
             item = Items.SpeedBooster
-        if (item in _unique_items or item == Items.Energy):
+        if (item in unique_items or item == Items.Energy):
             locs = available_major_locations(game)
             if len(locs) == 0:
                 return False
