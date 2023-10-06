@@ -128,6 +128,8 @@ data = {
     0x7e: 0xdde81,
     0x7f: 0xdde89,
     0x80: 0xdde91,
+    0x69: 0xdde9b,
+    0x6a: 0xddea3,
 }
 """
 https://github.com/amoebaOfDoom/subversion/blob/1b39167be1f0328388ab4e23f5a5f4d4b15e4fd2/Project/ASM/MapColors.asm#L1405
@@ -148,10 +150,14 @@ def get_this_data_from_rom() -> None:
     rw = RomWriter.fromFilePaths("roms/Subversion12.sfc")
     cursor = 0xdda85  # 1st entry
     areas_done = 0
-    while areas_done < 7:
+    while areas_done < 8:
         loc_id = rw.rom_data[cursor]
         print(f"    0x{loc_id:02x}: {hex(cursor)},")
         cursor += 8
         if rw.rom_data[cursor] == 0xff:
             areas_done += 1
             cursor += 2
+
+
+if __name__ == "__main__":
+    get_this_data_from_rom()

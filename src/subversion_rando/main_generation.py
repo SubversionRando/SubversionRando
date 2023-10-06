@@ -75,6 +75,11 @@ def write_location(romWriter: RomWriter, location: Location) -> None:
     table_entry = map_icon_data[location["plmparamlo"]]
     major_item_addr = table_entry + 6
     romWriter.writeBytes(major_item_addr, b"\x01" if item in unique_items else b"\x00")
+    alt_plm_param_lo = location["alternateplmparamlo"]
+    if alt_plm_param_lo:
+        table_entry = map_icon_data[alt_plm_param_lo]
+        major_item_addr = table_entry + 6
+        romWriter.writeBytes(major_item_addr, b"\x01" if item in unique_items else b"\x00")
 
 
 fillers: dict[str, Type[FillAlgorithm]] = {
@@ -245,6 +250,7 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     - randomized wrecked daphne gate
     - lower water in Norak Brook
     - rotate save files
+    - always show items on map
     - small spaceport
     - escape shortcuts
     - objective rando
@@ -331,6 +337,13 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
         0x8000,          # save code
         b'\x4c\x60\xff'  # jmp that code above  (changed from jmp $ef35)
     )
+
+    # always show items on map
+    # changing BCS (branch if carry set 0xb0) to BRA (branch always 0x80)
+    # MapColors.asm - .not_collected
+    romWriter.writeBytes(0xdd57f, b"\x80")
+    # MapColors.asm - .circle
+    romWriter.writeBytes(0xdd647, b"\x80")
 
     if game.options.small_spaceport:
         romWriter.writeBytes(0x106283, b'\x71\x01')  # zebetite health
