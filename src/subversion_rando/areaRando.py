@@ -127,9 +127,9 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> list
     Connections: list[tuple[AreaDoor, AreaDoor]] = []
     areaAttempts = 0
     connected = False
-    while not connected :
+    while not connected:
         areaAttempts += 1
-        if areaAttempts > 1000 :
+        if areaAttempts > 1000:
             raise TimeoutError("> 1000 attempts for subversion area rando")
         if seed is None:
             print("**********Trying to get a good escape attempt:", areaAttempts)
@@ -205,16 +205,16 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> list
                 if doorClean in RightSideDoorsList:
                     RightSideDoorsList.remove(doorClean)
 
-        while RightSideDoorsList != [] or LeftSideDoorsList != [] :
+        while RightSideDoorsList != [] or LeftSideDoorsList != []:
             # print("Lengths : OpenNodesL",len(OpenNodesL)," and OpenNodesR",len(OpenNodesR))
             CombinedDoorsList = RightSideDoorsList + LeftSideDoorsList
             # This case is for making sure all areas make it into the map
             # Then all other connections happen later
             randomIndex = 0
-            if len(CombinedDoorsList) > 1 :
+            if len(CombinedDoorsList) > 1:
                 randomIndex = random.randint(0, len(CombinedDoorsList)-1)
             selectedDoor = CombinedDoorsList[randomIndex]
-            if (selectedDoor in RightSideDoorsList) and OpenNodesL != [] :
+            if (selectedDoor in RightSideDoorsList) and OpenNodesL != []:
                 # It is a right door and there are open Left nodes to connect to
                 # if it fails, the loop will try again with no change
                 RightSideDoorsList.remove(selectedDoor)
@@ -228,13 +228,13 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> list
                 # Now add the area to the visitedareas
                 # and all nodes from that area
                 VisitedAreas = VisitedAreas+[selectedDoor.area_name]
-                for doorSearch in RightSideDoorsList :
-                    if doorSearch.area_name in VisitedAreas :
+                for doorSearch in RightSideDoorsList:
+                    if doorSearch.area_name in VisitedAreas:
                         OpenNodesR += [doorSearch]
-                for doorClean in OpenNodesR :
-                    if doorClean in RightSideDoorsList :
+                for doorClean in OpenNodesR:
+                    if doorClean in RightSideDoorsList:
                         RightSideDoorsList.remove(doorClean)
-            elif (selectedDoor in LeftSideDoorsList) and OpenNodesR != [] :
+            elif (selectedDoor in LeftSideDoorsList) and OpenNodesR != []:
                 # It is a left door and there are open right nodes to connect to
                 # if it fails, the loop will try again with no change
                 LeftSideDoorsList.remove(selectedDoor)
@@ -248,11 +248,11 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> list
                 # Now add the area to the visitedareas
                 # and all nodes from that area
                 VisitedAreas = VisitedAreas + [selectedDoor.area_name]  # add the area string
-                for doorSearch in LeftSideDoorsList :
-                    if doorSearch.area_name in VisitedAreas :
+                for doorSearch in LeftSideDoorsList:
+                    if doorSearch.area_name in VisitedAreas:
                         OpenNodesL += [doorSearch]
-                for doorClean in OpenNodesL :
-                    if doorClean in LeftSideDoorsList :
+                for doorClean in OpenNodesL:
+                    if doorClean in LeftSideDoorsList:
                         LeftSideDoorsList.remove(doorClean)
                 # print(len(VisitedAreas),"areas visited")
                 # print(VisitedAreas)
@@ -263,14 +263,14 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> list
         # To connect nodes from OpenNodesL and OpenNodesR
 
         # print("While connecting OpenNodes:")
-        while OpenNodesL != [] and OpenNodesR != [] :
+        while OpenNodesL != [] and OpenNodesR != []:
             # Should only need to keep track of one since they should match 1:1
             randomL = 0
-            if len(OpenNodesL) > 1 :
+            if len(OpenNodesL) > 1:
                 randomL = random.randint(0, len(OpenNodesL) - 1)
             chosenNodeL = OpenNodesL[randomL]
             randomR = 0
-            if len(OpenNodesR) > 1 :
+            if len(OpenNodesR) > 1:
                 randomR = random.randint(0, len(OpenNodesR) - 1)
             chosenNodeR = OpenNodesR[randomR]
             Connections.append((chosenNodeL, chosenNodeR))
@@ -290,7 +290,7 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> list
     return Connections
 
 
-def write_area_doors(Connections: list[tuple[AreaDoor, AreaDoor]], romWriter : RomWriter) -> None:
+def write_area_doors(Connections: list[tuple[AreaDoor, AreaDoor]], romWriter: RomWriter) -> None:
 
     # Now I need to read the OG Subversion rom for 12 bytes at address:Node1[1]
     # and write it into the 12 bytes at Node2[0]
@@ -311,7 +311,7 @@ def write_area_doors(Connections: list[tuple[AreaDoor, AreaDoor]], romWriter : R
     #         rom.seek(addressReceiving)
     #         receivingBytes=rom.read(12)
     #         node.append(receivingBytes)    #this becomes node[4]
-    for pair in Connections :
+    for pair in Connections:
         node1 = pair[0]
         node2 = pair[1]
         romWriter.connect_doors(node1, node2)
@@ -319,19 +319,25 @@ def write_area_doors(Connections: list[tuple[AreaDoor, AreaDoor]], romWriter : R
     # Area rando done?
 
     # coloring some doors to be flashing
-    colorDoorsR = ['3fff70',
-                   '3fffa8',
-                   '3fe37c',
-                   '3ff15e',
-                   '3ff1f8',
-                   '3fe668',
-                   '3fe66e']
+    colorDoorsR = [
+        '3fff70',  # CraterR
+        '3fffa8',  # CraterR
+        '3fe37c',  # FoyerR
+        '3ff15e',  # TransitConcourseR
+        '3ff1f8',  # TransitConcourseR
+        '3fe668',  # NorakPerimeterBR
+        '3fe66e',  # NorakPerimeterTR
+        '3ff23e',  # CellarR
+        '3ff258',  # CellarR
+    ]
 
-    colorDoorsL = ['3ffec4',
-                   '3fe352',
-                   '3fe35a',
-                   '3fe686',
-                   '3ffa2c']
+    colorDoorsL = [
+        '3ffec4',  # SunkenNestL
+        '3fe352',  # VulnarCanyonL
+        '3fe35a',  # VulnarCanyonL
+        '3fe686',  # NorakPerimeterBL
+        '3ffa2c',  # WestTerminalAccessL
+    ]
 
     for doorlocid in colorDoorsR:
         romWriter.writeBytes(int(doorlocid, 16)+0, b"\x42")  # gray type door
