@@ -26,6 +26,7 @@ class ItemCounter(Counter[Union[Item, AreaDoor]]):
 
 
 class Loadout:
+    game: "Game"
     contents: ItemCounter
 
     def __init__(self,

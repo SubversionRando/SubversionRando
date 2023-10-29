@@ -191,7 +191,7 @@ class FillAssumed(FillAlgorithm):
         elif loadout.game.options.fill_choice == "MM":
             available_locations = self.transform_mm(available_locations, item_to_place)
         if False:  # testing
-            available_locations = self.transform_away_from_early(available_locations, item_to_place)
+            available_locations = self.transform_away_from_early(available_locations, item_to_place)  # type: ignore
         if len(available_locations) == 0:
             # print(f"DEBUG: failing to place {item_to_place[0]}")
             return None

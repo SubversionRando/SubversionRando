@@ -5,8 +5,10 @@ if TYPE_CHECKING:
 
 
 class LogicShortcut:
+    access: "Callable[[Loadout], bool]"
+
     def __init__(self, access: "Callable[[Loadout], bool]") -> None:
-        self.access: "Callable[[Loadout], bool]" = access
+        self.access = access
 
     def __bool__(self) -> NoReturn:
         raise TypeError("cannot interpret LogicShortcut as bool - did you forget `in loadout`?")
