@@ -1,4 +1,5 @@
 from bisect import insort_right
+from typing import Union
 
 from .romWriter import RomWriter, RomWriterType
 from .terrain_patch import Patch, Space
@@ -14,10 +15,11 @@ class TerrainWriter:
         self.rom_writer = rom_writer
         self.emptied = []
 
-    def _add_space(self, freed_space: Space) -> None:
+    def add_space(self, freed_space: Space) -> None:
+        """ let the `TerrainWriter` use this space to put new level data in the rom """
         insort_right(self.emptied, freed_space)
 
-    def _take_space(self, data: bytes) -> int:
+    def _take_space(self, data: Union[bytes, bytearray]) -> int:
         size_needed = len(data)
         i = 0
         while i < len(self.emptied):
@@ -38,7 +40,7 @@ class TerrainWriter:
 
     def write(self, patch: Patch) -> None:
         if patch.freed_space:
-            self._add_space(patch.freed_space)
+            self.add_space(patch.freed_space)
         destination = self._take_space(patch.data)
 
         self.rom_writer.writeBytes(destination, patch.data)

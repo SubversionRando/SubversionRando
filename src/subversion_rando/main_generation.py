@@ -31,9 +31,10 @@ from . import areaRando
 from .map_icon_data import data as map_icon_data
 from .new_terrain_writer import TerrainWriter
 from .open_escape import patch_open_escape
-from .romWriter import RomWriter
+from .romWriter import RomWriter, RomWriterType
 from .solver import hard_required_locations, required_tricks, solve, spoil_play_through
 from .spaceport_door_data import shrink_spaceport, spaceport_doors
+from .terrain_patch import Space
 from .terrain_patch_data import hall_of_the_elders, subterranean, vulnar_caves_access_open_escape
 from .trick import Trick
 from .trick_data import Tricks
@@ -246,6 +247,9 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     - skip intro
     - disable demos
     - area rando doors always flashing
+    - loading dock always has elevator to space port
+    - using mass driver uncrashes space port
+    - open escape (no grey doors in escape path)
     - subterranean burrow terrain - anti-softlock
     - randomized wrecked daphne gate
     - lower water in Norak Brook
@@ -290,6 +294,41 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     romWriter.writeBytes(0x23e33, b"\x38\x38\x38\x38")  # set the carry bit (a lot)
 
     tw = TerrainWriter(romWriter)
+
+    # loading dock always has elevator to space port
+    # state header pointer copied from un-crashed power on state condition
+    romWriter.writeBytes(0x7b688, b"\xb0")  # crashed power on state condition - pointer to state header - lo byte
+    # new state header pointer created to default state header (un-crashed power off)
+    romWriter.writeBytes(0x7b68d, b"\x96")  # crashed power off state condition - pointer to state header - lo byte
+    # state headers pointed to by the original state conditions are now unused (b6e4, b6ca)
+    # so their level data (without elevator) is now unused
+    # (2 sections of data are contiguous - 2115097 size 893 and 2115992 size 902)
+    tw.add_space(Space(1797, 2115097))
+
+    # mass driver un-crashes space port
+    # door from loading dock into mass driver points to some asm
+    location_of_pointer_to_asm = 0x1bb06
+    assert (
+        romWriter.romWriterType == RomWriterType.ipsblob or
+        romWriter.rom_data[location_of_pointer_to_asm:location_of_pointer_to_asm+2] == b"\x4c\xa8"
+    )
+    # we're going to point it to some different asm
+    # in some free space at 7f56d
+    # TODO: verify this space is free with multiworld patch
+    dest = 0x7f56d
+    romWriter.writeBytes(location_of_pointer_to_asm, bytearray([dest & 0xff, (dest // 256) & 0xff]))
+    new_code = (
+        b"\xa9\x1d\x00"      # lda 001d    (crash spaceport event)
+        b"\x22\x12\x82\x80"  # jsl 808212  (unset event)
+        b"\x4c\x4c\xa8"      # JMP a84c    (to the original door asm)
+    )
+    assert (
+        romWriter.romWriterType == RomWriterType.ipsblob or
+        all(b == 0xff for b in romWriter.rom_data[dest:dest + len(new_code)])
+    ), f"data expected to be empty {romWriter.rom_data[dest:dest + len(new_code)]}"
+    romWriter.writeBytes(dest, new_code)
+
+    # TODO: verify objective rando log completion matches space port crash requirement (after un-crash)
 
     # romWriter.apply_IPS('open_escape.ips')  # TODO: MB room lag from explosions and shaking during fight
     patch_open_escape(romWriter)

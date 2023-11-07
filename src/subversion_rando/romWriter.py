@@ -78,7 +78,7 @@ class RomWriter:
             return bytearray(orig.read())
 
     @staticmethod
-    def isAllRepeatedBytes(data: bytes) -> bool:
+    def isAllRepeatedBytes(data: Union[bytes, bytearray]) -> bool:
         if len(data) < 2:
             return False
         byte = data[0]
@@ -87,7 +87,7 @@ class RomWriter:
                 return False
         return True
 
-    def writeBytes(self, address: int, data: bytes) -> None:
+    def writeBytes(self, address: int, data: Union[bytes, bytearray]) -> None:
         if self.romWriterType in {RomWriterType.file, RomWriterType.base64}:
             assert len(self.rom_data) >= address + len(data)
             self.rom_data[address:address + len(data)] = data

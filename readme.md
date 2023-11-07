@@ -80,6 +80,11 @@ So if you don't pick up everything you can before you free fall, you might be st
 
 Turning the power off is never in logic, unless you can turn it back on before you leave the Geothermal Energy Plant.
 
+You can un-crash the space port by using the Mass Driver.
+ - This can be useful if:
+    - You have items in space port that are more difficult to get in their fallen locations.
+    - It's difficult to get through Ocean Shallows with the crashed Cargo Ship and Metroids.
+
 ---
 
 ## logic presets
@@ -149,4 +154,4 @@ Somewhere in the bestiary of the log book, there's a hint for the location of an
 
 The 10 bestiary entries are: Torizo, Spore Spawn, Kraid, Crocomire, Phantoon, Botwoon, Draygon, Ridley, Metroids, Aurora Unit
 
-note: The Metroids entry is triggered by picking up the item in extract storage, and it only works if the space port is not crashed yet.
+note: The Metroids entry is triggered by picking up the item in extract storage, and it only works if the space port is not crashed.

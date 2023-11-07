@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import NamedTuple, Optional
+from typing import NamedTuple, Optional, Union
 
 
 class Space(NamedTuple):
@@ -9,6 +9,6 @@ class Space(NamedTuple):
 
 @dataclass
 class Patch:
-    data: bytes
+    data: Union[bytes, bytearray]
     pointers: list[int]
     freed_space: Optional[Space] = None
