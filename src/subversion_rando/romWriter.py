@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Optional, Union
 from .ips import patch
 
 if TYPE_CHECKING:
-    from .connection_data import AreaDoor
+    from .area_rando_types import AreaDoor
 
 
 class RomWriterType(enum.IntEnum):

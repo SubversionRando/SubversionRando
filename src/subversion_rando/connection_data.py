@@ -1,19 +1,11 @@
 """ data for the connections in area rando """
-from typing import TYPE_CHECKING, NamedTuple, Union
+from typing import TYPE_CHECKING, Union
 
+from .area_rando_types import AreaDoor, DoorPairs
 from .item_data import Item, Items
 from .logicCommon import can_use_pbs
 if TYPE_CHECKING:
     from .logic_shortcut import LogicShortcut
-
-
-class AreaDoor(NamedTuple):
-    address: str
-    data: str
-    """ the data of the vanilla door that goes here """
-    area_name: str
-    name: str
-    region: int
 
 
 area_doors_unpackable: tuple[AreaDoor, ...] = (
@@ -107,29 +99,30 @@ vanilla_doors: "dict[AreaDoor, Union[Item, LogicShortcut]]" = {
 ) = area_doors_unpackable
 
 
-def VanillaAreas() -> list[tuple[AreaDoor, AreaDoor]]:
-
-    return [(CraterR, WestTerminalAccessL),
-            (SunkenNestL, OceanShoreR),
-            (RuinedConcourseBL, TransferStationR),
-            (RuinedConcourseTR, MezzanineConcourseL),
-            (CausewayR, ExcavationSiteL),
-            (SporeFieldTR, FieldAccessL),
-            (SporeFieldBR, SporousNookL),
-            (EleToTurbidPassageR, FieryGalleryL),
-            (PileAnchorL, TramToSuziIslandR),
-            (WestCorridorR, LoadingDockSecurityAreaL),
-            (FoyerR, VulnarCanyonL),
-            (ConstructionSiteL, CellarR),
-            (AlluringCenoteR, NorakPerimeterBL),
-            (SubbasementFissureL, VulnarDepthsElevatorER),
-            (CanyonPassageR, NorakBrookL),
-            (ElevatorToCondenserL, IntakePumpR),
-            (ElevatorToWellspringL, CollapsedPassageR),
-            (NorakPerimeterTR, RockyRidgeTrailL),
-            (VulnarDepthsElevatorEL, PlacidPoolR),
-            (HiveBurrowL, ThermalReservoir1R),
-            (SequesteredInfernoL, ReservoirMaintenanceTunnelR),
-            (MagmaPumpL, MagmaPumpAccessR),
-            (GeneratorAccessTunnelL, HollowChamberR),
-            (ElevatorToMagmaLakeR, RagingPitL)]
+def vanilla_areas() -> DoorPairs:
+    return DoorPairs([
+        (CraterR, WestTerminalAccessL),
+        (SunkenNestL, OceanShoreR),
+        (RuinedConcourseBL, TransferStationR),
+        (RuinedConcourseTR, MezzanineConcourseL),
+        (CausewayR, ExcavationSiteL),
+        (SporeFieldTR, FieldAccessL),
+        (SporeFieldBR, SporousNookL),
+        (EleToTurbidPassageR, FieryGalleryL),
+        (PileAnchorL, TramToSuziIslandR),
+        (WestCorridorR, LoadingDockSecurityAreaL),
+        (FoyerR, VulnarCanyonL),
+        (ConstructionSiteL, CellarR),
+        (AlluringCenoteR, NorakPerimeterBL),
+        (SubbasementFissureL, VulnarDepthsElevatorER),
+        (CanyonPassageR, NorakBrookL),
+        (ElevatorToCondenserL, IntakePumpR),
+        (ElevatorToWellspringL, CollapsedPassageR),
+        (NorakPerimeterTR, RockyRidgeTrailL),
+        (VulnarDepthsElevatorEL, PlacidPoolR),
+        (HiveBurrowL, ThermalReservoir1R),
+        (SequesteredInfernoL, ReservoirMaintenanceTunnelR),
+        (MagmaPumpL, MagmaPumpAccessR),
+        (GeneratorAccessTunnelL, HollowChamberR),
+        (ElevatorToMagmaLakeR, RagingPitL)
+    ])

@@ -1,7 +1,7 @@
 import random
 from typing import Optional
 
-from .connection_data import AreaDoor
+from .area_rando_types import DoorPairs
 from .fillInterface import FillAlgorithm
 from .item_data import Item, Items, unique_items
 from .loadout import Loadout
@@ -27,15 +27,14 @@ _minor_non_logic_items = {
 
 
 class FillAssumed(FillAlgorithm):
-    connections: list[tuple[AreaDoor, AreaDoor]]
+    door_pairs: DoorPairs
 
     prog_items: list[Item]
     extra_items: list[Item]
     itemLists: list[list[Item]]
 
-    def __init__(self,
-                 connections: list[tuple[AreaDoor, AreaDoor]]) -> None:
-        self.connections = connections
+    def __init__(self, door_pairs: DoorPairs) -> None:
+        self.door_pairs = door_pairs
 
         self.prog_items = sorted(unique_items)  # sort because iterating through set will not be the same every time
         assert len(self.prog_items) == len(set(self.prog_items)), "duplicate majors?"

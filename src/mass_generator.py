@@ -12,11 +12,11 @@ import pickle
 import sys
 from typing import Iterator, Literal, Optional
 
-from subversion_rando.main_generation import generate
-from subversion_rando.connection_data import AreaDoor
+from subversion_rando.area_rando_types import AreaDoor
 from subversion_rando.game import CypherItems, Game, GameOptions
 from subversion_rando.location_data import Location
 from subversion_rando.logic_presets import casual, expert, medium
+from subversion_rando.main_generation import generate
 from subversion_rando.trick_data import trick_name_lookup
 
 
@@ -52,7 +52,7 @@ class GameData:
         self.logic = [trick_name_lookup[t] for t in g.options.logic]
         self.all_locations = g.all_locations
         self.area_rando = g.options. area_rando
-        self.connections = g.connections
+        self.connections = list(g.door_pairs.connections())
         self.fill_choice = g.options.fill_choice
         self.seed = g.seed
         self.small_spaceport = g.options.small_spaceport

@@ -4,7 +4,8 @@ from difflib import get_close_matches
 import os
 import sys
 
-from subversion_rando.connection_data import AreaDoor, VanillaAreas, area_doors
+from subversion_rando.area_rando_types import AreaDoor, DoorPairs
+from subversion_rando.connection_data import vanilla_areas, area_doors
 from subversion_rando.game import CypherItems, Game, GameOptions
 from subversion_rando.item_data import Item, Items, all_items
 from subversion_rando.loadout import Loadout
@@ -78,7 +79,7 @@ class Tracker:
     def __init__(self) -> None:
         logic = casual
         area_rando = False
-        area_connections = VanillaAreas()
+        area_connections = vanilla_areas()
 
         self.empty_locations = pullCSV()
         self.game_state_locations = deepcopy(self.empty_locations)
@@ -130,7 +131,9 @@ class Tracker:
                     logic_from_spoiler.add(getattr(Tricks, trick_name))
 
         if len(connections) == 0:
-            connections = VanillaAreas()
+            door_pairs = vanilla_areas()
+        else:
+            door_pairs = DoorPairs(connections)
 
         frz_logic_from_spoiler = frozenset(logic_from_spoiler)
         if frz_logic_from_spoiler == casual:
@@ -144,7 +147,7 @@ class Tracker:
 
         self.logic_from_spoiler = frz_logic_from_spoiler
         options = GameOptions(frz_logic_from_spoiler, area_rando, "D", True, False, CypherItems.NotRequired)
-        game = Game(options, self.empty_locations, connections, 0)
+        game = Game(options, self.empty_locations, door_pairs, 0)
         self.loadout = Loadout(game)
 
     def pickup_location(self, loc_name: str) -> None:

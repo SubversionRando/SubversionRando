@@ -8,7 +8,7 @@ except ImportError:
 import time
 
 try:  # container type annotations 3.9
-    from .connection_data import SunkenNestL, VanillaAreas, area_doors, misc_doors
+    from .connection_data import SunkenNestL, area_doors, misc_doors, vanilla_areas
 except TypeError:
     input("requires Python 3.9 or higher... press enter to quit")
     exit(1)
@@ -121,7 +121,7 @@ def generate(options: GameOptions) -> Game:
     start_time = time.perf_counter()
     game = Game(options,
                 all_locations,
-                VanillaAreas(),
+                vanilla_areas(),
                 seeeed)
     while not seedComplete:
         if game.options.daphne_gate:
@@ -135,7 +135,7 @@ def generate(options: GameOptions) -> Game:
                     Tricks.wave_gate_glitch not in game.options.logic
                 ) and game.options.fill_choice == "MM"
             )
-            game.connections = areaRando.RandomizeAreas(force_normal_early)
+            game.door_pairs = areaRando.RandomizeAreas(force_normal_early)
             # print(Connections) #test
 
         if game.options.objective_rando > 0:
@@ -266,7 +266,7 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
         write_hint_to_rom(hint_loc_name, hint_loc_marker, romWriter)
 
     if game.options.area_rando:
-        areaRando.write_area_doors(game.connections, romWriter)
+        areaRando.write_area_doors(game.door_pairs, romWriter)
 
     # Suit animation skip patch
     romWriter.writeBytes(0x20717, b"\xea\xea\xea\xea")
@@ -412,11 +412,11 @@ def get_spoiler(game: Game) -> str:
 
     # add area transitions to spoiler
     if game.options.area_rando:
-        for door1, door2 in game.connections:
+        for door1, door2 in game.door_pairs.connections():
             spoilerSave += f"{door1.area_name} {door1.name} << >> {door2.area_name} {door2.name}\n"
         spoilerSave += "\n"
         spoilerSave += " --- possible escape path ---\n"
-        path = areaRando.escape_path(game.connections)
+        path = areaRando.escape_path(game.door_pairs)
         if path is None:
             spoilerSave += "path error\n"
         else:
@@ -499,7 +499,7 @@ def assumed_fill(game: Game) -> bool:
         loc["item"] = None
     dummy_locations: list[Location] = []
     loadout = Loadout(game)
-    fill_algorithm = fillAssumed.FillAssumed(game.connections)
+    fill_algorithm = fillAssumed.FillAssumed(game.door_pairs)
 
     if game.options.cypher_items == CypherItems.SmallAmmo and game.options.fill_choice != "MM":
         game.all_locations["Shrine Of The Animate Spark"]["item"] = Items.SmallAmmo
@@ -560,7 +560,7 @@ def forward_fill(game: Game) -> bool:
     loadout = Loadout(game)
     loadout.append(SunkenNestL)  # starting area
     # use appropriate fill algorithm for initializing item lists
-    fill_algorithm = fillers[game.options.fill_choice](game.connections)
+    fill_algorithm = fillers[game.options.fill_choice](game.door_pairs)
     while len(unusedLocations) != 0 or len(availableLocations) != 0:
         # print("loadout contains:")
         # print(loadout)

@@ -1,7 +1,7 @@
 from typing import Optional
 import random
 
-from .connection_data import AreaDoor
+from .area_rando_types import DoorPairs
 from .fillInterface import FillAlgorithm
 from .item_data import Item, items_unpackable
 from .loadout import Loadout
@@ -24,7 +24,7 @@ class FillMajorMinor(FillAlgorithm):
 
     itemLists: list[list[Item]]
 
-    def __init__(self, connections: list[tuple[AreaDoor, AreaDoor]]) -> None:
+    def __init__(self, door_pairs: DoorPairs) -> None:
         self.earlyItemList = [
             Missile,
             Morph,
@@ -82,9 +82,9 @@ class FillMajorMinor(FillAlgorithm):
 
         assert len(availableLocations), "placement algorithm received 0 available locations"
 
-        for torpedoSearch in availableLocations :
+        for torpedoSearch in availableLocations:
             # print("Searching for Torpedo Bay: ", torpedoSearch['fullitemname'])
-            if torpedoSearch['fullitemname'] == "Torpedo Bay" :
+            if torpedoSearch['fullitemname'] == "Torpedo Bay":
                 # print("          found Torpedo Bay")
                 placeItem = random.choice([Missile, Morph])
                 # print(availableLocations[0], " - - - ", placeItem)

@@ -1,3 +1,4 @@
+from subversion_rando.area_rando_types import DoorPairs
 from subversion_rando.connection_data import area_doors
 from subversion_rando.door_logic import canOpen
 from subversion_rando.game import Game, GameOptions
@@ -12,7 +13,7 @@ _test_options = GameOptions(casual, False, "D", True)
 def test_area_rando() -> None:
     _test_options.logic = casual
     _test_options.area_rando = True
-    game = Game(_test_options, {}, [], 0)
+    game = Game(_test_options, {}, DoorPairs([]), 0)
     loadout = Loadout(game)
 
     assert canOpen(area_doors["CraterR"]) in loadout
@@ -24,7 +25,7 @@ def test_area_rando() -> None:
 def test_area_rando_with_items() -> None:
     _test_options.logic = casual
     _test_options.area_rando = True
-    game = Game(_test_options, {}, [], 0)
+    game = Game(_test_options, {}, DoorPairs([]), 0)
     loadout = Loadout(game, (Items.PowerBomb, Items.Super))
 
     assert canOpen(area_doors["CraterR"]) in loadout
@@ -36,7 +37,7 @@ def test_area_rando_with_items() -> None:
 def test_non_area_rando_locked() -> None:
     _test_options.logic = casual
     _test_options.area_rando = False
-    game = Game(_test_options, {}, [], 0)
+    game = Game(_test_options, {}, DoorPairs([]), 0)
     loadout = Loadout(game)
 
     assert canOpen(area_doors["CraterR"]) not in loadout
@@ -48,7 +49,7 @@ def test_non_area_rando_locked() -> None:
 def test_non_area_rando_missing_morph() -> None:
     _test_options.logic = casual
     _test_options.area_rando = False
-    game = Game(_test_options, {}, [], 0)
+    game = Game(_test_options, {}, DoorPairs([]), 0)
     loadout = Loadout(game, (Items.PowerBomb, Items.Super))
 
     assert canOpen(area_doors["CraterR"]) not in loadout
@@ -60,7 +61,7 @@ def test_non_area_rando_missing_morph() -> None:
 def test_non_area_rando_open() -> None:
     _test_options.logic = casual
     _test_options.area_rando = False
-    game = Game(_test_options, {}, [], 0)
+    game = Game(_test_options, {}, DoorPairs([]), 0)
     loadout = Loadout(game, (Items.Morph, Items.PowerBomb, Items.Super))
 
     assert canOpen(area_doors["CraterR"]) in loadout

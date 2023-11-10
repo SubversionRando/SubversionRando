@@ -1,7 +1,7 @@
 from collections import defaultdict
 import pytest
 
-from subversion_rando.connection_data import SunkenNestL, VanillaAreas, area_doors
+from subversion_rando.connection_data import SunkenNestL, vanilla_areas, area_doors
 from subversion_rando.game import Game, GameOptions
 from subversion_rando.item_data import Items, items_unpackable
 from subversion_rando.loadout import Loadout
@@ -18,7 +18,7 @@ def setup(logic: frozenset[Trick]) -> tuple[Game, Loadout]:
     """ returns (all locations, vanilla connections, a new loadout) """
     all_locations = pullCSV()
     options = GameOptions(logic, False, "D", True)
-    game = Game(options, all_locations, VanillaAreas(), 0)
+    game = Game(options, all_locations, vanilla_areas(), 0)
     loadout = Loadout(game)
     return game, loadout
 

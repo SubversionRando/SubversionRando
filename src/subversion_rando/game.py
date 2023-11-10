@@ -2,7 +2,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import TYPE_CHECKING, Literal, Mapping, Optional, Union
 
-from .connection_data import AreaDoor, vanilla_doors
+from .area_rando_types import AreaDoor, DoorPairs
+from .connection_data import vanilla_doors
 from .daphne_gate_types import DaphneBlocks
 from .goals import Goals
 from .item_data import Item, Items
@@ -52,7 +53,7 @@ class Game:
     """ a composition of all the components that make up the generated seed """
     options: GameOptions
     all_locations: dict[str, Location]
-    connections: list[tuple[AreaDoor, AreaDoor]]
+    door_pairs: DoorPairs
     seed: int
     door_data: "Mapping[AreaDoor, Union[Item, LogicShortcut]]" = field(default_factory=door_factory)
     item_placement_spoiler: str = ""

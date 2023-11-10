@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
-from .connection_data import AreaDoor
 
+from .area_rando_types import AreaDoor
 if TYPE_CHECKING:
     from .romWriter import RomWriter
 

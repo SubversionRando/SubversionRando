@@ -1,31 +1,23 @@
 from typing import Iterable, Optional
 
-from .logic_area import area_logic
-from .logic_locations import location_logic
-from .connection_data import AreaDoor, area_doors
+from .area_rando_types import AreaDoor
+from .connection_data import area_doors
 from .loadout import Loadout
 from .location_data import Location
-
-
-def otherDoor(door: AreaDoor, Connections: list[tuple[AreaDoor, AreaDoor]]) -> AreaDoor:
-    for pair in Connections :
-        if (door in pair) :
-            other = pair[0]
-            if door == other :
-                other = pair[1]
-            return other
-    raise ValueError(f"door {door} is not in Connections {[(c0.name, c1.name) for c0, c1 in Connections]}")
+from .logic_area import area_logic
+from .logic_locations import location_logic
 
 
 def update_area_logic(loadout: Loadout, excluded_door: Optional[AreaDoor] = None) -> None:
     stuck = False  # check if loadout keeps increasing
+    door_pairs = loadout.game.door_pairs
     while not stuck:
         prev_loadout = loadout.copy()
         for _area, paths in area_logic.items():
             for path, access in paths.items():
                 origin, destination = path
                 if area_doors[destination] not in loadout:
-                    other = otherDoor(area_doors[destination], loadout.game.connections)
+                    other = door_pairs.other(area_doors[destination])
                     if area_doors[destination] == excluded_door or other == excluded_door:
                         continue
                     if other in loadout:
@@ -33,7 +25,7 @@ def update_area_logic(loadout: Loadout, excluded_door: Optional[AreaDoor] = None
                     elif (area_doors[origin] in loadout) and access(loadout):
                         loadout.append(area_doors[destination])
                         loadout.append(other)
-        if loadout == prev_loadout :
+        if loadout == prev_loadout:
             stuck = True
 
 

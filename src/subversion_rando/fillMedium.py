@@ -1,7 +1,7 @@
 from typing import Optional
 import random
 
-from .connection_data import AreaDoor
+from .area_rando_types import DoorPairs
 from .fillInterface import FillAlgorithm
 from .item_data import Item, items_unpackable
 from .loadout import Loadout
@@ -34,7 +34,7 @@ class FillMedium(FillAlgorithm):
     [3] extraItemList
     """
 
-    def __init__(self, connections: list[tuple[AreaDoor, AreaDoor]]) -> None:
+    def __init__(self, door_pairs: DoorPairs) -> None:
         self.earlyItemList = [
             Missile,
             Morph,

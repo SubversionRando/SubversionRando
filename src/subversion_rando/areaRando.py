@@ -1,9 +1,9 @@
 from collections import defaultdict, deque
-from collections.abc import Iterable
 import random
 from typing import Optional
 
-from .connection_data import AreaDoor, area_doors_unpackable
+from .area_rando_types import AreaDoor, DoorPairs
+from .connection_data import area_doors_unpackable
 from .romWriter import RomWriter
 
 # RandomizeAreas shuffles the locations and checks that the ship connects to daphne properly
@@ -31,7 +31,7 @@ from .romWriter import RomWriter
 ) = area_doors_unpackable
 
 
-def escape_path(connections: Iterable[tuple[AreaDoor, AreaDoor]]) -> Optional[list[str]]:
+def escape_path(door_pairs: DoorPairs) -> Optional[list[str]]:
     adj: dict[str, dict[str, bool]] = {
         door_a.name: {
             door_b.name: True
@@ -70,7 +70,7 @@ def escape_path(connections: Iterable[tuple[AreaDoor, AreaDoor]]) -> Optional[li
     adj[VulnarCanyonL.name][CanyonPassageR.name] = False  # delete this line if you can
 
     # add all area connections
-    for door_a, door_b in connections:
+    for door_a, door_b in door_pairs.connections():
         adj[door_a.name][door_b.name] = True
         adj[door_b.name][door_a.name] = True
 
@@ -109,7 +109,7 @@ def escape_path(connections: Iterable[tuple[AreaDoor, AreaDoor]]) -> Optional[li
     return list(reversed(reverse_path))
 
 
-def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> list[tuple[AreaDoor, AreaDoor]]:
+def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> DoorPairs:
     """
     force_normal_early forces SunkenNestL to connect to OceanShoreR
     This is necessary for casual major/minor.
@@ -284,13 +284,13 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> list
             # print(item[0][2], item[0][3], " << >> ", item[1][2], item[1][3])
 
         # check for valid escape
-        if escape_path(Connections):
+        if escape_path(DoorPairs(Connections)):
             connected = True
 
-    return Connections
+    return DoorPairs(Connections)
 
 
-def write_area_doors(Connections: list[tuple[AreaDoor, AreaDoor]], romWriter: RomWriter) -> None:
+def write_area_doors(door_pairs: DoorPairs, romWriter: RomWriter) -> None:
 
     # Now I need to read the OG Subversion rom for 12 bytes at address:Node1[1]
     # and write it into the 12 bytes at Node2[0]
@@ -311,7 +311,7 @@ def write_area_doors(Connections: list[tuple[AreaDoor, AreaDoor]], romWriter: Ro
     #         rom.seek(addressReceiving)
     #         receivingBytes=rom.read(12)
     #         node.append(receivingBytes)    #this becomes node[4]
-    for pair in Connections:
+    for pair in door_pairs.connections():
         node1 = pair[0]
         node2 = pair[1]
         romWriter.connect_doors(node1, node2)

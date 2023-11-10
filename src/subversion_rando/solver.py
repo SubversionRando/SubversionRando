@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Optional
 
-from .connection_data import AreaDoor, SunkenNestL, area_doors
+from .area_rando_types import AreaDoor
+from .connection_data import SunkenNestL, area_doors
 from .game import Game
 from .item_data import Items
 from .loadout import Loadout

@@ -1,7 +1,7 @@
 from collections import Counter
 from typing import TYPE_CHECKING, Any, Iterable, Iterator, Optional, Union
 
-from .connection_data import AreaDoor
+from .area_rando_types import AreaDoor
 from .item_data import Item
 from .logic_shortcut import LogicShortcut
 from .trick import Trick

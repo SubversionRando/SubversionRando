@@ -1864,7 +1864,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
                 (SpeedBooster in loadout) and
                 (
                     # This shinespark is easy if vanilla area doors.
-                    ((CanyonPassageR, NorakBrookL) in loadout.game.connections) or
+                    (loadout.game.door_pairs.other(CanyonPassageR) == NorakBrookL) or
                     # If area rando, we'll have to assume that we don't have the space to charge shinespark.
                     ((Tricks.short_charge_4 in loadout) and (Tricks.movement_zoast in loadout))  # stutter 4 tap
                     # TODO: hi jump + a short charge from bottom left that might not be as hard

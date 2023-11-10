@@ -1,5 +1,6 @@
 import pytest
 
+from subversion_rando.area_rando_types import DoorPairs
 from subversion_rando.game import Game, GameOptions
 from subversion_rando.trick import Trick
 from subversion_rando.item_data import Items
@@ -28,7 +29,7 @@ def test_energy_from_tanks() -> None:
 
 def make_game(logic: frozenset[Trick]) -> Game:
     options = GameOptions(logic, False, "D", True)
-    return Game(options, {}, [], 0)
+    return Game(options, {}, DoorPairs([]), 0)
 
 
 def test_energy_req() -> None:

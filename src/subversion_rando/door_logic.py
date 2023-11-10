@@ -1,4 +1,5 @@
-from .connection_data import AreaDoor, area_doors
+from .area_rando_types import AreaDoor
+from .connection_data import area_doors
 from .logic_shortcut import LogicShortcut
 
 

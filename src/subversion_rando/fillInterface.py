@@ -1,7 +1,7 @@
 import abc
 from typing import Optional
 
-from .connection_data import AreaDoor
+from .area_rando_types import DoorPairs
 from .item_data import Item
 from .loadout import Loadout
 from .location_data import Location
@@ -12,7 +12,7 @@ from .location_data import Location
 
 class FillAlgorithm(abc.ABC):
     @abc.abstractmethod
-    def __init__(self, connections: list[tuple[AreaDoor, AreaDoor]]) -> None:
+    def __init__(self, door_pairs: DoorPairs) -> None:
         """ setup, build item pool, etc. """
 
     @abc.abstractmethod
