@@ -1278,6 +1278,11 @@ class FireHive:
         )) and
         (varia_or_hell_run(150) in loadout) and  # with metroid suit
         (electricHyper in loadout)
+
+        # not useful: with speed booster full run speed, coming in from the left,
+        # (need area rando for running space)
+        # you can get past the laser before the laser appears (without metroid suit)
+        # (respin after running off ledge)
     ))
     """ sequestered inferno to the bottom of hive crossways """
 
