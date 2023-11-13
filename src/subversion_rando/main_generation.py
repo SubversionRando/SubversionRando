@@ -258,7 +258,6 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     - small spaceport
     - escape shortcuts
     - objective rando
-    - open escape path
     - skip crash space port
     """
     if game.hint_data:
