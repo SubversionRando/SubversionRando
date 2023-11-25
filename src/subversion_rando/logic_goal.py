@@ -1,4 +1,5 @@
 from .connection_data import area_doors
+from .daphne_gate import get_gate_logic
 from .goals import Goals
 from .item_data import Items
 from .logicCommon import ammo_req, can_bomb, can_use_pbs
@@ -49,7 +50,7 @@ can_win = LogicShortcut(lambda loadout: (
     (area_doors["RockyRidgeTrailL"] in loadout) and
     (Items.GravityBoots in loadout) and
     (Items.Morph in loadout) and
-    (loadout.game.daphne_blocks.logic in loadout) and
+    (get_gate_logic(loadout.game.daphne_blocks) in loadout) and
     (can_bomb(2) in loadout) and  # wrecked main engineering (2 for exit)
     (pinkDoor in loadout) and  # top entrance to MB
     (  # to enter detonator room

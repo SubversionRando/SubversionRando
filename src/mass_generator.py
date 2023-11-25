@@ -14,6 +14,7 @@ from typing import Iterator, Literal, Optional
 
 from subversion_rando.area_rando_types import AreaDoor
 from subversion_rando.game import CypherItems, Game, GameOptions
+from subversion_rando.hint_types import Hint
 from subversion_rando.location_data import Location
 from subversion_rando.logic_presets import casual, expert, medium
 from subversion_rando.main_generation import generate
@@ -36,6 +37,7 @@ def game_source() -> Iterator[Game]:
 
 class GameData:
     """ picklable version of Game """
+    # TODO: use Game.to_jsonable()
 
     logic: list[str]
     all_locations: dict[str, Location]
@@ -46,7 +48,7 @@ class GameData:
     small_spaceport: bool
     escape_shortcuts: bool
     item_placement_spoiler: str = ""
-    hint_data: Optional[tuple[str, bytes]] = None
+    hint_data: Optional[Hint] = None
 
     def __init__(self, g: Game) -> None:
         self.logic = [trick_name_lookup[t] for t in g.options.logic]

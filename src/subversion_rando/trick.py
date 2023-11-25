@@ -1,4 +1,4 @@
-from typing import Iterator, NoReturn
+from typing import Any, Iterator, NoReturn
 
 from .item_data import Item
 
@@ -18,6 +18,13 @@ class Trick:
 
     def __eq__(self, __o: object) -> bool:
         return __o is self
+
+    def __copy__(self) -> "Trick":
+        return self
+
+    def __deepcopy__(self, memo: dict[Any, Any]) -> "Trick":
+        # singletons
+        return self
 
     def __iter__(self) -> Iterator[Item]:
         for item in self._items:

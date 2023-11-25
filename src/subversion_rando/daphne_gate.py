@@ -109,23 +109,25 @@ def get_daphne_gate(options: GameOptions) -> DaphneBlocks:
     if two == "Screw":  # screw
         one, two = two, one
 
+    return DaphneBlocks(one, two)
+
+
+def get_gate_logic(db: DaphneBlocks) -> LogicShortcut:
     two_logic = LogicShortcut(lambda loadout: (
-        (_BLOCK_LOGIC[two] in loadout) and
+        (_BLOCK_LOGIC[db.two] in loadout) and
         (Items.Morph in loadout) and
         (
             (
                 (Items.Speedball in loadout) or
                 ((Tricks.mockball_hard in loadout) and (Tricks.short_charge_2 in loadout))
-            ) if two == "Speed" else True
+            ) if db.two == "Speed" else True
         )
     ))
 
-    gate_logic = LogicShortcut(lambda loadout: (
-        (_BLOCK_LOGIC[one] in loadout) or
+    return LogicShortcut(lambda loadout: (
+        (_BLOCK_LOGIC[db.one] in loadout) or
         (two_logic in loadout)
     ))
-
-    return DaphneBlocks(one, two, gate_logic)
 
 
 def get_air_lock_bytes(db: DaphneBlocks) -> tuple[Patch, Patch, Patch]:

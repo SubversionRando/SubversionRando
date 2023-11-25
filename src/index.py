@@ -10,7 +10,7 @@ from subversion_rando.game import CypherItems, Game, GameOptions
 from subversion_rando.logic_presets import casual, expert, medium, custom_logic_str_from_tricks
 from subversion_rando.romWriter import RomWriter
 from subversion_rando.trick import Trick
-from subversion_rando.trick_data import Tricks, trick_name_lookup
+from subversion_rando.trick_data import Tricks, trick_name_lookup, tricks_from_names
 from subversion_rando.main_generation import generate, get_spoiler, write_rom
 
 Element: Any  # pyscript built-in
@@ -31,7 +31,7 @@ def populate_tricks() -> None:
 
 
 def make_presets() -> list[tuple[str, list[str]]]:
-    tr = [
+    tr: list[tuple[str, list[str]]] = [
         ("casual", [trick_name_lookup[t] for t in casual]),
         ("medium", [trick_name_lookup[t] for t in medium]),
         ("expert", [trick_name_lookup[t] for t in expert]),
@@ -86,7 +86,7 @@ def roll2(params_str: str) -> None:
     print(params_str)
     params: WebParams = json.loads(params_str)
 
-    tricks: frozenset[Trick] = frozenset([getattr(Tricks, trick_name) for trick_name in params["tricks"]])
+    tricks = tricks_from_names(params["tricks"])
 
     # romWriter = RomWriter.fromBlankIps()  # TODO
     options = GameOptions(tricks,

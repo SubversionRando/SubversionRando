@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from .item_data import Items
 from .trick import Trick
 
@@ -168,3 +170,18 @@ trick_name_lookup = {
     for trick_name, trick in vars(Tricks).items()
     if isinstance(trick, Trick)
 }
+
+
+def tricks_to_jsonable(tricks: frozenset[Trick]) -> list[str]:
+    return [
+        trick_name
+        for trick, trick_name in trick_name_lookup.items()
+        if trick in tricks
+    ]
+
+
+def tricks_from_names(tricks: Iterable[str]) -> frozenset[Trick]:
+    return frozenset([
+        getattr(Tricks, trick_name)
+        for trick_name in tricks
+    ])

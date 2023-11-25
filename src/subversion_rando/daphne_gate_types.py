@@ -1,8 +1,5 @@
 from dataclasses import dataclass
-from typing import Literal, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .logic_shortcut import LogicShortcut
+from typing import Literal
 
 
 Block = tuple[int, int, int]
@@ -25,4 +22,3 @@ BlockKey = Literal[
 class DaphneBlocks:
     one: BlockKey
     two: BlockKey
-    logic: "LogicShortcut"
