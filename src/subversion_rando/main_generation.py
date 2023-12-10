@@ -254,6 +254,7 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     - randomized wrecked daphne gate
     - lower water in Norak Brook
     - rotate save files
+    - start with all maps
     - always show items on map
     - small spaceport
     - escape shortcuts
@@ -360,20 +361,40 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     # in the FX (18ea0) of the State Headers of Norak Brook (8be5)
     romWriter.writeBytes(0x18ea2, b'\xbb')  # changed from a7
 
-    # rotate save files
-    romWriter.writeBytes(
-        0xff60,          # some empty space
-        b'\xad\x52\x09'  # lda $0952  # save slot
-        b'\xc9\x02\x00'  # cmp #$0002
-        b'\x30\x03'      # bmi 03
-        b'\xa9\xff\xff'  # lda #$ffff
-        b'\x1a'          # inc
-        b'\x8d\x52\x09'  # sta $0952
-        b'\x4c\x35\xef'  # jmp $ef35  # the place where 818000 originally jumped to
+    # rotate save files and get all maps
+    # (I figured this was an ok combination
+    # because the game is automatically saved when you start a new game,
+    # so if I get all the maps every time I save, I get all the maps at the beginning.)
+    new_save_code = (
+        # get all maps
+        b'\xa9\xff\xff'      # LDA #$FFFF
+        b'\x8d\x89\x07'      # STA $0789    ; have map for current area
+        b'\x8F\x08\xD9\x7E'  # STA $7ED908  ; maps for each region
+        b'\x8F\x0A\xD9\x7E'  # STA $7ED90A
+        b'\x8F\x0C\xD9\x7E'  # STA $7ED90C
+        b'\x8F\x0E\xD9\x7E'  # STA $7ED90E
+
+        # rotate save slots
+        b'\xad\x52\x09'      # lda $0952  # save slot
+        b'\xc9\x02\x00'      # cmp #$0002
+        b'\x30\x03'          # bmi 03
+        b'\xa9\xff\xff'      # lda #$ffff
+        b'\x1a'              # inc
+        b'\x8d\x52\x09'      # sta $0952
+        b'\x4c\x35\xef'      # jmp $ef35  # the place where 818000 originally jumped to
+    )
+    unused_space = 0xff60
+    assert all(b == 0xff for b in romWriter.rom_data[unused_space: unused_space + len(new_save_code)]), (
+        "new code overflow"
     )
     romWriter.writeBytes(
-        0x8000,          # save code
-        b'\x4c\x60\xff'  # jmp that code above  (changed from jmp $ef35)
+        unused_space,
+        new_save_code
+    )
+    new_save_code_address = unused_space.to_bytes(2, "little")
+    romWriter.writeBytes(
+        0x8000,                          # save code
+        b'\x4c' + new_save_code_address  # jmp that code above  (changed from jmp $ef35)
     )
 
     # always show items on map
