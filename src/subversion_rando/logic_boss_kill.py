@@ -10,7 +10,10 @@ class BossKill:
         (missileDamage in loadout) and
         ((Items.Aqua in loadout) or (
             (Tricks.sbj_underwater_w_hjb in loadout) and
-            (Tricks.movement_zoast in loadout)
+            ((Tricks.movement_zoast in loadout) or (
+                (Tricks.movement_moderate in loadout) and
+                (Items.SpaceJump in loadout)
+            ))
         ))
     ))
 
@@ -54,6 +57,18 @@ class BossKill:
             (Items.Aqua in loadout)
         ))
         # TODO: improve this logic
+
+        # joonie did:
+        # varia and aqua, no metroid suit
+        # 1351 energy, 235 ammo (required luck, 250 probably better - need drops for a 3rd crystal flash from draygon)
+        # hypercharge, 6 accel charges
+        # screw, speedball, space jump with a few boosts, speed
+        # no hi jump, no dark visor, no metroid suit
+        #
+        # do 1st crystal flash in draygon's room soon after you enter while waiting for fight to start
+        # (on left side, turrets often have bad aim)
+        # 2nd crystal flash after draygon's dead, waiting for death animation
+        # pull in drops with charge for ammo for 3rd crystal flash on the way out
     ))
 
     dust_torizo = LogicShortcut(lambda loadout: (

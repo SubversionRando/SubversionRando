@@ -323,6 +323,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (missileDamage in loadout) and  # eye door
         (pinkDoor in loadout) and  # 2 pink doors if I don't have (morph and (hjb or aqua))
 
+        (BossKill.kraid in loadout) and
+
         # up to door in kraid's lair
         ((
             (Aqua in loadout) and

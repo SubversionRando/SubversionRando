@@ -1,15 +1,21 @@
 from collections import defaultdict
+import itertools
+from typing import Container
+
 import pytest
 
+from subversion_rando.area_rando_types import DoorPairs
 from subversion_rando.connection_data import SunkenNestL, vanilla_areas, area_doors
+from subversion_rando.fillAssumed import FillAssumed
 from subversion_rando.game import Game, GameOptions
-from subversion_rando.item_data import Items, items_unpackable
+from subversion_rando.item_data import Item, Items, items_unpackable
 from subversion_rando.loadout import Loadout
 from subversion_rando.location_data import Location, pullCSV
 from subversion_rando.logic_goal import can_win
 from subversion_rando.logic_presets import casual, medium, expert
 from subversion_rando.logic_updater import updateLogic
 from subversion_rando.trick import Trick
+from subversion_rando.trick_data import Tricks
 
 # TODO: test that all locations are obtainable with no tricks
 
@@ -21,6 +27,14 @@ def setup(logic: frozenset[Trick]) -> tuple[Game, Loadout]:
     game = Game(options, all_locations, vanilla_areas(), 0)
     loadout = Loadout(game)
     return game, loadout
+
+
+def load_everything_except(loadout: Loadout, excluded_items: Container[Item]) -> None:
+    """ fill `loadout` with all items except `excluded_items` """
+    fa = FillAssumed(DoorPairs([]))
+    for item in itertools.chain(*fa.itemLists):
+        if item not in excluded_items:
+            loadout.append(item)
 
 
 def test_start_logic() -> None:
@@ -921,6 +935,81 @@ def test_no_bomb_blocks_or_speed(logic: frozenset[Trick]) -> None:
             assert found[loc_name], f"expert logic thinks bomb/speed blocks are needed for {loc_name}"
 
 
+def test_penumbra_expert() -> None:
+    game, loadout = setup(expert)
+    loadout.append(area_doors["OceanShoreR"])
+    loadout.append(Items.Missile)
+    loadout.append(Items.GravityBoots)
+    loadout.append(Items.Morph)
+    loadout.append(Items.HiJump)
+    loadout.append(Items.PowerBomb)
+
+    updateLogic(game.all_locations.values(), loadout)
+
+    assert not game.all_locations["Shrine Of The Penumbra"]["inlogic"]
+
+    loadout.append(Items.Speedball)
+
+    updateLogic(game.all_locations.values(), loadout)
+
+    assert game.all_locations["Shrine Of The Penumbra"]["inlogic"]
+
+
+def test_penumbra_medium() -> None:
+    game, loadout = setup(medium)
+    loadout.append(area_doors["OceanShoreR"])
+    loadout.append(Items.Missile)
+    loadout.append(Items.GravityBoots)
+    loadout.append(Items.Morph)
+    loadout.append(Items.HiJump)
+    loadout.append(Items.PowerBomb)
+    loadout.append(Items.Speedball)
+
+    updateLogic(game.all_locations.values(), loadout)
+
+    # sbj and movement_zoast not in logic
+    assert not game.all_locations["Shrine Of The Penumbra"]["inlogic"]
+
+
+def test_penumbra_sbj_no_zoast() -> None:
+    logic = medium.union({Tricks.sbj_underwater_w_hjb})
+    game, loadout = setup(logic)
+    loadout.append(area_doors["OceanShoreR"])
+    loadout.append(Items.Missile)
+    loadout.append(Items.GravityBoots)
+    loadout.append(Items.Morph)
+    loadout.append(Items.HiJump)
+    loadout.append(Items.PowerBomb)
+    loadout.append(Items.Speedball)
+
+    updateLogic(game.all_locations.values(), loadout)
+
+    # movement_zoast not in logic
+    assert not game.all_locations["Shrine Of The Penumbra"]["inlogic"]
+
+    loadout.append(Items.SpaceJump)
+
+    updateLogic(game.all_locations.values(), loadout)
+
+    assert game.all_locations["Shrine Of The Penumbra"]["inlogic"]
+
+
+def test_penumbra_casual() -> None:
+    game, loadout = setup(medium)
+    loadout.append(area_doors["OceanShoreR"])
+    load_everything_except(loadout, {Items.Aqua})
+
+    updateLogic(game.all_locations.values(), loadout)
+
+    # casual can't do without aqua suit
+    assert not game.all_locations["Shrine Of The Penumbra"]["inlogic"]
+
+    loadout.append(Items.Aqua)
+
+    updateLogic(game.all_locations.values(), loadout)
+    assert game.all_locations["Shrine Of The Penumbra"]["inlogic"]
+
+
 # TODO: places that I can go with no bombs, pbs, or screw (doesn't include colosseum)
 # places that I can go with screw, no bombs, pbs (includes colosseum)
 
@@ -939,5 +1028,4 @@ def test_no_bomb_blocks_or_speed(logic: frozenset[Trick]) -> None:
 
 
 if __name__ == "__main__":
-    # test_hard_required_items()
-    test_no_bomb_blocks_or_speed(expert)
+    test_penumbra_sbj_no_zoast()
