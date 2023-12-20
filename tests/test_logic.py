@@ -1010,6 +1010,41 @@ def test_penumbra_casual() -> None:
     assert game.all_locations["Shrine Of The Penumbra"]["inlogic"]
 
 
+def test_hive_entrance_return() -> None:
+    game, loadout = setup(expert)
+    loadout.append(area_doors["VulnarDepthsElevatorER"])
+    load_everything_except(loadout, {
+        Items.Varia,
+        Items.MetroidSuit,
+        Items.Aqua,
+        Items.Wave,
+        Items.Ice,
+        Items.Charge,
+        Items.SpeedBooster,
+        Items.Energy,
+        Items.PowerBomb
+    })
+    for _ in range(6):
+        loadout.append(Items.Energy)
+
+    updateLogic(game.all_locations.values(), loadout)
+
+    # can't get in to crossway - don't have enough energy to return to entrance
+    assert not game.all_locations["Crossway Cache"]["inlogic"]
+    assert not game.all_locations["Infested Passage"]["inlogic"]
+    assert not game.all_locations["Hive Main Chamber"]["inlogic"]
+
+    for _ in range(6):
+        loadout.append(Items.Energy)
+
+    updateLogic(game.all_locations.values(), loadout)
+
+    # still can't get in to crossway - but now have enough energy to return to entrance
+    assert not game.all_locations["Crossway Cache"]["inlogic"]
+    assert game.all_locations["Infested Passage"].get("inlogic")
+    assert game.all_locations["Hive Main Chamber"]["inlogic"]
+
+
 # TODO: places that I can go with no bombs, pbs, or screw (doesn't include colosseum)
 # places that I can go with screw, no bombs, pbs (includes colosseum)
 
@@ -1028,4 +1063,4 @@ def test_penumbra_casual() -> None:
 
 
 if __name__ == "__main__":
-    test_penumbra_sbj_no_zoast()
+    test_hive_entrance_return()

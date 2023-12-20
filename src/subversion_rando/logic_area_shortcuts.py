@@ -1335,6 +1335,7 @@ class FireHive:
         # I have to turn around and come back,
         # which means double the hell run energy cost
         ((
+            (icePod in loadout) and
             (FireHive.crossways in loadout) and
             (varia_or_hell_run(550, heat_and_metroid_suit_not_required=True) in loadout)
         ) or (
