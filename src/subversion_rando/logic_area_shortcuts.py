@@ -1417,6 +1417,10 @@ class FireHive:
         # there's another big heated room on the other side of this area door.
         # And there's also the complexity of whether I can get to the farm in crossways.
         # So I'm just saying no hell runs through this passage.
+
+        # You can get up hive burrow without morph, using xray climb,
+        # but I couldn't find a safe super sink down without morph.
+        # (There's one that always fell out of bounds every time I tried it.)
     ))
     """ hive burrow left door to infested passage (varia and super sink required) """
 
