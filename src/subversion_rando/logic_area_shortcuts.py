@@ -1307,10 +1307,13 @@ class FireHive:
         ) or (
             (Tricks.xray_climb in loadout)  # right side, because slope on the left stops it
         )) and
-        (Morph in loadout) and  # required for either bottom or east hive tunnel
+        ((Morph in loadout) or (
+            # right above farm
+            loadout.has_all(Tricks.morphless_tunnel_crawl, Tricks.super_sink_easy)
+        )) and
         (GravityBoots in loadout)
     ))
-    """ top of hive crossways """
+    """ hive crossways up and down """
 
     crosswaysToCourtyard = LogicShortcut(lambda loadout: (
         # east hive tunnel
