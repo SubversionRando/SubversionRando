@@ -51,18 +51,18 @@ def fill_major_minor(game: Game) -> bool:
     #     game.all_locations["Shrine Of The Animate Spark"]["item"] = Items.Energy
     #     game.all_locations["Enervation Chamber"]["item"] = Items.SmallAmmo
     #     # TODO: remove 1 small ammo and 1 etank from item pools
-    #     game.item_placement_spoiler += f"Shrine Of The Animate Spark - - - {Items.Energy[0]}\n"
-    #     game.item_placement_spoiler += f"Enervation Chamber - - - {Items.SmallAmmo[0]}\n"
+    #     game.item_placement_spoiler += f"Shrine Of The Animate Spark - - - {Items.Energy.name}\n"
+    #     game.item_placement_spoiler += f"Enervation Chamber - - - {Items.SmallAmmo.name}\n"
 
     locs = available_major_locations(game)
     loc = random.choice(locs)
     loc["item"] = Items.Missile
-    game.item_placement_spoiler += f"{loc['fullitemname']} - - - {Items.Missile[0]}\n"
+    game.item_placement_spoiler += f"{loc['fullitemname']} - - - {Items.Missile.name}\n"
 
     locs = available_major_locations(game)
     loc = random.choice(locs)
     loc["item"] = Items.GravityBoots
-    game.item_placement_spoiler += f"{loc['fullitemname']} - - - {Items.GravityBoots[0]}\n"
+    game.item_placement_spoiler += f"{loc['fullitemname']} - - - {Items.GravityBoots.name}\n"
 
     prog_items: list[Item] = sorted(unique_items)  # sort because iterating through set will not be the same every time
     assert len(prog_items) == len(set(prog_items)), "duplicate majors?"
@@ -100,7 +100,7 @@ def fill_major_minor(game: Game) -> bool:
                 loc["item"] = None
                 fail_count += 1
                 continue
-            game.item_placement_spoiler += f"{loc['fullitemname']} - - - {item[0]}\n"
+            game.item_placement_spoiler += f"{loc['fullitemname']} - - - {item.name}\n"
             # print(f"DEBUG: {item[0]} placed at {loc['fullitemname']}")
             # print(f"  then: {[lo['fullitemname'] for lo in after_locs]}")
             major_items[item] -= 1
@@ -111,7 +111,7 @@ def fill_major_minor(game: Game) -> bool:
                 continue
             loc = random.choice(locs)
             loc["item"] = item
-            game.item_placement_spoiler += f"{loc['fullitemname']} - - - {item[0]}\n"
+            game.item_placement_spoiler += f"{loc['fullitemname']} - - - {item.name}\n"
         prog_items.remove(item)
     if len(prog_items):
         print(f"MM failed with {len(prog_items)} remaining")
@@ -127,7 +127,7 @@ def fill_major_minor(game: Game) -> bool:
 
     for i in range(len(extra_items)):
         locs[i]["item"] = extra_items[i]
-        game.item_placement_spoiler += f"{locs[i]['fullitemname']} - - - {extra_items[i][0]}\n"
+        game.item_placement_spoiler += f"{locs[i]['fullitemname']} - - - {extra_items[i].name}\n"
 
     completable, _, accessible_locations = solve(game)
     done = completable and len(accessible_locations) == len(game.all_locations)

@@ -93,7 +93,7 @@ class Game:
             assert isinstance(loc, dict)
             item = loc["item"]
             if item:
-                item_name = item[0]
+                item_name = item.name
                 assert isinstance(item_name, str)
                 non_loc = cast(dict[str, Any], loc)
                 non_loc["item"] = item_name

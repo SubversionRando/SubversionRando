@@ -296,12 +296,12 @@ def test_hard_required_items() -> None:
 
             if can_win in loadout:
                 assert excluded_item not in _hard_required_items[logic_name], \
-                    f"{excluded_item[0]} in {logic_name} hard required items"
-                print(f"{excluded_item[0]} not")
+                    f"{excluded_item.name} in {logic_name} hard required items"
+                print(f"{excluded_item.name} not")
             else:
                 assert excluded_item in _hard_required_items[logic_name], \
-                    f"{excluded_item[0]} missing from {logic_name} hard required items"
-                print(f"{excluded_item[0]}  - - - - hard required")
+                    f"{excluded_item.name} missing from {logic_name} hard required items"
+                print(f"{excluded_item.name}  - - - - hard required")
 
 
 _possible_places = {
@@ -344,7 +344,7 @@ _possible_places = {
 @pytest.mark.parametrize("logic", (casual, medium, expert))
 def test_restrictive_item_locations(logic: frozenset[Trick]) -> None:
     for excluded_item in _possible_places:
-        print(f"  -- {excluded_item[0]}")
+        print(f"  -- {excluded_item.name}")
         game, loadout = setup(logic)
 
         for item in items_unpackable:
@@ -366,7 +366,7 @@ def test_restrictive_item_locations(logic: frozenset[Trick]) -> None:
                 if loc["inlogic"]:
                     found[loc_name] = True
                     assert loc_name in _possible_places[excluded_item], \
-                        f"logic thinks {excluded_item[0]} can be at {loc_name}"
+                        f"logic thinks {excluded_item.name} can be at {loc_name}"
                     print(loc_name)
 
         this_loadout()
@@ -377,7 +377,7 @@ def test_restrictive_item_locations(logic: frozenset[Trick]) -> None:
 
         for loc_name in _possible_places[excluded_item]:
             assert found[loc_name], \
-                f"logic thinks {excluded_item[0]} can't be at {loc_name}"
+                f"logic thinks {excluded_item.name} can't be at {loc_name}"
 
 
 _possible_places_area = {
@@ -568,7 +568,7 @@ def test_restrictive_item_locations_area_rando(logic: frozenset[Trick]) -> None:
     logic_name = 'casual' if logic is casual else ('medium' if logic is medium else 'expert')
     print(f" - {logic_name}")
     for excluded_item in _possible_places_area[logic_name]:
-        print(f"  -- {excluded_item[0]}")
+        print(f"  -- {excluded_item.name}")
         game, loadout = setup(logic)
 
         for item in items_unpackable:
@@ -595,13 +595,13 @@ def test_restrictive_item_locations_area_rando(logic: frozenset[Trick]) -> None:
                 if loc["inlogic"]:
                     found[loc_name] = True
                     assert loc_name in _possible_places_area[logic_name][excluded_item], \
-                        f"logic thinks {excluded_item[0]} can be at {loc_name} in {logic_name}"
+                        f"logic thinks {excluded_item.name} can be at {loc_name} in {logic_name}"
                     print(loc_name)
 
         this_loadout()
 
         for loc_name in _possible_places_area[logic_name][excluded_item]:
-            assert found[loc_name], f"logic thinks {excluded_item[0]} can't be at {loc_name}"
+            assert found[loc_name], f"logic thinks {excluded_item.name} can't be at {loc_name}"
 
 
 _no_bombing = frozenset([

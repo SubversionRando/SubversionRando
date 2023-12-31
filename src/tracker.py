@@ -160,7 +160,7 @@ class Tracker:
             self.game_state_locations[loc_name]["item"] = None
             # save undo information
             self.undo_stack.append((self.game_state_locations[loc_name], item))
-            print(f"picked up {item[0]} from {loc_name}")
+            print(f"picked up {item.name} from {loc_name}")
         else:
             print(f"There was no item in {loc_name}")
         if loc_name not in spacePortLocs:
@@ -202,7 +202,7 @@ class Tracker:
             loc, item = self.undo_stack.pop()
             loc["item"] = item
             self.loadout.contents[item] -= 1
-            print(f"put {item[0]} back in {loc['fullitemname']}")
+            print(f"put {item.name} back in {loc['fullitemname']}")
         else:
             print("nothing to undo")
 

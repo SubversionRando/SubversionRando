@@ -112,7 +112,7 @@ def choose_hint_location(game: Game) -> None:
         item = game.all_locations[sphere_loc]["item"]
         saved_items[sphere_loc] = item
         game.all_locations[sphere_loc]["item"] = None
-        # print(f"removing {item[0] if item else 'None'}")
+        # print(f"removing {item.name if item else 'None'}")
 
     _, _, restricted_locs = solve(game)
 

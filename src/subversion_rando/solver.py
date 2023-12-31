@@ -70,7 +70,7 @@ def solve(game: Game,
                 item = loc['item']
                 if item:
                     loadout.append(item)
-                    play_through.spheres[-1].pickups[loc_name] = item[0]
+                    play_through.spheres[-1].pickups[loc_name] = item.name
                 used_locs.add(loc_name)
         # remove used locations
         unused_locations = [loc for loc in unused_locations if loc['fullitemname'] not in used_locs]
@@ -113,7 +113,7 @@ def solve(game: Game,
                 item = loc['item']
                 if item:
                     loadout.append(item)
-                    play_through.spheres[-1].pickups[loc_name] = item[0]
+                    play_through.spheres[-1].pickups[loc_name] = item.name
                 used_locs.add(loc_name)
         # remove used locations
         unused_locations = [loc for loc in unused_locations if loc['fullitemname'] not in used_locs]

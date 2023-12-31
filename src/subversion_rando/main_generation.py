@@ -44,11 +44,11 @@ ORIGINAL_ROM_NAME = "Subversion12.sfc"
 
 def plmidFromHiddenness(itemArray: Item, hiddenness: str) -> bytes:
     if hiddenness == "open":
-        plmid = itemArray[1]
+        plmid = itemArray.visible
     elif hiddenness == "chozo":
-        plmid = itemArray[2]
+        plmid = itemArray.chozo
     else:
-        plmid = itemArray[3]
+        plmid = itemArray.hidden
     return plmid
 
 
@@ -62,7 +62,7 @@ def write_location(romWriter: RomWriter, location: Location) -> None:
     # TODO: support locations with no items?
     plmid = plmidFromHiddenness(item, location['hiddenness'])
     for address in location['locids']:
-        romWriter.writeItem(address, plmid, item[4])
+        romWriter.writeItem(address, plmid, item.ammo_qty)
     for address in location['alternateroomlocids']:
         if location['alternateroomdifferenthiddenness'] == "":
             # most of the alt rooms go here, having the same item hiddenness
@@ -70,7 +70,7 @@ def write_location(romWriter: RomWriter, location: Location) -> None:
             plmid_altroom = plmid
         else:
             plmid_altroom = plmidFromHiddenness(item, location['alternateroomdifferenthiddenness'])
-        romWriter.writeItem(address, plmid_altroom, item[4])
+        romWriter.writeItem(address, plmid_altroom, item.ammo_qty)
 
     # set map dot size
     table_entry = map_icon_data[location["plmparamlo"]]
@@ -486,7 +486,7 @@ def required_locations_spoiler(game: Game) -> str:
     req_locs, _ = hard_required_locations(game)
     for loc_name in req_locs:
         item = game.all_locations[loc_name]['item']
-        item_name = item[0] if item else "Nothing"
+        item_name = item.name if item else "Nothing"
         spoiler_text += f"  {loc_name}  --  {item_name}\n"
     return spoiler_text
 
@@ -526,8 +526,8 @@ def assumed_fill(game: Game) -> bool:
         game.all_locations["Enervation Chamber"]["item"] = Items.SmallAmmo
         fill_algorithm.extra_items.remove(Items.SmallAmmo)
         fill_algorithm.extra_items.remove(Items.SmallAmmo)
-        game.item_placement_spoiler += f"Shrine Of The Animate Spark - - - {Items.SmallAmmo[0]}\n"
-        game.item_placement_spoiler += f"Enervation Chamber - - - {Items.SmallAmmo[0]}\n"
+        game.item_placement_spoiler += f"Shrine Of The Animate Spark - - - {Items.SmallAmmo.name}\n"
+        game.item_placement_spoiler += f"Enervation Chamber - - - {Items.SmallAmmo.name}\n"
 
     if game.options.fill_choice == "MM":  # major/minor
         first, second = Items.Missile, Items.GravityBoots
@@ -537,8 +537,8 @@ def assumed_fill(game: Game) -> bool:
         game.all_locations["Subterranean Burrow"]["item"] = second
         fill_algorithm.prog_items.remove(first)
         fill_algorithm.prog_items.remove(second)
-        game.item_placement_spoiler += f"Torpedo Bay - - - {first[0]}\n"
-        game.item_placement_spoiler += f"Subterranean Burrow - - - {second[0]}\n"
+        game.item_placement_spoiler += f"Torpedo Bay - - - {first.name}\n"
+        game.item_placement_spoiler += f"Subterranean Burrow - - - {second.name}\n"
 
     n_items_to_place = fill_algorithm.count_items_remaining()
     assert n_items_to_place <= len(game.all_locations), \
@@ -554,9 +554,9 @@ def assumed_fill(game: Game) -> bool:
             break
         placeLocation, placeItem = placePair
         # if placeItem in {Items.Morph, Items.Bombs, Items.Speedball, Items.PowerBomb}:
-        #     print(f"DEBUG: placing {placeItem[0]} in {placeLocation['fullitemname']}")
+        #     print(f"DEBUG: placing {placeItem.name} in {placeLocation['fullitemname']}")
         placeLocation["item"] = placeItem
-        game.item_placement_spoiler += f"{placeLocation['fullitemname']} - - - {placeItem[0]}\n"
+        game.item_placement_spoiler += f"{placeLocation['fullitemname']} - - - {placeItem.name}\n"
 
         if fill_algorithm.count_items_remaining() == 0:
             # Normally, assumed fill will always make a valid playthrough,
@@ -632,8 +632,8 @@ def forward_fill(game: Game) -> bool:
         loadout.append(placeItem)
         if not ((placeLocation['fullitemname'] in spacePortLocs) or (Items.spaceDrop in loadout)):
             loadout.append(Items.spaceDrop)
-        game.item_placement_spoiler += f"{placeLocation['fullitemname']} - - - {placeItem[0]}\n"
-        # print(placeLocation['fullitemname']+placeItem[0])
+        game.item_placement_spoiler += f"{placeLocation['fullitemname']} - - - {placeItem.name}\n"
+        # print(placeLocation['fullitemname']+placeItem.name)
 
         if availableLocations == [] and unusedLocations == []:
             print("Item placements successful.")

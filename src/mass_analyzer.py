@@ -35,7 +35,7 @@ def main() -> None:
 
         item = g.all_locations["Docking Port 4"]["item"]
         assert item
-        item_counts[item[0]] += 1
+        item_counts[item.name] += 1
 
     for b, c in loc_counts.most_common():
         print(f"{b}: {c}")
