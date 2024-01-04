@@ -1913,7 +1913,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (railAccess in loadout) and
         (SkyWorld.anticipation in loadout) and
         (varia_or_hell_run(98) in loadout) and
-        ((Speedball in loadout) or (Bombs in loadout) or (
+        ((Speedball in loadout) or (Tricks.infinite_bomb_jump in loadout) or (
             loadout.has_all(Tricks.morph_jump_3_tile, Tricks.morph_jump_4_tile)
         ) or (
             loadout.has_all(Tricks.morph_jump_4_tile, can_bomb(6))

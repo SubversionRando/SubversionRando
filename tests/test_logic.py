@@ -1048,6 +1048,68 @@ def test_hive_entrance_return() -> None:
     assert game.all_locations["Hive Main Chamber"]["inlogic"]
 
 
+speedball_locations = {
+    casual: frozenset([
+        "Eddy Channels",
+        "Archives: Back",
+        "Archives: Front",
+        "Sensor Maintenance: Bottom",
+        "Sensor Maintenance: Top",
+        "Trophobiotic Chamber",
+        "Warrior Shrine: Top",
+        "Warrior Shrine: Middle",
+        "West Spore Field",
+        "Central Corridor: Left",
+        "Sitting Room",
+        "Summit Landing",
+        "Enervation Chamber",
+        "Shrine Of The Animate Spark",
+    ]),
+    medium: frozenset([
+        "Eddy Channels",
+        "Archives: Back",
+        "Archives: Front",
+        "Sensor Maintenance: Bottom",
+        "Sensor Maintenance: Top",
+        "Trophobiotic Chamber",
+        "Warrior Shrine: Top",
+        "Warrior Shrine: Middle",
+        "Central Corridor: Left",
+        "Enervation Chamber",
+        "Shrine Of The Animate Spark",
+    ]),
+    expert: frozenset([
+        "Archives: Back",
+        "Central Corridor: Left",
+        "Enervation Chamber",
+        "Shrine Of The Animate Spark",
+    ]),
+}
+""" locations that hard require speedball """
+
+
+@pytest.mark.parametrize("logic", (casual, medium, expert))
+def test_speedball_locations(logic: frozenset[Trick]) -> None:
+    game, loadout = setup(logic)
+    loadout.append(area_doors["SunkenNestL"])
+    load_everything_except(loadout, {
+        Items.Speedball
+    })
+
+    updateLogic(game.all_locations.values(), loadout)
+
+    for loc in game.all_locations.values():
+        if not loc["inlogic"]:
+            print(loc["fullitemname"])
+            assert loc["fullitemname"] in speedball_locations[logic], (
+                f"{len(logic)=} thinks {Items.Speedball.name} is required for {loc['fullitemname']}"
+            )
+        else:
+            assert loc["fullitemname"] not in speedball_locations[logic], (
+                f"{len(logic)=} thinks {Items.Speedball.name} is not required for {loc['fullitemname']}"
+            )
+
+
 # TODO: places that I can go with no bombs, pbs, or screw (doesn't include colosseum)
 # places that I can go with screw, no bombs, pbs (includes colosseum)
 
@@ -1066,4 +1128,4 @@ def test_hive_entrance_return() -> None:
 
 
 if __name__ == "__main__":
-    test_hive_entrance_return()
+    test_speedball_locations(casual)
