@@ -425,6 +425,41 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
         romWriter.writeBytes(0x07E06B, b'\x7D\xCB\xC6')  # change level data pointer
 
 
+def patch_major_minor_icons_before_collect(romWriter: RomWriter) -> None:
+    """
+    - show the large filled in circle for an uncollected major item
+    - show the large unfilled circle for am uncollected minor item
+    - show small dots for all collected items
+    """
+    # MapColors.asm
+    # .collected  BRA branch always to small dot
+    romWriter.writeBytes(0xdd567, b"\x80")  # BEQ f0 -> BRA 80
+    # new code for .not_collected
+    romWriter.writeBytes(
+        0xdd578,
+        b"\x80\x05\xea\xea\xea\xea\xea"  # fill existing space with BRA NOP
+        b"\xbd\x06\x00"  # LDA $0006,X          ; minor or major
+        b"\xf0\x0b"      # BEQ +                ; if minor, goto after this
+        # else major item
+        b"\x20\xb9\xd5"  # JSR GetTilemapIndex
+        b"\x20\x8c\xd8"  # JSR LoadTile4bpp
+        b"\x20\xe0\xd8"  # JSR DrawTilePlus
+        b"\x80\x09"      # BRA ++               ; jump over minor
+    )
+    # .dot (collected)  BRA branch always to small dot
+    romWriter.writeBytes(0xdd634, b"\x80")  # BEQ f0 -> BRA 80
+    # .circle (not collected)  new code
+    romWriter.writeBytes(
+        0xdd640,
+        b"\x80\x0b\xea\xea\xea\xea\xea\xea\xea\xea\xea\xea\xea"  # fill existing space with BRA NOP
+        b"\xbd\x06\x00"  # LDA $0006,X          ; minor or major
+        b"\xf0\x05"      # BEQ +                ; if minor, goto after this
+        # else major item
+        b"\xa9\x00\x08"  # LDA #$0800           ; major big dot
+        b"\x80\x03"      # BRA ++               ; jump over minor
+    )
+
+
 def get_spoiler(game: Game) -> str:
     """ the text in the spoiler file """
 
