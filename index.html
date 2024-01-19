@@ -90,6 +90,15 @@
         </select> 
     </div>
     <div>
+        Item Markers:
+        <label title="Items are marked on the map as large hollow dots.">
+            <input type="radio" name="item_markers" value="Simple" checked> Simple
+        </label>
+        <label title="Unique items are marked with large solid dots. Ammo tanks are marked with small dots. Everything else is marked with large hollow dots.">
+            <input type="radio" name="item_markers" value="ThreeTiered"> 3-Tiered
+        </label>
+    </div>
+    <div>
         <label for="objective-rando"
                title="Accessing map stations will reveal one of the objectives. The objectives are tracked in the Logbook Mission page. &#013; &#013;Crashing the space port is not required unless it is chosen as one of the objectives. &#013;(The GFS Daphne will be both docked at the space port and crashed on the planet at the same time.) &#013; &#013;The Power Bomb requirement to get to the wrecked Weapon Control Center is also removed."
         >randomized objectives</label>
@@ -136,6 +145,7 @@
             "subversion_rando/hints.py",
             "subversion_rando/ips.py",
             "subversion_rando/item_data.py",
+            "subversion_rando/item_marker.py",
             "subversion_rando/loadout.py",
             "subversion_rando/location_data.py",
             "subversion_rando/location_weights.py",

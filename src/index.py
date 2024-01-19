@@ -7,6 +7,7 @@ from typing import Any, Literal, Optional, TypedDict
 import js  # type: ignore
 
 from subversion_rando.game import CypherItems, Game, GameOptions
+from subversion_rando.item_marker import ItemMarkersOption
 from subversion_rando.logic_presets import casual, expert, medium, custom_logic_str_from_tricks
 from subversion_rando.romWriter import RomWriter
 from subversion_rando.trick import Trick
@@ -52,6 +53,7 @@ class WebParams(TypedDict):
     cypher: str
     tricks: list[str]
     daphne_gate: bool
+    item_markers: Literal["Simple", "ThreeTiered"]
     objective_rando: int
     skip_crash_space_port: bool
 
@@ -96,6 +98,7 @@ def roll2(params_str: str) -> None:
                           bool(params["escape_shortcuts"]),
                           getattr(CypherItems, params["cypher"]),
                           bool(params["daphne_gate"]),
+                          getattr(ItemMarkersOption, params["item_markers"]),
                           int(params["objective_rando"]),
                           bool(params["skip_crash_space_port"]))
     print(options)

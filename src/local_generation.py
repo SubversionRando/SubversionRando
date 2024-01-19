@@ -9,6 +9,7 @@
 # It's all case-sensitive. ("True" or "False", not "true" or "false")
 
 from subversion_rando.game import CypherItems, GameOptions
+from subversion_rando.item_marker import ItemMarkersOption
 from subversion_rando.main_generation import generate, write_rom, write_spoiler_file
 from subversion_rando.trick_data import Tricks
 
@@ -66,6 +67,7 @@ options = GameOptions(
     escape_shortcuts=True,
     cypher_items=CypherItems.SmallAmmo,  # SmallAmmo Anything NotRequired
     daphne_gate=True,
+    item_markers=ItemMarkersOption.ThreeTiered,
     objective_rando=5
 )
 

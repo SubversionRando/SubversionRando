@@ -213,6 +213,11 @@ function setup_roll_button() {
         const objectives_slider = document.getElementById("objective-count");
         const skip_crash_space_port_box = document.getElementById("skip-crash-space-port");
 
+        const item_marker_radios = document.getElementsByName("item_markers");
+        // TODO: find out whether this Array.from is needed - item_marker_radios.find(button => button.checked);
+        const item_marker_selected = Array.from(item_marker_radios).find(button => button.checked);
+        const item_markers = item_marker_selected ? item_marker_selected.value : "Simple";
+
         const objectives = objectives_box.checked ? objectives_slider.value : "0";
 
         const params = {
@@ -223,6 +228,7 @@ function setup_roll_button() {
             "cypher": cypher_select.value,
             "tricks": activated_trick_names,
             "daphne_gate": daphne_box.checked,
+            "item_markers": item_markers,
             "objective_rando": objectives,
             "skip_crash_space_port": skip_crash_space_port_box.checked
         };

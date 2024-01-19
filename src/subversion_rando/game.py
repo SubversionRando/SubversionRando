@@ -9,6 +9,9 @@ from .daphne_gate_types import DaphneBlocks
 from .goals import Event, Goals
 from .hint_types import Hint, from_jsonable as hint_from_jsonable, to_jsonable as hint_to_jsonable
 from .item_data import Item, all_items
+from .item_marker import (
+    ItemMarkersOption, LocationToMarker, make_item_markers, markers_from_jsonable, markers_to_jsonable
+)
 from .location_data import Location
 from .logic_shortcut import LogicShortcut
 from .trick_data import tricks_from_names, tricks_to_jsonable
@@ -22,6 +25,10 @@ def door_factory() -> "dict[AreaDoor, Union[Item, LogicShortcut]]":
 
 def daphne_factory() -> DaphneBlocks:
     return DaphneBlocks("Screw", "Screw")
+
+
+def markers_factory() -> LocationToMarker:
+    return make_item_markers(ItemMarkersOption.Simple, [])
 
 
 class CypherItems(Enum):
@@ -40,6 +47,7 @@ class GameOptions:
     escape_shortcuts: bool = False
     cypher_items: CypherItems = CypherItems.NotRequired
     daphne_gate: bool = False
+    item_markers: ItemMarkersOption = ItemMarkersOption.Simple
     objective_rando: int = 0
     _skip_crash_option_set: bool = False
     """ protected because objective rando auto-enables this """
@@ -52,6 +60,7 @@ class GameOptions:
         dct = asdict(self)
         dct["logic"] = tricks_to_jsonable(dct["logic"])
         dct["cypher_items"] = self.cypher_items.name
+        dct["item_markers"] = self.item_markers.name
         return dct
 
     @staticmethod
@@ -59,6 +68,7 @@ class GameOptions:
         options = GameOptions(**d)
         options.logic = tricks_from_names(d["logic"])
         options.cypher_items = getattr(CypherItems, d["cypher_items"])
+        options.item_markers = getattr(ItemMarkersOption, d["item_markers"])
         return options
 
 
@@ -70,6 +80,7 @@ class Game:
     door_pairs: DoorPairs
     seed: int
     door_data: "Mapping[AreaDoor, Union[Item, LogicShortcut]]" = field(default_factory=door_factory)
+    item_markers: LocationToMarker = field(default_factory=markers_factory)
     item_placement_spoiler: str = ""
     hint_data: Optional[Hint] = None
     daphne_blocks: DaphneBlocks = field(default_factory=daphne_factory)
@@ -83,6 +94,7 @@ class Game:
         # TODO: I think door_data should be stored differently.
         # (same with DaphneBlocks - I don't like storing LogicShortcut in Game.
         #  It should store a key to a LogicShortcut stored somewhere else.)
+        dct["item_markers"] = markers_to_jsonable(self.item_markers)
         dct["hint_data"] = hint_to_jsonable(self.hint_data)
         dct["daphne_blocks"] = asdict(self.daphne_blocks)
         dct["goals"] = asdict(self.goals)
@@ -106,6 +118,7 @@ class Game:
         game.options = GameOptions.from_jsonable(dct["options"])
         game.door_pairs = DoorPairs.from_jsonable(dct["door_pairs"])
         game.door_data = door_factory()
+        game.item_markers = markers_from_jsonable(dct["item_markers"])
         game.hint_data = hint_from_jsonable(dct["hint_data"])
         game.daphne_blocks = DaphneBlocks(**(dct["daphne_blocks"]))
         game.goals = Goals(**(dct["goals"]))

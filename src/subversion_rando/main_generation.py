@@ -18,7 +18,8 @@ from .fillInterface import FillAlgorithm
 from .game import CypherItems, Game, GameOptions
 from .goal import generate_goals, goal_spoiler, write_goals
 from .hints import choose_hint_location, get_hint_spoiler_text, write_hint_to_rom
-from .item_data import Item, Items,  unique_items
+from .item_data import Item, Items
+from .item_marker import ItemMarkersOption, make_item_markers, write_item_markers
 from .loadout import Loadout
 from .location_data import Location, pullCSV, spacePortLocs
 from .logic_presets import casual, expert, medium
@@ -28,7 +29,6 @@ from . import fillMajorMinor
 from . import fillAssumed
 from . import fillSpeedrun
 from . import areaRando
-from .map_icon_data import data as map_icon_data
 from .new_terrain_writer import TerrainWriter
 from .open_escape import patch_open_escape
 from .romWriter import RomWriter, RomWriterType
@@ -71,16 +71,6 @@ def write_location(romWriter: RomWriter, location: Location) -> None:
         else:
             plmid_altroom = plmidFromHiddenness(item, location['alternateroomdifferenthiddenness'])
         romWriter.writeItem(address, plmid_altroom, item.ammo_qty)
-
-    # set map dot size
-    table_entry = map_icon_data[location["plmparamlo"]]
-    major_item_addr = table_entry + 6
-    romWriter.writeBytes(major_item_addr, b"\x01" if item in unique_items else b"\x00")
-    alt_plm_param_lo = location["alternateplmparamlo"]
-    if alt_plm_param_lo:
-        table_entry = map_icon_data[alt_plm_param_lo]
-        major_item_addr = table_entry + 6
-        romWriter.writeBytes(major_item_addr, b"\x01" if item in unique_items else b"\x00")
 
 
 fillers: dict[str, Type[FillAlgorithm]] = {
@@ -164,6 +154,8 @@ def generate(options: GameOptions) -> Game:
     # That doesn't work for competitive play,
     # but we can handle that if people start playing this competitively and want no hints.
     choose_hint_location(game)
+
+    game.item_markers = make_item_markers(game.options.item_markers, game.all_locations.values())
 
     return game
 
@@ -404,6 +396,13 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     # MapColors.asm - .circle
     romWriter.writeBytes(0xdd647, b"\x80")
 
+    if game.options.item_markers == ItemMarkersOption.ThreeTiered:
+        patch_3_tier_icons_before_collect(romWriter)
+    else:
+        # assert_type(game.options.item_markers, Literal[ItemMarkersOption.Simple])
+        patch_major_minor_icons_before_collect(romWriter)
+    write_item_markers(romWriter, game.item_markers)
+
     if game.options.small_spaceport:
         romWriter.writeBytes(0x106283, b'\x71\x01')  # zebetite health
         romWriter.writeBytes(0x204b3, b'\x08')  # fake zebetite hits taken
@@ -432,6 +431,9 @@ def patch_major_minor_icons_before_collect(romWriter: RomWriter) -> None:
     - show small dots for all collected items
     """
     # MapColors.asm
+
+    # full map
+
     # .collected  BRA branch always to small dot
     romWriter.writeBytes(0xdd567, b"\x80")  # BEQ f0 -> BRA 80
     # new code for .not_collected
@@ -446,6 +448,9 @@ def patch_major_minor_icons_before_collect(romWriter: RomWriter) -> None:
         b"\x20\xe0\xd8"  # JSR DrawTilePlus
         b"\x80\x09"      # BRA ++               ; jump over minor
     )
+
+    # mini map
+
     # .dot (collected)  BRA branch always to small dot
     romWriter.writeBytes(0xdd634, b"\x80")  # BEQ f0 -> BRA 80
     # .circle (not collected)  new code
@@ -457,6 +462,88 @@ def patch_major_minor_icons_before_collect(romWriter: RomWriter) -> None:
         # else major item
         b"\xa9\x00\x08"  # LDA #$0800           ; major big dot
         b"\x80\x03"      # BRA ++               ; jump over minor
+    )
+
+
+def patch_3_tier_icons_before_collect(romWriter: RomWriter) -> None:
+    """
+    - show the large filled in circle for item classification 1
+    - show the large unfilled circle for item classification 0
+    - show small dots for item classification 2
+    - collected item shows nothing
+    """
+    # MapColors.asm
+
+    # full map
+
+    # new code for .itemloop - starting at `BEQ .not_collected ; test if collected``
+    romWriter.writeBytes(
+        0xdd54c,
+        b"\x80\x0e\xea\xea\xea\xea\xea\xea\xea\xea\xea\xea\xea\xea\xea\xea"  # fill existing space with BRA NOP
+
+        b"\xf0\x19"          # BEQ .not_collected ; test if collected
+
+        # .collected
+        b"\xfa\xda"          # PLX : PHX
+
+        b"\x20\xb9\xd5"      # JSR GetTilemapIndex
+        b"\xbf\x00\x40\x7e"	 # LDA $7E4000,X
+        b"\x29\xee\x03"      # AND #$03EE
+        b"\xc9\x0e\x00"      # CMP #$000E ; blank tiles: 0x000E, 0x000F, 0x001E, 0x001F
+        b"\xf0\x2c"          # BEQ .continue
+
+        b"\x20\x8c\xd8"      # JSR LoadTile4bpp
+        b"\x20\x0c\xd9"      # JSR DMATile4bpp
+
+        b"\x80\x24"          # BRA .continue
+
+        # .not_collected
+        b"\xfa\xda"      # PLX : PHX
+
+        b"\x20\xb9\xd5"  # JSR GetTilemapIndex
+        b"\x20\x8c\xd8"  # JSR LoadTile4bpp
+        b"\xfa\xda"      # PLX : PHX
+        b"\xbd\x06\x00"  # LDA $0006,X          ; minor or major
+        b"\xf0\x0f"      # BEQ "0"              ; if "0", goto after all this
+        b"\x29\x02\x00"  # AND #$0002
+        b"\xd0\x05"      # BNE "2"
+        # else "1"
+        b"\x20\xe0\xd8"  # JSR DrawTilePlus
+        b"\x80\x08"      # BRA ++               ; jump over others
+        # ; "2"
+        b"\x20\xca\xd8"  # JSR DrawTileDot
+        b"\x80\x03"      # BRA ++               ; jump over "0"
+        # dd595 ; "0"
+        # JSR DrawTileCircle  20 f6 d8
+        # ++
+        # JSR DMATile4bpp     20 0c d9
+        # .continue
+    )
+
+    # mini map
+
+    # .dot (collected)  BRA branch always to .blank
+    romWriter.writeBytes(0xdd62f, b"\x80")  # BEQ f0 -> BRA 80
+    # .circle (not collected)  new code
+    romWriter.writeBytes(
+        0xdd640,
+        b"\xea\xea\xea"  # fill existing space with NOP
+        b"\xbd\x06\x00"  # LDA $0006,X          ; 0, 1, 2
+        b"\xf0\x0f"      # BEQ "0"              ; if minor, goto after this
+        b"\x29\x02\x00"  # AND #$0002
+        b"\xd0\x05"      # BNE "2"
+        # else "1"
+        b"\xa9\x00\x08"  # LDA #$0800           ; major big dot
+        b"\x80\x08"      # BRA ++               ; jump over minor
+        # "2"
+        b"\xa9\x00\x04"  # LDA #$0400           ; small dot
+        b"\x80\x03"      # BRA ++               ; jump over minor
+
+        # after this
+        # + "0"
+        # LDA #$0200  ; uncollected circle
+        # ++
+        # BRA .return
     )
 
 
