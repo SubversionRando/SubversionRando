@@ -7,6 +7,7 @@ from .trick_data import Tricks
 
 class BossKill:
     kraid = LogicShortcut(lambda loadout: (
+        (Items.GravityBoots in loadout) and
         (missileDamage in loadout) and
         ((Items.Aqua in loadout) or (
             (Tricks.sbj_underwater_w_hjb in loadout) and
@@ -14,6 +15,11 @@ class BossKill:
                 (Tricks.movement_moderate in loadout) and
                 (Items.SpaceJump in loadout)
             ))
+        ) or (
+            # cheesy did it first try without speedball or aqua or space jump
+            (Tricks.movement_zoast in loadout) and
+            (Items.HiJump in loadout) and
+            (energy_req(459) in loadout)
         ))
     ))
 
