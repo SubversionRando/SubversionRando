@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Iterable, Mapping
 
 from .item_data import unique_items
-from .location_data import Location
+from .location_data import Location, get_location_ids
 from .map_icon_data import data as map_icon_data
 from .romWriter import RomWriter
 
@@ -37,10 +37,7 @@ def make_item_markers(item_markers_option: ItemMarkersOption, locations: Iterabl
     item_markers: dict[int, ItemMarker] = {}
 
     for loc in locations:
-        loc_ids = [loc["plmparamlo"]]
-        alt = loc["alternateplmparamlo"]
-        if alt:
-            loc_ids.append(alt)
+        loc_ids = get_location_ids(loc)
         item = loc["item"]
         assert item
         if item_markers_option != ItemMarkersOption.Simple and item in unique_items:

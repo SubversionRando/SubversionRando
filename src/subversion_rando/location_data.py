@@ -21,6 +21,16 @@ class Location(TypedDict):
     item: Optional[Item]
 
 
+def get_location_ids(loc: Location) -> list[int]:
+    sv_loc_ids = [loc["plmparamlo"]]
+    alt_id = loc["alternateplmparamlo"]
+    if alt_id:
+        # There is a plmparamlo 0, but none of the alternates are 0
+        # so we can say `if loc['alternateplmparamlo']`
+        sv_loc_ids.append(alt_id)
+    return sv_loc_ids
+
+
 spacePortLocs = ["Ready Room",
                  "Torpedo Bay",
                  "Extract Storage",
