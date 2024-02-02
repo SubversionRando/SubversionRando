@@ -1,11 +1,6 @@
 """ data for the connections in area rando """
-from typing import TYPE_CHECKING, Union
 
 from .area_rando_types import AreaDoor, DoorPairs
-from .item_data import Item, Items
-from .logicCommon import can_use_pbs
-if TYPE_CHECKING:
-    from .logic_shortcut import LogicShortcut
 
 
 area_doors_unpackable: tuple[AreaDoor, ...] = (
@@ -71,13 +66,6 @@ misc_doors: dict[str, AreaDoor] = {
         '1be44', '9b8500040106000000800000', 'Daphne', 'WreckedCrewQuartersAccessL', 3
     ),
     'RockyRidgeR': AreaDoor('1bb80', '91ba00014e46040400800000', 'Daphne', 'RockyRidgeR', 3),
-}
-
-vanilla_doors: "dict[AreaDoor, Union[Item, LogicShortcut]]" = {
-    area_doors["CraterR"]: can_use_pbs(1),
-    area_doors["WestTerminalAccessL"]: can_use_pbs(1),
-    area_doors["VulnarCanyonL"]: can_use_pbs(1),
-    area_doors["FoyerR"]: Items.Super
 }
 
 # to make sure this unpacking list is correct:

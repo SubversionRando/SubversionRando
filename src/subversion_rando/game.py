@@ -1,11 +1,11 @@
 from copy import deepcopy
 from dataclasses import asdict, dataclass, field
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Literal, Mapping, Optional, Union, cast
+from typing import Any, Literal, Mapping, Optional, Union, cast
 
 from .area_rando_types import AreaDoor, DoorPairs
-from .connection_data import vanilla_doors
 from .daphne_gate_types import DaphneBlocks
+from .door_logic import vanilla_doors
 from .goals import Event, Goals
 from .hint_types import Hint, from_jsonable as hint_from_jsonable, to_jsonable as hint_to_jsonable
 from .item_data import Item, all_items
@@ -14,9 +14,8 @@ from .item_marker import (
 )
 from .location_data import Location
 from .logic_shortcut import LogicShortcut
+from .trick import Trick
 from .trick_data import tricks_from_names, tricks_to_jsonable
-if TYPE_CHECKING:
-    from .trick import Trick
 
 
 def door_factory() -> "dict[AreaDoor, Union[Item, LogicShortcut]]":

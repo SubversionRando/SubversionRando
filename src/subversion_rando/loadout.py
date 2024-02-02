@@ -1,13 +1,11 @@
 from collections import Counter
-from typing import TYPE_CHECKING, Any, Iterable, Iterator, Optional, Union
+from typing import Any, Iterable, Iterator, Optional, Union
 
 from .area_rando_types import AreaDoor
+from .game import Game
 from .item_data import Item
 from .logic_shortcut import LogicShortcut
 from .trick import Trick
-
-if TYPE_CHECKING:
-    from .game import Game
 
 
 class ItemCounter(Counter[Union[Item, AreaDoor]]):
@@ -26,11 +24,11 @@ class ItemCounter(Counter[Union[Item, AreaDoor]]):
 
 
 class Loadout:
-    game: "Game"
+    game: Game
     contents: ItemCounter
 
     def __init__(self,
-                 game: "Game",
+                 game: Game,
                  items: Optional[Iterable[Union[Item, AreaDoor]]] = None) -> None:
         self.game = game
         self.contents = ItemCounter(items)
