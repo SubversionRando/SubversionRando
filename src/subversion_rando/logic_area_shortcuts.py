@@ -183,8 +183,11 @@ class Early:
     """ Cistern Access Tunnel with a shot block in it """
 
     causeway = LogicShortcut(lambda loadout: (
+        # TODO: rewrite this with separate left and right, and `and` them together
+        # can go left with nothing but gravity boots and super sink easy (from door to causeway overlook)
         (
             (SpeedBooster in loadout)
+            # TODO: what about going left in area rando casual?
         ) or (
             (can_bomb(2) in loadout) and
             ((Speedball in loadout) or (
