@@ -1,7 +1,7 @@
 # pyscript entry point
 
 import json
-from typing import Any, Literal, Optional, TypedDict
+from typing import Any, Literal, Optional, TypedDict, cast
 
 # pyscript library
 import js  # type: ignore
@@ -14,7 +14,8 @@ from subversion_rando.trick import Trick
 from subversion_rando.trick_data import Tricks, trick_name_lookup, tricks_from_names
 from subversion_rando.main_generation import generate, get_spoiler, write_rom
 
-Element: Any  # pyscript built-in
+Element: Any = cast(Any, Element)  # pyscript built-in  # noqa: F821  # type: ignore
+js = cast(Any, js)
 
 
 def populate_tricks() -> None:
@@ -27,7 +28,7 @@ def populate_tricks() -> None:
                 f'<td><span>{trick.desc}</span></td></tr>'
             )
             table_rows.append(html)
-    tricks_element = Element("tricks")  # noqa: F821
+    tricks_element = Element("tricks")
     tricks_element.element.innerHTML = "<tbody>" + ("".join(table_rows)) + "</tbody>"
 
 
@@ -42,7 +43,7 @@ def make_presets() -> list[tuple[str, list[str]]]:
 
 def populate_presets() -> None:
     preset_data = make_presets()
-    js.populate_presets(preset_data)  # type: ignore
+    js.populate_presets(preset_data)
 
 
 class WebParams(TypedDict):
@@ -71,7 +72,7 @@ game: Optional[Game] = None
 def roll1() -> bool:
     global rom_writer
     try:
-        base64_data: str = js.rom_data  # type: ignore
+        base64_data = js.rom_data
     except AttributeError:
         base64_data = ""
 
