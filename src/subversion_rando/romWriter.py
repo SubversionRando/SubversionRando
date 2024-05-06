@@ -6,6 +6,7 @@ import pathlib
 from typing import TYPE_CHECKING, Optional, Union
 
 from .ips import patch
+from .subversion_patch import get as patch_get
 
 if TYPE_CHECKING:
     from .area_rando_types import AreaDoor
@@ -156,12 +157,14 @@ class RomWriter:
     def patch_if_vanilla(self) -> None:
         if len(self.rom_data) != 4194304:  # subversion rom
             if len(self.rom_data) == 3145728:  # vanilla SM
+                patch_data: Union[bytes, None]
                 if self._sub12_patch_data:
-                    patch_data: bytes = self._sub12_patch_data
+                    patch_data = self._sub12_patch_data
                 else:
-                    patch_path = pathlib.Path(__file__).parent.resolve()
-                    with open(patch_path.joinpath('subversion.1.2.ips'), 'rb') as file:
-                        patch_data = file.read()
+                    patch_data = patch_get()
+                if not patch_data:
+                    raise ValueError("Subversion patch not available - "
+                                     "An internet connection is needed the first time you use this.")
                 self.rom_data = patch(self.rom_data, patch_data)
                 assert len(self.rom_data) == 4194304, f"patch made file {len(self.rom_data)}"
             else:
