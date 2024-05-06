@@ -55,6 +55,9 @@ def get(cache_directory: Union[str, Path] = ".") -> Union[bytes, None]:
     from the memory cache, or from a file system cache,
     or from the Subversion website
     """
+    # Note: The web interface uses a py-script directive
+    # to place the patch in the file system cache location.
+    # So this code will find it when it looks in the file system cache.
     global _mem_cache
     if _mem_cache:
         return _mem_cache
