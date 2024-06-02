@@ -25,6 +25,7 @@ def test_web_file_list() -> None:
 
     no_need = {
         "__pycache__",
+        "objective_rando.asm",
         "rom_room_names.py",
         "py.typed"
     }

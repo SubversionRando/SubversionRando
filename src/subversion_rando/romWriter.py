@@ -3,7 +3,7 @@ import enum
 import os
 from pathlib import Path
 import pathlib
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, ClassVar, Optional, Union
 
 from .ips import patch
 from .subversion_patch import get as patch_get
@@ -20,6 +20,8 @@ class RomWriterType(enum.IntEnum):
 
 
 class RomWriter:
+    patch_cache_dir: ClassVar[Union[str, Path]] = "."
+
     romWriterType: RomWriterType
     rom_data: bytearray
     ipsblob: bytearray
@@ -161,7 +163,7 @@ class RomWriter:
                 if self._sub12_patch_data:
                     patch_data = self._sub12_patch_data
                 else:
-                    patch_data = patch_get()
+                    patch_data = patch_get(self.patch_cache_dir)
                 if not patch_data:
                     raise ValueError("Subversion patch not available - "
                                      "An internet connection is needed the first time you use this.")
