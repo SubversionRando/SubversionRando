@@ -1,4 +1,4 @@
-from typing import Any, Iterator, NoReturn
+from typing import Any, NoReturn
 
 from .item_data import Item
 
@@ -6,12 +6,12 @@ from .item_data import Item
 class Trick:
     """ items: all the items needed to do this trick """
     desc: str
-    _items: tuple[Item, ...]
-    __slots__ = ("desc", "_items")
+    items: tuple[Item, ...]
+    __slots__ = ("desc", "items")
 
     def __init__(self, desc: str, *items: Item) -> None:
         self.desc = desc
-        self._items = items
+        self.items = items
 
     def __hash__(self) -> int:
         return hash(id(self))
@@ -25,10 +25,6 @@ class Trick:
     def __deepcopy__(self, memo: dict[Any, Any]) -> "Trick":
         # singletons
         return self
-
-    def __iter__(self) -> Iterator[Item]:
-        for item in self._items:
-            yield item
 
     def __bool__(self) -> NoReturn:
         # TODO: unit test for this like the one for logic shortcut

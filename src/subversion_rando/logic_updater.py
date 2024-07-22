@@ -13,7 +13,7 @@ def update_area_logic(loadout: Loadout, excluded_door: Optional[AreaDoor] = None
     door_pairs = loadout.game.door_pairs
     while not stuck:
         prev_loadout = loadout.copy()
-        for _area, paths in area_logic.items():
+        for paths in area_logic.values():
             for path, access in paths.items():
                 origin, destination = path
                 if area_doors[destination] not in loadout:

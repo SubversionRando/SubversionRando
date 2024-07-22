@@ -42,11 +42,17 @@ class Loadout:
         )
 
     def __contains__(self, x: Union[Item, AreaDoor, LogicShortcut, Trick]) -> bool:
-        if isinstance(x, LogicShortcut):
+        # using type is instead of isinstance for optimization (this is the most called function in profiler)
+        if type(x) is LogicShortcut:
             return x.access(self)
-        elif isinstance(x, Trick):
-            return all(self.contents[item] > 0 for item in x) and x in self.game.options.logic
-        return self.contents[x] > 0
+        elif type(x) is Trick:
+            if x in self.game.options.logic:
+                for item in x.items:
+                    if self.contents[item] <= 0:
+                        return False
+                return True
+            return False
+        return self.contents[x] > 0  # type: ignore
 
     def __iter__(self) -> Iterator[Union[Item, AreaDoor]]:
         for item, count in self.contents.items():
