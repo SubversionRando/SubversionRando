@@ -1,6 +1,7 @@
+from copy import deepcopy
 import csv
 import pathlib
-from typing import IO, Optional, TypedDict, cast
+from typing import IO, Optional, TypedDict, Union, cast
 
 from .item_data import Item
 
@@ -88,7 +89,7 @@ eTankLocs = frozenset([
 ])
 
 
-def pullCSV(csv_file: Optional[IO[str]] = None) -> dict[str, Location]:
+def _pullCSV(csv_file: Optional[IO[str]] = None) -> dict[str, Location]:
     locations: dict[str, Location] = {}
 
     def comment_filter(line: str) -> bool:
@@ -127,3 +128,15 @@ def pullCSV(csv_file: Optional[IO[str]] = None) -> dict[str, Location]:
             row["item"] = None
             locations[row['fullitemname']] = cast(Location, row)
     return locations
+
+
+_location_cache: Union[dict[str, Location], None] = None
+
+
+def new_locations() -> dict[str, Location]:
+    """ creates a new collection of `Location`s """
+    global _location_cache
+    if _location_cache is None:
+        _location_cache = _pullCSV()
+
+    return deepcopy(_location_cache)

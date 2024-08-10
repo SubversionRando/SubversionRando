@@ -21,7 +21,7 @@ from .hints import choose_hint_location, get_hint_spoiler_text, write_hint_to_ro
 from .item_data import Item, Items
 from .item_marker import ItemMarkersOption, make_item_markers, write_item_markers
 from .loadout import Loadout
-from .location_data import Location, pullCSV, spacePortLocs
+from .location_data import Location, new_locations, spacePortLocs
 from .logic_presets import casual, expert, medium
 from . import logic_updater
 from . import fillMedium
@@ -104,7 +104,7 @@ def generate(options: GameOptions) -> Game:
     random.seed(seeeed)
     # you must include Subversion 1.2 in your roms folder with this name^
 
-    all_locations = pullCSV()
+    all_locations = new_locations()
 
     seedComplete = False
     randomizeAttempts = 0

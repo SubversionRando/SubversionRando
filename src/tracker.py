@@ -9,7 +9,7 @@ from subversion_rando.connection_data import vanilla_areas, area_doors
 from subversion_rando.game import CypherItems, Game, GameOptions
 from subversion_rando.item_data import Item, Items, all_items
 from subversion_rando.loadout import Loadout
-from subversion_rando.location_data import Location, pullCSV, spacePortLocs
+from subversion_rando.location_data import Location, new_locations, spacePortLocs
 from subversion_rando.logic_presets import casual, expert, medium
 from subversion_rando.solver import required_doors, solve
 from subversion_rando.trick import Trick
@@ -81,7 +81,7 @@ class Tracker:
         area_rando = False
         area_connections = vanilla_areas()
 
-        self.empty_locations = pullCSV()
+        self.empty_locations = new_locations()
         self.game_state_locations = deepcopy(self.empty_locations)
         options = GameOptions(logic, area_rando, "D", True, False, CypherItems.NotRequired)
         game = Game(options, self.empty_locations, area_connections, 0)

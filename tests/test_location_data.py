@@ -1,4 +1,4 @@
-from subversion_rando.location_data import get_location_ids, pullCSV
+from subversion_rando.location_data import get_location_ids, new_locations
 from subversion_rando.map_icon_data import data as map_icon_data
 
 
@@ -7,7 +7,7 @@ def test_location_ids() -> None:
     make sure all the location ids are present in the csv,
     either as primary or alternate
     """
-    locs = pullCSV()
+    locs = new_locations()
     highest = -1
     all_ids: list[int] = []
     for loc in locs.values():
@@ -32,7 +32,7 @@ def test_location_ids() -> None:
 
 
 def test_map_icon_data() -> None:
-    locs = pullCSV()
+    locs = new_locations()
     for loc in locs.values():
         loc_ids = get_location_ids(loc)
         for loc_id in loc_ids:

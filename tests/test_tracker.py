@@ -1,4 +1,4 @@
-from subversion_rando.location_data import pullCSV
+from subversion_rando.location_data import new_locations
 import tracker
 from tracker import Tracker
 
@@ -83,14 +83,14 @@ def test_loc_names_from_input() -> None:
     assert t.loc_names_from_input("ocean bot") == ["Ocean Shore: Bottom"]
     assert t.loc_names_from_input("ocean shore bot") == ["Ocean Shore: Bottom"]
 
-    all_locations = pullCSV()
+    all_locations = new_locations()
     for loc_name in all_locations:
         assert t.loc_names_from_input(("".join(loc_name.split(":"))).lower()) == [loc_name]
 
 
 def test_alias_targets() -> None:
     """ make sure all the alias targets are location names """
-    all_locations = pullCSV()
+    all_locations = new_locations()
     aliases: dict[str, str] = getattr(tracker, "_name_aliases")
     for target in aliases.values():
         assert target in all_locations, f"{target} location name"

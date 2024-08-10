@@ -5,7 +5,7 @@ from .connection_data import area_doors
 from .game import Game
 from .item_data import Item, Items
 from .loadout import Loadout
-from .location_data import pullCSV, majorLocs
+from .location_data import new_locations, majorLocs
 from .logic_boss_reach import reach_and_kill
 from .logic_shortcut import LogicShortcut
 from .logic_updater import updateLogic
@@ -155,7 +155,7 @@ def write_hint_to_rom(loc_name: str, hint_loc_marker: bytes, rom_writer: RomWrit
     without going to any bosses.
     So we place a decoy for all the bosses that don't have the hint.
     """
-    all_locations = tuple(loc["fullitemname"] for loc in pullCSV().values())
+    all_locations = tuple(loc["fullitemname"] for loc in new_locations().values())
 
     def get_decoy() -> str:
         """ dots that match a location name """

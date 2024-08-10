@@ -7,13 +7,13 @@ from subversion_rando.fillAssumed import FillAssumed
 from subversion_rando.game import Game, GameOptions
 from subversion_rando.item_data import Item
 from subversion_rando.loadout import Loadout
-from subversion_rando.location_data import pullCSV
+from subversion_rando.location_data import new_locations
 from subversion_rando.trick import Trick
 
 
 def setup(logic: frozenset[Trick]) -> tuple[Game, Loadout]:
     """ returns (all locations, vanilla connections, a new loadout) """
-    all_locations = pullCSV()
+    all_locations = new_locations()
     options = GameOptions(logic, False, "D", True)
     game = Game(options, all_locations, vanilla_areas(), 0)
     loadout = Loadout(game)
