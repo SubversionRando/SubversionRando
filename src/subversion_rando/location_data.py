@@ -1,7 +1,9 @@
 from copy import deepcopy
 import csv
+import logging
 import pathlib
-from typing import IO, Optional, TypedDict, Union, cast
+import pkgutil
+from typing import Optional, TypedDict, Union, cast
 
 from .item_data import Item
 
@@ -89,44 +91,45 @@ eTankLocs = frozenset([
 ])
 
 
-def _pullCSV(csv_file: Optional[IO[str]] = None) -> dict[str, Location]:
+def _pullCSV() -> dict[str, Location]:
     locations: dict[str, Location] = {}
 
     def comment_filter(line: str) -> bool:
         return (line[0] != '#')
 
-    file: IO[str]
-    if not csv_file:
+    csv_bytes = pkgutil.get_data("subversion_rando", "subversiondata12.csv")
+    if csv_bytes is None:
+        logging.warning("`pkgutil.get_data` unable to read location data")
+        # if pkgutil is unable to find it, try reading from file system
         path = pathlib.Path(__file__).parent.resolve()
-        file = open(path.joinpath('subversiondata12.csv'), 'r')
+        with open(path.joinpath('subversiondata12.csv'), 'r') as file:
+            csv_lines = file.readlines()
     else:
-        file = csv_file
+        csv_lines = csv_bytes.decode().splitlines()
 
-    with file as csv_f:
-        reader = csv.DictReader(filter(comment_filter, csv_f))
-        for row in reader:
-            # commas within fields -> array
-            row['locids'] = row['locids'].split(',')
-            row['alternateroomlocids'] = row['alternateroomlocids'].split(',')
-            # hex fields we want to use -> int
-            row['locids'] = [int(locstr, 16)
-                             for locstr in row['locids'] if locstr != '']
-            row['alternateroomlocids'] = [
-                int(locstr, 16) for locstr in row['alternateroomlocids'] if locstr != '']
-            row['plmtypeid'] = int(row['plmtypeid'], 16)
-            row['plmparamhi'] = int(row['plmparamhi'], 16)
-            row['plmparamlo'] = int(row['plmparamlo'], 16)
-            if len(row['alternateplmparamlo']):
-                row['alternateplmparamlo'] = int(row['alternateplmparamlo'], 16)
-            else:
-                # There is a plmparamlo 0, but none of the alternates are 0
-                # so we can say `if loc['alternateplmparamlo']`
-                row['alternateplmparamlo'] = None
-            # new key: 'inlogic'
-            row['inlogic'] = False
-            # the item that we place in this location
-            row["item"] = None
-            locations[row['fullitemname']] = cast(Location, row)
+    reader = csv.DictReader(filter(comment_filter, csv_lines))
+    for row in reader:
+        # commas within fields -> array
+        row['locids'] = row['locids'].split(',')
+        row['alternateroomlocids'] = row['alternateroomlocids'].split(',')
+        # hex fields we want to use -> int
+        row['locids'] = [int(locstr, 16) for locstr in row['locids'] if locstr != '']
+        row['alternateroomlocids'] = [
+            int(locstr, 16) for locstr in row['alternateroomlocids'] if locstr != '']
+        row['plmtypeid'] = int(row['plmtypeid'], 16)
+        row['plmparamhi'] = int(row['plmparamhi'], 16)
+        row['plmparamlo'] = int(row['plmparamlo'], 16)
+        if len(row['alternateplmparamlo']):
+            row['alternateplmparamlo'] = int(row['alternateplmparamlo'], 16)
+        else:
+            # There is a plmparamlo 0, but none of the alternates are 0
+            # so we can say `if loc['alternateplmparamlo']`
+            row['alternateplmparamlo'] = None
+        # new key: 'inlogic'
+        row['inlogic'] = False
+        # the item that we place in this location
+        row["item"] = None
+        locations[row['fullitemname']] = cast(Location, row)
     return locations
 
 
