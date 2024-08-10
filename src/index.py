@@ -15,7 +15,7 @@ from subversion_rando.trick_data import Tricks, trick_name_lookup, tricks_from_n
 from subversion_rando.main_generation import generate, get_spoiler, write_rom
 
 Element: Any = cast(Any, Element)  # pyscript built-in  # noqa: F821  # type: ignore
-js = cast(Any, js)
+js: Any = cast(Any, js)  # pyscript built-in  # type: ignore
 
 
 def populate_tricks() -> None:

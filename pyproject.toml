@@ -22,3 +22,12 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://github.com/SubversionRando/SubversionRando"
 "Bug Tracker" = "https://github.com/SubversionRando/SubversionRando/issues"
+
+[tool.pyright]
+include = ["src", "tests"]
+exclude = ["**/__pycache__"]
+
+typeCheckingMode = "strict"
+
+pythonVersion = "3.9"
+pythonPlatform = "Linux"
