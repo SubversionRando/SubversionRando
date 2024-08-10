@@ -139,7 +139,13 @@ function read_input_rom(file) {
             console.log(e.target.result.substring(0, 64));
             const expected_begin = "data:application/";
             if (e.target.result.substring(0, expected_begin.length) === expected_begin) {
-                rom_data = e.target.result.substring(expected_begin.length);
+                const start_index = e.target.result.indexOf(";base64,") + 8;
+                if (start_index >= expected_begin.length && start_index < 150) {
+                    rom_data = e.target.result.substring(start_index);
+                }
+                else {
+                    console.error(`unexpected file encoding: ${e.target.result.substring(0, 160)}`);
+                }
             }
             else {
                 console.error(`unexpected file encoding: ${e.target.result.substring(0, 64)}`);
