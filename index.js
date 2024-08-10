@@ -137,7 +137,7 @@ function read_input_rom(file) {
             // binary data
             console.log(e.target.result.length);
             console.log(e.target.result.substring(0, 64));
-            const expected_begin = "data:application/octet-stream;base64,";
+            const expected_begin = "data:application/";
             if (e.target.result.substring(0, expected_begin.length) === expected_begin) {
                 rom_data = e.target.result.substring(expected_begin.length);
             }
