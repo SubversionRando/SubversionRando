@@ -28,8 +28,13 @@ class PlayThrough:
 
 def solve(game: Game,
           starting_items: Optional[Loadout] = None,
-          excluded_door: Optional[AreaDoor] = None) -> tuple[bool, PlayThrough, list[Location]]:
-    """ returns (whether completable, play through, accessible locations) """
+          excluded_door: Optional[AreaDoor] = None,
+          ap_logic: bool = False) -> tuple[bool, PlayThrough, list[Location]]:
+    """
+    `ap_logic` means that the beginning is just get Torpedo Bay, and then fall from spaceport
+
+    returns (whether completable, play through, accessible locations)
+    """
     for loc in game.all_locations.values():
         loc['inlogic'] = False
 
@@ -53,34 +58,47 @@ def solve(game: Game,
                 play_through.spheres.append(Sphere(False))
             play_through.spheres[-1].new_doors.extend(new_area_doors)
 
-    # this loop just for spaceport
-    stuck = False
-    while not stuck:
-        prev_loadout_count = len(loadout)
-        updateLogic(unused_locations, loadout, excluded_door)
-        check_for_new_area_doors()
+    if ap_logic:
         play_through.spheres.append(Sphere(False))
-        for loc in unused_locations:
-            if loc['inlogic']:
-                loc_name = loc['fullitemname']
-                if loc_name not in spacePortLocs:
-                    # debug
-                    # print(f"found {loc_name} in logic while still in spaceport")
-                    continue
-                item = loc['item']
-                if item:
-                    loadout.append(item)
-                    play_through.spheres[-1].pickups[loc_name] = item.name
-                used_locs.add(loc_name)
-        # remove used locations
-        unused_locations = [loc for loc in unused_locations if loc['fullitemname'] not in used_locs]
-        stuck = len(loadout) == prev_loadout_count
 
-    while (
-        len(play_through.spheres) > 0 and
-        len(play_through.spheres[-1].new_doors) + len(play_through.spheres[-1].pickups) == 0
-    ):
-        play_through.spheres.pop()
+        loc_name = "Torpedo Bay"
+        loc = game.all_locations[loc_name]
+        item = loc["item"]
+        if item:
+            loadout.append(item)
+            play_through.spheres[-1].pickups[loc_name] = item.name
+        used_locs.add(loc_name)
+
+        unused_locations = [loc for loc in unused_locations if loc['fullitemname'] not in used_locs]
+    else:  # not AP logic (multiple spheres possible before falling from spaceport)
+        # this loop just for spaceport
+        stuck = False
+        while not stuck:
+            prev_loadout_count = len(loadout)
+            updateLogic(unused_locations, loadout, excluded_door)
+            check_for_new_area_doors()
+            play_through.spheres.append(Sphere(False))
+            for loc in unused_locations:
+                if loc['inlogic']:
+                    loc_name = loc['fullitemname']
+                    if loc_name not in spacePortLocs:
+                        # debug
+                        # print(f"found {loc_name} in logic while still in spaceport")
+                        continue
+                    item = loc['item']
+                    if item:
+                        loadout.append(item)
+                        play_through.spheres[-1].pickups[loc_name] = item.name
+                    used_locs.add(loc_name)
+            # remove used locations
+            unused_locations = [loc for loc in unused_locations if loc['fullitemname'] not in used_locs]
+            stuck = len(loadout) == prev_loadout_count
+
+        while (
+            len(play_through.spheres) > 0 and
+            len(play_through.spheres[-1].new_doors) + len(play_through.spheres[-1].pickups) == 0
+        ):
+            play_through.spheres.pop()
 
     if can_fall_from_spaceport not in loadout:
         # print("solver: couldn't get out of spaceport")

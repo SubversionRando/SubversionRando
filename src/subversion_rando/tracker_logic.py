@@ -11,6 +11,7 @@ from subversion_rando.solver import solve
 
 
 class TrackerLogic:
+    """ uses AP logic (Torpedo Bay then fall from spaceport) """
     options: GameOptions
     door_pairs: DoorPairs = vanilla_areas()  # TODO: area rando support
 
@@ -31,11 +32,14 @@ class TrackerLogic:
             door_data=vanilla_doors  # TODO: area rando support
         )
         loadout = Loadout(game, items)
-        _, _, locations = solve(game, loadout)
+        _, _, locations = solve(game, loadout, ap_logic=True)
         return locations
 
     def item_names_to_location_names(self, items: Mapping[str, int]) -> List[str]:
-        """ returns empty list if invalid item names are given (list should never be empty otherwise) """
+        """
+        returns empty list if invalid item names are given
+        (list should never be empty otherwise because Torpedo Bay is always in logic)
+        """
         items_converted: Dict[Item, int] = {}
         for item_name, number in items.items():
             item = all_items.get(item_name)
