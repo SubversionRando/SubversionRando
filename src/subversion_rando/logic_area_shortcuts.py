@@ -264,8 +264,7 @@ class Early:
         ((
             (Tricks.infinite_bomb_jump in loadout)
         ) or (
-            (SpaceJump in loadout) and
-            ((HiJump in loadout) or (SpaceJumpBoost in loadout) or (Tricks.wall_jump_precise in loadout))
+            (SpaceJump in loadout)  # casual can run and jump from ship landing
         ) or (
             # shinespark from just the right pixel on the 1 tile between 2 slopes
             (SpeedBooster in loadout) and (Tricks.movement_moderate in loadout)

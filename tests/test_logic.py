@@ -1090,6 +1090,23 @@ def test_speedball_locations(logic: frozenset[Trick]) -> None:
             )
 
 
+def test_crater_ledge() -> None:
+    """ space jump is all that's needed if you run and jump from the east ledge """
+    game, loadout = setup(casual)
+    loadout.append(area_doors["SunkenNestL"])
+    loadout.append(Items.GravityBoots)
+    loadout.append(Items.Morph)
+    loadout.append(Items.Bombs)
+
+    updateLogic(game.all_locations.values(), loadout)
+    assert not game.all_locations["Impact Crater Alcove"]["inlogic"]
+
+    loadout.append(Items.SpaceJump)
+
+    updateLogic(game.all_locations.values(), loadout)
+    assert game.all_locations["Impact Crater Alcove"]["inlogic"]
+
+
 # TODO: places that I can go with no bombs, pbs, or screw (doesn't include colosseum)
 # places that I can go with screw, no bombs, pbs (includes colosseum)
 
