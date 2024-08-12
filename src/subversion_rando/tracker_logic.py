@@ -7,6 +7,7 @@ from subversion_rando.game import Game, GameOptions
 from subversion_rando.item_data import Item, all_items
 from subversion_rando.loadout import Loadout
 from subversion_rando.location_data import Location, new_locations
+from subversion_rando.logic_presets import custom_logic_tricks_from_str
 from subversion_rando.solver import solve
 
 
@@ -15,9 +16,10 @@ class TrackerLogic:
     options: GameOptions
     door_pairs: DoorPairs = vanilla_areas()  # TODO: area rando support
 
-    def __init__(self) -> None:
+    def __init__(self, logic_str: str) -> None:
+        logic = custom_logic_tricks_from_str(logic_str)
         self.options = GameOptions(
-            frozenset(),  # TODO: custom logic support
+            logic,
             False,  # TODO: area rando support
             "D",
             True
