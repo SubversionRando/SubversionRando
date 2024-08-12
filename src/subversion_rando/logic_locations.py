@@ -1206,13 +1206,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Sandy Burrow: Top": lambda loadout: (  # ETank
         (OceanShoreR in loadout) and
-        (Morph in loadout) and
-        (GravityBoots in loadout) and
-        ((Aqua in loadout) or (
-            loadout.has_all(HiJump, Tricks.movement_zoast)
-        ) or (
-            (Tricks.sbj_underwater_w_hjb in loadout)
-        )) and
+        (SandLand.sandy_burrow in loadout) and
+
         # the number of PBs in can_bomb is because the blocks respawn pretty fast
         ((
             (Aqua in loadout) and
@@ -1232,8 +1227,16 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             )
         )) and
 
-        # enemies here hit hard and are difficult to avoid
-        (loadout.has_any(energy_req(150), Tricks.movement_moderate))
+        # from first morph tunnel up to door
+        ((
+            (Aqua in loadout)
+        ) or (
+            (Tricks.sbj_underwater_w_hjb in loadout)
+        ) or (
+            (Bombs in loadout) and (HiJump in loadout) and (Tricks.freeze_hard in loadout)
+            # note: freezing enemies requires not killing the enemies with power bomb to get top item
+            # so this section has to be duplicated in SandLand area shortcuts
+        ))
     ),
     "Submarine Alcove": lambda loadout: (
         (meanderingPassage in loadout) and
@@ -1611,31 +1614,14 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     ),
     "Sandy Burrow: Bottom": lambda loadout: (  # AmmoTank
         (OceanShoreR in loadout) and
-        (Morph in loadout) and
-        (GravityBoots in loadout) and
-        # up to entrance
-        ((Aqua in loadout) or (
-            loadout.has_all(HiJump, Tricks.movement_zoast)
-        ) or (
-            (Tricks.sbj_underwater_w_hjb in loadout)
-        )) and
-        # out
+        (SandLand.sandy_burrow in loadout) and
+
         (  # to get back in hole after getting this item
             (Speedball in loadout) or
             loadout.has_all(Aqua, Bombs) or
             loadout.has_all(Aqua, PowerBomb) or
             (Tricks.morph_jump_3_tile_water in loadout)
-        ) and
-        (
-            (Aqua in loadout) or (
-                (Tricks.sbj_underwater_w_hjb in loadout)
-            ) or (
-                ((HiJump in loadout) and (Ice in loadout) and (Tricks.freeze_hard in loadout))
-            )
-        ) and
-
-        # enemies here hit hard and are difficult to avoid
-        (loadout.has_any(energy_req(150), Tricks.movement_moderate))
+        )
     ),
     "Trophobiotic Chamber": lambda loadout: (
         (sunkenNestToVulnar in loadout) and

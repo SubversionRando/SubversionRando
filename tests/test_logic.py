@@ -3,7 +3,8 @@ from collections import defaultdict
 import pytest
 
 from subversion_rando.connection_data import SunkenNestL, area_doors
-from subversion_rando.item_data import Items, items_unpackable
+from subversion_rando.game import Game
+from subversion_rando.item_data import Item, Items, items_unpackable
 from subversion_rando.loadout import Loadout
 from subversion_rando.location_data import Location
 from subversion_rando.logic_goal import can_win
@@ -1105,6 +1106,110 @@ def test_crater_ledge() -> None:
 
     updateLogic(game.all_locations.values(), loadout)
     assert game.all_locations["Impact Crater Alcove"]["inlogic"]
+
+
+class TestSandyBurrow:
+    def not_without_item(self, game: Game, loadout: Loadout, item: Item) -> None:
+        """ access with item, no access without item """
+        updateLogic(game.all_locations.values(), loadout)
+        assert not game.all_locations["Sandy Burrow: Top"]["inlogic"]
+        assert not game.all_locations["Sandy Burrow: Bottom"]["inlogic"]
+
+        loadout.append(item)
+
+        updateLogic(game.all_locations.values(), loadout)
+        assert game.all_locations["Sandy Burrow: Top"]["inlogic"]
+        assert game.all_locations["Sandy Burrow: Bottom"]["inlogic"]
+
+    def test_no_morph(self) -> None:
+        game, loadout = setup(expert)
+        loadout.append(area_doors["SunkenNestL"])
+        load_everything_except(loadout, (Items.Morph,))
+
+        self.not_without_item(game, loadout, Items.Morph)
+
+    def test_casual_no_energy(self) -> None:
+        game, loadout = setup(casual)
+        loadout.append(area_doors["SunkenNestL"])
+        load_everything_except(loadout, (Items.Energy,))
+
+        self.not_without_item(game, loadout, Items.Energy)
+
+    def test_casual_aqua(self) -> None:
+        game, loadout = setup(casual)
+        loadout.append(area_doors["SunkenNestL"])
+        loadout.append(Items.GravityBoots)
+        loadout.append(Items.Morph)
+        loadout.append(Items.Speedball)  # shouldn't give anything but jumping in casual
+        loadout.append(Items.Energy)
+        loadout.append(Items.Missile)
+        loadout.append(Items.Screw)
+
+        self.not_without_item(game, loadout, Items.Aqua)
+
+    def test_casual_everything_except_aqua(self) -> None:
+        game, loadout = setup(casual)
+        loadout.append(area_doors["SunkenNestL"])
+        load_everything_except(loadout, (Items.Aqua,))
+
+        self.not_without_item(game, loadout, Items.Aqua)
+
+    def test_expert_ice_no_sbj(self) -> None:
+        game, loadout = setup(expert)
+        loadout.append(area_doors["SunkenNestL"])
+        loadout.append(Items.GravityBoots)
+        loadout.append(Items.Morph)
+        loadout.append(Items.Missile)
+        loadout.append(Items.HiJump)
+
+        updateLogic(game.all_locations.values(), loadout)
+        assert not game.all_locations["Sandy Burrow: Top"]["inlogic"]
+        assert not game.all_locations["Sandy Burrow: Bottom"]["inlogic"]
+
+        loadout.append(Items.Ice)
+
+        updateLogic(game.all_locations.values(), loadout)
+        assert not game.all_locations["Sandy Burrow: Top"]["inlogic"]
+        assert game.all_locations["Sandy Burrow: Bottom"]["inlogic"]
+
+        loadout.append(Items.PowerBomb)
+
+        updateLogic(game.all_locations.values(), loadout)
+        # power bombs kills enemies that I need to freeze, so I can't get out
+        assert not game.all_locations["Sandy Burrow: Top"]["inlogic"]
+        assert game.all_locations["Sandy Burrow: Bottom"]["inlogic"]
+
+        loadout.append(Items.Bombs)
+
+        updateLogic(game.all_locations.values(), loadout)
+        assert game.all_locations["Sandy Burrow: Top"]["inlogic"]
+        assert game.all_locations["Sandy Burrow: Bottom"]["inlogic"]
+
+    def test_expert_sbj_no_ice(self) -> None:
+        game, loadout = setup(expert)
+        loadout.append(area_doors["SunkenNestL"])
+        loadout.append(Items.GravityBoots)
+        loadout.append(Items.Morph)
+        loadout.append(Items.Missile)
+        loadout.append(Items.HiJump)
+
+        updateLogic(game.all_locations.values(), loadout)
+        assert not game.all_locations["Sandy Burrow: Top"]["inlogic"]
+        assert not game.all_locations["Sandy Burrow: Bottom"]["inlogic"]
+
+        loadout.append(Items.Speedball)
+
+        updateLogic(game.all_locations.values(), loadout)
+        assert not game.all_locations["Sandy Burrow: Top"]["inlogic"]
+        assert game.all_locations["Sandy Burrow: Bottom"]["inlogic"]
+
+        loadout.append(Items.PowerBomb)
+
+        updateLogic(game.all_locations.values(), loadout)
+        assert game.all_locations["Sandy Burrow: Top"]["inlogic"]
+        assert game.all_locations["Sandy Burrow: Bottom"]["inlogic"]
+
+    # TODO: screw doesn't help without aqua
 
 
 # TODO: places that I can go with no bombs, pbs, or screw (doesn't include colosseum)

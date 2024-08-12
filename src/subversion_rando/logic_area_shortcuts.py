@@ -643,6 +643,47 @@ class SandLand:
         )
     ))
 
+    sandy_burrow = LogicShortcut(lambda loadout: (
+        (GravityBoots in loadout) and
+        (Morph in loadout) and
+        (SandLand.shaftToGreenMoon in loadout) and
+
+        # up to entrance
+        ((Aqua in loadout) or (
+            loadout.has_all(HiJump, Tricks.movement_zoast)
+        ) or (
+            (Tricks.sbj_underwater_w_hjb in loadout)
+        )) and
+
+        # enemies here hit hard and are difficult to avoid
+        (loadout.has_any(energy_req(150), Tricks.movement_moderate)) and
+
+        # from below top item up to first morph tunnel
+        ((
+            (Aqua in loadout)
+        ) or (
+            # crouch and respin at the very top
+            loadout.has_all(HiJump, Tricks.movement_moderate)
+        ) or (
+            (Tricks.sbj_underwater_no_hjb in loadout) and (Tricks.movement_zoast in loadout)
+        ) or (
+            (Tricks.freeze_hard in loadout)
+        )) and
+
+        # from first morph tunnel up to door
+        # same as from bottom up to below top item
+        ((
+            (Aqua in loadout)
+        ) or (
+            (Tricks.sbj_underwater_w_hjb in loadout)
+        ) or (
+            (HiJump in loadout) and (Tricks.freeze_hard in loadout)
+            # note: freezing enemies requires not killing the enemies with power bomb to get top item
+            # so this section has to be duplicated in top item logic
+        ))
+    ))
+    """ to middle of Sandy Burrow """
+
 
 class ServiceSector:
     wasteProcessingTraverse = LogicShortcut(lambda loadout: (
