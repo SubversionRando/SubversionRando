@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "subversion_rando"
-version = "0.7.2"
+version = "0.8.0"
 authors = [
   { name="beauxq" },
   { name="randorandy" },
