@@ -2,7 +2,7 @@ from typing import Literal
 from .connection_data import area_doors
 from .item_data import Items
 from .logicCommon import can_bomb, can_use_pbs, lava_run, varia_or_hell_run
-from .logic_area_shortcuts import Early, FireHive, LifeTemple, SandLand, ServiceSector, SkyWorld,  Suzi
+from .logic_area_shortcuts import Early, FireHive, LifeTemple, SandLand, ServiceSector, SkyWorld, Suzi
 from .logic_boss_kill import BossKill
 from .logic_shortcut import LogicShortcut
 from .logic_shortcut_data import breakIce, can_crash_spaceport, icePod, missileDamage, pinkDoor, shootThroughWalls
@@ -203,13 +203,13 @@ class BossReach:
     ))
 
 
-_BossName = Literal[
+BossName = Literal[
     "kraid", "spore_spawn", "bomb_torizo", "draygon", "dust_torizo",
     "gold_torizo", "crocomire", "ridley", "phantoon", "hyper_torizo", "botwoon"
 ]
 
 
-def reach_and_kill(b: _BossName) -> LogicShortcut:
+def reach_and_kill(b: BossName) -> LogicShortcut:
     return LogicShortcut(lambda loadout: (
         loadout.has_all(getattr(BossReach, b), getattr(BossKill, b))
     ))

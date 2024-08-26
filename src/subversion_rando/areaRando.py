@@ -223,7 +223,7 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> Door
                 Connections.append((selectedDoor, randomNode))
                 # for DEBUG
                 # print('RightSideDoorsList')
-                # print('pairing',selectedDoor[2],selectedDoor[3],"--",OpenNodesL[randomNode][2],OpenNodesL[randomNode][3])
+                # print('pairing', selectedDoor[2], selectedDoor[3], "--", randomNode[2], randomNode[3])
                 OpenNodesL.remove(randomNode)
                 # Now add the area to the visitedareas
                 # and all nodes from that area
@@ -243,7 +243,7 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> Door
                 Connections.append((selectedDoor, randomNode))
                 # for DEBUG
                 # print('LeftSideDoorsList')
-                # print('pairing',selectedDoor[2],selectedDoor[3],"--",OpenNodesR[randomNode][2],OpenNodesR[randomNode][3])
+                # print('pairing', selectedDoor[2], selectedDoor[3], "--", randomNode[2], randomNode[3])
                 OpenNodesR.remove(randomNode)
                 # Now add the area to the visitedareas
                 # and all nodes from that area

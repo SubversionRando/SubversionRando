@@ -122,7 +122,7 @@ def custom_logic_tricks_from_str(logic_str: str) -> frozenset[Trick]:
     try:
         logic_int = int(logic_str, 16)
     except ValueError:
-        raise ValueError("invalid logic string")
+        raise ValueError("invalid logic string") from None
 
     for mask_str, t in _mask_2_trick.items():
         mask = int(mask_str, 16)

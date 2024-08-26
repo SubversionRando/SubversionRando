@@ -31,3 +31,14 @@ typeCheckingMode = "strict"
 
 pythonVersion = "3.9"
 pythonPlatform = "Linux"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["B", "ANN", "E", "F", "W", "C901", "A"]
+ignore = ["ANN101", "ANN102", "E714"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/subversion_rando/terrain_patch_data.py" = ["E501"]
+"tests/test_logic.py" = ["B023"]

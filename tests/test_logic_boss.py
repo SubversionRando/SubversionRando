@@ -13,8 +13,7 @@ from subversion_rando.logic_shortcut import LogicShortcut
 
 
 def test_reach_and_kill_typing() -> None:
-    _BossName = getattr(logic_boss_reach, "_BossName")
-    keys: Iterable[Any] = _BossName.__dict__["__args__"]  # Any so it counts as Literal
+    keys: Iterable[Any] = logic_boss_reach.BossName.__dict__["__args__"]  # Any so it counts as Literal
     for key in keys:
         assert isinstance(reach_and_kill(key), LogicShortcut)
 

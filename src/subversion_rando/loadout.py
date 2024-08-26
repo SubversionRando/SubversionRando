@@ -1,5 +1,5 @@
 from collections import Counter
-from typing import Any, Iterable, Iterator, Optional, Union
+from typing import Iterable, Iterator, Optional, Union
 
 from .area_rando_types import AreaDoor
 from .game import Game
@@ -19,8 +19,13 @@ class ItemCounter(Counter[Union[Item, AreaDoor]]):
 
     This changes it to return `False` if the count is less than one.
     """
-    def __contains__(self, x: Any) -> bool:
-        return self[x] > 0
+    def __contains__(self, x: Union[Item, AreaDoor]) -> bool:  # pyright: ignore[reportIncompatibleMethodOverride]
+        # The incompatible override will help find usages in code.
+        import warnings
+        warnings.warn("Don't use `__contains__` on this object, because it will be slow. Do the check inline instead.",
+                      DeprecationWarning,
+                      stacklevel=2)
+        return isinstance(x, Union[Item, AreaDoor]) and self[x] > 0  # pyright: ignore[reportUnnecessaryIsInstance]
 
 
 class Loadout:
