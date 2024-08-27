@@ -27,8 +27,26 @@ def energy_from_tanks(n: int) -> int:
 
 
 def energy_req(amount: int) -> LogicShortcut:
+    """ If there's no heat or cold, and suits can reduce the damage, use `take_damage` instead. """
     return LogicShortcut(lambda loadout: (
         energy_from_tanks(loadout.count(Items.Energy)) >= amount
+    ))
+
+
+def take_damage(avoidable: int, unavoidable: int = 0) -> LogicShortcut:
+    """ assuming no suits and no heat or cold """
+    return LogicShortcut(lambda loadout: (
+        energy_from_tanks(loadout.count(Items.Energy)) > (
+            ((avoidable * (
+                0 if Tricks.movement_zoast in loadout else
+                0.5 if Tricks.movement_moderate in loadout else
+                1
+            )) + unavoidable) * (
+                1 - (
+                    (Items.Aqua in loadout) + (Items.Varia in loadout) + (Items.MetroidSuit in loadout)
+                ) * 0.25
+            )
+        )
     ))
 
 

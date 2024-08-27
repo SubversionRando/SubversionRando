@@ -6,7 +6,7 @@ from subversion_rando.trick import Trick
 from subversion_rando.item_data import Items
 from subversion_rando.loadout import Loadout
 from subversion_rando.logicCommon import ammo_in_loadout, ammo_req, \
-    energy_from_tanks, crystal_flash, energy_req, varia_or_hell_run
+    energy_from_tanks, crystal_flash, energy_req, take_damage, varia_or_hell_run
 from subversion_rando.logic_presets import casual, expert
 from subversion_rando.logic_shortcut import LogicShortcut
 
@@ -63,6 +63,71 @@ def test_energy_req() -> None:
     assert energy_req(700) in loadout
     assert energy_req(500) in loadout
     assert energy_req(900) not in loadout
+
+
+def test_take_damage_casual_avoidable() -> None:
+    game = make_game(casual)
+    loadout = Loadout(game, (Items.Energy for _ in range(7)))
+
+    assert take_damage(798) in loadout
+    assert take_damage(799) not in loadout
+
+    loadout.append(Items.MetroidSuit)
+
+    assert take_damage(1050) in loadout
+    assert take_damage(1100) not in loadout
+
+    loadout.contents[Items.MetroidSuit] = 0
+    loadout.append(Items.Varia)
+
+    assert take_damage(1050) in loadout
+    assert take_damage(1100) not in loadout
+
+    loadout.append(Items.Aqua)
+
+    assert take_damage(1500) in loadout
+    assert take_damage(1650) not in loadout
+
+    loadout = Loadout(game)
+
+    assert take_damage(80) in loadout
+    assert take_damage(125) not in loadout
+
+    loadout.append(Items.Aqua)
+    loadout.append(Items.MetroidSuit)
+    loadout.append(Items.Varia)
+
+    assert take_damage(350) in loadout
+    assert take_damage(450) not in loadout
+
+
+def test_take_damage_expert_avoidable() -> None:
+    game = make_game(expert)
+    loadout = Loadout(game, (Items.Energy for _ in range(2)))
+
+    assert take_damage(798) in loadout
+    assert take_damage(799) in loadout
+    assert take_damage(7000000) in loadout
+
+    loadout.append(Items.Varia)
+
+    assert take_damage(1) in loadout
+    assert take_damage(11000) in loadout
+
+
+def test_take_damage_expert_unavoidable() -> None:
+    game = make_game(expert)
+    loadout = Loadout(game, (Items.Energy for _ in range(2)))
+
+    assert take_damage(500, 298) in loadout
+    assert take_damage(50, 299) not in loadout
+    assert take_damage(7000000, 250) in loadout
+
+    loadout.append(Items.Aqua)
+
+    assert take_damage(1, 299) in loadout
+    assert take_damage(11000, 380) in loadout
+    assert take_damage(240, 420) not in loadout
 
 
 def test_varia_or_hell_run() -> None:
