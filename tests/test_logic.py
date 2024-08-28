@@ -919,6 +919,116 @@ def test_no_bomb_blocks_or_speed(logic: frozenset[Trick]) -> None:
             assert found[loc_name], f"expert logic thinks bomb/speed blocks are needed for {loc_name}"
 
 
+_no_energy = {
+    "Benthic Cache",
+    "Benthic Cache Access",
+    "Impact Crater",
+    "Impact Crater Alcove",
+    "Impact Crater Overlook",
+    "Ocean Shore: Bottom",
+    "Ocean Shore: Top",
+    "Sandy Cache",
+    "Sandy Gully",
+    "Sediment Floor",
+    "Sediment Flow",
+    "Shrine Of The Penumbra",  # TODO: remove
+    "Submarine Nest",
+    "Subterranean Burrow",
+    "Tram To Suzi Island",  # TODO: remove
+    "Archives: Back",
+    "Archives: Front",
+    "Arena",
+    "Auxiliary Pump Room",
+    "Causeway Overlook",
+    "Cistern",
+    "Crypt",
+    "Epiphreatic Crag",
+    "Eribium Apparatus Room",
+    "Grand Chasm",
+    "Grand Vault",
+    "Hall Of The Elders",
+    "Mezzanine Concourse",
+    "Monitoring Station",
+    "Path Of Swords",
+    "Sensor Maintenance: Bottom",
+    "Sensor Maintenance: Top",
+    "Trophobiotic Chamber",
+    "Vulnar Caves Entrance",
+    "Warrior Shrine: Bottom",
+    "Warrior Shrine: Top",
+    "Warrior Shrine: Middle",
+    "Waste Processing",
+    "West Spore Field",
+    "Antelier",
+    "Central Corridor: Left",
+    "Central Corridor: Right",
+    "Containment Area",
+    "Equipment Locker",
+    "Foundry",
+    "Hydrodynamic Chamber",
+    "Loading Dock Storage Area",
+    "Norak Escarpment",
+    "Weapon Research",
+    "Antechamber",
+    "Grand Promenade",
+    "Armory Cache 2",  # TODO: remove
+    "Armory Cache 3",  # TODO: remove
+    "Drawing Room",  # TODO: remove
+    "Glacier's Reach",
+    "Ice Cave",
+    "Icy Flow",
+    "Sitting Room",
+    "Snow Cache",
+    "Summit Landing",
+    "Syzygy Observatorium",
+    "Upper Vulnar Power Node",
+    "Restricted Area",
+    "Aft Battery",
+    "Docking Port 3",
+    "Docking Port 4",
+    "Extract Storage",
+    "Forward Battery",
+    "Gantry",
+    "Ready Room",
+    "Torpedo Bay",
+    "Weapon Locker",
+}
+
+
+def test_one_suit_no_energy() -> None:
+    """ casual logic energy requirements """
+    game, loadout = setup(casual)
+    # TODO: also except screw, because screw attack should remove a lot of energy requirements
+    load_everything_except(loadout, {Items.Energy, Items.Varia, Items.MetroidSuit})
+
+    found: dict[str, bool] = defaultdict(bool)
+
+    def this_loadout() -> None:
+        updateLogic(game.all_locations.values(), loadout)
+
+        for loc_name, loc in game.all_locations.items():
+            if loc["inlogic"]:
+                found[loc_name] = True
+
+    loadout.append(SunkenNestL)
+    loadout.append(Items.spaceDrop)
+    this_loadout()
+    loadout.contents[Items.Aqua] = 0
+    loadout.append(Items.Varia)
+    this_loadout()
+    loadout.contents[Items.Varia] = 0
+    loadout.append(Items.MetroidSuit)
+    this_loadout()
+
+    for loc_name, value in found.items():
+        if value:
+            print(f'"{loc_name}"')
+            assert loc_name in _no_energy, f"logic thinks no energy needed for {loc_name}"
+
+    for loc_name in _no_energy:
+        assert found[loc_name], f"logic thinks energy is needed for {loc_name}"
+
+
 def test_penumbra_expert() -> None:
     game, loadout = setup(expert)
     loadout.append(area_doors["OceanShoreR"])

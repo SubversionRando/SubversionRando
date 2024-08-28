@@ -901,7 +901,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
                 # (don't move too far right, there's terrain that will mess up the super sink
                 #  - keep a few pixels over the bomb blocks)
             )
-        ))
+        )) and
+        (take_damage(162) in loadout)
     ),
     "Shrine Of Fervor": lambda loadout: (
         (GravityBoots in loadout) and
@@ -1462,7 +1463,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Briar: Bottom": lambda loadout: (  # AmmoTank
         (norakToLifeTemple in loadout) and
         (Morph in loadout) and
-        (GravityBoots in loadout)
+        (GravityBoots in loadout) and
+        (take_damage(162) in loadout)
     ),
     "Icy Flow": lambda loadout: (
         (railAccess in loadout) and

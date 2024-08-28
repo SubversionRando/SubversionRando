@@ -1,7 +1,7 @@
 from .connection_data import area_doors_unpackable
 from .door_logic import canOpen
 from .item_data import items_unpackable
-from .logicCommon import can_bomb, can_use_pbs, lava_run
+from .logicCommon import can_bomb, can_use_pbs, lava_run, take_damage
 from .logic_area_shortcuts import SandLand, ServiceSector, LifeTemple, \
     SkyWorld, FireHive, PirateLab, Verdite, Geothermal, Early
 from .logicInterface import AreaLogicType
@@ -261,7 +261,7 @@ area_logic: AreaLogicType = {
             ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
         ),
         ("EleToTurbidPassageR", "PileAnchorL"): lambda loadout: (
-            loadout.has_all(Super, GravityBoots, Aqua, can_use_pbs(2), SpeedBooster, Grapple) and
+            loadout.has_all(Super, GravityBoots, Aqua, can_use_pbs(2), SpeedBooster, Grapple, take_damage(162)) and
             ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
         ),
         ("PileAnchorL", "OceanShoreR"): lambda loadout: (
@@ -269,7 +269,7 @@ area_logic: AreaLogicType = {
             ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
         ),
         ("PileAnchorL", "EleToTurbidPassageR"): lambda loadout: (
-            loadout.has_all(Super, GravityBoots, Aqua, can_use_pbs(2), SpeedBooster, Grapple) and
+            loadout.has_all(Super, GravityBoots, Aqua, can_use_pbs(2), SpeedBooster, Grapple, take_damage(162)) and
             ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
         ),
     },

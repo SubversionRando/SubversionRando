@@ -566,6 +566,7 @@ class SandLand:
     turbidToSedFloor = LogicShortcut(lambda loadout: (
         (GravityBoots in loadout) and
         (Morph in loadout) and
+        (take_damage(162) in loadout) and
         ((Aqua in loadout) or (
             (HiJump in loadout) and
             ((Tricks.movement_moderate in loadout) or (
@@ -690,6 +691,7 @@ class SandLand:
 class ServiceSector:
     wasteProcessingTraverse = LogicShortcut(lambda loadout: (
         (GravityBoots in loadout) and
+        (take_damage(162) in loadout) and
         (
             ((HiJump in loadout) and (Ice in loadout) and (Tricks.wall_jump_precise in loadout)) or
             (Tricks.sbj_w_hjb in loadout) or
@@ -1279,7 +1281,8 @@ class LifeTemple:
                 # door to Jungle Map Station Access, or the bricks across from it.
             )
         )) and
-        (GravityBoots in loadout)
+        (GravityBoots in loadout) and
+        (take_damage(323) in loadout)
     ))
     """ to get from the bottom of Veranda to the top """
 
@@ -1390,7 +1393,8 @@ class FireHive:
         ) or (
             (varia_or_hell_run(1050, heat_and_metroid_suit_not_required=True) in loadout)
         )) and
-        (GravityBoots in loadout)
+        (GravityBoots in loadout) and
+        (take_damage(322) in loadout)
     ))
     """ from elevator to infested passage """
 
@@ -1548,11 +1552,13 @@ class Geothermal:
             ((Tricks.movement_zoast in loadout) or (HiJump in loadout)) and
             (can_bomb(1) in loadout)
         )) and
+        (take_damage(162) in loadout) and  # both left and right have strong enemies
         (varia_or_hell_run(80) in loadout)  # cold room
     ))
 
     thermalResGamma = LogicShortcut(lambda loadout: (
         (GravityBoots in loadout) and
+        (take_damage(162) in loadout) and
         ((plasmaWaveGate in loadout) or (Tricks.plasma_gate_glitch in loadout)) and
         ((
             # Subversion's full halfie
