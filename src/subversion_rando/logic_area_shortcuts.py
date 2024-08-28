@@ -810,14 +810,15 @@ class Verdite:
                 (Screw in loadout) and (Aqua in loadout)  # need aqua to come up through this hole with screw
             ))
         )) and
-        # TODO: rusty said there's a way to get through hive entrance with speed booster, I don't see how
+        # TODO: rusty said there's a way to get through verdite entrance with speed booster, I don't see how
         (
             (Aqua in loadout) or
             (Tricks.sbj_underwater_no_hjb in loadout) or
             (Tricks.sbj_underwater_w_hjb in loadout) or
             ((HiJump in loadout) and (Ice in loadout)) or
             (loadout.has_all(Ice, Tricks.crouch_or_downgrab))  # and uwu 1-tile wide
-        )
+        ) and
+        (take_damage(180) in loadout)  # strong spikes in verdite entrance + boulder
     ))
     """ traverse "Hot Spring" between Sporous Nook and Verdite Mines (including Verdite Mines Entrance) """
 
