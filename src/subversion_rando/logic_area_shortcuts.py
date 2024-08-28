@@ -1,7 +1,9 @@
 """ This is for logic shortcuts that apply only to 1 specific area. """
 
 from .item_data import items_unpackable
-from .logicCommon import ammo_req, can_bomb, can_use_pbs, crystal_flash, energy_req, hell_run_energy, varia_or_hell_run
+from .logicCommon import (
+    ammo_req, can_bomb, can_use_pbs, crystal_flash, energy_req, hell_run_energy, take_damage, varia_or_hell_run
+)
 from .logic_boss_kill import BossKill
 from .logic_shortcut import LogicShortcut
 from .logic_shortcut_data import (
@@ -164,7 +166,7 @@ class SkyWorld:
 
     westTerminal = LogicShortcut(lambda loadout: (
         (killGreenOrRedPirates(3) in loadout) or
-        (energy_req(180) in loadout) or
+        (take_damage(180) in loadout) or
         (Tricks.movement_moderate in loadout)
     ))
 
@@ -656,7 +658,7 @@ class SandLand:
         )) and
 
         # enemies here hit hard and are difficult to avoid
-        (loadout.has_any(energy_req(150), Tricks.movement_moderate)) and
+        (take_damage(200) in loadout) and
 
         # from below top item up to first morph tunnel
         ((
@@ -740,8 +742,8 @@ class ServiceSector:
         (GravityBoots in loadout) and
         ((DarkVisor in loadout) or (
             (Tricks.dark_easy in loadout) and
-            ((energy_req(181) in loadout) or (Tricks.movement_zoast in loadout))
-            # movement_zoast here represents knowing where all the crabs are coming from
+            (take_damage(270) in loadout)
+            # movement tricks in `take_damage` represent knowing where all the crabs are coming from
         )) and
         (can_bomb(1) in loadout)
     ))
@@ -1704,14 +1706,8 @@ class Suzi:
     enter = LogicShortcut(lambda loadout: (
         (GravityBoots in loadout) and
         (shootThroughWalls in loadout) and
-        ((
-            (energy_req(350) in loadout) and
-            (Tricks.movement_zoast in loadout)
-        ) or (
-            (energy_req(550) in loadout) and
-            (Tricks.movement_moderate in loadout)
-        ) or (
-            (energy_req(750) in loadout)
-        ))
+
+        # these numbers tuned so casual can do it if they have 12 tanks and 1 suit
+        (take_damage(1203, 503) in loadout)
     ))
     """ mostly about the energy requirement """

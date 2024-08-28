@@ -1131,7 +1131,7 @@ class TestSandyBurrow:
     def test_casual_no_energy(self) -> None:
         game, loadout = setup(casual)
         loadout.append(area_doors["SunkenNestL"])
-        load_everything_except(loadout, (Items.Energy,))
+        load_everything_except(loadout, (Items.Energy, Items.MetroidSuit))
 
         self.not_without_item(game, loadout, Items.Energy)
 

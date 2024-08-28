@@ -4,7 +4,7 @@ from .connection_data import area_doors_unpackable
 from .item_data import items_unpackable
 from .loadout import Loadout
 from .logicCommon import ammo_req, can_bomb, can_use_pbs, crystal_flash, \
-    energy_req, hell_run_energy, lava_run, varia_or_hell_run
+    energy_req, hell_run_energy, lava_run, take_damage, varia_or_hell_run
 from .logic_area_shortcuts import Early, SandLand, ServiceSector, SpacePort, LifeTemple, SkyWorld, \
     FireHive, PirateLab, Verdite, Geothermal, Suzi, DrayLand
 from .logic_boss_kill import BossKill
@@ -156,7 +156,7 @@ meanderingPassage = LogicShortcut(lambda loadout: (
         (pinkDoor in loadout) and  # door to meandering passage
         ((DarkVisor in loadout) or (Tricks.dark_medium in loadout))
     )) and
-    (loadout.has_any(Tricks.movement_moderate, energy_req(130)))  # puyos hurt
+    (take_damage(195) in loadout)  # puyos hurt
     # hint: snail will help you up meandering passage
 ))
 """ from OceanShoreR or EleToTurbidPassageR to bottom of meandering passage"""
@@ -477,11 +477,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (GravityBoots in loadout) and
         # 5-tile morph jump
         (pinkDoor in loadout) and  # between spore collection and spore generator access
-
-        # kill spore spawn
-        (loadout.has_any(Tricks.movement_moderate, HiJump, SpaceJump)) and
-        (loadout.has_any(Tricks.movement_moderate, energy_req(130), Varia, MetroidSuit, Aqua)) and
-        (loadout.has_any(missileDamage, Charge))
+        (BossKill.spore_spawn in loadout)
     ),
     "Upper Vulnar Power Node": lambda loadout: (
         (sunkenNestToVulnar in loadout) and
@@ -1148,15 +1144,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (Charge in loadout)
         ) or (
             (Charge in loadout) and
-            (energy_req(
-                750
-                if (Tricks.movement_zoast in loadout)
-                else (
-                    1050
-                    if (Tricks.movement_moderate in loadout)
-                    else 1350
-                )
-            ) in loadout)
+            (take_damage(1337, 635) in loadout)
         )) and
         # exit
         (Hypercharge in loadout) and
@@ -1185,7 +1173,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
         (
             (electricHyper in loadout) or
             (
-                ((energy_req(250) in loadout) or (Tricks.movement_zoast in loadout)) and
+                (take_damage(250) in loadout) and
                 (can_use_pbs(3) in loadout)
             )
         ) and
@@ -1513,7 +1501,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
 
             # xray up from left door, super sink down from right side, joonie used about 7 etanks with aqua
             # hard energy req because you get hit by ghost while xray climbing and super sinking
-            loadout.has_all(Tricks.xray_climb, Tricks.super_sink_easy, varia_or_hell_run(1050), energy_req(220))
+            loadout.has_all(Tricks.xray_climb, Tricks.super_sink_easy, varia_or_hell_run(1050), take_damage(0, 300))
         )
     ),
     "Eddy Channels": lambda loadout: (
@@ -1675,7 +1663,7 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
                     (SpaceJump in loadout)
                 ) or (
                     # without space jump you have to run a bit on spikes
-                    (energy_req(121) in loadout)
+                    (take_damage(0, 180) in loadout)
                 ))
             )
         )
@@ -1805,16 +1793,9 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (
                 (bonkCeilingSuperSink in loadout) and
                 (
-                    (energy_req(201) in loadout) or
-                    (
-                        (energy_req(151) in loadout) and
-                        loadout.has_any(Varia, Aqua)
-                    ) or
-                    (
-                        (Tricks.movement_zoast in loadout)
-                        # possible to get out without taking any damage by morph rolling into pixel-perfect position
-                        # then up to crouch and jump
-                    )
+                    (take_damage(201) in loadout)
+                    # possible to get out without taking any damage by morph rolling into pixel-perfect position
+                    # then up to crouch and jump
                 ) and
                 (Tricks.clip_crouch in loadout)  # not a typical clip_crouch
                 # How to get up through laser:
@@ -1838,9 +1819,8 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
 
         (doorsToCentralCorridorMid in loadout) and
         (
-            (energy_req(129) in loadout) or
-            ((MetroidSuit in loadout) and (Speedball in loadout)) or
-            (Tricks.movement_zoast in loadout)
+            (take_damage(120) in loadout) or
+            ((MetroidSuit in loadout) and (Speedball in loadout))
         )
     ),
     "Norak Escarpment": lambda loadout: (

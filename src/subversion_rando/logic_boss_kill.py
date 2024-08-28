@@ -1,5 +1,5 @@
 from .item_data import Items
-from .logicCommon import ammo_req, crystal_flash, energy_req, varia_or_hell_run
+from .logicCommon import ammo_req, crystal_flash, energy_req, take_damage, varia_or_hell_run
 from .logic_shortcut import LogicShortcut
 from .logic_shortcut_data import missileDamage
 from .trick_data import Tricks
@@ -19,15 +19,13 @@ class BossKill:
             # cheesy did it first try without speedball or aqua or space jump
             (Tricks.movement_zoast in loadout) and
             (Items.HiJump in loadout) and
-            (energy_req(459) in loadout)
+            (take_damage(459) in loadout)
         ))
     ))
 
     spore_spawn = LogicShortcut(lambda loadout: (
         (loadout.has_any(Tricks.movement_moderate, Items.HiJump, Items.SpaceJump)) and
-        (loadout.has_any(
-            Tricks.movement_moderate, energy_req(130), Items.Varia, Items.MetroidSuit, Items.Aqua
-        )) and
+        (take_damage(204) in loadout) and
         (loadout.has_any(missileDamage, Items.Charge))
     ))
 
@@ -95,7 +93,7 @@ class BossKill:
                 ((Items.Spazer in loadout) or (Items.Plasma in loadout))
             ) or
             loadout.has_all(Items.Super, ammo_req(230), varia_or_hell_run(2460)) or
-            loadout.has_all(Items.Super, ammo_req(150), Items.Varia, energy_req(1210)) or
+            loadout.has_all(Items.Super, ammo_req(150), Items.Varia, take_damage(1008, 608)) or
             loadout.has_all(Tricks.patience, Items.Varia, Items.Missile)
         )
     ))
@@ -152,16 +150,11 @@ class BossKill:
             (Items.Charge in loadout) or
             (Items.Missile in loadout) or
             ((Items.Super in loadout) and (
-                (energy_req(550) in loadout) or
+                (take_damage(703, 101) in loadout) or
                 (Items.Screw in loadout)
             ))
         ) and
-        ((Tricks.movement_zoast in loadout) or (
-            (Tricks.movement_moderate in loadout) and
-            (energy_req(250) in loadout)
-        ) or (
-            (energy_req(450) in loadout)
-        ))
+        (take_damage(475) in loadout)
     ))
 
     hyper_torizo = LogicShortcut(lambda loadout: (
@@ -195,5 +188,5 @@ class BossKill:
         ) or (
             (Items.Charge in loadout)
         )) and
-        (loadout.has_any(Tricks.movement_zoast, energy_req(250)))  # don't know how much energy is good
+        (take_damage(450) in loadout)  # don't know how much energy is good
     ))
