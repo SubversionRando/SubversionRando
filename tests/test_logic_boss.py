@@ -27,8 +27,10 @@ def test_hint_logic() -> None:
 
 
 def test_goal_logic() -> None:
+    import random
+
     options = GameOptions(frozenset(), False, "D", True, objective_rando=999)  # all the objectives
     locations = new_locations()
-    goals = generate_goals(options)
+    goals = generate_goals(options, random.randrange(1073741824))
     loadout = Loadout(Game(options, locations, vanilla_areas(), 0))
     _ = (goal_logic(goals) in loadout)

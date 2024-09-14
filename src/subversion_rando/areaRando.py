@@ -1,5 +1,5 @@
 from collections import defaultdict, deque
-import random
+from random import Random
 from typing import Optional
 
 from .area_rando_types import AreaDoor, DoorPairs
@@ -109,7 +109,7 @@ def escape_path(door_pairs: DoorPairs) -> Optional[list[str]]:
     return list(reversed(reverse_path))
 
 
-def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> DoorPairs:
+def RandomizeAreas(force_normal_early: bool, seed: int) -> DoorPairs:
     """
     force_normal_early forces SunkenNestL to connect to OceanShoreR
     This is necessary for casual major/minor.
@@ -121,8 +121,7 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> Door
     # [3]the name of the door
     # [4]region
 
-    if not (seed is None):
-        random.seed(seed)
+    random = Random(seed)
 
     Connections: list[tuple[AreaDoor, AreaDoor]] = []
     areaAttempts = 0
@@ -131,8 +130,7 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> Door
         areaAttempts += 1
         if areaAttempts > 1000:
             raise TimeoutError("> 1000 attempts for subversion area rando")
-        if seed is None:
-            print("**********Trying to get a good escape attempt:", areaAttempts)
+        # print("**********Trying to get a good escape attempt:", areaAttempts)
 
         OpenNodesR = [CraterR,
                       RuinedConcourseTR,
@@ -141,7 +139,8 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> Door
                       SporeFieldBR]
         OpenNodesL = [SunkenNestL,
                       RuinedConcourseBL]
-        VisitedAreas = ['Early']
+        assert SunkenNestL.area_name == "Early", SunkenNestL.area_name
+        VisitedAreas = {SunkenNestL.area_name}
         Connections = []
 
         RightSideDoorsList = [OceanShoreR,
@@ -197,7 +196,7 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> Door
             OpenNodesL.remove(SunkenNestL)
             RightSideDoorsList.remove(OceanShoreR)
 
-            VisitedAreas = VisitedAreas+[OceanShoreR.area_name]
+            VisitedAreas.add(OceanShoreR.area_name)
             for doorSearch in RightSideDoorsList:
                 if doorSearch.area_name in VisitedAreas:
                     OpenNodesR += [doorSearch]
@@ -205,16 +204,13 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> Door
                 if doorClean in RightSideDoorsList:
                     RightSideDoorsList.remove(doorClean)
 
-        while RightSideDoorsList != [] or LeftSideDoorsList != []:
+        while len(RightSideDoorsList) or len(LeftSideDoorsList):
             # print("Lengths : OpenNodesL",len(OpenNodesL)," and OpenNodesR",len(OpenNodesR))
             CombinedDoorsList = RightSideDoorsList + LeftSideDoorsList
             # This case is for making sure all areas make it into the map
             # Then all other connections happen later
-            randomIndex = 0
-            if len(CombinedDoorsList) > 1:
-                randomIndex = random.randint(0, len(CombinedDoorsList)-1)
-            selectedDoor = CombinedDoorsList[randomIndex]
-            if (selectedDoor in RightSideDoorsList) and OpenNodesL != []:
+            selectedDoor = random.choice(CombinedDoorsList)
+            if (selectedDoor in RightSideDoorsList) and len(OpenNodesL):
                 # It is a right door and there are open Left nodes to connect to
                 # if it fails, the loop will try again with no change
                 RightSideDoorsList.remove(selectedDoor)
@@ -227,10 +223,10 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> Door
                 OpenNodesL.remove(randomNode)
                 # Now add the area to the visitedareas
                 # and all nodes from that area
-                VisitedAreas = VisitedAreas+[selectedDoor.area_name]
+                VisitedAreas.add(selectedDoor.area_name)
                 for doorSearch in RightSideDoorsList:
                     if doorSearch.area_name in VisitedAreas:
-                        OpenNodesR += [doorSearch]
+                        OpenNodesR.append(doorSearch)
                 for doorClean in OpenNodesR:
                     if doorClean in RightSideDoorsList:
                         RightSideDoorsList.remove(doorClean)
@@ -247,10 +243,10 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> Door
                 OpenNodesR.remove(randomNode)
                 # Now add the area to the visitedareas
                 # and all nodes from that area
-                VisitedAreas = VisitedAreas + [selectedDoor.area_name]  # add the area string
+                VisitedAreas.add(selectedDoor.area_name)
                 for doorSearch in LeftSideDoorsList:
                     if doorSearch.area_name in VisitedAreas:
-                        OpenNodesL += [doorSearch]
+                        OpenNodesL.append(doorSearch)
                 for doorClean in OpenNodesL:
                     if doorClean in LeftSideDoorsList:
                         LeftSideDoorsList.remove(doorClean)
@@ -265,14 +261,8 @@ def RandomizeAreas(force_normal_early: bool, seed: Optional[int] = None) -> Door
         # print("While connecting OpenNodes:")
         while OpenNodesL != [] and OpenNodesR != []:
             # Should only need to keep track of one since they should match 1:1
-            randomL = 0
-            if len(OpenNodesL) > 1:
-                randomL = random.randint(0, len(OpenNodesL) - 1)
-            chosenNodeL = OpenNodesL[randomL]
-            randomR = 0
-            if len(OpenNodesR) > 1:
-                randomR = random.randint(0, len(OpenNodesR) - 1)
-            chosenNodeR = OpenNodesR[randomR]
+            chosenNodeL = random.choice(OpenNodesL)
+            chosenNodeR = random.choice(OpenNodesR)
             Connections.append((chosenNodeL, chosenNodeR))
             OpenNodesL.remove(chosenNodeL)
             OpenNodesR.remove(chosenNodeR)
@@ -340,8 +330,8 @@ def write_area_doors(door_pairs: DoorPairs, romWriter: RomWriter) -> None:
     ]
 
     for doorlocid in colorDoorsR:
-        romWriter.writeBytes(int(doorlocid, 16)+0, b"\x42")  # gray type door
-        romWriter.writeBytes(int(doorlocid, 16)+5, b"\x98")  # animals subtype
+        romWriter.writeBytes(int(doorlocid, 16) + 0, b"\x42")  # gray type door
+        romWriter.writeBytes(int(doorlocid, 16) + 5, b"\x98")  # animals subtype
     for doorlocid in colorDoorsL:
-        romWriter.writeBytes(int(doorlocid, 16)+0, b"\x48")  # gray type door
-        romWriter.writeBytes(int(doorlocid, 16)+5, b"\x98")  # animals subtype
+        romWriter.writeBytes(int(doorlocid, 16) + 0, b"\x48")  # gray type door
+        romWriter.writeBytes(int(doorlocid, 16) + 5, b"\x98")  # animals subtype

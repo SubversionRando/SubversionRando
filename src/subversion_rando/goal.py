@@ -1,4 +1,4 @@
-import random
+from random import Random
 import struct
 import itertools
 
@@ -15,7 +15,7 @@ max_goal_count = 12
 
 event_address = 0x10C000
 final_room_init_address = 0x07BE9E
-messages_boxes_address = 0x0296ED-6
+messages_boxes_address = 0x0296ED - 6
 log_mission_address = 0x1E05D6
 check_event_func = 0xF600
 
@@ -70,19 +70,19 @@ message_box_map = {
 }
 
 events: list[list[Event]] = [
-    [(0x40, "KRAID",        "DEFEAT KRAID IN THE SUBMARINE LAIR.")],
-    [(0x49, "SPORE SPAWN",  "DEFEAT SPORE SPAWN IN THE SPORE FIELD GENERATOR.")],
-    [(0x4A, "BOMB TORIZO",  "DEFEAT THE TORIZO TRIO IN THE ARENA.")],
-    [(0x50, "DRAYGON",      "DEFEAT DRAYGON IN THEIR MOLTEN NURSERY.")],
-    [(0x51, "DUST TORIZO",  "ANNIHILATE THE DEAD TORIZO IN THE HIVE.")],
-    [(0x52, "GOLD TORIZO",  "DEFEAT THE GOLD TORIZO GUARDING THE MAGMA LAKE.")],
-    [(0x58, "CROCOMIRE",    "DEFEAT CROCOMIRE IN THE JUNGLE LAIR.")],
-    [(0x60, "RIDLEY",       "DEFEAT RIDLEY IN THE SKY TEMPLE BOODING CHAMBER."),
-     (0x61, "PHANTOON",     "DEFEAT PHANTOON IN THE SKY TEMPLE RELIQUARY.")],
+    [(0x40, "KRAID",        "DEFEAT KRAID IN THE SUBMARINE LAIR.")],  # noqa: E241
+    [(0x49, "SPORE SPAWN",  "DEFEAT SPORE SPAWN IN THE SPORE FIELD GENERATOR.")],  # noqa: E241
+    [(0x4A, "BOMB TORIZO",  "DEFEAT THE TORIZO TRIO IN THE ARENA.")],  # noqa: E241
+    [(0x50, "DRAYGON",      "DEFEAT DRAYGON IN THEIR MOLTEN NURSERY.")],  # noqa: E241
+    [(0x51, "DUST TORIZO",  "ANNIHILATE THE DEAD TORIZO IN THE HIVE.")],  # noqa: E241
+    [(0x52, "GOLD TORIZO",  "DEFEAT THE GOLD TORIZO GUARDING THE MAGMA LAKE.")],  # noqa: E241
+    [(0x58, "CROCOMIRE",    "DEFEAT CROCOMIRE IN THE JUNGLE LAIR.")],  # noqa: E241
+    [(0x60, "RIDLEY",       "DEFEAT RIDLEY IN THE SKY TEMPLE BROODING CHAMBER."),  # noqa: E241
+     (0x61, "PHANTOON",     "DEFEAT PHANTOON IN THE SKY TEMPLE RELIQUARY.")],  # noqa: E241
     [(0x6A, "HYPER TORIZO", "DEFEAT HYPER TORIZO IN THE THUNDER LABS.")],
-    [(0x1D, "SPACE PORT",   "DESTROY THE SPACE PORT AND CRASH THE DOCKED SHIPS."),
-     (0x79, "BOTWOON",      "DEFEAT BOTWOON IN THE CRASHED CARGO SHIP.")],
-    [(0x1F, "POWER OFF",    "TURN THE GEOTHERMAL ENERGY PLANT OFF.")],
+    [(0x1D, "SPACE PORT",   "DESTROY THE SPACE PORT AND CRASH THE DOCKED SHIPS."),  # noqa: E241
+     (0x79, "BOTWOON",      "DEFEAT BOTWOON IN THE CRASHED CARGO SHIP.")],  # noqa: E241
+    [(0x1F, "POWER OFF",    "TURN THE GEOTHERMAL ENERGY PLANT OFF.")],  # noqa: E241
 ]
 
 
@@ -202,7 +202,7 @@ def WriteMessageBoxes(romWriter: RomWriter, address: int, goals: list[Event]) ->
     romWriter.writeBytes(address, struct.pack('<HHH', 0x8436, 0x825A, GetShortAddress(message_address)))
 
 
-def generate_goals(options: GameOptions) -> Goals:
+def generate_goals(options: GameOptions, seed: int) -> Goals:
     count = options.objective_rando
 
     bad_events: set[str] = set()
@@ -228,6 +228,8 @@ def generate_goals(options: GameOptions) -> Goals:
 
     if count > max_with_options:
         count = max_with_options
+
+    random = Random(seed)
 
     # select goals
     goals = [random.sample(subgoals, 1)[0] for subgoals in random.sample(valid_events, count)]

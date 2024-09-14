@@ -15,7 +15,7 @@ def test_exclude_suzi() -> None:
                               random.choice((True, False)),
                               CypherItems.SmallAmmo,
                               objective_rando=random.randrange(0, 20))
-        goals = generate_goals(options)
+        goals = generate_goals(options, random.randrange(1073741824))
 
         assert len(goals.objectives) <= len(map_stations) - len(SUZI_MAPS), (
             f"{len(goals.objectives)=} {len(map_stations)=}"

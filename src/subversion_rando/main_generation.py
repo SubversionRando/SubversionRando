@@ -125,11 +125,11 @@ def generate(options: GameOptions) -> Game:
                     Tricks.wave_gate_glitch not in game.options.logic
                 ) and game.options.fill_choice == "MM"
             )
-            game.door_pairs = areaRando.RandomizeAreas(force_normal_early)
+            game.door_pairs = areaRando.RandomizeAreas(force_normal_early, random.randrange(999999999))
             # print(Connections) #test
 
         if game.options.objective_rando > 0:
-            game.goals = generate_goals(game.options)
+            game.goals = generate_goals(game.options, random.randrange(999999999))
 
         if time.perf_counter() - start_time > 70:
             print(f"Giving up after {randomizeAttempts} attempts. Help?")
@@ -302,7 +302,7 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     location_of_pointer_to_asm = 0x1bb06
     assert (
         romWriter.romWriterType == RomWriterType.ipsblob or
-        romWriter.rom_data[location_of_pointer_to_asm:location_of_pointer_to_asm+2] == b"\x4c\xa8"
+        romWriter.rom_data[location_of_pointer_to_asm:location_of_pointer_to_asm + 2] == b"\x4c\xa8"
     )
     # we're going to point it to some different asm
     # in some free space at 7f56d

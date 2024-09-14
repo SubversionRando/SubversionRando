@@ -91,6 +91,6 @@ def test_loc_names_from_input() -> None:
 def test_alias_targets() -> None:
     """ make sure all the alias targets are location names """
     all_locations = new_locations()
-    aliases: dict[str, str] = getattr(tracker, "_name_aliases")
+    aliases = tracker._name_aliases  # pyright: ignore[reportPrivateUsage]
     for target in aliases.values():
         assert target in all_locations, f"{target} location name"
