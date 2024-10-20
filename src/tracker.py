@@ -201,7 +201,11 @@ class Tracker:
         if len(self.undo_stack):
             loc, item = self.undo_stack.pop()
             loc["item"] = item
-            self.loadout.contents[item] -= 1
+
+            loadout_contents = self.loadout.get_contents()
+            loadout_contents[item] -= 1
+            self.loadout = Loadout(self.loadout.game, loadout_contents)
+
             print(f"put {item.name} back in {loc['fullitemname']}")
         else:
             print("nothing to undo")

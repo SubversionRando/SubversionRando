@@ -342,20 +342,25 @@ def required_doors(loadout: Loadout, loc_name: str) -> list[str]:
     temp_loadout = Loadout(loadout.game, loadout)
     _, play_through, acc_locs = solve(temp_loadout.game, temp_loadout)
 
+    def remove_door(loadout: Loadout, door: AreaDoor) -> Loadout:
+        contents = loadout.get_contents()
+        contents[door] = 0
+        return Loadout(loadout.game, contents)
+
     assert temp_loadout.game.all_locations[loc_name] in acc_locs, f"{loc_name} not in logic"
 
     doors: list[str] = []
     for sphere in play_through.spheres:
         for door_name in sphere.new_doors:
             doors.append(door_name)
-            temp_loadout.contents[area_doors[door_name]] = 0
+            temp_loadout = remove_door(temp_loadout, area_doors[door_name])
 
     tr: list[str] = []
     for excluded_door in doors:
         # empty doors from loadout
         for thing in temp_loadout:
             if isinstance(thing, AreaDoor):
-                temp_loadout.contents[thing] = 0
+                temp_loadout = remove_door(temp_loadout, thing)
 
         _, _, acc_locs = solve(temp_loadout.game, temp_loadout, area_doors[excluded_door])
         if temp_loadout.game.all_locations[loc_name] not in acc_locs:

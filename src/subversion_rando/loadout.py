@@ -30,51 +30,66 @@ class ItemCounter(Counter[Union[Item, AreaDoor]]):
 
 class Loadout:
     game: Game
-    contents: ItemCounter
+    _contents: ItemCounter
+    _cache: dict[Union[Item, AreaDoor, LogicShortcut, Trick], bool]
 
     def __init__(self,
                  game: Game,
                  items: Optional[Iterable[Union[Item, AreaDoor]]] = None) -> None:
         self.game = game
-        self.contents = ItemCounter(items)
+        self._contents = ItemCounter(items)
+        self._cache = {}
 
     def __eq__(self, __o: object) -> bool:
         if not isinstance(__o, Loadout):
             return False
         return (
-            (self.contents == __o.contents) and
+            (self._contents == __o._contents) and
             (self.game is __o.game)
         )
 
     def __contains__(self, x: Union[Item, AreaDoor, LogicShortcut, Trick]) -> bool:
+        cached = self._cache.get(x)
+        if cached is not None:
+            return cached
         # using type is instead of isinstance for optimization (this is the most called function in profiler)
         if type(x) is LogicShortcut:
-            return x.access(self)
+            to_return = x.access(self)
         elif type(x) is Trick:
             if x in self.game.options.logic:
                 for item in x.items:
-                    if self.contents[item] <= 0:
-                        return False
-                return True
-            return False
-        return self.contents[x] > 0  # type: ignore
+                    if self._contents[item] <= 0:
+                        to_return = False
+                        break
+                else:
+                    to_return = True
+            else:
+                to_return = False
+        else:
+            to_return = self._contents[x] > 0  # type: ignore
+        self._cache[x] = to_return
+        return to_return
 
     def __iter__(self) -> Iterator[Union[Item, AreaDoor]]:
-        for item, count in self.contents.items():
+        for item, count in self._contents.items():
             for _ in range(count):
                 yield item
 
     def __len__(self) -> int:
-        return sum(self.contents.values())  # `Counter.total()` requires python 3.10
+        return sum(self._contents.values())  # `Counter.total()` requires python 3.10
 
     def __repr__(self) -> str:
-        return f"Loadout({self.game}, {self.contents})"
+        return f"Loadout({self.game}, {self._contents})"
 
     def count(self, item: Union[Item, AreaDoor]) -> int:
-        return self.contents[item]
+        return self._contents[item]
 
     def append(self, item: Union[Item, AreaDoor]) -> None:
-        self.contents[item] += 1
+        self._cache = {}
+        self._contents[item] += 1
+
+    def get_contents(self) -> Counter[Union[Item, AreaDoor]]:
+        return self._contents.copy()
 
     def has_all(self, *items: Union[Item, AreaDoor, LogicShortcut, Trick]) -> bool:
         return all(x in self for x in items)
@@ -84,4 +99,4 @@ class Loadout:
 
     def copy(self) -> "Loadout":
         # TODO: test copy
-        return Loadout(self.game, self.contents)
+        return Loadout(self.game, self._contents)

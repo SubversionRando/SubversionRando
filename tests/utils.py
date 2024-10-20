@@ -26,3 +26,10 @@ def load_everything_except(loadout: Loadout, excluded_items: Container[Item]) ->
     for item in itertools.chain(*fa.itemLists):
         if item not in excluded_items:
             loadout.append(item)
+
+
+def remove_item(loadout: Loadout, item: Item) -> Loadout:
+    """ a new `Loadout` except without the given `item` """
+    contents = loadout.get_contents()
+    contents[item] = 0
+    return Loadout(loadout.game, contents)

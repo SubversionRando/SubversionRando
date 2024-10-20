@@ -13,7 +13,7 @@ from subversion_rando.logic_updater import updateLogic
 from subversion_rando.trick import Trick
 from subversion_rando.trick_data import Tricks
 
-from utils import load_everything_except, setup
+from utils import load_everything_except, remove_item, setup
 
 # TODO: test that all locations are obtainable with no tricks
 
@@ -45,7 +45,7 @@ def test_start_logic() -> None:
     assert len(accessible) == 5, "add Subterranean Burrow and Ocean Shore: Bottom"
 
     game, _ = setup(expert)
-    loadout = Loadout(game, loadout.contents)
+    loadout = Loadout(game, loadout._contents)  # pyright: ignore[reportPrivateUsage]
 
     accessible = update_acc()
     print("  with expert")
@@ -140,8 +140,7 @@ def test_crypt_no_bomb_no_wave() -> None:
     updateLogic(game.all_locations.values(), loadout)
     assert game.all_locations["Crypt"]["inlogic"]
 
-    # mypy bug doesn't end type narrowing, thinks this is unreachable code
-    loadout.contents[Items.Speedball] -= 1  # type: ignore
+    loadout = remove_item(loadout, Items.Speedball)
     updateLogic(game.all_locations.values(), loadout)
     assert not game.all_locations["Crypt"]["inlogic"]
 
@@ -1013,10 +1012,10 @@ def test_one_suit_no_energy() -> None:
     loadout.append(SunkenNestL)
     loadout.append(Items.spaceDrop)
     this_loadout()
-    loadout.contents[Items.Aqua] = 0
+    loadout = remove_item(loadout, Items.Aqua)
     loadout.append(Items.Varia)
     this_loadout()
-    loadout.contents[Items.Varia] = 0
+    loadout = remove_item(loadout, Items.Varia)
     loadout.append(Items.MetroidSuit)
     this_loadout()
 

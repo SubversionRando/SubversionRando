@@ -10,6 +10,8 @@ from subversion_rando.logicCommon import ammo_in_loadout, ammo_req, \
 from subversion_rando.logic_presets import casual, expert
 from subversion_rando.logic_shortcut import LogicShortcut
 
+from utils import remove_item
+
 
 def test_energy_from_tanks() -> None:
     assert energy_from_tanks(0) == 99
@@ -77,7 +79,7 @@ def test_take_damage_casual_avoidable() -> None:
     assert take_damage(1050) in loadout
     assert take_damage(1100) not in loadout
 
-    loadout.contents[Items.MetroidSuit] = 0
+    loadout = remove_item(loadout, Items.MetroidSuit)
     loadout.append(Items.Varia)
 
     assert take_damage(1050) in loadout
@@ -272,7 +274,7 @@ def test_ammo_req() -> None:
 
     assert crystal_flash in loadout
 
-    loadout.contents[Items.Morph] -= 1
+    loadout = remove_item(loadout, Items.Morph)
 
     assert crystal_flash not in loadout
 
