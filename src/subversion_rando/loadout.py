@@ -57,12 +57,12 @@ class Loadout:
             to_return = x.access(self)
         elif type(x) is Trick:
             if x in self.game.options.logic:
+                trick_items_present = True
                 for item in x.items:
                     if self._contents[item] <= 0:
-                        to_return = False
+                        trick_items_present = False
                         break
-                else:
-                    to_return = True
+                to_return = trick_items_present
             else:
                 to_return = False
         else:
