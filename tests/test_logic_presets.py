@@ -1,7 +1,7 @@
 import random
+
 from subversion_rando import logic_presets
 from subversion_rando.logic_presets import custom_logic_str_from_tricks, custom_logic_tricks_from_str
-from subversion_rando.trick import Trick
 from subversion_rando.trick_data import Tricks, trick_name_lookup
 
 
@@ -53,8 +53,7 @@ def test_specific_set() -> None:
 
 
 def test_str_2_tricks_reference() -> None:
-    _mask_2_trick: dict[str, Trick] = getattr(logic_presets, "_mask_2_trick")
-    for mask_str, t in _mask_2_trick.items():
+    for mask_str, t in logic_presets.mask_2_trick.items():
         fs = frozenset([t])
         assert custom_logic_str_from_tricks(fs) == mask_str, f"{trick_name_lookup[t]} {mask_str}"
         assert custom_logic_tricks_from_str(mask_str) == fs, f"{mask_str} {trick_name_lookup[t]}"

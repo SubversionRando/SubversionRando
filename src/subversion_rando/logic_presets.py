@@ -1,3 +1,4 @@
+from typing import Mapping
 from .trick import Trick
 from .trick_data import Tricks
 
@@ -58,7 +59,7 @@ def custom_logic_str_from_tricks(tricks: frozenset[Trick]) -> str:
     return output
 
 
-_mask_2_trick = {
+mask_2_trick: Mapping[str, Trick] = {
     "800000000000": Tricks.infinite_bomb_jump,
     "400000000000": Tricks.sbj_underwater_no_hjb,
     "200000000000": Tricks.sbj_underwater_w_hjb,
@@ -114,7 +115,7 @@ def custom_logic_tricks_from_str(logic_str: str) -> frozenset[Trick]:
     """ raises ValueError if invalid logic string """
     tricks: list[Trick] = []
 
-    expected_len = len(next(iter(_mask_2_trick.keys())))
+    expected_len = len(next(iter(mask_2_trick.keys())))
 
     logic_str = logic_str.strip()[:expected_len]
     if len(logic_str) < expected_len:
@@ -124,7 +125,7 @@ def custom_logic_tricks_from_str(logic_str: str) -> frozenset[Trick]:
     except ValueError:
         raise ValueError("invalid logic string") from None
 
-    for mask_str, t in _mask_2_trick.items():
+    for mask_str, t in mask_2_trick.items():
         mask = int(mask_str, 16)
         if mask & logic_int:
             tricks.append(t)
