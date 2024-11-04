@@ -3,14 +3,14 @@ import random
 try:  # Literal 3.8
     from typing import Literal, Optional, Type
 except ImportError:
-    input("requires Python 3.9 or higher... press enter to quit")
+    input("requires Python 3.10 or higher... press enter to quit")
     exit(1)
 import time
 
 try:  # container type annotations 3.9
     from .connection_data import SunkenNestL, area_doors, misc_doors, vanilla_areas
 except TypeError:
-    input("requires Python 3.9 or higher... press enter to quit")
+    input("requires Python 3.10 or higher... press enter to quit")
     exit(1)
 from .daphne_gate import get_daphne_gate, get_air_lock_bytes
 from .fillForward import fill_major_minor

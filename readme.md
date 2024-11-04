@@ -15,7 +15,7 @@ The easiest way to play: https://subversionrando.github.io/SubversionRando/
 ### setup / install
 
 1. install Python from [https://www.python.org/](https://www.python.org/)
-   - requires Python 3.9 or higher
+   - requires Python 3.10 or higher
 
 2. download the code from this page
    1. green "Code" button in the top right portion of this page

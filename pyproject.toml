@@ -12,7 +12,7 @@ authors = [
 ]
 description = "randomizer for Super Metroid: Subversion"
 readme = "readme.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -29,7 +29,7 @@ exclude = ["**/__pycache__"]
 
 typeCheckingMode = "strict"
 
-pythonVersion = "3.9"
+pythonVersion = "3.10"
 pythonPlatform = "Linux"
 
 [tool.ruff]

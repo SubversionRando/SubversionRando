@@ -4,7 +4,7 @@ from typing import Iterable, NamedTuple
 try:
     _ = tuple[str]
 except TypeError:
-    input("requires Python 3.9 or higher... press enter to quit")
+    input("requires Python 3.10 or higher... press enter to quit")
     exit(1)
 
 

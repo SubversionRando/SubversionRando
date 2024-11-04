@@ -2,7 +2,7 @@ import sys
 try:  # Literal 3.8
     from typing import Literal
 except ImportError:
-    input("requires Python 3.9 or higher... press enter to quit")
+    input("requires Python 3.10 or higher... press enter to quit")
     exit(1)
 import argparse
 import time
