@@ -832,6 +832,11 @@ class Verdite:
             loadout.has_all(
                 SpaceJump, Screw, shootThroughWalls, varia_or_hell_run(310, heat_and_metroid_suit_not_required=True)
             )
+        ) or
+        (
+            loadout.has_all(
+                Screw, varia_or_hell_run(430, heat_and_metroid_suit_not_required=True)
+            )
         )
     ))
     """ fiery gallery and burning trail """
