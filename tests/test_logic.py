@@ -640,6 +640,7 @@ _no_bombing = frozenset([
     "Norak Escarpment",
     "Restricted Area",
     "Shrine Of Fervor",
+    "Garden Canal",
     "Water Garden",
     "Weapon Research",
     "Armory Cache 2",
@@ -700,7 +701,7 @@ def test_no_bombing_locations(logic: frozenset[Trick]) -> None:
         assert (
             found[loc_name] or
             (logic is casual and loc_name == "Warrior Shrine: Top") or
-            (logic in {casual, medium} and loc_name in {"Briar: Top", "Antechamber"})  # or
+            (logic in {casual, medium} and loc_name in {"Briar: Top", "Antechamber", "Garden Canal"})  # or
             # (logic in {casual, medium} and loc_name == "Warrior Shrine: Middle")
         ), f"logic thinks bombing is needed for {loc_name}"
 
@@ -764,6 +765,7 @@ _more_no_bomb_blocks_for_expert = frozenset([
     "Briar: Top",
     "Briar: Bottom",
     "Shrine Of Fervor",
+    "Garden Canal",
     "Water Garden",
     "Crocomire's Energy Station",
     "Crocomire's Lair",

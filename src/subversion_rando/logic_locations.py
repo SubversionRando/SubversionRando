@@ -1596,8 +1596,13 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
     "Garden Canal": lambda loadout: (
         (NorakPerimeterBL in loadout) and
         (GravityBoots in loadout) and
-        (can_use_pbs(1) in loadout) and
-        (Spazer in loadout) and
+        ((
+            (can_use_pbs(1) in loadout) and
+            (Spazer in loadout)
+        ) or (
+            (bonkCeilingSuperSink in loadout) and
+            (Tricks.clip_crouch in loadout)
+        )) and
         (LifeTemple.veranda in loadout) and
         (LifeTemple.waterToVeranda in loadout)
         # TODO: Might there be a reason to add logic from ElevatorToWellspringL ?
@@ -1693,7 +1698,10 @@ location_logic: dict[str, Callable[[Loadout], bool]] = {
             (lava_run(664, 1258) in loadout) and (MetroidSuit in loadout)
         ) or (
             # no metroid suit
-            (Varia in loadout) and (Aqua in loadout) and (energy_req(hell_run_energy(650, loadout)) in loadout)
+            (Varia in loadout) and (Aqua in loadout) and (
+                (energy_req(hell_run_energy(650, loadout)) in loadout) or
+                ((Screw in loadout) and (energy_req(hell_run_energy(350, loadout)) in loadout))
+            )
         )) and
         ((
             (FieryGalleryL in loadout) and
