@@ -1,8 +1,9 @@
 # pyscript entry point
 
 import json
-from typing import Any, Literal, Optional, TypedDict, cast
+from typing import Any, Literal, Optional, TypedDict
 
+from pyscript import document  # type: ignore
 # pyscript library
 import js  # type: ignore
 
@@ -14,8 +15,8 @@ from subversion_rando.trick import Trick
 from subversion_rando.trick_data import Tricks, trick_name_lookup, tricks_from_names
 from subversion_rando.main_generation import generate, get_spoiler, write_rom
 
-Element: Any = cast(Any, Element)  # pyscript built-in  # noqa: F821  # type: ignore
-js: Any = cast(Any, js)  # pyscript built-in  # type: ignore
+document: Any = document  # TODO: type stubs
+js: Any = js
 
 
 def populate_tricks() -> None:
@@ -28,8 +29,8 @@ def populate_tricks() -> None:
                 f'<td><span>{trick.desc}</span></td></tr>'
             )
             table_rows.append(html)
-    tricks_element = Element("tricks")
-    tricks_element.element.innerHTML = "<tbody>" + ("".join(table_rows)) + "</tbody>"
+    tricks_element = document.querySelector("#tricks")
+    tricks_element.innerHTML = "<tbody>" + ("".join(table_rows)) + "</tbody>"
 
 
 def make_presets() -> list[tuple[str, list[str]]]:
@@ -131,3 +132,10 @@ populate_presets()
 def get_logic_str(trick_names: list[str]) -> str:
     tricks: frozenset[Trick] = frozenset([getattr(Tricks, trick_name) for trick_name in trick_names])
     return custom_logic_str_from_tricks(tricks)
+
+
+js.python_get_logic_str = get_logic_str
+js.python_roll1_function = roll1
+js.python_roll2_function = roll2
+js.python_roll3_function = roll3
+js.python_roll4_function = roll4
