@@ -1670,6 +1670,9 @@ class SpacePort:
                 (SpeedBooster in loadout) and
                 (Morph in loadout) and
                 (Tricks.movement_zoast in loadout) and
+                # You have to have > 30 health after getting hit by laser,
+                # that would be really bad with no e-tanks
+                ((take_damage(0, 175) in loadout) or (Tricks.patience in loadout)) and
                 (bonkCeilingSuperSink in loadout)
                 # super sink in the column where the door to loading dock is
                 # further left will get stuck in the laser, further right will get too much velocity from the slope
