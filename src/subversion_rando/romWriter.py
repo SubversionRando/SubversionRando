@@ -2,7 +2,6 @@ import base64
 import enum
 import os
 from pathlib import Path
-import pathlib
 from typing import TYPE_CHECKING, ClassVar, Optional, Union
 
 from .ips import patch
@@ -173,7 +172,7 @@ class RomWriter:
                 raise ValueError(f"invalid rom {len(self.rom_data)} - need subversion 1.2 or vanilla SM, unheadered")
 
     def apply_IPS(self, ips_path: Union[str, Path]) -> None:
-        patch_path = pathlib.Path(__file__).parent.resolve()
+        patch_path = Path(__file__).parent.resolve()
         with open(patch_path.joinpath(ips_path), 'rb') as file:
             patch_data = file.read()
         self.rom_data = patch(self.rom_data, patch_data)

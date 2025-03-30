@@ -5,7 +5,7 @@ import os
 import sys
 
 from subversion_rando.area_rando_types import AreaDoor, DoorPairs
-from subversion_rando.connection_data import vanilla_areas, area_doors
+from subversion_rando.connection_data import area_doors, vanilla_areas
 from subversion_rando.game import CypherItems, Game, GameOptions
 from subversion_rando.item_data import Item, Items, all_items
 from subversion_rando.loadout import Loadout

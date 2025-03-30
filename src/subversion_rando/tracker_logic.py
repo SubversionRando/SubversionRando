@@ -1,8 +1,8 @@
 from typing import Dict, List, Mapping
 
-from subversion_rando.door_logic import vanilla_doors
 from subversion_rando.area_rando_types import DoorPairs
 from subversion_rando.connection_data import vanilla_areas
+from subversion_rando.door_logic import vanilla_doors
 from subversion_rando.game import Game, GameOptions
 from subversion_rando.item_data import Item, all_items
 from subversion_rando.loadout import Loadout

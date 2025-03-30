@@ -1,9 +1,9 @@
+from hashlib import sha256
 import logging
 import os
 from pathlib import Path
 from typing import Union
 from urllib.request import urlopen
-from hashlib import sha256
 
 _mem_cache: Union[bytes, None] = None
 

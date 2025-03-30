@@ -12,7 +12,8 @@ try:  # container type annotations 3.9
 except TypeError:
     input("requires Python 3.10 or higher... press enter to quit")
     exit(1)
-from .daphne_gate import get_daphne_gate, get_air_lock_bytes
+from . import areaRando, fillAssumed, fillMajorMinor, fillMedium, fillSpeedrun, logic_updater
+from .daphne_gate import get_air_lock_bytes, get_daphne_gate
 from .fillForward import fill_major_minor
 from .fillInterface import FillAlgorithm
 from .game import CypherItems, Game, GameOptions
@@ -23,12 +24,6 @@ from .item_marker import ItemMarkersOption, make_item_markers, write_item_marker
 from .loadout import Loadout
 from .location_data import Location, new_locations, spacePortLocs
 from .logic_presets import casual, expert, medium
-from . import logic_updater
-from . import fillMedium
-from . import fillMajorMinor
-from . import fillAssumed
-from . import fillSpeedrun
-from . import areaRando
 from .new_terrain_writer import TerrainWriter
 from .open_escape import patch_open_escape
 from .romWriter import RomWriter, RomWriterType

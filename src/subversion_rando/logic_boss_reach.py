@@ -1,4 +1,5 @@
 from typing import Literal
+
 from .connection_data import area_doors
 from .item_data import Items
 from .logicCommon import can_bomb, can_use_pbs, lava_run, varia_or_hell_run
