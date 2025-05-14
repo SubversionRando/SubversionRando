@@ -5,8 +5,8 @@ from subversion_rando.terrain_patch_data import (
 
 def test() -> None:
     for i in wrecked_air_lock_screw_layer_1:
-        assert wrecked_air_lock[i: i+2] == b'\xbf\xb0'
-        print(wrecked_air_lock[i: i+2])
+        assert wrecked_air_lock[i: i + 2] == b'\xbf\xb0'
+        print(wrecked_air_lock[i: i + 2])
     bts_value = 9
     for i in wrecked_air_lock_screw_bts:
         assert wrecked_air_lock[i] == bts_value

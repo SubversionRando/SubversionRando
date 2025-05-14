@@ -114,7 +114,7 @@ class RomWriter:
             raise Exception(f'plmid length ({len(plmid)}) must be 2 and ammoAmount '
                             f'length ({len(ammoAmount)}) must be 1')
         self.writeBytes(address, plmid)
-        self.writeBytes(address+5, ammoAmount)
+        self.writeBytes(address + 5, ammoAmount)
 
     def finalizeRom(self, filename: Union[str, Path, None] = None) -> None:
         if self.romWriterType == RomWriterType.file:
@@ -151,9 +151,9 @@ class RomWriter:
         if not one_way:
             self.writeBytes(int(door2.address, 16), int(door1.data, 16).to_bytes(12, 'big'))
         if door1.region != door2.region:
-            self.writeBytes(int(door1.address, 16)+2, b"\x40")
+            self.writeBytes(int(door1.address, 16) + 2, b"\x40")
             if not one_way:
-                self.writeBytes(int(door2.address, 16)+2, b"\x40")
+                self.writeBytes(int(door2.address, 16) + 2, b"\x40")
 
     def patch_if_vanilla(self) -> None:
         if len(self.rom_data) != 4194304:  # subversion rom

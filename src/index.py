@@ -15,7 +15,7 @@ from subversion_rando.trick import Trick
 from subversion_rando.trick_data import Tricks, trick_name_lookup, tricks_from_names
 from subversion_rando.main_generation import generate, get_spoiler, write_rom
 
-document: Any = document  # TODO: type stubs
+document: Any = document  # TODO: type stubs  # type: ignore
 js: Any = js
 
 

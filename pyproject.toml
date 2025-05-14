@@ -34,12 +34,11 @@ pythonPlatform = "Linux"
 
 [tool.ruff]
 line-length = 120
+preview = true
 
 [tool.ruff.lint]
 select = ["B", "ANN", "E", "F", "W", "A"]
 ignore = [
-    "ANN101",
-    "ANN102",
     "E714",  # `is not`
 ]
 
