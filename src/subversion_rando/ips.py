@@ -28,7 +28,7 @@ def patch(original_bytes: Union[bytes, bytearray], patch_bytes: bytes) -> bytear
             # RLE encoding
             rle_size = int.from_bytes(patch_bytes[cursor:cursor + 2], "big")
             rle_value = patch_bytes[cursor + 2]
-            tr[offset:offset + rle_size] = bytes(rle_value for _ in range(rle_size))
+            tr[offset:offset + rle_size] = bytes((rle_value,)) * rle_size
             cursor += 3
         else:
             if cursor + size > data_limit:
