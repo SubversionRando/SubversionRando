@@ -2,6 +2,9 @@
 
 
 from typing import Union
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 def patch(original_bytes: Union[bytes, bytearray], patch_bytes: bytes) -> bytearray:
@@ -17,7 +20,7 @@ def patch(original_bytes: Union[bytes, bytearray], patch_bytes: bytes) -> bytear
         size = int.from_bytes(patch_bytes[cursor + 3:cursor + 5], "big")
         cursor += 5
         if offset > len(tr):
-            print("WARNING: IPS offset is beyond end of data")
+            _logger.warning("WARNING: IPS offset is beyond end of data")
             # I don't know whether this should be considered invalid,
             # or whether it should be 0xff or 0 or whatever...
             tr.extend(0 for _ in range(offset - len(tr)))
