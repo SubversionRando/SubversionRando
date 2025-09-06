@@ -25,7 +25,7 @@ class ItemCounter(Counter[Union[Item, AreaDoor]]):
         warnings.warn("Don't use `__contains__` on this object, because it will be slow. Do the check inline instead.",
                       DeprecationWarning,
                       stacklevel=2)
-        return isinstance(x, Union[Item, AreaDoor]) and self[x] > 0  # pyright: ignore[reportUnnecessaryIsInstance]
+        return isinstance(x, (Item, AreaDoor)) and self[x] > 0  # pyright: ignore[reportUnnecessaryIsInstance]
 
 
 class Loadout:
