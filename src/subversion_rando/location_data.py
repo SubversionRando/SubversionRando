@@ -22,6 +22,7 @@ class Location(TypedDict):
     alternateplmparamlo: Optional[int]
     inlogic: bool
     item: Optional[Item]
+    rando_area: str
 
 
 def get_location_ids(loc: Location) -> list[int]:
