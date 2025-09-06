@@ -50,3 +50,4 @@ ignore = [
 pythonpath = [
   "src"
 ]
+addopts = "--cov=src --cov-report=html"

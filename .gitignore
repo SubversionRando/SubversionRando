@@ -9,3 +9,4 @@ venv*
 *.dat
 subversion.1.2.ips
 /profile*
+.coverage*
