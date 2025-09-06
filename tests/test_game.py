@@ -26,3 +26,7 @@ def test_json() -> None:
     # assert game_dict == return_to_dict, f"{game_str=}"  # tuples change to lists
     return_to_game = Game.from_jsonable(return_to_dict)
     assert return_to_game == game, f"{return_to_game=}\n{game=}"
+
+
+if __name__ == "__main__":
+    test_json()

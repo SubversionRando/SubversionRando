@@ -1,11 +1,29 @@
-from typing import Iterable, Iterator, NamedTuple, Sequence, Union
+from typing import Iterable, Iterator, Literal, NamedTuple, Sequence, Union, get_args
+
+
+AreaName = Literal[
+    "SandLand",
+    "Early",
+    "Suzi",
+    "PirateLab",
+    "ServiceSector",
+    "SkyWorld",
+    "Verdite",
+    "FireHive",
+    "DrayLand",
+    "Geothermal",
+    "LifeTemple",
+    "SpacePort",
+    "Daphne",
+]
+area_names: tuple[AreaName, ...] = get_args(AreaName)
 
 
 class AreaDoor(NamedTuple):
     address: str
     data: str
     """ the data of the vanilla door that goes here """
-    area_name: str
+    area_name: AreaName
     name: str
     region: int
 
@@ -14,7 +32,7 @@ class AreaDoor(NamedTuple):
         ad, d, an, n, r = a
         assert isinstance(ad, str)
         assert isinstance(d, str)
-        assert isinstance(an, str)
+        assert an in area_names, an
         assert isinstance(n, str)
         assert isinstance(r, int)
         return AreaDoor(ad, d, an, n, r)

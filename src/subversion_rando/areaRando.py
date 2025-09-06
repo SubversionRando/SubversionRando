@@ -2,7 +2,7 @@ from collections import defaultdict, deque
 from random import Random
 from typing import Optional
 
-from .area_rando_types import AreaDoor, DoorPairs
+from .area_rando_types import AreaDoor, AreaName, DoorPairs
 from .connection_data import area_doors_unpackable
 from .romWriter import RomWriter
 
@@ -140,7 +140,7 @@ def RandomizeAreas(force_normal_early: bool, seed: int) -> DoorPairs:
         OpenNodesL = [SunkenNestL,
                       RuinedConcourseBL]
         assert SunkenNestL.area_name == "Early", SunkenNestL.area_name
-        VisitedAreas = {SunkenNestL.area_name}
+        VisitedAreas: set[AreaName] = {SunkenNestL.area_name}
         Connections = []
 
         RightSideDoorsList = [OceanShoreR,

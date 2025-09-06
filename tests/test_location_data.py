@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+from subversion_rando.area_rando_types import AreaName, area_names
 from subversion_rando.connection_data import area_doors
 from subversion_rando.location_data import get_location_ids, new_locations
 from subversion_rando.logic_presets import expert
@@ -52,7 +53,7 @@ def test_loc_data() -> None:
     """
     from subversion_rando.logic_locations import location_logic
 
-    loc_to_areas: dict[str, set[str]] = defaultdict(set)
+    loc_to_areas: dict[str, set[AreaName]] = defaultdict(set)
 
     # Is this location in logic from this area door?
     # If so, associate the location with the area.
@@ -88,6 +89,7 @@ def test_loc_data() -> None:
 
     for loc in locations.values():
         loc_name = loc["fullitemname"]
+        assert loc["rando_area"] in area_names, loc
         assert loc_to_area[loc_name] == loc["rando_area"], (loc_to_area[loc_name], loc)
 
 

@@ -5,6 +5,7 @@ import pathlib
 import pkgutil
 from typing import Optional, TypedDict, Union, cast
 
+from .area_rando_types import AreaName
 from .item_data import Item
 
 
@@ -22,7 +23,7 @@ class Location(TypedDict):
     alternateplmparamlo: Optional[int]
     inlogic: bool
     item: Optional[Item]
-    rando_area: str
+    rando_area: AreaName
 
 
 def get_location_ids(loc: Location) -> list[int]:
