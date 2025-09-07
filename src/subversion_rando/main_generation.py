@@ -13,10 +13,11 @@ except TypeError:
     input("requires Python 3.10 or higher... press enter to quit")
     exit(1)
 from . import areaRando, fillAssumed, fillMajorMinor, fillMedium, fillSpeedrun, logic_updater
+from .area_blitz import choose_excluded_locs, place_excluded, remove_excluded_item_pool
 from .daphne_gate import get_air_lock_bytes, get_daphne_gate
 from .fillForward import fill_major_minor
 from .fillInterface import FillAlgorithm
-from .game import CypherItems, Game, GameOptions
+from .game import Exclude, Game, GameOptions
 from .goal import generate_goals, goal_spoiler, write_goals
 from .hints import choose_hint_location, get_hint_spoiler_text, write_hint_to_rom
 from .item_data import Item, Items
@@ -97,7 +98,6 @@ def generate(options: GameOptions) -> Game:
     #     hudFlicker = hudFlicker.title()
     seeeed = random.randint(1000000, 9999999)
     random.seed(seeeed)
-    # you must include Subversion 1.2 in your roms folder with this name^
 
     all_locations = new_locations()
 
@@ -113,6 +113,12 @@ def generate(options: GameOptions) -> Game:
             daphne_blocks = get_daphne_gate(game.options)
             game.daphne_blocks = daphne_blocks
 
+        # no major minor allowed with exclude options on
+        if options.exclude is not Exclude.nothing and options.fill_choice == "MM":
+            options.fill_choice = "B"
+
+        game.excluded_locs = choose_excluded_locs(game.options, random.Random(seeeed))
+
         if game.options.area_rando:  # area rando
             force_normal_early = (
                 (
@@ -124,7 +130,7 @@ def generate(options: GameOptions) -> Game:
             # print(Connections) #test
 
         if game.options.objective_rando > 0:
-            game.goals = generate_goals(game.options, random.randrange(999999999))
+            game.goals = generate_goals(game.options, set(game.excluded_locs), random.randrange(999999999))
 
         if time.perf_counter() - start_time > 70:
             print(f"Giving up after {randomizeAttempts} attempts. Help?")
@@ -140,9 +146,6 @@ def generate(options: GameOptions) -> Game:
                 seedComplete = assumed_fill(game)
         else:
             seedComplete = forward_fill(game)
-
-        if game.options.cypher_items == CypherItems.NotRequired:
-            seedComplete = verify_cypher_not_required(seedComplete, game)
 
     # make this optional?
     # If someone doesn't want hints, they can just not look at the log.
@@ -637,25 +640,20 @@ def assumed_fill(game: Game) -> bool:
     dummy_locations: list[Location] = []
     loadout = Loadout(game)
     fill_algorithm = fillAssumed.FillAssumed(game.door_pairs)
+    remove_excluded_item_pool(fill_algorithm, game.excluded_locs)
+    place_excluded(game.all_locations, game.excluded_locs)
 
-    if game.options.cypher_items == CypherItems.SmallAmmo and game.options.fill_choice != "MM":
-        game.all_locations["Shrine Of The Animate Spark"]["item"] = Items.SmallAmmo
-        game.all_locations["Enervation Chamber"]["item"] = Items.SmallAmmo
-        fill_algorithm.extra_items.remove(Items.SmallAmmo)
-        fill_algorithm.extra_items.remove(Items.SmallAmmo)
-        game.item_placement_spoiler += f"Shrine Of The Animate Spark - - - {Items.SmallAmmo.name}\n"
-        game.item_placement_spoiler += f"Enervation Chamber - - - {Items.SmallAmmo.name}\n"
+    def prefill(from_list: list[Item], loc_name: str, item: Item) -> None:
+        game.all_locations[loc_name]["item"] = item
+        from_list.remove(item)
+        game.item_placement_spoiler += f"{loc_name} - - - {item.name}\n"
 
     if game.options.fill_choice == "MM":  # major/minor
         first, second = Items.Missile, Items.GravityBoots
         if Tricks.wave_gate_glitch in game.options.logic and random.random() < 0.5:
             first, second = second, first
-        game.all_locations["Torpedo Bay"]["item"] = first
-        game.all_locations["Subterranean Burrow"]["item"] = second
-        fill_algorithm.prog_items.remove(first)
-        fill_algorithm.prog_items.remove(second)
-        game.item_placement_spoiler += f"Torpedo Bay - - - {first.name}\n"
-        game.item_placement_spoiler += f"Subterranean Burrow - - - {second.name}\n"
+        prefill(fill_algorithm.prog_items, "Torpedo Bay", first)
+        prefill(fill_algorithm.prog_items, "Subterranean Burrow", second)
 
     n_items_to_place = fill_algorithm.count_items_remaining()
     assert n_items_to_place <= len(game.all_locations), \

@@ -45,6 +45,9 @@ class FillAssumed(FillAlgorithm):
         for it, n in _minor_non_logic_items.items():
             self.extra_items.extend([it for _ in range(n)])
 
+        self._set_item_lists()
+
+    def _set_item_lists(self) -> None:
         self.itemLists = [self.prog_items, self.extra_items]
 
     def _get_accessible_locations(self, loadout: Loadout) -> list[Location]:
@@ -207,3 +210,11 @@ class FillAssumed(FillAlgorithm):
     def remove_from_pool(self, item: Item) -> None:
         """ removes this item from the item pool """
         pass  # removed in placement function
+
+    def set_extra(self, items: list[Item]) -> None:
+        self.extra_items = items
+        self._set_item_lists()
+
+    def set_prog(self, items: list[Item]) -> None:
+        self.prog_items = items
+        self._set_item_lists()

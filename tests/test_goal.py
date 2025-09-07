@@ -1,5 +1,6 @@
 import random
-from subversion_rando.game import CypherItems, GameOptions
+from subversion_rando.area_blitz import choose_excluded_locs
+from subversion_rando.game import Exclude, GameOptions
 from subversion_rando.goal import generate_goals, map_stations
 
 
@@ -13,9 +14,10 @@ def test_exclude_suzi() -> None:
                               # type ignore because mypy doesn't see Literal in random.choice
                               random.choice((True, False)),
                               random.choice((True, False)),
-                              CypherItems.SmallAmmo,
+                              Exclude.suzi,
                               objective_rando=random.randrange(0, 20))
-        goals = generate_goals(options, random.randrange(1073741824))
+        excluded_locs = set(choose_excluded_locs(options, random.Random()))
+        goals = generate_goals(options, excluded_locs, random.randrange(1073741824))
 
         assert len(goals.objectives) <= len(map_stations) - len(SUZI_MAPS), (
             f"{len(goals.objectives)=} {len(map_stations)=}"

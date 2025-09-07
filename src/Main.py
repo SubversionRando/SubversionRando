@@ -7,7 +7,7 @@ except ImportError:
 import argparse
 import time
 
-from subversion_rando.game import CypherItems, GameOptions
+from subversion_rando.game import Exclude, GameOptions
 from subversion_rando.item_marker import ItemMarkersOption
 from subversion_rando.logic_presets import casual, expert, medium
 from subversion_rando.main_generation import generate, write_rom, write_spoiler_file
@@ -111,7 +111,7 @@ def Main(argv: list[str]) -> None:
 
     options = GameOptions(
         logic, area_rando, fillChoice, small_spaceport, escape_shortcuts,
-        CypherItems.NotRequired, daphne_gate, ItemMarkersOption.Simple,
+        Exclude.thunder_lab, daphne_gate, ItemMarkersOption.Simple,
         objective_rando, skip_crash_space_port
     )
     game = generate(options)

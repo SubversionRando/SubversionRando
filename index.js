@@ -213,7 +213,7 @@ function setup_roll_button() {
         const escape_shortcuts_box = document.getElementById("escape-shortcuts");
         const fill_select = document.getElementById("fill");
         const daphne_box = document.getElementById("daphne-gate");
-        const cypher_select = document.getElementById("cypher");
+        const exclude_select = document.getElementById("exclude");
         const objectives_box = document.getElementById("objective-rando");
         const objectives_slider = document.getElementById("objective-count");
         const skip_crash_space_port_box = document.getElementById("skip-crash-space-port");
@@ -230,7 +230,7 @@ function setup_roll_button() {
             "small_spaceport": small_spaceport_box.checked,
             "escape_shortcuts": escape_shortcuts_box.checked,
             "fill": fill_select.value,
-            "cypher": cypher_select.value,
+            "exclude": exclude_select.value,
             "tricks": activated_trick_names,
             "daphne_gate": daphne_box.checked,
             "item_markers": item_markers,

@@ -6,7 +6,7 @@ import sys
 
 from subversion_rando.area_rando_types import AreaDoor, DoorPairs
 from subversion_rando.connection_data import area_doors, vanilla_areas
-from subversion_rando.game import CypherItems, Game, GameOptions
+from subversion_rando.game import Exclude, Game, GameOptions
 from subversion_rando.item_data import Item, Items, all_items
 from subversion_rando.loadout import Loadout
 from subversion_rando.location_data import Location, new_locations, spacePortLocs
@@ -83,7 +83,7 @@ class Tracker:
 
         self.empty_locations = new_locations()
         self.game_state_locations = deepcopy(self.empty_locations)
-        options = GameOptions(logic, area_rando, "D", True, False, CypherItems.NotRequired)
+        options = GameOptions(logic, area_rando, "D", True, False, Exclude.nothing)
         game = Game(options, self.empty_locations, area_connections, 0)
         self.loadout = Loadout(game)
 
@@ -146,7 +146,7 @@ class Tracker:
             print("found logic: custom")
 
         self.logic_from_spoiler = frz_logic_from_spoiler
-        options = GameOptions(frz_logic_from_spoiler, area_rando, "D", True, False, CypherItems.NotRequired)
+        options = GameOptions(frz_logic_from_spoiler, area_rando, "D", True, False, Exclude.nothing)
         game = Game(options, self.empty_locations, door_pairs, 0)
         self.loadout = Loadout(game)
 

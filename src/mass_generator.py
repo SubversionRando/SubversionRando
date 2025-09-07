@@ -13,7 +13,7 @@ import sys
 from typing import Iterator, Literal, Optional
 
 from subversion_rando.area_rando_types import AreaDoor
-from subversion_rando.game import CypherItems, Game, GameOptions
+from subversion_rando.game import Exclude, Game, GameOptions
 from subversion_rando.hint_types import Hint
 from subversion_rando.location_data import Location
 from subversion_rando.logic_presets import casual, expert, medium
@@ -27,12 +27,12 @@ game_count = 1000
 
 def game_source() -> Iterator[Game]:
     while True:
-        yield generate(GameOptions(expert, False, "D", True, False, CypherItems.Anything))
-        yield generate(GameOptions(casual, False, "D", True, False, CypherItems.Anything))
-        yield generate(GameOptions(medium, False, "D", True, False, CypherItems.Anything))
-        yield generate(GameOptions(expert, True, "D", True, False, CypherItems.Anything))
-        yield generate(GameOptions(casual, True, "D", True, False, CypherItems.Anything))
-        yield generate(GameOptions(medium, True, "D", True, False, CypherItems.Anything))
+        yield generate(GameOptions(expert, False, "D", True, False, Exclude.nothing))
+        yield generate(GameOptions(casual, False, "D", True, False, Exclude.nothing))
+        yield generate(GameOptions(medium, False, "D", True, False, Exclude.nothing))
+        yield generate(GameOptions(expert, True, "D", True, False, Exclude.nothing))
+        yield generate(GameOptions(casual, True, "D", True, False, Exclude.nothing))
+        yield generate(GameOptions(medium, True, "D", True, False, Exclude.nothing))
 
 
 class GameData:

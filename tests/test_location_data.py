@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from subversion_rando.area_rando_types import AreaName, area_names
 from subversion_rando.connection_data import area_doors
-from subversion_rando.location_data import get_location_ids, new_locations
+from subversion_rando.location_data import area_location_count, get_location_ids, new_locations
 from subversion_rando.logic_presets import expert
 from subversion_rando.map_icon_data import data as map_icon_data
 
@@ -92,6 +92,15 @@ def test_loc_data() -> None:
         assert loc["rando_area"] in area_names, loc
         assert loc_to_area[loc_name] == loc["rando_area"], (loc_to_area[loc_name], loc)
 
+    area_to_loc: dict[AreaName, set[str]] = defaultdict(set)
+    for loc in locations.values():
+        area_to_loc[loc["rando_area"]].add(loc["fullitemname"])
+    for area_name, locs in area_to_loc.items():
+        print(f'    "{area_name}": {len(locs)},')
+
+    for area_name in area_names:
+        assert area_location_count[area_name] == len(area_to_loc[area_name]), (area_name, area_to_loc)
+
 
 if __name__ == "__main__":
-    test_location_ids()
+    test_loc_data()

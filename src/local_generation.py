@@ -8,7 +8,7 @@
 #
 # It's all case-sensitive. ("True" or "False", not "true" or "false")
 
-from subversion_rando.game import CypherItems, GameOptions
+from subversion_rando.game import Exclude, GameOptions
 from subversion_rando.item_marker import ItemMarkersOption
 from subversion_rando.main_generation import generate, write_rom, write_spoiler_file
 from subversion_rando.trick_data import Tricks
@@ -65,7 +65,7 @@ options = GameOptions(
     fill_choice="B",  # "D" full random, "MM" major/minor, "B" major/minor bias
     small_spaceport=True,
     escape_shortcuts=True,
-    cypher_items=CypherItems.SmallAmmo,  # SmallAmmo Anything NotRequired
+    exclude=Exclude.blitz,
     daphne_gate=True,
     item_markers=ItemMarkersOption.ThreeTiered,
     objective_rando=5

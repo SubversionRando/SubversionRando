@@ -1,6 +1,6 @@
 import json
 
-from subversion_rando.game import CypherItems, Game, GameOptions
+from subversion_rando.game import Exclude, Game, GameOptions
 from subversion_rando.main_generation import generate
 from subversion_rando.trick_data import Tricks
 
@@ -12,7 +12,7 @@ def test_json() -> None:
         fill_choice="D",
         small_spaceport=False,
         escape_shortcuts=True,
-        cypher_items=CypherItems.SmallAmmo,
+        exclude=Exclude.blitz,
         daphne_gate=True,
         objective_rando=3
     )
