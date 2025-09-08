@@ -58,7 +58,7 @@ class GameOptions:
     def to_jsonable(self) -> dict[str, Any]:
         dct = asdict(self)
         dct["logic"] = tricks_to_jsonable(dct["logic"])
-        dct["cypher_items"] = self.exclude.name
+        dct["exclude"] = self.exclude.name
         dct["item_markers"] = self.item_markers.name
         return dct
 
@@ -66,7 +66,7 @@ class GameOptions:
     def from_jsonable(d: dict[str, Any]) -> "GameOptions":
         options = GameOptions(**d)
         options.logic = tricks_from_names(d["logic"])
-        options.exclude = getattr(Exclude, d["cypher_items"])
+        options.exclude = getattr(Exclude, d["exclude"])
         options.item_markers = getattr(ItemMarkersOption, d["item_markers"])
         return options
 
