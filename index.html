@@ -83,7 +83,7 @@
     <div>
         <label for="exclude" title="This affects objective rando and items.">Exclude areas:</label>
 
-        <select name="cypher" id="cypher" title="This affects objective rando and items.">
+        <select name="exclude" id="exclude" title="This affects objective rando and items.">
             <option value="nothing">Nothing (All Locations Included)</option>
             <option value="thunder_lab" selected="selected">Thunder Laboratory</option>
             <option value="suzi">Suzi</option>
@@ -128,6 +128,7 @@
         files = [
             "subversion_rando/__init__.py",
             "subversion_rando/areaRando.py",
+            "subversion_rando/area_blitz.py",
             "subversion_rando/area_rando_types.py",
             "subversion_rando/connection_data.py",
             "subversion_rando/daphne_gate.py",
