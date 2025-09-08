@@ -117,16 +117,26 @@ def generate(options: GameOptions) -> Game:
         if options.exclude is not Exclude.nothing and options.fill_choice == "MM":
             options.fill_choice = "B"
 
-        game.excluded_locs = choose_excluded_locs(game.options, random.Random(seeeed))
+        # deal with restrictive start logic
+        force_normal_sand_land = (
+            (
+                Tricks.movement_moderate not in game.options.logic or
+                Tricks.wave_gate_glitch not in game.options.logic
+            ) and (
+                game.options.fill_choice == "MM" or
+                options.exclude is Exclude.blitz
+            )
+        )
+
+        game.excluded_locs = choose_excluded_locs(
+            game.options,
+            random.Random(seeeed),
+            force_normal_sand_land=force_normal_sand_land,
+        )
 
         if game.options.area_rando:  # area rando
-            force_normal_early = (
-                (
-                    Tricks.movement_moderate not in game.options.logic or
-                    Tricks.wave_gate_glitch not in game.options.logic
-                ) and game.options.fill_choice == "MM"
-            )
-            game.door_pairs = areaRando.RandomizeAreas(force_normal_early, random.randrange(999999999))
+
+            game.door_pairs = areaRando.RandomizeAreas(force_normal_sand_land, random.randrange(999999999))
             # print(Connections) #test
 
         if game.options.objective_rando > 0:
@@ -648,7 +658,15 @@ def assumed_fill(game: Game) -> bool:
         from_list.remove(item)
         game.item_placement_spoiler += f"{loc_name} - - - {item.name}\n"
 
-    if game.options.fill_choice == "MM":  # major/minor
+    need_help_placing_early = (
+        game.options.fill_choice == "MM" or  # major/minor
+        any(
+            game.all_locations[loc_name]["rando_area"] in ("SpacePort", "SandLand")
+            for loc_name in game.excluded_locs
+        )
+    )
+
+    if need_help_placing_early:
         first, second = Items.Missile, Items.GravityBoots
         if Tricks.wave_gate_glitch in game.options.logic and random.random() < 0.5:
             first, second = second, first

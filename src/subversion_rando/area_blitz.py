@@ -18,7 +18,12 @@ from .location_data import Location, new_locations
 # TODO: don't choose boss in excluded area for hint
 
 
-def choose_excluded_locs(options: GameOptions, random: Random) -> list[str]:
+def choose_excluded_locs(
+    options: GameOptions,
+    random: Random,
+    *,
+    force_normal_sand_land: bool,
+) -> list[str]:
     if options.exclude is Exclude.nothing:
         return []
 
@@ -42,10 +47,14 @@ def choose_excluded_locs(options: GameOptions, random: Random) -> list[str]:
         assert_type(options.exclude, Literal[Exclude.blitz])
     assert options.exclude is Exclude.blitz, options.exclude
 
+    do_not_choose: set[AreaName] = {"ServiceSector", "Daphne", "Early"}
+    if force_normal_sand_land:
+        do_not_choose.add("SandLand")
+
     choices: list[AreaName] = [
         area_name
         for area_name in area_names
-        if area_name not in ("ServiceSector", "Daphne", "Early")
+        if area_name not in do_not_choose
     ]
     chosen = set(random.sample(choices, 4))
     if "Geothermal" in chosen:

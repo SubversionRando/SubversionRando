@@ -1,4 +1,4 @@
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from random import Random
 import struct
 import itertools
@@ -72,7 +72,7 @@ message_box_map = {
     '\\': 0x681A,
 }
 
-events: list[list[Event]] = [
+events: Final[Sequence[Sequence[Event]]] = (
     [(0x40, "KRAID",        "DEFEAT KRAID IN THE SUBMARINE LAIR.")],
     [(0x49, "SPORE SPAWN",  "DEFEAT SPORE SPAWN IN THE SPORE FIELD GENERATOR.")],
     [(0x4A, "BOMB TORIZO",  "DEFEAT THE TORIZO TRIO IN THE ARENA.")],
@@ -86,7 +86,7 @@ events: list[list[Event]] = [
     [(0x1D, "SPACE PORT",   "DESTROY THE SPACE PORT AND CRASH THE DOCKED SHIPS."),
      (0x79, "BOTWOON",      "DEFEAT BOTWOON IN THE CRASHED CARGO SHIP.")],
     [(0x1F, "POWER OFF",    "TURN THE GEOTHERMAL ENERGY PLANT OFF.")],
-]
+)
 
 event_to_location: Final[Mapping[str, str]] = MappingProxyType({
     "KRAID": "Shrine Of The Penumbra",
@@ -95,7 +95,7 @@ event_to_location: Final[Mapping[str, str]] = MappingProxyType({
     "DRAYGON": "Greater Inferno",
     "DUST TORIZO": "Fire's Bane Shrine",
     "GOLD TORIZO": "Colosseum",
-    "CROCOMIRE": "Crocomire",
+    "CROCOMIRE": "Crocomire's Lair",
     "RIDLEY": "Reliquary Access",
     "PHANTOON": "Reliquary Access",
     "HYPER TORIZO": "Shrine Of The Animate Spark",
@@ -130,7 +130,7 @@ map_to_location: Final[Mapping[str, str]] = MappingProxyType({
     "MINES MAP STATION": "Mining Site 1",
     "HIVE MAP STATION": "Hive Main Chamber",
     "LABORATORY MAP STATION": "Equipment Locker",
-    "JUNGLE RUINS MAP STATION": "Shrine of Fervor",
+    "JUNGLE RUINS MAP STATION": "Shrine Of Fervor",
     "VULNAR PEAK MAP STATION": "Syzygy Observatorium",
     "HYDRAULIC WORKS MAP STATION": "Frozen Lake Wall",
     "SUZI RUINS MAP STATION": "Suzi Ruins Map Station Access",
@@ -214,7 +214,7 @@ def WriteLogEntry(romWriter: RomWriter, address: int, index: int, event: int, na
     return end
 
 
-def WriteLogs(romWriter: RomWriter, address: int, goals: list[Event]) -> None:
+def WriteLogs(romWriter: RomWriter, address: int, goals: Sequence[Event]) -> None:
     hint_address = address + 2 + (2 * len(goals))
 
     for i, goal in enumerate(goals):
@@ -224,7 +224,7 @@ def WriteLogs(romWriter: RomWriter, address: int, goals: list[Event]) -> None:
     romWriter.writeBytes(address, struct.pack('<H', 0))
 
 
-def WriteMessageBoxes(romWriter: RomWriter, address: int, goals: list[Event]) -> None:
+def WriteMessageBoxes(romWriter: RomWriter, address: int, goals: Sequence[Event]) -> None:
     message_address = address + (6 * (len(goals) + 2))
 
     message = ConvertToMessagebox('OBJECTIVES NOT COMPLETE')
