@@ -192,16 +192,30 @@ def get_excluded_areas(excluded_locs: AbstractSet[str]) -> list[bytes]:
 
 
 def write_excluded_areas_to_log(excluded_locs: AbstractSet[str], rom_writer: RomWriter) -> None:
-    areas = get_excluded_areas(excluded_locs)
+    excluded = get_excluded_areas(excluded_locs)
+    included = [
+        area_name
+        for area_name in _LOG_AREA_NAMES.values()
+        if area_name not in excluded and area_name != b"DAPHNE"
+    ]
 
+    #                v red    v white                                         pink yellow green ->
     LOC_LOG_DATA = b"\x82TN578\x87 IS A SUPERTERRAN CLASS PLANET WHICH WAS AN ANCIENT HOME FOR THE \x86CHOZO\x87. EVEN THOUGH IT HAS A BREATHABLE ATMOSPHERE AND ABUNDANT WATER, THE \x85INTENSE GRAVITY\x87 PUTS IT ON THE EDGE OF HABITABILITY. IT'S UNCLEAR WHY THE \x84SPACE PIRATES\x87 WOULD BE HERE."  # noqa: E501
     LOC_LOG_INDEX = 0x1e0f2f
     assert rom_writer.rom_data.find(LOC_LOG_DATA) in (-1, LOC_LOG_INDEX), rom_writer.rom_data.find(LOC_LOG_DATA)
 
-    if b"SPACE PORT" in areas:
-        reminder = b"\n\n(TORPEDO BAY IS NEVER EXCLUDED.)"
+    if b"SPACE PORT" in excluded:
+        reminder = b"\n\n(\x85TORPEDO BAY IS NEVER EXCLUDED.\x87)"
     else:
         reminder = b""
 
-    message = b"EXCLUDED AREAS:\n- " + (b"\n- ".join(areas)) + reminder + b"\x00"
+    message = (
+        b"\x82EXCLUDED AREAS\x87:\n- " +
+        (b"\n- ".join(excluded)) +
+        reminder +
+        b"\n\n\x84INCLUDED AREAS\x87:\n- " +
+        (b"\n- ".join(included)) +
+        b"\x00"
+    )
+    assert len(message) <= len(LOC_LOG_DATA), "longer than the data we're replacing"
     rom_writer.writeBytes(LOC_LOG_INDEX, message)
