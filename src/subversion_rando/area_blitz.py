@@ -23,21 +23,21 @@ def choose_excluded_locs(
     random: Random,
     *,
     force_normal_sand_land: bool,
-) -> list[str]:
+) -> set[str]:
     if options.exclude is Exclude.nothing:
-        return []
+        return set()
 
     if options.exclude is Exclude.thunder_lab:
-        return ["Shrine Of The Animate Spark", "Enervation Chamber"]
+        return {"Shrine Of The Animate Spark", "Enervation Chamber"}
 
-    def locs_in_areas(areas: AbstractSet[AreaName]) -> list[str]:
+    def locs_in_areas(areas: AbstractSet[AreaName]) -> set[str]:
         """ never exclude Torpedo Bay """
         locs = new_locations()
-        return [
+        return {
             loc_name
             for loc_name, loc in locs.items()
             if loc["rando_area"] in areas and loc_name != "Torpedo Bay"
-        ]
+        }
 
     if options.exclude is Exclude.suzi:
         return locs_in_areas({"Suzi"})
@@ -69,7 +69,7 @@ def choose_excluded_locs(
     return locs_in_areas(chosen)
 
 
-def remove_excluded_item_pool(fill: FillAssumed, excluded_locs: list[str]) -> None:
+def remove_excluded_item_pool(fill: FillAssumed, excluded_locs: AbstractSet[str]) -> None:
     n = len(excluded_locs)
     blitz = n > 24
 
@@ -156,7 +156,7 @@ def remove_excluded_item_pool(fill: FillAssumed, excluded_locs: list[str]) -> No
     fill.set_prog(new_prog)
 
 
-def place_excluded(all_locations: Mapping[str, Location], excluded_locs: list[str]) -> None:
+def place_excluded(all_locations: Mapping[str, Location], excluded_locs: AbstractSet[str]) -> None:
     for loc_name in excluded_locs:
         all_locations[loc_name]["item"] = Items.SmallAmmo
 
@@ -178,7 +178,7 @@ _LOG_AREA_NAMES: Final[Mapping[AreaName, bytes]] = MappingProxyType({
 })
 
 
-def get_excluded_areas(excluded_locs: list[str]) -> list[bytes]:
+def get_excluded_areas(excluded_locs: AbstractSet[str]) -> list[bytes]:
     locs = new_locations()
     areas: set[AreaName] = {locs[loc_name]["rando_area"] for loc_name in excluded_locs}
     area_strings: set[bytes] = {_LOG_AREA_NAMES[area_name] for area_name in areas}
@@ -191,7 +191,7 @@ def get_excluded_areas(excluded_locs: list[str]) -> list[bytes]:
     return sorted(area_strings)
 
 
-def write_excluded_areas_to_log(excluded_locs: list[str], rom_writer: RomWriter) -> None:
+def write_excluded_areas_to_log(excluded_locs: AbstractSet[str], rom_writer: RomWriter) -> None:
     areas = get_excluded_areas(excluded_locs)
 
     LOC_LOG_DATA = b"\x82TN578\x87 IS A SUPERTERRAN CLASS PLANET WHICH WAS AN ANCIENT HOME FOR THE \x86CHOZO\x87. EVEN THOUGH IT HAS A BREATHABLE ATMOSPHERE AND ABUNDANT WATER, THE \x85INTENSE GRAVITY\x87 PUTS IT ON THE EDGE OF HABITABILITY. IT'S UNCLEAR WHY THE \x84SPACE PIRATES\x87 WOULD BE HERE."  # noqa: E501

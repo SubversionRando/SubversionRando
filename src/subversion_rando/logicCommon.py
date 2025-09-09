@@ -1,6 +1,7 @@
 """ utility functions for logic """
 
-from typing import TYPE_CHECKING
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, Final
 
 from .item_data import Item, Items
 from .logic_shortcut import LogicShortcut
@@ -50,7 +51,7 @@ def take_damage(avoidable: int, unavoidable: int = 0) -> LogicShortcut:
     ))
 
 
-_item_to_ammo: dict[Item, int] = {
+_item_to_ammo: Final[Mapping[Item, int]] = {
     Items.Missile: 10,
     Items.Super: 10,
     Items.PowerBomb: 10,

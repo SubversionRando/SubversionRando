@@ -1,7 +1,7 @@
 from copy import deepcopy
 from dataclasses import asdict, dataclass, field
 from enum import Enum
-from typing import Any, Literal, Mapping, Optional, Union, cast
+from typing import AbstractSet, Any, Literal, Mapping, Optional, Union, cast
 
 from .area_rando_types import AreaDoor, DoorPairs
 from .daphne_gate_types import DaphneBlocks
@@ -28,6 +28,11 @@ def daphne_factory() -> DaphneBlocks:
 
 def markers_factory() -> LocationToMarker:
     return make_item_markers(ItemMarkersOption.Simple, [])
+
+
+def excluded_factory() -> set[str]:
+    """ because type inference doesn't go through `field` and `default_factory` """
+    return set()
 
 
 class Exclude(Enum):
@@ -85,7 +90,7 @@ class Game:
     hint_data: Optional[Hint] = None
     daphne_blocks: DaphneBlocks = field(default_factory=daphne_factory)
     goals: Goals = field(default_factory=Goals)
-    excluded_locs: list[str] = field(default_factory=list)
+    excluded_locs: AbstractSet[str] = field(default_factory=excluded_factory)
     """ location names """
 
     def to_jsonable(self) -> dict[str, Any]:
@@ -100,6 +105,7 @@ class Game:
         dct["hint_data"] = hint_to_jsonable(self.hint_data)
         dct["daphne_blocks"] = asdict(self.daphne_blocks)
         dct["goals"] = asdict(self.goals)
+        dct["excluded_locs"] = list(self.excluded_locs)
 
         locations_copy = deepcopy(self.all_locations)
         dct["all_locations"] = locations_copy
@@ -124,6 +130,7 @@ class Game:
         game.hint_data = hint_from_jsonable(dct["hint_data"])
         game.daphne_blocks = DaphneBlocks(**(dct["daphne_blocks"]))
         game.goals = Goals(**(dct["goals"]))
+        game.excluded_locs = set(dct["excluded_locs"])
 
         # change event list to tuples
         game.goals.objectives = list(

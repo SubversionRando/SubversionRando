@@ -64,7 +64,7 @@ def solve(game: Game,
         loc_name = "Torpedo Bay"
         loc = game.all_locations[loc_name]
         item = loc["item"]
-        if item:
+        if item:  # and loc_name not in game.excluded_locs:  # but Torpedo Bay is never excluded
             loadout.append(item)
             play_through.spheres[-1].pickups[loc_name] = item.name
         used_locs.add(loc_name)
@@ -86,7 +86,7 @@ def solve(game: Game,
                         # print(f"found {loc_name} in logic while still in spaceport")
                         continue
                     item = loc['item']
-                    if item:
+                    if item and loc_name not in game.excluded_locs:
                         loadout.append(item)
                         play_through.spheres[-1].pickups[loc_name] = item.name
                     used_locs.add(loc_name)
@@ -129,7 +129,7 @@ def solve(game: Game,
             if loc['inlogic']:
                 loc_name = loc['fullitemname']
                 item = loc['item']
-                if item:
+                if item and loc_name not in game.excluded_locs:
                     loadout.append(item)
                     play_through.spheres[-1].pickups[loc_name] = item.name
                 used_locs.add(loc_name)
