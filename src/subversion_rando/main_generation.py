@@ -13,7 +13,7 @@ except TypeError:
     input("requires Python 3.10 or higher... press enter to quit")
     exit(1)
 from . import areaRando, fillAssumed, fillMajorMinor, fillMedium, fillSpeedrun, logic_updater
-from .area_blitz import choose_excluded_locs, place_excluded, remove_excluded_item_pool
+from .area_blitz import choose_excluded_locs, place_excluded, remove_excluded_item_pool, write_excluded_areas_to_log
 from .daphne_gate import get_air_lock_bytes, get_daphne_gate
 from .fillForward import fill_major_minor
 from .fillInterface import FillAlgorithm
@@ -260,6 +260,7 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
     - escape shortcuts
     - objective rando
     - skip crash space port
+    - excluded areas in log book
     """
     if game.hint_data:
         hint_loc_name, hint_loc_marker = game.hint_data
@@ -430,6 +431,9 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
         romWriter.writeBytes(0x07BAA1, b'\x35\xE6')  # also use state (skip test for state 1D)
         # Wrecked Engineering Room uses escape level data to remove PB requirement
         romWriter.writeBytes(0x07E06B, b'\x7D\xCB\xC6')  # change level data pointer
+
+    if game.options.exclude is not Exclude.nothing:
+        write_excluded_areas_to_log(game.excluded_locs, romWriter)
 
 
 def patch_major_minor_icons_before_collect(romWriter: RomWriter) -> None:

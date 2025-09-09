@@ -1,17 +1,17 @@
 from collections.abc import Mapping, Set as AbstractSet
 from random import Random
-from typing import TYPE_CHECKING, Literal
+from types import MappingProxyType
+from typing import TYPE_CHECKING, Final, Literal
 
 from subversion_rando.fillAssumed import FillAssumed
 from subversion_rando.item_data import Items
+from subversion_rando.romWriter import RomWriter
 
 from .area_rando_types import AreaName, area_names
 from .game import Exclude, GameOptions
 from .location_data import Location, new_locations
 
 # TODO: spoiler
-
-# TODO: in-game log book "SUPERTERRAN CLASS"
 
 # TODO: remove areas from area rando if we can match left and right doors
 
@@ -150,3 +150,49 @@ def remove_excluded_item_pool(fill: FillAssumed, excluded_locs: list[str]) -> No
 def place_excluded(all_locations: Mapping[str, Location], excluded_locs: list[str]) -> None:
     for loc_name in excluded_locs:
         all_locations[loc_name]["item"] = Items.SmallAmmo
+
+
+_LOG_AREA_NAMES: Final[Mapping[AreaName, bytes]] = MappingProxyType({
+    "SandLand": b"SANDLAND",
+    "Early": b"EARLY",
+    "Suzi": b"SUZI",
+    "PirateLab": b"PIRATE LAB",
+    "ServiceSector": b"SERVICE SECTOR",
+    "SkyWorld": b"SKY WORLD",
+    "Verdite": b"VERDITE",
+    "FireHive": b"FIREHIVE",
+    "DrayLand": b"DRAYLAND",
+    "Geothermal": b"GEOTHERMAL",
+    "LifeTemple": b"LIFE TEMPLE",
+    "SpacePort": b"SPACE PORT",
+    "Daphne": b"DAPHNE",
+})
+
+
+def get_excluded_areas(excluded_locs: list[str]) -> list[bytes]:
+    locs = new_locations()
+    areas: set[AreaName] = {locs[loc_name]["rando_area"] for loc_name in excluded_locs}
+    area_strings: set[bytes] = {_LOG_AREA_NAMES[area_name] for area_name in areas}
+    if "Suzi" in areas and "Tower Rock Lookout" not in excluded_locs:
+        assert "Enervation Chamber" in excluded_locs, excluded_locs
+        assert "Shrine Of The Animate Spark" in excluded_locs, excluded_locs
+        assert "Reef Nook" not in excluded_locs, excluded_locs
+        area_strings.remove(b"SUZI")
+        area_strings.add(b"THUNDER LAB")
+    return sorted(area_strings)
+
+
+def write_excluded_areas_to_log(excluded_locs: list[str], rom_writer: RomWriter) -> None:
+    areas = get_excluded_areas(excluded_locs)
+
+    LOC_LOG_DATA = b"\x82TN578\x87 IS A SUPERTERRAN CLASS PLANET WHICH WAS AN ANCIENT HOME FOR THE \x86CHOZO\x87. EVEN THOUGH IT HAS A BREATHABLE ATMOSPHERE AND ABUNDANT WATER, THE \x85INTENSE GRAVITY\x87 PUTS IT ON THE EDGE OF HABITABILITY. IT'S UNCLEAR WHY THE \x84SPACE PIRATES\x87 WOULD BE HERE."  # noqa: E501
+    LOC_LOG_INDEX = 0x1e0f2f
+    assert rom_writer.rom_data.find(LOC_LOG_DATA) in (-1, LOC_LOG_INDEX), rom_writer.rom_data.find(LOC_LOG_DATA)
+
+    if b"SPACE PORT" in areas:
+        reminder = b"\n\n(TORPEDO BAY IS NEVER EXCLUDED.)"
+    else:
+        reminder = b""
+
+    message = b"EXCLUDED AREAS:\n- " + (b"\n- ".join(areas)) + reminder + b"\x00"
+    rom_writer.writeBytes(LOC_LOG_INDEX, message)
