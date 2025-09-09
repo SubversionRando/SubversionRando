@@ -2,6 +2,7 @@ import base64
 import enum
 import os
 from pathlib import Path
+import pkgutil
 from typing import TYPE_CHECKING, ClassVar, Optional, Union
 
 from .ips import patch
@@ -171,9 +172,12 @@ class RomWriter:
             else:
                 raise ValueError(f"invalid rom {len(self.rom_data)} - need subversion 1.2 or vanilla SM, unheadered")
 
-    def apply_IPS(self, ips_path: Union[str, Path]) -> None:
-        patch_path = Path(__file__).parent.resolve()
-        with open(patch_path.joinpath(ips_path), 'rb') as file:
-            patch_data = file.read()
+    def apply_IPS(self, ips_path: str) -> None:
+        patch_data = pkgutil.get_data(__name__, ips_path)
+        if patch_data is None:
+            patch_path = Path(__file__).parent.resolve()
+            patch_data = patch_path.joinpath(ips_path).read_bytes()
         self.rom_data = patch(self.rom_data, patch_data)
-        assert len(self.rom_data) == 4194304, f"patch made file {len(self.rom_data)}"
+        assert self.romWriterType is RomWriterType.ipsblob or len(self.rom_data) == 4194304, (
+            f"patch made file {len(self.rom_data)}"
+        )

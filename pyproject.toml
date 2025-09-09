@@ -51,4 +51,4 @@ ignore = [
 pythonpath = [
   "src"
 ]
-addopts = "--cov=src --cov-report=html"
+addopts = "--cov=src/subversion_rando --cov-report=html"
