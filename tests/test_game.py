@@ -12,7 +12,7 @@ def test_json() -> None:
         fill_choice="D",
         small_spaceport=False,
         escape_shortcuts=True,
-        exclude=Exclude.blitz,
+        exclude=Exclude.suzi_blitz,
         daphne_gate=True,
         objective_rando=3
     )

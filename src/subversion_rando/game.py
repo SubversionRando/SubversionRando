@@ -35,6 +35,7 @@ class Exclude(Enum):
     thunder_lab = "Thunder Lab"
     suzi = "Suzi"
     blitz = "Some Random Areas (Area Blitz)"
+    suzi_blitz = "Suzi and some Random Areas (Area Blitz)"
 
 
 @dataclass

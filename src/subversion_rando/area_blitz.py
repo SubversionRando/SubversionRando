@@ -44,19 +44,25 @@ def choose_excluded_locs(
 
     if TYPE_CHECKING:
         from typing_extensions import assert_type
-        assert_type(options.exclude, Literal[Exclude.blitz])
-    assert options.exclude is Exclude.blitz, options.exclude
+        assert_type(options.exclude, Literal[Exclude.blitz, Exclude.suzi_blitz])
+    assert options.exclude in (Exclude.blitz, Exclude.suzi_blitz), options.exclude
 
     do_not_choose: set[AreaName] = {"ServiceSector", "Daphne", "Early"}
+    choose_n = 4
     if force_normal_sand_land:
         do_not_choose.add("SandLand")
+    if options.exclude is Exclude.suzi_blitz:
+        do_not_choose.add("Suzi")
+        choose_n = 3
 
     choices: list[AreaName] = [
         area_name
         for area_name in area_names
         if area_name not in do_not_choose
     ]
-    chosen = set(random.sample(choices, 4))
+    chosen = set(random.sample(choices, choose_n))
+    if options.exclude is Exclude.suzi_blitz:
+        chosen.add("Suzi")
     if "Geothermal" in chosen:
         chosen.add("ServiceSector")
         assert len(chosen) == 5, chosen
@@ -65,6 +71,7 @@ def choose_excluded_locs(
 
 def remove_excluded_item_pool(fill: FillAssumed, excluded_locs: list[str]) -> None:
     n = len(excluded_locs)
+    blitz = n > 24
 
     small_extra_count = fill.extra_items.count(Items.SmallAmmo)
     refuel_extra_count = fill.extra_items.count(Items.Refuel)
@@ -79,9 +86,10 @@ def remove_excluded_item_pool(fill: FillAssumed, excluded_locs: list[str]) -> No
         n = 0
         small_extra_count = remaining_small_for_extra
 
-        # change prog small to large
-        large_prog_count += small_prog_count
-        small_prog_count = 0
+        if blitz:
+            # change prog small to large
+            large_prog_count += small_prog_count
+            small_prog_count = 0
     else:
         n -= small_extra_count
         small_extra_count = 0
@@ -133,17 +141,18 @@ def remove_excluded_item_pool(fill: FillAssumed, excluded_locs: list[str]) -> No
 
                                     assert n == 0, f"too many locations excluded {excluded_locs}"
 
-    fill.set_extra([Items.Refuel] * refuel_extra_count + [Items.LargeAmmo] * small_extra_count)
+    fill.set_extra(
+        [Items.Refuel] * refuel_extra_count +
+        [Items.LargeAmmo if blitz else Items.SmallAmmo] * small_extra_count
+    )
     new_prog = [
         item
         for item in fill.prog_items
         if item not in (Items.SmallAmmo, Items.LargeAmmo)
     ]
     new_prog.extend([Items.LargeAmmo] * large_prog_count)
-    if TYPE_CHECKING:
-        from typing_extensions import assert_type
-        assert_type(small_prog_count, Literal[0])
-    assert small_prog_count == 0, "small ammo should have been converted to large"
+    new_prog.extend([Items.SmallAmmo] * small_prog_count)
+    assert small_prog_count == 0 or not blitz, "small ammo should have been converted to large if blitz"
     fill.set_prog(new_prog)
 
 

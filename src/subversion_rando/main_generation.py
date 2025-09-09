@@ -124,7 +124,7 @@ def generate(options: GameOptions) -> Game:
                 Tricks.wave_gate_glitch not in game.options.logic
             ) and (
                 game.options.fill_choice == "MM" or
-                options.exclude is Exclude.blitz
+                options.exclude in (Exclude.blitz, Exclude.suzi_blitz)
             )
         )
 
