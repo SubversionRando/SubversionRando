@@ -30,11 +30,11 @@ def markers_factory() -> LocationToMarker:
     return make_item_markers(ItemMarkersOption.Simple, [])
 
 
-class CypherItems(Enum):
-    Anything = "Anything"
-    NotRequired = "Something Not Required"
-    SmallAmmo = "Small Ammo Tanks"
-    """ also restricts Suzi map stations from being required in objective rando """
+class Exclude(Enum):
+    nothing = "Nothing (All Locations Included)"
+    thunder_lab = "Thunder Lab"
+    suzi = "Suzi"
+    blitz = "Some Random Areas (Area Blitz)"
 
 
 @dataclass
@@ -44,7 +44,7 @@ class GameOptions:
     fill_choice: Literal["M", "MM", "D", "S", "B"]
     small_spaceport: bool
     escape_shortcuts: bool = False
-    cypher_items: CypherItems = CypherItems.NotRequired
+    exclude: Exclude = Exclude.nothing
     daphne_gate: bool = False
     item_markers: ItemMarkersOption = ItemMarkersOption.Simple
     objective_rando: int = 0
@@ -58,7 +58,7 @@ class GameOptions:
     def to_jsonable(self) -> dict[str, Any]:
         dct = asdict(self)
         dct["logic"] = tricks_to_jsonable(dct["logic"])
-        dct["cypher_items"] = self.cypher_items.name
+        dct["exclude"] = self.exclude.name
         dct["item_markers"] = self.item_markers.name
         return dct
 
@@ -66,7 +66,7 @@ class GameOptions:
     def from_jsonable(d: dict[str, Any]) -> "GameOptions":
         options = GameOptions(**d)
         options.logic = tricks_from_names(d["logic"])
-        options.cypher_items = getattr(CypherItems, d["cypher_items"])
+        options.exclude = getattr(Exclude, d["exclude"])
         options.item_markers = getattr(ItemMarkersOption, d["item_markers"])
         return options
 
@@ -84,6 +84,8 @@ class Game:
     hint_data: Optional[Hint] = None
     daphne_blocks: DaphneBlocks = field(default_factory=daphne_factory)
     goals: Goals = field(default_factory=Goals)
+    excluded_locs: list[str] = field(default_factory=list)
+    """ location names """
 
     def to_jsonable(self) -> dict[str, Any]:
         dct = asdict(self)

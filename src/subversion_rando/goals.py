@@ -1,4 +1,5 @@
-from dataclasses import dataclass, field
+from collections.abc import Sequence
+from dataclasses import dataclass
 
 Event = tuple[int, str, str]
 
@@ -6,5 +7,5 @@ Event = tuple[int, str, str]
 @dataclass
 class Goals:
     """ choices made for objective rando """
-    objectives: list[Event] = field(default_factory=list)
-    map_station_order: list[int] = field(default_factory=list)
+    objectives: Sequence[Event] = ()
+    map_station_order: Sequence[int] = ()

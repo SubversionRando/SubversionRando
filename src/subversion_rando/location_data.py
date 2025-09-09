@@ -3,7 +3,8 @@ import csv
 import logging
 import pathlib
 import pkgutil
-from typing import Optional, TypedDict, Union, cast
+from types import MappingProxyType
+from typing import Final, Mapping, Optional, TypedDict, Union, cast
 
 from .area_rando_types import AreaName
 from .item_data import Item
@@ -145,3 +146,21 @@ def new_locations() -> dict[str, Location]:
         _location_cache = _pullCSV()
 
     return deepcopy(_location_cache)
+
+
+area_location_count: Final[Mapping[AreaName, int]] = MappingProxyType({
+    "SandLand": 15,
+    "Early": 24,
+    "Suzi": 9,
+    "PirateLab": 10,
+    "ServiceSector": 3,
+    "SkyWorld": 16,
+    "Verdite": 6,
+    "FireHive": 9,
+    "DrayLand": 7,
+    "Geothermal": 3,
+    "LifeTemple": 10,
+    "SpacePort": 10,
+    "Daphne": 0,
+})
+""" number of locations in each area """

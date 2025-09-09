@@ -45,9 +45,10 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "src/subversion_rando/terrain_patch_data.py" = ["E501"]
 "tests/test_logic.py" = ["B023"]
+"src/subversion_rando/goal.py" = ["E241"]
 
 [tool.pytest.ini_options]
 pythonpath = [
   "src"
 ]
-addopts = "--cov=src --cov-report=html"
+addopts = "--cov=src/subversion_rando --cov-report=html"

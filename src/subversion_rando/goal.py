@@ -1,8 +1,11 @@
+from collections.abc import Mapping, Sequence
 from random import Random
 import struct
 import itertools
+from types import MappingProxyType
+from typing import Final
 
-from .game import CypherItems, GameOptions
+from .game import GameOptions
 from .goals import Event, Goals
 from .romWriter import RomWriter
 
@@ -69,24 +72,40 @@ message_box_map = {
     '\\': 0x681A,
 }
 
-events: list[list[Event]] = [
-    [(0x40, "KRAID",        "DEFEAT KRAID IN THE SUBMARINE LAIR.")],  # noqa: E241
-    [(0x49, "SPORE SPAWN",  "DEFEAT SPORE SPAWN IN THE SPORE FIELD GENERATOR.")],  # noqa: E241
-    [(0x4A, "BOMB TORIZO",  "DEFEAT THE TORIZO TRIO IN THE ARENA.")],  # noqa: E241
-    [(0x50, "DRAYGON",      "DEFEAT DRAYGON IN THEIR MOLTEN NURSERY.")],  # noqa: E241
-    [(0x51, "DUST TORIZO",  "ANNIHILATE THE DEAD TORIZO IN THE HIVE.")],  # noqa: E241
-    [(0x52, "GOLD TORIZO",  "DEFEAT THE GOLD TORIZO GUARDING THE MAGMA LAKE.")],  # noqa: E241
-    [(0x58, "CROCOMIRE",    "DEFEAT CROCOMIRE IN THE JUNGLE LAIR.")],  # noqa: E241
-    [(0x60, "RIDLEY",       "DEFEAT RIDLEY IN THE SKY TEMPLE BROODING CHAMBER."),  # noqa: E241
-     (0x61, "PHANTOON",     "DEFEAT PHANTOON IN THE SKY TEMPLE RELIQUARY.")],  # noqa: E241
+events: Final[Sequence[Sequence[Event]]] = (
+    [(0x40, "KRAID",        "DEFEAT KRAID IN THE SUBMARINE LAIR.")],
+    [(0x49, "SPORE SPAWN",  "DEFEAT SPORE SPAWN IN THE SPORE FIELD GENERATOR.")],
+    [(0x4A, "BOMB TORIZO",  "DEFEAT THE TORIZO TRIO IN THE ARENA.")],
+    [(0x50, "DRAYGON",      "DEFEAT DRAYGON IN THEIR MOLTEN NURSERY.")],
+    [(0x51, "DUST TORIZO",  "ANNIHILATE THE DEAD TORIZO IN THE HIVE.")],
+    [(0x52, "GOLD TORIZO",  "DEFEAT THE GOLD TORIZO GUARDING THE MAGMA LAKE.")],
+    [(0x58, "CROCOMIRE",    "DEFEAT CROCOMIRE IN THE JUNGLE LAIR.")],
+    [(0x60, "RIDLEY",       "DEFEAT RIDLEY IN THE SKY TEMPLE BROODING CHAMBER."),
+     (0x61, "PHANTOON",     "DEFEAT PHANTOON IN THE SKY TEMPLE RELIQUARY.")],
     [(0x6A, "HYPER TORIZO", "DEFEAT HYPER TORIZO IN THE THUNDER LABS.")],
-    [(0x1D, "SPACE PORT",   "DESTROY THE SPACE PORT AND CRASH THE DOCKED SHIPS."),  # noqa: E241
-     (0x79, "BOTWOON",      "DEFEAT BOTWOON IN THE CRASHED CARGO SHIP.")],  # noqa: E241
-    [(0x1F, "POWER OFF",    "TURN THE GEOTHERMAL ENERGY PLANT OFF.")],  # noqa: E241
-]
+    [(0x1D, "SPACE PORT",   "DESTROY THE SPACE PORT AND CRASH THE DOCKED SHIPS."),
+     (0x79, "BOTWOON",      "DEFEAT BOTWOON IN THE CRASHED CARGO SHIP.")],
+    [(0x1F, "POWER OFF",    "TURN THE GEOTHERMAL ENERGY PLANT OFF.")],
+)
 
+event_to_location: Final[Mapping[str, str]] = MappingProxyType({
+    "KRAID": "Shrine Of The Penumbra",
+    "SPORE SPAWN": "Harmonic Growth Enhancer",
+    "BOMB TORIZO": "Arena",
+    "DRAYGON": "Greater Inferno",
+    "DUST TORIZO": "Fire's Bane Shrine",
+    "GOLD TORIZO": "Colosseum",
+    "CROCOMIRE": "Crocomire's Lair",
+    "RIDLEY": "Reliquary Access",
+    "PHANTOON": "Reliquary Access",
+    "HYPER TORIZO": "Shrine Of The Animate Spark",
+    "SPACE PORT": "Forward Battery",
+    "BOTWOON": "Sandy Cache",
+    "POWER OFF": "Electromechanical Engine",
+})
+""" a location in the same area """
 
-map_stations = {
+map_stations: Final[Mapping[int, str]] = MappingProxyType({
     0x3FFDFE: "OCEANIA MAP STATION",          # [Area 0 (0F, 0F):
     0x3FF9A0: "VULNAR CAVES MAP STATION",     # [Area 1 (13, 10):
     0x3FE68E: "MINES MAP STATION",            # [Area 2 (12, 07):
@@ -99,7 +118,27 @@ map_stations = {
     0x3FD894: "REEF MAP STATION",             # [Area 5 (28, 0E):
     0x3FD402: "ORBITAL MAP STATION",          # [Area 6 (1B, 15):
     0x3FD4C0: "GFS DAPHNE MAP STATION",       # [Area 6 (29, 10):
-}
+})
+
+map_stations_reverse: Final[Mapping[str, int]] = MappingProxyType({
+    name: addr for addr, name in map_stations.items()
+})
+
+map_to_location: Final[Mapping[str, str]] = MappingProxyType({
+    "OCEANIA MAP STATION": "Sandy Cache",
+    "VULNAR CAVES MAP STATION": "Waste Processing",
+    "MINES MAP STATION": "Mining Site 1",
+    "HIVE MAP STATION": "Hive Main Chamber",
+    "LABORATORY MAP STATION": "Equipment Locker",
+    "JUNGLE RUINS MAP STATION": "Shrine Of Fervor",
+    "VULNAR PEAK MAP STATION": "Syzygy Observatorium",
+    "HYDRAULIC WORKS MAP STATION": "Frozen Lake Wall",
+    "SUZI RUINS MAP STATION": "Suzi Ruins Map Station Access",
+    "REEF MAP STATION": "Tower Rock Lookout",
+    "ORBITAL MAP STATION": "Docking Port 4",
+    "GFS DAPHNE MAP STATION": "Weapon Locker",
+})
+""" a location in the same area """
 
 
 def ConvertToLabel(text: str) -> bytes:
@@ -175,7 +214,7 @@ def WriteLogEntry(romWriter: RomWriter, address: int, index: int, event: int, na
     return end
 
 
-def WriteLogs(romWriter: RomWriter, address: int, goals: list[Event]) -> None:
+def WriteLogs(romWriter: RomWriter, address: int, goals: Sequence[Event]) -> None:
     hint_address = address + 2 + (2 * len(goals))
 
     for i, goal in enumerate(goals):
@@ -185,7 +224,7 @@ def WriteLogs(romWriter: RomWriter, address: int, goals: list[Event]) -> None:
     romWriter.writeBytes(address, struct.pack('<H', 0))
 
 
-def WriteMessageBoxes(romWriter: RomWriter, address: int, goals: list[Event]) -> None:
+def WriteMessageBoxes(romWriter: RomWriter, address: int, goals: Sequence[Event]) -> None:
     message_address = address + (6 * (len(goals) + 2))
 
     message = ConvertToMessagebox('OBJECTIVES NOT COMPLETE')
@@ -202,14 +241,15 @@ def WriteMessageBoxes(romWriter: RomWriter, address: int, goals: list[Event]) ->
     romWriter.writeBytes(address, struct.pack('<HHH', 0x8436, 0x825A, GetShortAddress(message_address)))
 
 
-def generate_goals(options: GameOptions, seed: int) -> Goals:
+def generate_goals(options: GameOptions, excluded_locs: set[str], seed: int) -> Goals:
     count = options.objective_rando
 
     bad_events: set[str] = set()
     if options.area_rando:
         bad_events.add("POWER OFF")
-    if options.cypher_items != CypherItems.Anything:
-        bad_events.add("HYPER TORIZO")
+    for event_name, loc_name in event_to_location.items():
+        if loc_name in excluded_locs:
+            bad_events.add(event_name)
 
     valid_events = [
         [sub_event for sub_event in event if sub_event[1] not in bad_events]
@@ -218,14 +258,12 @@ def generate_goals(options: GameOptions, seed: int) -> Goals:
     valid_events = [event for event in valid_events if event]
 
     bad_maps: list[int] = []  # list instead of set because we will still use this in the final order
-    if options.cypher_items == CypherItems.SmallAmmo:
-        bad_maps.extend(addr
-                        for addr, name in map_stations.items()
-                        if name in ("SUZI RUINS MAP STATION", "REEF MAP STATION"))
+    for map_name, loc_name in map_to_location.items():
+        if loc_name in excluded_locs:
+            bad_maps.append(map_stations_reverse[map_name])
     valid_maps = [addr for addr in map_stations.keys() if addr not in bad_maps]
 
-    max_with_options = min(max_goal_count, len(valid_events), len(valid_maps))
-
+    max_with_options = min(max_goal_count, len(valid_events))
     if count > max_with_options:
         count = max_with_options
 

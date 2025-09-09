@@ -7,7 +7,7 @@ from pyscript import document  # type: ignore
 # pyscript library
 import js  # type: ignore
 
-from subversion_rando.game import CypherItems, Game, GameOptions
+from subversion_rando.game import Exclude, Game, GameOptions
 from subversion_rando.item_marker import ItemMarkersOption
 from subversion_rando.logic_presets import casual, expert, medium, custom_logic_str_from_tricks
 from subversion_rando.romWriter import RomWriter
@@ -52,7 +52,7 @@ class WebParams(TypedDict):
     small_spaceport: bool
     escape_shortcuts: bool
     fill: Literal["D", "B", "MM"]
-    cypher: str
+    exclude: str
     tricks: list[str]
     daphne_gate: bool
     item_markers: Literal["Simple", "ThreeTiered"]
@@ -98,7 +98,7 @@ def roll2(params_str: str) -> None:
                           params["fill"],
                           bool(params["small_spaceport"]),
                           bool(params["escape_shortcuts"]),
-                          getattr(CypherItems, params["cypher"]),
+                          getattr(Exclude, params["exclude"]),
                           bool(params["daphne_gate"]),
                           getattr(ItemMarkersOption, params["item_markers"]),
                           int(params["objective_rando"]),
