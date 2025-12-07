@@ -1,4 +1,4 @@
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping, Sequence, Set as AbstractSet
 from random import Random
 import struct
 import itertools
@@ -241,7 +241,7 @@ def WriteMessageBoxes(romWriter: RomWriter, address: int, goals: Sequence[Event]
     romWriter.writeBytes(address, struct.pack('<HHH', 0x8436, 0x825A, GetShortAddress(message_address)))
 
 
-def generate_goals(options: GameOptions, excluded_locs: set[str], seed: int) -> Goals:
+def generate_goals(options: GameOptions, excluded_locs: AbstractSet[str], seed: int) -> Goals:
     count = options.objective_rando
 
     bad_events: set[str] = set()
