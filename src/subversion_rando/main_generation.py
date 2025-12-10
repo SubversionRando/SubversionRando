@@ -337,6 +337,10 @@ def apply_rom_patches(game: Game, romWriter: RomWriter) -> None:
 
     tw.write(subterranean)
     tw.write(hall_of_the_elders)
+    # TODO: more anti-softlock (and anti-save-scum in AP):
+    # - Geron in Fire's Bane Shrine Access
+    # - Root Cavern (Dachora room) always in "already-have-speed-booster" state
+    # - Disable save station in Sanctuary Save Station (behind Ridley)
 
     if game.options.daphne_gate:
         wrecked, non_default, default = get_air_lock_bytes(game.daphne_blocks)
